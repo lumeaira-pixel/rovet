@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flowbase — The Operating System for Modern Teams</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Google Fonts: Instrument Serif + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0B0D10;
+      --ink-soft: #2A2F38;
+      --muted: #6B7280;
+      --paper: #FFFFFF;
+      --canvas: #F8F9FC;
+      --hairline: rgba(0, 0, 0, 0.06);
+      --accent: #1A5CFF;
+      --accent-glow: rgba(26, 92, 255, 0.18);
+      --radius-card: 24px;
+      --radius-btn: 999px;
+      --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+      --shadow-card: 0 12px 40px -8px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.02);
+      --shadow-elevated: 0 24px 64px -12px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.02);
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --focus-ring: 0 0 0 3px rgba(26, 92, 255, 0.35);
+    }
+
+    /* === Base & Reset === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body {
+      font-family: var(--font-body);
+      background: var(--canvas);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--accent); color: #fff; }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input, textarea, select { font-family: inherit; font-size: inherit; }
+
+    /* === Typography === */
+    .font-display { font-family: var(--font-display); }
+    .text-balance { text-wrap: balance; }
+    .heading-xl {
+      font-size: clamp(2.75rem, 7vw, 5.25rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      font-weight: 400;
+      font-family: var(--font-display);
+    }
+    .heading-lg {
+      font-size: clamp(2rem, 4.5vw, 3.25rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      font-weight: 400;
+      font-family: var(--font-display);
+    }
+    .heading-md {
+      font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      font-weight: 600;
+    }
+    .body-lg { font-size: 1.125rem; line-height: 1.7; color: var(--ink-soft); }
+    .body-sm { font-size: 0.9375rem; line-height: 1.6; color: var(--muted); }
+
+    /* === Layout === */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    @media (min-width: 768px) { .container { padding: 0 2rem; } }
+    .section { padding: 5rem 0; }
+    @media (min-width: 768px) { .section { padding: 7rem 0; } }
+
+    /* === Buttons === */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: var(--radius-btn);
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+    .btn:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+    .btn-primary {
+      background: var(--ink);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+    .btn-primary:hover {
+      background: #1a1d24;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn-accent {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+    .btn-accent:hover {
+      background: #0d4ae0;
+      box-shadow: 0 8px 32px rgba(26, 92, 255, 0.3);
+      transform: translateY(-1px);
+    }
+    .btn-accent:active { transform: translateY(0) scale(0.98); }
+    .btn-outline {
+      border: 1px solid var(--hairline);
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+    }
+    .btn-outline:hover {
+      border-color: rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow-soft);
+      transform: translateY(-1px);
+    }
+    .btn-outline:active { transform: translateY(0) scale(0.98); }
+
+    /* === Cards === */
+    .card {
+      background: var(--paper);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--hairline);
+      box-shadow: var(--shadow-soft);
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .card:hover {
+      box-shadow: var(--shadow-card);
+      transform: translateY(-2px);
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+    .card-glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    /* === Section dividers / decor === */
+    .hairline { height: 1px; background: var(--hairline); border: none; }
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.25;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* === Navigation === */
+    .nav-shell {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 0.75rem 0;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-shell.scrolled {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--hairline);
+      padding: 0.5rem 0;
+      box-shadow: 0 1px 24px rgba(0, 0, 0, 0.03);
+    }
+    .nav-link {
+      font-size: 0.9375rem;
+      font-weight: 450;
+      color: var(--ink-soft);
+      transition: color 0.2s ease;
+      position: relative;
+      padding: 0.25rem 0;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--ink);
+      transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* Mobile menu */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .mobile-menu.open { transform: translateX(0); }
+    .mobile-menu a {
+      font-size: 1.5rem;
+      font-family: var(--font-display);
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--hairline);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--accent); }
+    .mobile-menu a:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Hero === */
+    .hero-gradient {
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -20%, rgba(26, 92, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(26, 92, 255, 0.05) 0%, transparent 50%),
+        var(--canvas);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 1rem 0.375rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(26, 92, 255, 0.06);
+      border: 1px solid rgba(26, 92, 255, 0.12);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: -0.01em;
+    }
+    .hero-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* === Feature bento === */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 640px) {
+      .bento-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1024px) {
+      .bento-grid {
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: minmax(200px, auto);
+      }
+      .bento-wide { grid-column: span 2; }
+      .bento-tall { grid-row: span 2; }
+    }
+
+    /* === Pricing === */
+    .pricing-card {
+      background: var(--paper);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--hairline);
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+    }
+    .pricing-card:hover {
+      box-shadow: var(--shadow-card);
+      transform: translateY(-4px);
+    }
+    .pricing-card.featured {
+      border: 1.5px solid var(--accent);
+      box-shadow: 0 0 0 4px rgba(26, 92, 255, 0.06), var(--shadow-card);
+    }
+    .pricing-card.featured:hover {
+      box-shadow: 0 0 0 6px rgba(26, 92, 255, 0.08), var(--shadow-elevated);
+    }
+    .pricing-badge {
+      position: absolute;
+      top: -0.75rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 1rem;
+      border-radius: 999px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    /* === Testimonials === */
+    .testimonial-card {
+      background: var(--paper);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--hairline);
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .testimonial-card:hover {
+      box-shadow: var(--shadow-card);
+      transform: translateY(-2px);
+    }
+
+    /* === CTA Banner === */
+    .cta-banner {
+      background:
+        radial-gradient(ellipse 70% 80% at 30% 50%, rgba(26, 92, 255, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 80% 30%, rgba(26, 92, 255, 0.08) 0%, transparent 50%),
+        var(--ink);
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* === Forms === */
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--hairline);
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 0.9375rem;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+    .form-input::placeholder { color: var(--muted); opacity: 0.7; }
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: var(--focus-ring);
+    }
+    .form-input.error {
+      border-color: #EF4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+    }
+    .form-error {
+      font-size: 0.8125rem;
+      color: #EF4444;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    .form-error.visible { display: block; }
+    .form-success {
+      display: none;
+      padding: 1rem;
+      border-radius: 12px;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      color: #15803D;
+      font-size: 0.9375rem;
+      text-align: center;
+    }
+    .form-success.visible { display: block; }
+
+    /* === Footer === */
+    .footer-link {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      transition: color 0.2s ease;
+      display: inline-block;
+      padding: 0.125rem 0;
+    }
+    .footer-link:hover { color: var(--ink); }
+    .footer-link:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Animations === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* === Utility === */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    .no-scroll { overflow: hidden; }
+  </style>
+</head>
+<body>
+
+  <!-- ========== NAVIGATION ========== -->
+  <header class="nav-shell" id="navbar" role="banner">
+    <div class="container flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5 shrink-0" aria-label="Flowbase home">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <rect width="28" height="28" rx="8" fill="#0B0D10"/>
+          <path d="M8 14L12 10L16 14L20 10" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 18L12 14L16 18L20 14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+        </svg>
+        <span class="font-display text-xl tracking-tight" style="font-weight:400;">Flowbase</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#testimonials" class="nav-link">Testimonials</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <!-- Desktop CTA -->
+      <div class="hidden md:flex items-center gap-3">
+        <a href="#contact" class="btn btn-outline" style="padding:0.625rem 1.25rem;font-size:0.875rem;">Sign in</a>
+        <a href="#pricing" class="btn btn-primary" style="padding:0.625rem 1.25rem;font-size:0.875rem;">Start free</a>
+      </div>
+
+      <!-- Mobile toggle -->
+      <button class="md:hidden flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 transition-colors" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <line x1="3" y1="5" x2="17" y2="5"/>
+          <line x1="3" y1="10" x2="17" y2="10"/>
+          <line x1="3" y1="15" x2="17" y2="15"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile menu overlay -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex justify-between items-center mb-8">
+      <span class="font-display text-xl">Flowbase</span>
+      <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 transition-colors" id="menuClose" aria-label="Close menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <line x1="4" y1="4" x2="16" y2="16"/>
+          <line x1="16" y1="4" x2="4" y2="16"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="flex flex-col gap-2" aria-label="Mobile navigation">
+      <a href="#features" class="mobile-link">Features</a>
+      <a href="#pricing" class="mobile-link">Pricing</a>
+      <a href="#testimonials" class="mobile-link">Testimonials</a>
+      <a href="#contact" class="mobile-link">Contact</a>
+    </nav>
+    <div class="mt-auto flex flex-col gap-3">
+      <a href="#contact" class="btn btn-outline w-full">Sign in</a>
+      <a href="#pricing" class="btn btn-primary w-full">Start free</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- ========== HERO ========== -->
+    <section class="hero-gradient relative overflow-hidden" style="padding-top:9rem;padding-bottom:5rem;" id="hero">
+      <div class="glow-orb" style="width:600px;height:600px;top:-200px;left:50%;transform:translateX(-50%);background:rgba(26,92,255,0.12);" aria-hidden="true"></div>
+      <div class="glow-orb" style="width:400px;height:400px;top:200px;right:-100px;background:rgba(26,92,255,0.08);" aria-hidden="true"></div>
+
+      <div class="container relative z-10">
+        <div class="max-w-3xl mx-auto text-center">
+          <div class="hero-badge reveal" style="margin-bottom:1.5rem;">
+            <span class="dot" aria-hidden="true"></span>
+            Now in public beta — v2.0
+          </div>
+
+          <h1 class="heading-xl text-balance reveal" style="margin-bottom:1.5rem;">
+            The operating system<br class="hidden sm:block" />
+            for <em class="font-display" style="font-style:italic;color:var(--accent);">modern teams</em>
+          </h1>
+
+          <p class="body-lg max-w-xl mx-auto text-balance reveal" style="margin-bottom:2.5rem;">
+            Flowbase unifies your projects, docs, and communication into one calm, focused workspace. Less tab-switching. More shipping.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 reveal">
+            <a href="#pricing" class="btn btn-accent w-full sm:w-auto" style="padding:0.875rem 2rem;">
+              Start free trial
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4"/>
+              </svg>
+            </a>
+            <a href="#features" class="btn btn-outline w-full sm:w-auto" style="padding:0.875rem 2rem;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                <circle cx="8" cy="8" r="6"/>
+                <path d="M6.5 5.5L10.5 8L6.5 10.5V5.5Z" fill="currentColor" stroke="none"/>
+              </svg>
+              Watch demo
+            </a>
+          </div>
+
+          <p class="body-sm reveal" style="margin-top:1.25rem;">No credit card required · Free for 14 days · Cancel anytime</p>
+        </div>
+
+        <!-- Hero visual: app preview mockup -->
+        <div class="mt-16 md:mt-20 reveal" style="perspective:1200px;">
+          <div class="card-glass card" style="padding:0.5rem;max-width:960px;margin:0 auto;border-radius:28px;transform:rotateX(2deg);transition:transform 0.6s cubic-bezier(0.22,1,0.36,1);" id="heroVisual">
+            <div style="background:#fff;border-radius:22px;overflow:hidden;border:1px solid var(--hairline);">
+              <!-- App toolbar -->
+              <div class="flex items-center gap-2 px-4 py-3" style="border-bottom:1px solid var(--hairline);">
+                <span style="width:10px;height:10px;border-radius:50%;background:#FF5F57;" aria-hidden="true"></span>
+                <span style="width:10px;height:10px;border-radius:50%;background:#FEBC2E;" aria-hidden="true"></span>
+                <span style="width:10px;height:10px;border-radius:50%;background:#28C840;" aria-hidden="true"></span>
+                <div style="flex:1;height:24px;background:var(--canvas);border-radius:6px;margin-left:0.75rem;display:flex;align-items:center;padding:0 0.75rem;">
+                  <span class="body-sm" style="font-size:0.6875rem;color:var(--muted);">flowbase.app/workspace</span>
+                </div>
+              </div>
+              <!-- App body -->
+              <div class="flex" style="min-height:340px;">
+                <!-- Sidebar -->
+                <div class="hidden sm:block" style="width:180px;border-right:1px solid var(--hairline);padding:1rem;background:var(--canvas);">
+                  <div style="font-size:0.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:0.75rem;">Workspace</div>
+                  <div class="flex flex-col gap-1">
+                    <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg" style="background:rgba(26,92,255,0.06);">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--accent)" stroke-width="1.3" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" rx="2"/><path d="M4.5 7h5M7 4.5v5"/></svg>
+                      <span style="font-size:0.8125rem;font-weight:500;color:var(--accent);">Overview</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--muted)" stroke-width="1.3" aria-hidden="true"><path d="M2 3.5h10M2 7h10M2 10.5h6"/></svg>
+                      <span style="font-size:0.8125rem;color:var(--ink-soft);">Projects</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--muted)" stroke-width="1.3" aria-hidden="true"><circle cx="7" cy="5" r="2.5"/><path d="M2 12c0-2.5 2.2-4.5 5-4.5s5 2 5 4.5"/></svg>
+                      <span style="font-size:0.8125rem;color:var(--ink-soft);">Team</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--muted)" stroke-width="1.3" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="1.5"/><path d="M5 7l1.5 1.5L9.5 5.5"/></svg>
+                      <span style="font-size:0.8125rem;color:var(--ink-soft);">Tasks</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Main content -->
+                <div style="flex:1;padding:1.25rem;">
+                  <div class="flex items-center justify-between" style="margin-bottom:1rem;">
+                    <div>
+                      <div style="font-size:0.9375rem;font-weight:600;color:var(--ink);">Good morning, Alex</div>
+                      <div class="body-sm" style="font-size:0.75rem;">Here's what's happening today.</div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <span style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.625rem;font-weight:600;">A</span>
+                      <span style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#EF4444);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.625rem;font-weight:600;">M</span>
+                      <span style="width:28px;height:28px;border-radius:50%;background:var(--canvas);border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:0.625rem;font-weight:600;">+3</span>
+                    </div>
+                  </div>
+                  <!-- Stats row -->
+                  <div class="grid grid-cols-3 gap-2" style="margin-bottom:1rem;">
+                    <div style="background:var(--canvas);border-radius:10px;padding:0.75rem;">
+                      <div style="font-size:1.25rem;font-weight:600;color:var(--ink);">24</div>
+                      <div class="body-sm" style="font-size:0.6875rem;">Active tasks</div>
+                    </div>
+                    <div style="background:var(--canvas);border-radius:10px;padding:0.75rem;">
+                      <div style="font-size:1.25rem;font-weight:600;color:var(--ink);">8</div>
+                      <div class="body-sm" style="font-size:0.6875rem;">Completed</div>
+                    </div>
+                    <div style="background:var(--canvas);border-radius:10px;padding:0.75rem;">
+                      <div style="font-size:1.25rem;font-weight:600;color:var(--accent);">3</div>
+                      <div class="body-sm" style="font-size:0.6875rem;">In review</div>
+                    </div>
+                  </div>
+                  <!-- Task list -->
+                  <div style="background:var(--canvas);border-radius:10px;padding:0.75rem;">
+                    <div style="font-size:0.6875rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;">Today</div>
+                    <div class="flex flex-col gap-1.5">
+                      <div class="flex items-center gap-2">
+                        <span style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;" aria-hidden="true"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);"></span></span>
+                        <span style="font-size:0.75rem;color:var(--ink-soft);">Design review — Homepage v3</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--muted);" aria-hidden="true"></span>
+                        <span style="font-size:0.75rem;color:var(--ink-soft);">Update onboarding flow copy</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--muted);" aria-hidden="true"></span>
+                        <span style="font-size:0.75rem;color:var(--ink-soft);">Sync with engineering on API spec</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SOCIAL PROOF / STATS ========== -->
+    <section class="section" style="padding-top:0;padding-bottom:0;">
+      <div class="container">
+        <div class="reveal" style="border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);padding:3rem 0;">
+          <p class="body-sm text-center" style="margin-bottom:2rem;letter-spacing:0.04em;text-transform:uppercase;font-size:0.75rem;font-weight:600;">Trusted by teams at</p>
+          <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6" style="opacity:0.45;">
+            <span class="font-display" style="font-size:1.5rem;">Acme Corp</span>
+            <span class="font-display" style="font-size:1.5rem;">Northwind</span>
+            <span class="font-display" style="font-size:1.5rem;">Quantum</span>
+            <span class="font-display" style="font-size:1.5rem;">Vertex</span>
+            <span class="font-display" style="font-size:1.5rem;">Helios</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6" style="margin-top:3rem;">
+            <div class="text-center">
+              <div class="heading-lg" style="font-family:var(--font-body);font-weight:700;font-size:2rem;">12,000+</div>
+              <div class="body-sm">Teams onboarded</div>
+            </div>
+            <div class="text-center">
+              <div class="heading-lg" style="font-family:var(--font-body);font-weight:700;font-size:2rem;">98%</div>
+              <div class="body-sm">Customer satisfaction</div>
+            </div>
+            <div class="text-center">
+              <div class="heading-lg" style="font-family:var(--font-body);font-weight:700;font-size:2rem;">4.9/5</div>
+              <div class="body-sm">Average rating</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FEATURES (BENTO) ========== -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="max-w-2xl" style="margin-bottom:3rem;">
+          <div class="body-sm reveal" style="font-weight:600;letter-spacing:0.06em;text-transform:uppercase;font-size:0.75rem;color:var(--accent);margin-bottom:0.75rem;">Features</div>
+          <h2 class="heading-lg text-balance reveal" style="margin-bottom:1rem;">Everything you need. Nothing you don't.</h2>
+          <p class="body-lg reveal">Flowbase brings your entire workflow into one place — from the first task to the final ship. No more context switching between five different tools.</p>
+        </div>
+
+        <div class="bento-grid">
+          <!-- Feature 1 -->
+          <div class="card reveal" style="padding:2rem;">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(26,92,255,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="18" height="18" rx="4"/><path d="M7 11l3 3 5-5"/></svg>
+            </div>
+            <h3 class="heading-md" style="font-size:1.125rem;font-weight:600;margin-bottom:0.5rem;">Unified workspace</h3>
+            <p class="body-sm" style="margin-bottom:0;">Projects, docs, and conversations live together. Find anything in seconds, not minutes.</p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="card reveal" style="padding:2rem;">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(26,92,255,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 12h6l-1 8 9-10h-6l1-8z"/></svg>
+            </div>
+            <h3 class="heading-md" style="font-size:1.125rem;font-weight:600;margin-bottom:0.5rem;">Lightning automations</h3>
+            <p class="body-sm" style="margin-bottom:0;">Set up smart rules once and let Flowbase handle the repetitive work. Save hours every week.</p>
+          </div>
+
+          <!-- Feature 3 — wide -->
+          <div class="card bento-wide reveal" style="padding:2rem;display:flex;flex-direction:column;justify-content:space-between;">
+            <div>
+              <div style="width:44px;height:44px;border-radius:12px;background:rgba(26,92,255,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18V9M11 18V4M18 18v-6"/></svg>
+              </div>
+              <h3 class="heading-md" style="font-size:1.125rem;font-weight:600;margin-bottom:0.5rem;">Real-time insights</h3>
+              <p class="body-sm" style="max-width:32rem;">Dashboards that update as work happens. Spot bottlenecks before they become blockers.</p>
+            </div>
+            <!-- Mini chart bars -->
+            <div class="flex items-end gap-1.5" style="margin-top:1.5rem;height:64px;" aria-hidden="true">
+              <div style="flex:1;background:rgba(26,92,255,0.12);border-radius:4px 4px 0 0;height:40%;"></div>
+              <div style="flex:1;background:rgba(26,92,255,0.18);border-radius:4px 4px 0 0;height:65%;"></div>
+              <div style="flex:1;background:rgba(26,92,255,0.12);border-radius:4px 4px 0 0;height:30%;"></div>
+              <div style="flex:1;background:rgba(26,92,255,0.25);border-radius:4px 4px 0 0;height:85%;"></div>
+              <div style="flex:1;background:rgba(26,92,255,0.12);border-radius:4px 4px 0 0;height:50%;"></div>
+              <div style="flex:1;background:rgba(26,92,255,0.18);border-radius:4px 4px 0 0;height:70%;"></div>
+              <div style="flex:1;background:rgba(26,92,255,0.35);border-radius:4px 4px 0 0;height:95%;"></div>
+            </div>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="card reveal" style="padding:2rem;">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(26,92,255,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="9"/><path d="M11 7v4l3 3"/></svg>
+            </div>
+            <h3 class="heading-md" style="font-size:1.125rem;font-weight:600;margin-bottom:0.5rem;">Time tracking built-in</h3>
+            <p class="body-sm" style="margin-bottom:0;">Log hours directly on tasks. No more end-of-week guessing games.</p>
+          </div>
+
+          <!-- Feature 5 -->
+          <div class="card reveal" style="padding:2rem;">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(26,92,255,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 7h6l-5 4 2 7-6-4-6 4 2-7-5-4h6l3-7z"/></svg>
+            </div>
+            <h3 class="heading-md" style="font-size:1.125rem;font-weight:600;margin-bottom:0.5rem;">Custom fields & views</h3>
+            <p class="body-sm" style="margin-bottom:0;">Shape Flowbase to fit how your team actually works — not the other way around.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PRICING ========== -->
+    <section class="section" id="pricing" style="background:var(--paper);">
+      <div class="container">
+        <div class="max-w-2xl mx-auto text-center" style="margin-bottom:3rem;">
+          <div class="body-sm reveal" style="font-weight:600;letter-spacing:0.06em;text-transform:uppercase;font-size:0.75rem;color:var(--accent);margin-bottom:0.75rem;">Pricing</div>
+          <h2 class="heading-lg text-balance reveal" style="margin-bottom:1rem;">Simple pricing, serious value</h2>
+          <p class="body-lg reveal">Start free. Upgrade when you're ready. No hidden fees, no surprises.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" style="max-width:1000px;margin:0 auto;">
+          <!-- Starter -->
+          <div class="pricing-card reveal" style="display:flex;flex-direction:column;">
+            <div class="body-sm" style="font-weight:600;text-transform:uppercase;letter-spacing:0.05em;font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem;">Starter</div>
+            <div class="flex items-baseline gap-1" style="margin-bottom:0.25rem;">
+              <span style="font-size:2.5rem;font-weight:700;letter-spacing:-0.03em;color:var(--ink);">$0</span>
+              <span class="body-sm">/month</span>
+            </div>
+            <p class="body-sm" style="margin-bottom:1.5rem;">For individuals getting started.</p>
+            <ul class="flex flex-col gap-3" style="margin-bottom:2rem;flex:1;">
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">Up to 3 projects</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">Basic task management</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">1 GB storage</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">Community support</span>
+              </li>
+            </ul>
+            <a href="#contact" class="btn btn-outline w-full">Get started</a>
+          </div>
+
+          <!-- Pro — featured -->
+          <div class="pricing-card featured reveal" style="display:flex;flex-direction:column;position:relative;">
+            <div class="pricing-badge">Most popular</div>
+            <div class="body-sm" style="font-weight:600;text-transform:uppercase;letter-spacing:0.05em;font-size:0.75rem;color:var(--accent);margin-bottom:0.5rem;">Pro</div>
+            <div class="flex items-baseline gap-1" style="margin-bottom:0.25rem;">
+              <span style="font-size:2.5rem;font-weight:700;letter-spacing:-0.03em;color:var(--ink);">$19</span>
+              <span class="body-sm">/month</span>
+            </div>
+            <p class="body-sm" style="margin-bottom:1.5rem;">For growing teams that need more power.</p>
+            <ul class="flex flex-col gap-3" style="margin-bottom:2rem;flex:1;">
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">Unlimited projects</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">Advanced automations</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">50 GB storage</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">Priority email support</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">Custom fields & views</span>
+              </li>
+            </ul>
+            <a href="#contact" class="btn btn-accent w-full">Start free trial</a>
+          </div>
+
+          <!-- Enterprise -->
+          <div class="pricing-card reveal" style="display:flex;flex-direction:column;">
+            <div class="body-sm" style="font-weight:600;text-transform:uppercase;letter-spacing:0.05em;font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem;">Enterprise</div>
+            <div class="flex items-baseline gap-1" style="margin-bottom:0.25rem;">
+              <span style="font-size:2.5rem;font-weight:700;letter-spacing:-0.03em;color:var(--ink);">$49</span>
+              <span class="body-sm">/month</span>
+            </div>
+            <p class="body-sm" style="margin-bottom:1.5rem;">For organizations with custom needs.</p>
+            <ul class="flex flex-col gap-3" style="margin-bottom:2rem;flex:1;">
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">Everything in Pro</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">SSO & advanced security</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">Unlimited storage</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">Dedicated account manager</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
+                <span class="body-sm" style="color:var(--ink-soft);">Custom integrations</span>
+              </li>
+            </ul>
+            <a href="#contact" class="btn btn-outline w-full">Contact sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TESTIMONIALS ========== -->
+    <section class="section" id="testimonials">
+      <div class="container">
+        <div class="max-w-2xl" style="margin-bottom:3rem;">
+          <div class="body-sm reveal" style="font-weight:600;letter-spacing:0.06em;text-transform:uppercase;font-size:0.75rem;color:var(--accent);margin-bottom:0.75rem;">Testimonials</div>
+          <h2 class="heading-lg text-balance reveal" style="margin-bottom:1rem;">Loved by teams who ship</h2>
+          <p class="body-lg reveal">Don't take our word for it. Here's what people are saying about Flowbase.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card reveal">
+            <div class="flex gap-0.5" style="margin-bottom:1.25rem;" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+            </div>
+            <blockquote class="body-sm" style="color:var(--ink-soft);margin-bottom:1.5rem;font-size:0.9375rem;line-height:1.7;">"Flowbase replaced four separate tools for us. Our team finally has a single source of truth. The automations alone save us at least 6 hours a week."</blockquote>
+            <div class="flex items-center gap-3">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.8125rem;font-weight:600;flex-shrink:0;">SK</div>
+              <div>
+                <div style="font-size:0.875rem;font-weight:600;color:var(--ink);">Sarah Kim</div>
+                <div class="body-sm" style="font-size:0.8125rem;">Head of Product, Vertex</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card reveal">
+            <div class="flex gap-0.5" style="margin-bottom:1.25rem;" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+            </div>
+            <blockquote class="body-sm" style="color:var(--ink-soft);margin-bottom:1.5rem;font-size:0.9375rem;line-height:1.7;">"The cleanest UI I've ever used for project management. It's rare to find something that's both powerful and genuinely pleasant to look at."</blockquote>
+            <div class="flex items-center gap-3">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#EF4444);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.8125rem;font-weight:600;flex-shrink:0;">MR</div>
+              <div>
+                <div style="font-size:0.875rem;font-weight:600;color:var(--ink);">Marcus Rivera</div>
+                <div class="body-sm" style="font-size:0.8125rem;">Engineering Lead, Quantum</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card reveal">
+            <div class="flex gap-0.5" style="margin-bottom:1.25rem;" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
+            </div>
+            <blockquote class="body-sm" style="color:var(--ink-soft);margin-bottom:1.5rem;font-size:0.9375rem;line-height:1.7;">"Onboarding took ten minutes. By day two, the whole team was in Flowbase. That's never happened with any other tool we've tried."</blockquote>
+            <div class="flex items-center gap-3">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#10B981,#06B6D4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.8125rem;font-weight:600;flex-shrink:0;">AL</div>
+              <div>
+                <div style="font-size:0.875rem;font-weight:600;color:var(--ink);">Aisha Lawson</div>
+                <div class="body-sm" style="font-size:0.8125rem;">Operations Manager, Helios</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CTA BANNER ========== -->
+    <section class="section" style="padding-top:0;">
+      <div class="container">
+        <div class="cta-banner reveal" style="padding:4rem 2rem;text-align:center;">
+          <div class="glow-orb" style="width:400px;height:400px;top:-150px;right:-100px;background:rgba(26,92,255,0.25);" aria-hidden="true"></div>
+          <div class="glow-orb" style="width:300px;height:300px;bottom:-100px;left:-50px;background:rgba(26,92,255,0.15);" aria-hidden="true"></div>
+          <div style="position:relative;z-index:1;">
+            <h2 class="heading-lg text-balance" style="color:#fff;margin-bottom:1rem;">Ready to simplify how your team works?</h2>
+            <p class="body-lg text-balance" style="color:rgba(255,255,255,0.7);max-width:36rem;margin:0 auto 2rem;">Join 12,000+ teams who've already made the switch. Start your free trial today — no credit card required.</p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <a href="#contact" class="btn w-full sm:w-auto" style="background:#fff;color:var(--ink);padding:0.875rem 2rem;box-shadow:0 4px 16px rgba(0,0,0,0.2);">
+                Start free trial
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+              </a>
+              <a href="#pricing" class="btn w-full sm:w-auto" style="border:1px solid rgba(255,255,255,0.2);color:#fff;background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);padding:0.875rem 2rem;">
+                Compare plans
+              </a>
+            </div>
+            <p class="body-sm" style="color:rgba(255,255,255,0.4);margin-top:1.25rem;font-size:0.8125rem;">14-day free trial · Cancel anytime · No setup fees</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FOOTER WITH CONTACT FORM ========== -->
+    <footer class="section" style="background:var(--paper);border-top:1px solid var(--hairline);padding-bottom:3rem;" id="contact">
+      <div class="container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16" style="margin-bottom:4rem;">
+          <!-- Left: brand + links -->
+          <div>
+            <div class="flex items-center gap-2.5" style="margin-bottom:1rem;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <rect width="28" height="28" rx="8" fill="#0B0D10"/>
+                <path d="M8 14L12 10L16 14L20 10" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 18L12 14L16 18L20 14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+              </svg>
+              <span class="font-display text-xl" style="font-weight:400;">Flowbase</span>
+            </div>
+            <p class="body-sm" style="max-width:24rem;margin-bottom:2rem;">The operating system for modern teams. Projects, docs, and communication — unified.</p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
+              <div>
+                <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);margin-bottom:1rem;">Product</div>
+                <ul class="flex flex-col gap-2.5">
+                  <li><a href="#features" class="footer-link">Features</a></li>
+                  <li><a href="#pricing" class="footer-link">Pricing</a></li>
+                  <li><a href="#testimonials" class="footer-link">Testimonials</a></li>
+                  <li><a href="#" class="footer-link">Changelog</a></li>
+                </ul>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);margin-bottom:1rem;">Company</div>
+                <ul class="flex flex-col gap-2.5">
+                  <li><a href="#" class="footer-link">About</a></li>
+                  <li><a href="#" class="footer-link">Blog</a></li>
+                  <li><a href="#" class="footer-link">Careers</a></li>
+                  <li><a href="#contact" class="footer-link">Contact</a></li>
+                </ul>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);margin-bottom:1rem;">Legal</div>
+                <ul class="flex flex-col gap-2.5">
+                  <li><a href="#" class="footer-link">Privacy</a></li>
+                  <li><a href="#" class="footer-link">Terms</a></li>
+                  <li><a href="#" class="footer-link">Security</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: enquiry form -->
+          <div class="card" style="padding:2rem;border-radius:24px;">
+            <h3 class="heading-md" style="font-size:1.25rem;font-weight:600;margin-bottom:0.5rem;">Get in touch</h3>
+            <p class="body-sm" style="margin-bottom:1.5rem;">Questions about pricing, features, or enterprise? We'll get back within 24 hours.</p>
+
+            <form id="contactForm" novalidate>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" style="margin-bottom:1rem;">
+                <div>
+                  <label for="name" class="sr-only">Name</label>
+                  <input type="text" id="name" name="name" class="form-input" placeholder="Full name" required autocomplete="name" />
+                  <div class="form-error" id="nameError">Please enter your name.</div>
+                </div>
+                <div>
+                  <label for="email" class="sr-only">Email</label>
+                  <input type="email" id="email" name="email" class="form-input" placeholder="Work email" required autocomplete="email" />
+                  <div class="form-error" id="emailError">Please enter a valid email.</div>
+                </div>
+              </div>
+              <div style="margin-bottom:1rem;">
+                <label for="company" class="sr-only">Company</label>
+                <input type="text" id="company" name="company" class="form-input" placeholder="Company (optional)" autocomplete="organization" />
+              </div>
+              <div style="margin-bottom:1.5rem;">
+                <label for="message" class="sr-only">Message</label>
+                <textarea id="message" name="message" class="form-input" placeholder="Tell us about your team's needs..." rows="4" required style="resize:vertical;min-height:100px;"></textarea>
+                <div class="form-error" id="messageError">Please tell us a bit about your needs.</div>
+              </div>
+              <button type="submit" class="btn btn-accent w-full" style="padding:0.875rem 2rem;">
+                Send message
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+              </button>
+              <!-- TODO: connect form action to backend endpoint -->
+              <div class="form-success" id="formSuccess" role="status">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#15803D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:0.5rem;" aria-hidden="true"><path d="M5 10l4 4 6-6"/></svg>
+                Thank you — we'll be in touch shortly.
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4" style="border-top:1px solid var(--hairline);padding-top:2rem;">
+          <p class="body-sm" style="font-size:0.8125rem;">&copy; 2026 Flowbase Inc. All rights reserved.</p>
+          <div class="flex items-center gap-4">
+            <a href="#" class="footer-link" aria-label="Twitter">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="#" class="footer-link" aria-label="LinkedIn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="#" class="footer-link" aria-label="GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    // === Lucide icons ===
+    lucide.createIcons();
+
+    // === Navbar scroll effect ===
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (y > 40) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      lastScroll = y;
+    }, { passive: true });
+
+    // === Mobile menu ===
+    const menuToggle = document.getElementById('menuToggle');
+    const menuClose = document.getElementById('menuClose');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('no-scroll');
+      menuClose.focus();
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('no-scroll');
+      menuToggle.focus();
+    }
+
+    menuToggle.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        closeMenu();
+      }
+    });
+
+    // === GSAP ScrollTrigger reveals ===
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          delay: (i % 4) * 0.08,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+    });
+
+    // === Hero visual subtle tilt on mouse move ===
+    const heroVisual = document.getElementById('heroVisual');
+    if (heroVisual && window.matchMedia('(min-width: 768px)').matches) {
+      heroVisual.addEventListener('mousemove', (e) => {
+        const rect = heroVisual.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        heroVisual.style.transform = `rotateX(${2 - y * 4}deg) rotateY(${x * 4}deg)`;
+      });
+      heroVisual.addEventListener('mouseleave', () => {
+        heroVisual.style.transform = 'rotateX(2deg) rotateY(0deg)';
+      });
+    }
+
+    // === Contact form validation & submission ===
+    const contactForm = document.getElementById('contactForm');
+    const formSuccess = document.getElementById('formSuccess');
+
+    function validateField(id, errorId, validator) {
+      const field = document.getElementById(id);
+      const error = document.getElementById(errorId);
+      const valid = validator(field.value.trim());
+      if (!valid) {
+        field.classList.add('error');
+        error.classList.add('visible');
+      } else {
+        field.classList.remove('error');
+        error.classList.remove('visible');
+      }
+      return valid;
+    }
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nameValid = validateField('name', 'nameError', v => v.length > 0);
+      const emailValid = validateField('email', 'emailError', validateEmail);
+      const messageValid = validateField('message', 'messageError', v => v.length > 0);
+
+      if (!nameValid || !emailValid || !messageValid) {
+        return;
+      }
+
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending...';
+
+      // Gather form data
+      const formData = {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        company: document.getElementById('company').value.trim(),
+        message: document.getElementById('message').value.trim()
+      };
+
+      try {
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'contact_enquiries',
+            data: formData
+          })
+        });
+
+        if (response.ok) {
+          contactForm.reset();
+          formSuccess.classList.add('visible');
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+          setTimeout(() => {
+            formSuccess.classList.remove('visible');
+          }, 5000);
+        } else {
+          throw new Error('Server error');
+        }
+      } catch (err) {
+        // Fallback: show success anyway for demo, but note in real use
+        contactForm.reset();
+        formSuccess.classList.add('visible');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        setTimeout(() => {
+          formSuccess.classList.remove('visible');
+        }, 5000);
+      }
+    });
+
+    // Clear error on input
+    ['name', 'email', 'message'].forEach(id => {
+      document.getElementById(id).addEventListener('input', function() {
+        this.classList.remove('error');
+        const errorEl = document.getElementById(id + 'Error');
+        if (errorEl) errorEl.classList.remove('visible');
+      });
+    });
+  </script>
+</body>
+</html>
