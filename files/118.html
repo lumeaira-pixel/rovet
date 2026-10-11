@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daaxxx · Men's Clothing · Valanchery</title>
+  <!-- Tailwind CSS CDN + custom config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#151515',
+            cream: '#FAF9F6',
+            stone: '#F2EFE9',
+            brass: '#B78E5B',
+            sand: '#E8E2D9',
+            olive: '#3F4A3C'
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            sans: ['"Inter"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts: Bricolage Grotesque + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #151515;
+      --cream: #FAF9F6;
+      --stone: #F2EFE9;
+      --brass: #B78E5B;
+      --sand: #E8E2D9;
+      --olive: #3F4A3C;
+      --shadow-soft: 0 20px 40px -12px rgba(0,0,0,0.08), 0 8px 24px -8px rgba(0,0,0,0.05);
+      --shadow-card: 0 8px 28px -6px rgba(0,0,0,0.06), 0 2px 8px -2px rgba(0,0,0,0.03);
+      --radius-xl: 28px;
+      --radius-2xl: 36px;
+      --focus-ring: 0 0 0 3px rgba(183,142,91,0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* === Typography === */
+    .display {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 10vw, 6.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    /* === Custom Utilities === */
+    .text-balance {
+      text-wrap: balance;
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+
+    .card-tilt {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .card-tilt:hover {
+      transform: translateY(-6px) rotateX(1deg) rotateY(-1deg);
+      box-shadow: var(--shadow-soft);
+    }
+
+    /* === Animations === */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    .reveal-delay-1 { animation-delay: 0.1s; }
+    .reveal-delay-2 { animation-delay: 0.2s; }
+    .reveal-delay-3 { animation-delay: 0.3s; }
+    .reveal-delay-4 { animation-delay: 0.4s; }
+
+    /* === Custom Scrollbar === */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--stone); }
+    ::-webkit-scrollbar-thumb { background: var(--brass); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #a07a4a; }
+
+    /* === Focus States === */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* === Marquee === */
+    .marquee {
+      display: flex;
+      animation: marquee 30s linear infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Parallax Layer === */
+    .parallax-img {
+      will-change: transform;
+    }
+
+    /* === Form Styles === */
+    input, textarea, select {
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--brass);
+      box-shadow: var(--focus-ring);
+      outline: none;
+    }
+
+    .error-field {
+      border-color: #dc2626 !important;
+      box-shadow: 0 0 0 3px rgba(220,38,38,0.15) !important;
+    }
+
+    .success-message {
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    /* === WhatsApp Button === */
+    .whatsapp-btn {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .whatsapp-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 8px 24px rgba(37, 211, 102, 0.3);
+    }
+
+    .whatsapp-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* === Grain texture === */
+    .grain::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      z-index: 9999;
+    }
+
+    /* === Responsive Fix === */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: clamp(2.5rem, 12vw, 4rem);
+      }
+    }
+  </style>
+</head>
+<body class="grain bg-cream">
+
+  <!-- === Header / Nav === -->
+  <header id="header" class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+    <nav class="max-w-7xl mx-auto px-5 lg:px-8 flex items-center justify-between h-20 lg:h-24">
+      <!-- Logo -->
+      <a href="#" class="display text-2xl lg:text-3xl font-extrabold tracking-tight text-ink hover:text-brass transition-colors">
+        DAAXXX<span class="text-brass">.</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <div class="hidden lg:flex items-center gap-10">
+        <a href="#home" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-brass after:transition-all hover:after:w-full">Home</a>
+        <a href="#about" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-brass after:transition-all hover:after:w-full">About</a>
+        <a href="#products" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-brass after:transition-all hover:after:w-full">Products</a>
+        <a href="#contact" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-brass after:transition-all hover:after:w-full">Contact</a>
+      </div>
+
+      <!-- Right side: CTA + Mobile toggle -->
+      <div class="flex items-center gap-4">
+        <a href="https://wa.me/919999999999?text=Hello%20Daaxxx%2C%20I%20want%20to%20place%20an%20order" target="_blank" rel="noopener" 
+           class="whatsapp-btn hidden sm:inline-flex items-center gap-2 bg-ink text-cream text-sm font-medium px-5 py-2.5 rounded-full hover:bg-brass transition-colors">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          Order on WhatsApp
+        </a>
+        <button id="mobileToggle" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-full border border-ink/10 hover:bg-stone transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-5 h-5 text-ink"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- === Mobile Menu Overlay === -->
+  <div id="mobileMenu" class="mobile-menu fixed inset-0 z-40 bg-cream flex flex-col justify-center items-center lg:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button id="mobileClose" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full border border-ink/10 hover:bg-stone transition-colors" aria-label="Close menu">
+      <i data-lucide="x" class="w-5 h-5 text-ink"></i>
+    </button>
+    <div class="flex flex-col items-center gap-8">
+      <a href="#home" class="display text-4xl font-bold text-ink hover:text-brass transition-colors mobile-link">Home</a>
+      <a href="#about" class="display text-4xl font-bold text-ink hover:text-brass transition-colors mobile-link">About</a>
+      <a href="#products" class="display text-4xl font-bold text-ink hover:text-brass transition-colors mobile-link">Products</a>
+      <a href="#contact" class="display text-4xl font-bold text-ink hover:text-brass transition-colors mobile-link">Contact</a>
+      <a href="https://wa.me/919999999999?text=Hello%20Daaxxx%2C%20I%20want%20to%20place%20an%20order" target="_blank" rel="noopener" 
+         class="mt-4 inline-flex items-center gap-2 bg-ink text-cream text-base font-medium px-8 py-4 rounded-full hover:bg-brass transition-colors">
+        <i data-lucide="message-circle" class="w-5 h-5"></i>
+        Order on WhatsApp
+      </a>
+    </div>
+  </div>
+
+  <!-- === Hero Section === -->
+  <section id="home" class="relative min-h-screen flex items-center pt-24 pb-16 lg:pt-32 lg:pb-24 overflow-hidden">
+    <!-- Background gradient orb -->
+    <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-brass/10 to-sand/30 blur-3xl pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-olive/5 to-brass/10 blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-5 lg:px-8 relative z-10 w-full">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <!-- Left: Text -->
+        <div class="text-center lg:text-left">
+          <div class="reveal inline-flex items-center gap-2 bg-brass/10 border border-brass/20 rounded-full px-4 py-1.5 mb-6">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brass"></i>
+            <span class="text-xs font-medium tracking-wide text-brass uppercase">Valanchery · Calicut Road</span>
+          </div>
+          <h1 class="hero-title text-ink reveal reveal-delay-1 text-balance">
+            Wear the <span class="text-brass">Difference.</span>
+          </h1>
+          <p class="mt-6 text-base lg:text-lg text-ink/60 max-w-lg mx-auto lg:mx-0 leading-relaxed reveal reveal-delay-2">
+            Daaxxx brings you premium men's clothing — shirts, pants, and t-shirts crafted for the modern man who values fit, fabric, and finesse.
+          </p>
+          <div class="mt-8 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start reveal reveal-delay-3">
+            <a href="#products" class="inline-flex items-center gap-2 bg-ink text-cream text-sm font-medium px-7 py-3.5 rounded-full hover:bg-brass transition-all duration-200 active:scale-[0.97]">
+              Explore Collection
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+            <a href="https://wa.me/919999999999?text=Hello%20Daaxxx%2C%20I%20want%20to%20place%20an%20order" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 border border-ink/15 text-ink text-sm font-medium px-7 py-3.5 rounded-full hover:bg-stone transition-all duration-200 active:scale-[0.97]">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              WhatsApp Order
+            </a>
+          </div>
+          <!-- Stats -->
+          <div class="mt-12 flex items-center gap-8 justify-center lg:justify-start reveal reveal-delay-4">
+            <div>
+              <p class="display text-2xl lg:text-3xl font-bold text-ink">500+</p>
+              <p class="text-xs text-ink/50 mt-1">Happy Customers</p>
+            </div>
+            <div class="w-px h-10 bg-ink/10"></div>
+            <div>
+              <p class="display text-2xl lg:text-3xl font-bold text-ink">100%</p>
+              <p class="text-xs text-ink/50 mt-1">Premium Fabric</p>
+            </div>
+            <div class="w-px h-10 bg-ink/10"></div>
+            <div>
+              <p class="display text-2xl lg:text-3xl font-bold text-ink">5★</p>
+              <p class="text-xs text-ink/50 mt-1">Local Rating</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Hero Visual -->
+        <div class="relative reveal reveal-delay-2">
+          <div class="relative rounded-[36px] overflow-hidden shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] bg-stone aspect-[4/5]">
+            <img src="https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?q=80&w=1200&auto=format&fit=crop" 
+                 alt="Man in premium shirt" 
+                 class="w-full h-full object-cover"
+                 loading="eager">
+            <div class="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent"></div>
+            <!-- Floating badge -->
+            <div class="absolute bottom-6 left-6 right-6 glass rounded-2xl p-4 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-brass flex items-center justify-center flex-shrink-0">
+                <i data-lucide="truck" class="w-5 h-5 text-cream"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-ink">Free Delivery</p>
+                <p class="text-[10px] text-ink/60">On orders above ₹1999</p>
+              </div>
+            </div>
+          </div>
+          <!-- Decorative element -->
+          <div class="absolute -top-4 -right-4 w-24 h-24 border border-brass/30 rounded-full pointer-events-none hidden lg:block" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === Marquee / Trust Bar === -->
+  <section class="py-8 border-y border-ink/5 bg-white/50 overflow-hidden">
+    <div class="marquee">
+      <span class="mx-8 text-sm font-medium text-ink/40 tracking-widest uppercase">Premium Shirts</span>
+      <span class="mx-8 text-brass">·</span>
+      <span class="mx-8 text-sm font-medium text-ink/40 tracking-widest uppercase">Tailored Pants</span>
+      <span class="mx-8 text-brass">·</span>
+      <span class="mx-8 text-sm font-medium text-ink/40 tracking-widest uppercase">Everyday T-Shirts</span>
+      <span class="mx-8 text-brass">·</span>
+      <span class="mx-8 text-sm font-medium text-ink/40 tracking-widest uppercase">Valanchery's Finest</span>
+      <span class="mx-8 text-brass">·</span>
+      <span class="mx-8 text-sm font-medium text-ink/40 tracking-widest uppercase">Premium Shirts</span>
+      <span class="mx-8 text-brass">·</span>
+      <span class="mx-8 text-sm font-medium text-ink/40 tracking-widest uppercase">Tailored Pants</span>
+      <span class="mx-8 text-brass">·</span>
+      <span class="mx-8 text-sm font-medium text-ink/40 tracking-widest uppercase">Everyday T-Shirts</span>
+      <span class="mx-8 text-brass">·</span>
+      <span class="mx-8 text-sm font-medium text-ink/40 tracking-widest uppercase">Valanchery's Finest</span>
+      <span class="mx-8 text-brass">·</span>
+    </div>
+  </section>
+
+  <!-- === About Section === -->
+  <section id="about" class="py-24 lg:py-32 relative">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <!-- Image -->
+        <div class="relative order-2 lg:order-1">
+          <div class="rounded-[36px] overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] bg-stone aspect-square">
+            <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=1200&auto=format&fit=crop" 
+                 alt="Daaxxx store interior" 
+                 class="w-full h-full object-cover"
+                 loading="lazy">
+          </div>
+          <!-- Floating stat card -->
+          <div class="absolute -bottom-6 -right-6 lg:-right-8 glass rounded-2xl p-5 shadow-lg max-w-[180px]">
+            <p class="display text-3xl font-bold text-brass">10+</p>
+            <p class="text-xs text-ink/60 mt-1">Years of styling Kerala's men</p>
+          </div>
+        </div>
+
+        <!-- Text -->
+        <div class="order-1 lg:order-2">
+          <div class="inline-flex items-center gap-2 bg-olive/10 border border-olive/20 rounded-full px-4 py-1.5 mb-6">
+            <span class="text-xs font-medium tracking-wide text-olive uppercase">Our Story</span>
+          </div>
+          <h2 class="section-title text-ink text-balance">
+            Crafted for the <span class="text-brass">Modern Man</span>
+          </h2>
+          <p class="mt-6 text-ink/60 leading-relaxed">
+            Born on Calicut Road in Valanchery, Daaxxx is more than a clothing store — it's a destination for men who refuse to compromise on style. Every shirt, pant, and t-shirt is handpicked for quality, comfort, and a fit that speaks confidence.
+          </p>
+          <p class="mt-4 text-ink/60 leading-relaxed">
+            Whether you're dressing for a wedding, a boardroom, or a weekend out, we've curated pieces that move with you and elevate every moment.
+          </p>
+          <!-- Feature list -->
+          <div class="mt-8 space-y-4">
+            <div class="flex items-start gap-3">
+              <div class="w-6 h-6 rounded-full bg-brass/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-brass"></i>
+              </div>
+              <p class="text-sm text-ink/70">Premium fabrics sourced for Kerala's climate</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-6 h-6 rounded-full bg-brass/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-brass"></i>
+              </div>
+              <p class="text-sm text-ink/70">Tailored fits — from slim to relaxed</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-6 h-6 rounded-full bg-brass/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-brass"></i>
+              </div>
+              <p class="text-sm text-ink/70">Personal styling advice in-store</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === Products Section === -->
+  <section id="products" class="py-24 lg:py-32 bg-stone/60">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <!-- Section header -->
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 bg-brass/10 border border-brass/20 rounded-full px-4 py-1.5 mb-6">
+          <span class="text-xs font-medium tracking-wide text-brass uppercase">The Collection</span>
+        </div>
+        <h2 class="section-title text-ink text-balance">
+          Shirts, Pants & <span class="text-brass">T-Shirts</span>
+        </h2>
+        <p class="mt-5 text-ink/60 leading-relaxed">
+          Curated essentials for every occasion. Visit our store or order via WhatsApp for doorstep delivery across Valanchery and nearby.
+        </p>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <!-- Card 1 -->
+        <article class="card-tilt bg-white rounded-[28px] overflow-hidden shadow-[0_8px_28px_-6px_rgba(0,0,0,0.06)] group">
+          <div class="aspect-[4/5] overflow-hidden bg-stone">
+            <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop" 
+                 alt="Premium formal shirt" 
+                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                 loading="lazy">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-semibold tracking-widest uppercase text-brass">Shirts</span>
+              <span class="text-xs text-ink/40">From ₹899</span>
+            </div>
+            <h3 class="display text-xl font-bold text-ink">Formal & Casual Shirts</h3>
+            <p class="mt-2 text-sm text-ink/50 leading-relaxed">Crisp cotton, linen blends, and prints for office and beyond.</p>
+            <a href="https://wa.me/919999999999?text=Hello%20Daaxxx%2C%20I%20want%20to%20order%20a%20shirt" target="_blank" rel="noopener"
+               class="mt-5 inline-flex items-center gap-2 text-sm font-medium text-ink hover:text-brass transition-colors">
+              Order via WhatsApp
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="card-tilt bg-white rounded-[28px] overflow-hidden shadow-[0_8px_28px_-6px_rgba(0,0,0,0.06)] group">
+          <div class="aspect-[4/5] overflow-hidden bg-stone">
+            <img src="https://images.unsplash.com/photo-1473966968600-fa801b869a1a?q=80&w=800&auto=format&fit=crop" 
+                 alt="Tailored pants" 
+                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                 loading="lazy">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-semibold tracking-widest uppercase text-brass">Pants</span>
+              <span class="text-xs text-ink/40">From ₹1,199</span>
+            </div>
+            <h3 class="display text-xl font-bold text-ink">Tailored Pants</h3>
+            <p class="mt-2 text-sm text-ink/50 leading-relaxed">Chinos, formals, and denim with a fit that flatters every frame.</p>
+            <a href="https://wa.me/919999999999?text=Hello%20Daaxxx%2C%20I%20want%20to%20order%20pants" target="_blank" rel="noopener"
+               class="mt-5 inline-flex items-center gap-2 text-sm font-medium text-ink hover:text-brass transition-colors">
+              Order via WhatsApp
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="card-tilt bg-white rounded-[28px] overflow-hidden shadow-[0_8px_28px_-6px_rgba(0,0,0,0.06)] group">
+          <div class="aspect-[4/5] overflow-hidden bg-stone">
+            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop" 
+                 alt="Premium t-shirts" 
+                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                 loading="lazy">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-semibold tracking-widest uppercase text-brass">T-Shirts</span>
+              <span class="text-xs text-ink/40">From ₹599</span>
+            </div>
+            <h3 class="display text-xl font-bold text-ink">Everyday T-Shirts</h3>
+            <p class="mt-2 text-sm text-ink/50 leading-relaxed">Soft, breathable tees in solids and graphics for daily wear.</p>
+            <a href="https://wa.me/919999999999?text=Hello%20Daaxxx%2C%20I%20want%20to%20order%20a%20t-shirt" target="_blank" rel="noopener"
+               class="mt-5 inline-flex items-center gap-2 text-sm font-medium text-ink hover:text-brass transition-colors">
+              Order via WhatsApp
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Bottom CTA -->
+      <div class="mt-14 text-center">
+        <a href="https://wa.me/919999999999?text=Hello%20Daaxxx%2C%20I%20want%20to%20browse%20your%20full%20collection" target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 bg-ink text-cream text-sm font-medium px-8 py-4 rounded-full hover:bg-brass transition-all duration-200 active:scale-[0.97]">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          Browse Full Collection on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- === Testimonials === -->
+  <section class="py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 bg-brass/10 border border-brass/20 rounded-full px-4 py-1.5 mb-6">
+          <span class="text-xs font-medium tracking-wide text-brass uppercase">Testimonials</span>
+        </div>
+        <h2 class="section-title text-ink text-balance">
+          Loved by <span class="text-brass">Valanchery</span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <!-- Testimonial 1 -->
+        <div class="bg-white rounded-[28px] p-7 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.06)] border border-ink/5">
+          <div class="flex gap-1 mb-4">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="text-sm text-ink/70 leading-relaxed">"The fit of their formal shirts is unmatched. I've been buying from Daaxxx for 3 years and never looked back."</p>
+          <div class="mt-6 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
+              <span class="display text-sm font-bold text-brass">AR</span>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-ink">Arjun R.</p>
+              <p class="text-xs text-ink/40">Valanchery</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="bg-white rounded-[28px] p-7 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.06)] border border-ink/5">
+          <div class="flex gap-1 mb-4">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="text-sm text-ink/70 leading-relaxed">"Ordered via WhatsApp and got my shirts delivered the same evening. Quality is genuinely premium."</p>
+          <div class="mt-6 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
+              <span class="display text-sm font-bold text-brass">NK</span>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-ink">Nihal K.</p>
+              <p class="text-xs text-ink/40">Kuttippuram</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="bg-white rounded-[28px] p-7 shadow-[0_8px_28px_-6px_rgba(0,0,0,0.06)] border border-ink/5">
+          <div class="flex gap-1 mb-4">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="text-sm text-ink/70 leading-relaxed">"Best men's store on Calicut Road. The staff helped me pick the perfect outfit for my sister's wedding."</p>
+          <div class="mt-6 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
+              <span class="display text-sm font-bold text-brass">SM</span>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-ink">Shameer M.</p>
+              <p class="text-xs text-ink/40">Ponmundam</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === CTA Banner === -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="relative bg-ink rounded-[36px] overflow-hidden px-8 py-16 lg:px-16 lg:py-20 text-center">
+        <!-- Decorative gradient -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brass/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-olive/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+        
+        <div class="relative z-10 max-w-2xl mx-auto">
+          <h2 class="display text-3xl lg:text-5xl font-extrabold text-cream text-balance">
+            Ready to upgrade your wardrobe?
+          </h2>
+          <p class="mt-5 text-cream/60 text-base lg:text-lg leading-relaxed">
+            Drop by our store on Calicut Road, Valanchery, or send us a message — we'll help you find your perfect fit.
+          </p>
+          <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="https://wa.me/919999999999?text=Hello%20Daaxxx%2C%20I%20want%20to%20place%20an%20order" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 bg-brass text-ink text-sm font-semibold px-8 py-4 rounded-full hover:bg-cream transition-all duration-200 active:scale-[0.97]">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              Order on WhatsApp
+            </a>
+            <a href="#contact" class="inline-flex items-center gap-2 border border-cream/20 text-cream text-sm font-medium px-8 py-4 rounded-full hover:bg-cream/10 transition-all duration-200 active:scale-[0.97]">
+              Visit Store
+              <i data-lucide="map-pin" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === Contact Section === -->
+  <section id="contact" class="py-24 lg:py-32 bg-stone/40">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-16">
+        <!-- Left: Info -->
+        <div>
+          <div class="inline-flex items-center gap-2 bg-brass/10 border border-brass/20 rounded-full px-4 py-1.5 mb-6">
+            <span class="text-xs font-medium tracking-wide text-brass uppercase">Get in Touch</span>
+          </div>
+          <h2 class="section-title text-ink text-balance">
+            Visit or <span class="text-brass">Message Us</span>
+          </h2>
+          <p class="mt-6 text-ink/60 leading-relaxed max-w-md">
+            We'd love to help you find the perfect outfit. Reach out via WhatsApp, call us, or stop by our store in Valanchery.
+          </p>
+
+          <div class="mt-10 space-y-6">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="map-pin" class="w-5 h-5 text-brass"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-ink">Store Address</p>
+                <p class="text-sm text-ink/50 mt-0.5">Calicut Road, Valanchery, Kerala 676552</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="phone" class="w-5 h-5 text-brass"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-ink">Phone / WhatsApp</p>
+                <p class="text-sm text-ink/50 mt-0.5">+91 99999 99999</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="clock" class="w-5 h-5 text-brass"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-ink">Store Hours</p>
+                <p class="text-sm text-ink/50 mt-0.5">Mon – Sat: 9:30 AM – 9:00 PM<br>Sunday: 10:00 AM – 8:00 PM</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- WhatsApp direct button -->
+          <a href="https://wa.me/919999999999?text=Hello%20Daaxxx%2C%20I%20want%20to%20place%20an%20order" target="_blank" rel="noopener"
+             class="mt-10 inline-flex items-center gap-2 bg-[#25D366] text-white text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-[#1ebe5a] transition-all duration-200 active:scale-[0.97]">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            Chat on WhatsApp
+          </a>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="bg-white rounded-[32px] p-8 lg:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] border border-ink/5">
+          <h3 class="display text-2xl font-bold text-ink mb-2">Send an Enquiry</h3>
+          <p class="text-sm text-ink/50 mb-8">We typically respond within a few hours.</p>
+
+          <form id="contactForm" novalidate>
+            <!-- Name -->
+            <div class="mb-5">
+              <label for="name" class="block text-xs font-semibold text-ink/70 mb-2 uppercase tracking-wide">Full Name *</label>
+              <input type="text" id="name" name="name" required
+                     class="w-full px-4 py-3.5 rounded-xl border border-ink/10 bg-cream text-sm text-ink placeholder:text-ink/30 focus:border-brass focus:ring-0 transition-colors"
+                     placeholder="Your name">
+              <p class="error-msg hidden text-xs text-red-600 mt-1.5" role="alert">Please enter your name.</p>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-5">
+              <label for="email" class="block text-xs font-semibold text-ink/70 mb-2 uppercase tracking-wide">Email *</label>
+              <input type="email" id="email" name="email" required
+                     class="w-full px-4 py-3.5 rounded-xl border border-ink/10 bg-cream text-sm text-ink placeholder:text-ink/30 focus:border-brass focus:ring-0 transition-colors"
+                     placeholder="you@example.com">
+              <p class="error-msg hidden text-xs text-red-600 mt-1.5" role="alert">Please enter a valid email address.</p>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-5">
+              <label for="phone" class="block text-xs font-semibold text-ink/70 mb-2 uppercase tracking-wide">Phone *</label>
+              <input type="tel" id="phone" name="phone" required
+                     class="w-full px-4 py-3.5 rounded-xl border border-ink/10 bg-cream text-sm text-ink placeholder:text-ink/30 focus:border-brass focus:ring-0 transition-colors"
+                     placeholder="+91 98765 43210">
+              <p class="error-msg hidden text-xs text-red-600 mt-1.5" role="alert">Please enter your phone number.</p>
+            </div>
+
+            <!-- Message -->
+            <div class="mb-6">
+              <label for="message" class="block text-xs font-semibold text-ink/70 mb-2 uppercase tracking-wide">Message *</label>
+              <textarea id="message" name="message" rows="4" required
+                        class="w-full px-4 py-3.5 rounded-xl border border-ink/10 bg-cream text-sm text-ink placeholder:text-ink/30 focus:border-brass focus:ring-0 transition-colors resize-none"
+                        placeholder="Tell us what you're looking for..."></textarea>
+              <p class="error-msg hidden text-xs text-red-600 mt-1.5" role="alert">Please enter a message.</p>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" id="submitBtn"
+                    class="w-full inline-flex items-center justify-center gap-2 bg-ink text-cream text-sm font-semibold px-8 py-4 rounded-xl hover:bg-brass transition-all duration-200 active:scale-[0.98]">
+              Send Enquiry
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+
+            <!-- Success Message -->
+            <div id="formSuccess" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-xl success-message" role="status">
+              <div class="flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+                <p class="text-sm text-green-700 font-medium">Thank you! We'll get back to you soon.</p>
+              </div>
+            </div>
+          </form>
+          <!-- TODO: connect form action to backend endpoint -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === Footer === -->
+  <footer class="bg-ink text-cream/70 pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
+        <!-- Brand -->
+        <div class="lg:col-span-1">
+          <a href="#" class="display text-2xl font-extrabold text-cream tracking-tight">
+            DAAXXX<span class="text-brass">.</span>
+          </a>
+          <p class="mt-4 text-sm leading-relaxed text-cream/50 max-w-xs">
+            Premium men's clothing in Valanchery. Shirts, pants, and t-shirts crafted for the modern man.
+          </p>
+          <div class="mt-6 flex items-center gap-3">
+            <a href="#" class="w-9 h-9 rounded-full border border-cream/10 flex items-center justify-center hover:bg-brass hover:border-brass transition-colors" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-cream/10 flex items-center justify-center hover:bg-brass hover:border-brass transition-colors" aria-label="Facebook">
+              <i data-lucide="facebook" class="w-4 h-4"></i>
+            </a>
+            <a href="https://wa.me/919999999999" target="_blank" rel="noopener" class="w-9 h-9 rounded-full border border-cream/10 flex items-center justify-center hover:bg-brass hover:border-brass transition-colors" aria-label="WhatsApp">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div>
+          <h4 class="text-xs font-semibold tracking-widest uppercase text-cream/40 mb-5">Navigate</h4>
+          <ul class="space-y-3">
+            <li><a href="#home" class="text-sm text-cream/60 hover:text-brass transition-colors">Home</a></li>
+            <li><a href="#about" class="text-sm text-cream/60 hover:text-brass transition-colors">About</a></li>
+            <li><a href="#products" class="text-sm text-cream/60 hover:text-brass transition-colors">Products</a></li>
+            <li><a href="#contact" class="text-sm text-cream/60 hover:text-brass transition-colors">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Categories -->
+        <div>
+          <h4 class="text-xs font-semibold tracking-widest uppercase text-cream/40 mb-5">Shop</h4>
+          <ul class="space-y-3">
+            <li><a href="#products" class="text-sm text-cream/60 hover:text-brass transition-colors">Shirts</a></li>
+            <li><a href="#products" class="text-sm text-cream/60 hover:text-brass transition-colors">Pants</a></li>
+            <li><a href="#products" class="text-sm text-cream/60 hover:text-brass transition-colors">T-Shirts</a></li>
+            <li><a href="https://wa.me/919999999999" target="_blank" rel="noopener" class="text-sm text-cream/60 hover:text-brass transition-colors">Order on WhatsApp</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact Info -->
+        <div>
+          <h4 class="text-xs font-semibold tracking-widest uppercase text-cream/40 mb-5">Visit Us</h4>
+          <ul class="space-y-3">
+            <li class="text-sm text-cream/60 leading-relaxed">Calicut Road,<br>Valanchery, Kerala 676552</li>
+            <li><a href="tel:+919999999999" class="text-sm text-cream/60 hover:text-brass transition-colors">+91 99999 99999</a></li>
+            <li><a href="mailto:hello@daaxxx.in" class="text-sm text-cream/60 hover:text-brass transition-colors">hello@daaxxx.in</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="border-t border-cream/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-cream/30">© 2025 Daaxxx, Valanchery. All rights reserved.</p>
+        <p class="text-xs text-cream/30">Crafted with care for the modern man.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- === Scripts === -->
+  <script>
+    (function() {
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // ===== Header scroll behavior =====
+      const header = document.getElementById('header');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          header.classList.add('glass', 'shadow-sm');
+          header.classList.remove('bg-transparent');
+        } else {
+          header.classList.remove('glass', 'shadow-sm');
+          header.classList.add('bg-transparent');
+        }
+      });
+
+      // ===== Mobile menu =====
+      const mobileToggle = document.getElementById('mobileToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileClose = document.getElementById('mobileClose');
+      const mobileLinks = document.querySelectorAll('.mobile-link');
+
+      function openMenu() {
+        mobileMenu.classList.add('open');
+        mobileToggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMenu() {
+        mobileMenu.classList.remove('open');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      mobileToggle.addEventListener('click', openMenu);
+      mobileClose.addEventListener('click', closeMenu);
+      mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+      // Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+      });
+
+      // ===== GSAP ScrollTrigger reveals =====
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Reveal sections on scroll
+      const revealElements = document.querySelectorAll('.reveal:not(.hero-title, .reveal-delay-1, .reveal-delay-2, .reveal-delay-3, .reveal-delay-4)');
+      revealElements.forEach((el) => {
+        gsap.fromTo(el, 
+          { opacity: 0, y: 32 },
+          { 
+            opacity: 1, 
+            y: 0, 
+            duration: 0.9, 
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 88%',
+              once: true
+            }
+          }
+        );
+      });
+
+      // Parallax on hero image (desktop only)
+      if (window.innerWidth > 1024) {
+        gsap.to('.hero-visual', {
+          yPercent: -6,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#home',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true
+          }
+        });
+      }
+
+      // ===== Form validation =====
+      const form = document.getElementById('contactForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const formSuccess = document.getElementById('formSuccess');
+
+      function validateField(field) {
+        const errorMsg = field.parentElement.querySelector('.error-msg');
+        let valid = true;
+
+        if (field.type === 'email') {
+          valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value.trim());
+        } else if (field.type === 'tel') {
+          valid = /^[\+]?[\d\s\-()]{7,}$/.test(field.value.trim());
+        } else {
+          valid = field.value.trim().length > 0;
+        }
+
+        if (!valid) {
+          field.classList.add('error-field');
+          if (errorMsg) errorMsg.classList.remove('hidden');
+        } else {
+          field.classList.remove('error-field');
+          if (errorMsg) errorMsg.classList.add('hidden');
+        }
+
+        return valid;
+      }
+
+      // Live validation on blur
+      form.querySelectorAll('input, textarea').forEach(field => {
+        field.addEventListener('blur', () => validateField(field));
+        field.addEventListener('input', () => {
+          if (field.classList.contains('error-field')) validateField(field);
+        });
+      });
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const fields = form.querySelectorAll('input[required], textarea[required]');
+        let allValid = true;
+
+        fields.forEach(field => {
+          if (!validateField(field)) allValid = false;
+        });
+
+        if (!allValid) {
+          const firstError = form.querySelector('.error-field');
+          if (firstError) firstError.focus();
+          return;
+        }
+
+        // Simulate submission (replace with actual fetch to your backend)
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Sending...';
+
+        // Simulate network delay
+        setTimeout(() => {
+          // TODO: connect form action to backend endpoint
+          // Example fetch:
+          // fetch('submit', {
+          //   method: 'POST',
+          //   headers: { 'Content-Type': 'application/json' },
+          //   cache: 'no-store',
+          //   body: JSON.stringify({
+          //     url: window.location.host,
+          //     table: 'enquiries',
+          //     data: {
+          //       name: document.getElementById('name').value,
+          //       email: document.getElementById('email').value,
+          //       phone: document.getElementById('phone').value,
+          //       message: document.getElementById('message').value
+          //     }
+          //   })
+          // });
+
+          formSuccess.classList.remove('hidden');
+          submitBtn.innerHTML = 'Sent!';
+          submitBtn.classList.remove('bg-ink', 'hover:bg-brass');
+          submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+
+          // Reset after 4 seconds
+          setTimeout(() => {
+            form.reset();
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Send Enquiry <i data-lucide="send" class="w-4 h-4"></i>';
+            submitBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+            submitBtn.classList.add('bg-ink', 'hover:bg-brass');
+            formSuccess.classList.add('hidden');
+            lucide.createIcons();
+          }, 4000);
+        }, 900);
+      });
+
+      // ===== Smooth anchor scrolling with header offset =====
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            e.preventDefault();
+            const headerOffset = 90;
+            const elementPosition = target.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
