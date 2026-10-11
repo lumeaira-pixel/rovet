@@ -1,758 +1,671 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glomins · Cosmetics · Valanchery</title>
-    <!-- Font Awesome for icons (optional but used for WhatsApp & social) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* ---------- RESET & GLOBAL ---------- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background-color: #fff9f7;
-            color: #2e2e2e;
-            line-height: 1.6;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        /* ---------- COLORS (soft, cosmetic feel) ---------- */
-        :root {
-            --rose: #e6b8b8;
-            --deep-rose: #b87c7c;
-            --cream: #fff1ec;
-            --charcoal: #2f2f2f;
-            --soft-gold: #d4b68a;
-            --light-gray: #f5f0ee;
-        }
-
-        /* ---------- BUTTONS ---------- */
-        .btn {
-            display: inline-block;
-            background-color: var(--deep-rose);
-            color: white;
-            padding: 12px 32px;
-            border-radius: 40px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .btn:hover {
-            background-color: #9e6363;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(184, 124, 124, 0.2);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--deep-rose);
-            color: var(--deep-rose);
-        }
-
-        .btn-outline:hover {
-            background: var(--deep-rose);
-            color: white;
-        }
-
-        /* ---------- HEADER / HERO ---------- */
-        .hero {
-            background: linear-gradient(135deg, #f9e7e3 0%, #f3dbd6 100%);
-            min-height: 90vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-content {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-            flex-wrap: wrap;
-            padding: 60px 0;
-        }
-
-        .hero-text {
-            flex: 1 1 400px;
-        }
-
-        .hero-text h1 {
-            font-size: 3.4rem;
-            font-weight: 700;
-            color: var(--charcoal);
-            line-height: 1.2;
-            margin-bottom: 16px;
-        }
-
-        .hero-text h1 span {
-            color: var(--deep-rose);
-            font-weight: 800;
-        }
-
-        .hero-text p {
-            font-size: 1.2rem;
-            color: #4a3f3a;
-            margin-bottom: 28px;
-            max-width: 550px;
-        }
-
-        .hero-image {
-            flex: 1 1 350px;
-            text-align: center;
-        }
-
-        .hero-image img {
-            max-width: 100%;
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.2);
-            background: #fff;
-            padding: 10px;
-        }
-
-        /* small decorative dots */
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: -40px;
-            right: -40px;
-            width: 300px;
-            height: 300px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        /* ---------- SECTION TITLES ---------- */
-        .section-title {
-            text-align: center;
-            font-size: 2.4rem;
-            font-weight: 600;
-            color: var(--charcoal);
-            margin-bottom: 16px;
-        }
-
-        .section-sub {
-            text-align: center;
-            color: #7a6a64;
-            max-width: 600px;
-            margin: 0 auto 48px auto;
-        }
-
-        section {
-            padding: 80px 0;
-        }
-
-        /* ---------- ABOUT ---------- */
-        .about-grid {
-            display: flex;
-            align-items: center;
-            gap: 48px;
-            flex-wrap: wrap;
-        }
-
-        .about-img {
-            flex: 1 1 300px;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.1);
-        }
-
-        .about-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .about-text {
-            flex: 1 1 300px;
-        }
-
-        .about-text h3 {
-            font-size: 2rem;
-            margin-bottom: 16px;
-            color: var(--charcoal);
-        }
-
-        .about-text p {
-            margin-bottom: 20px;
-            color: #4d3f3a;
-        }
-
-        /* ---------- PRODUCTS ---------- */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.08);
-            transition: all 0.25s;
-            text-align: center;
-            padding: 0 0 24px 0;
-            border: 1px solid #f0e4e0;
-        }
-
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 24px 36px -12px rgba(184, 124, 124, 0.25);
-        }
-
-        .product-img {
-            height: 240px;
-            background: #f9ede9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: var(--deep-rose);
-            margin-bottom: 16px;
-        }
-
-        .product-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .product-card h4 {
-            font-size: 1.3rem;
-            margin-bottom: 6px;
-            color: var(--charcoal);
-        }
-
-        .product-card p {
-            color: #7b6a64;
-            font-size: 0.95rem;
-            margin-bottom: 12px;
-            padding: 0 16px;
-        }
-
-        .product-price {
-            font-weight: 700;
-            color: var(--deep-rose);
-            font-size: 1.2rem;
-        }
-
-        /* ---------- WHY CHOOSE US ---------- */
-        .why-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .why-item {
-            background: var(--cream);
-            border-radius: 28px;
-            padding: 32px 20px;
-            text-align: center;
-            transition: 0.2s;
-            border: 1px solid #fff0ec;
-        }
-
-        .why-item i {
-            font-size: 2.6rem;
-            color: var(--deep-rose);
-            margin-bottom: 16px;
-        }
-
-        .why-item h4 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-        }
-
-        .why-item p {
-            color: #625550;
-            font-size: 0.95rem;
-        }
-
-        /* ---------- TESTIMONIALS ---------- */
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
-        }
-
-        .testimonial-card {
-            background: white;
-            border-radius: 24px;
-            padding: 32px 24px;
-            box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.06);
-            border: 1px solid #f1e2de;
-        }
-
-        .testimonial-card i.fa-quote-left {
-            color: var(--rose);
-            font-size: 1.8rem;
-            margin-bottom: 12px;
-            opacity: 0.7;
-        }
-
-        .testimonial-card p {
-            font-style: italic;
-            margin-bottom: 20px;
-            color: #4a3b36;
-        }
-
-        .testimonial-card h5 {
-            font-weight: 600;
-            color: var(--deep-rose);
-        }
-
-        .testimonial-card span {
-            font-size: 0.85rem;
-            color: #a08d86;
-        }
-
-        /* ---------- CONTACT & WHATSAPP ---------- */
-        .contact-wrapper {
-            background: linear-gradient(145deg, #f7e7e3, #f3ded9);
-            border-radius: 48px;
-            padding: 48px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            align-items: center;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .contact-info {
-            flex: 1 1 260px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 1.1rem;
-            background: rgba(255, 255, 255, 0.6);
-            padding: 14px 24px;
-            border-radius: 60px;
-            backdrop-filter: blur(4px);
-        }
-
-        .contact-item i {
-            width: 32px;
-            color: var(--deep-rose);
-            font-size: 1.4rem;
-        }
-
-        .contact-item a {
-            font-weight: 500;
-            color: #2b2b2b;
-            transition: color 0.2s;
-        }
-
-        .contact-item a:hover {
-            color: var(--deep-rose);
-        }
-
-        .contact-cta {
-            flex: 1 1 260px;
-            text-align: center;
-        }
-
-        .contact-cta p {
-            margin-bottom: 24px;
-            font-size: 1.1rem;
-            color: #3e312c;
-        }
-
-        /* ---------- FLOATING WHATSAPP BUTTON ---------- */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #25d366;
-            color: white;
-            border-radius: 50%;
-            width: 64px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.4rem;
-            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4);
-            z-index: 999;
-            transition: 0.3s;
-        }
-
-        .whatsapp-float:hover {
-            background-color: #1ebe5d;
-            transform: scale(1.08);
-            box-shadow: 0 14px 28px rgba(37, 211, 102, 0.5);
-            color: white;
-        }
-
-        /* ---------- FOOTER ---------- */
-        footer {
-            background-color: #2e2724;
-            color: #ddd2cd;
-            padding: 48px 0 24px 0;
-            margin-top: 40px;
-        }
-
-        .footer-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            justify-content: space-between;
-            margin-bottom: 40px;
-        }
-
-        .footer-brand h3 {
-            color: white;
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .footer-brand p {
-            font-size: 0.95rem;
-            max-width: 280px;
-            color: #b9aaa4;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 60px;
-            flex-wrap: wrap;
-        }
-
-        .footer-links h5 {
-            color: white;
-            margin-bottom: 16px;
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-
-        .footer-links ul {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-            color: #b9aaa4;
-        }
-
-        .footer-links a:hover {
-            color: var(--rose);
-        }
-
-        .footer-bottom {
-            border-top: 1px solid #443b37;
-            padding-top: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-            font-size: 0.9rem;
-        }
-
-        .footer-bottom a {
-            color: #b9aaa4;
-            margin-left: 24px;
-        }
-
-        .footer-bottom a:hover {
-            color: white;
-        }
-
-        /* ---------- RESPONSIVE ---------- */
-        @media (max-width: 768px) {
-            .hero-text h1 {
-                font-size: 2.4rem;
-            }
-            .section-title {
-                font-size: 2rem;
-            }
-            .contact-wrapper {
-                padding: 32px 24px;
-            }
-            .whatsapp-float {
-                width: 58px;
-                height: 58px;
-                font-size: 2.2rem;
-                bottom: 20px;
-                right: 20px;
-            }
-            .footer-bottom {
-                flex-direction: column;
-                text-align: center;
-            }
-            .footer-bottom a {
-                margin: 0 12px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero-text h1 {
-                font-size: 2rem;
-            }
-            .btn {
-                padding: 10px 24px;
-            }
-            .contact-item {
-                font-size: 1rem;
-                padding: 12px 16px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glomins · Cosmetics Brand · Valanchery</title>
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+
+    body {
+      background-color: #fffaf7;
+      color: #2e2e2e;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    /* subtle rose-gold & nude palette */
+    :root {
+      --glow-rose: #f9e3de;
+      --glow-cream: #fff5f0;
+      --glow-gold: #c9a87c;
+      --glow-nude: #e7cfc4;
+      --glow-dark: #3e2e2a;
+      --glow-accent: #b87c6b;
+    }
+
+    /* HEADER / NAV */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 5%;
+      background-color: rgba(255, 245, 240, 0.9);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #f0dbd2;
+    }
+
+    .logo {
+      font-size: 1.9rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      color: var(--glow-dark);
+      text-transform: uppercase;
+    }
+
+    .logo span {
+      font-weight: 600;
+      color: var(--glow-accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      list-style: none;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--glow-dark);
+      transition: 0.2s;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 3px;
+    }
+
+    .nav-links a:hover {
+      border-bottom-color: var(--glow-accent);
+      color: var(--glow-accent);
+    }
+
+    /* WHATSAPP FLOATING BUTTON */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #25D366;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      box-shadow: 0 8px 18px rgba(37, 211, 102, 0.4);
+      z-index: 200;
+      transition: 0.2s;
+      text-decoration: none;
+    }
+
+    .whatsapp-float:hover {
+      transform: scale(1.08);
+      background-color: #128C7E;
+    }
+
+    /* SECTIONS common */
+    section {
+      padding: 5rem 8%;
+    }
+
+    .section-title {
+      font-size: 2.3rem;
+      font-weight: 300;
+      letter-spacing: 1px;
+      margin-bottom: 2rem;
+      color: var(--glow-dark);
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 60%;
+      height: 3px;
+      background: var(--glow-gold);
+      border-radius: 10px;
+    }
+
+    /* HERO */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      background: linear-gradient(135deg, #fff5f0 0%, #f9e3de 100%);
+      padding: 4rem 8%;
+      flex-wrap: wrap;
+    }
+
+    .hero-content {
+      flex: 1 1 400px;
+    }
+
+    .hero-content h1 {
+      font-size: 3.2rem;
+      font-weight: 300;
+      line-height: 1.3;
+      color: var(--glow-dark);
+    }
+
+    .hero-content h1 i {
+      color: var(--glow-accent);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .hero-content p {
+      margin: 1.5rem 0 2rem;
+      font-size: 1.2rem;
+      color: #5a4a45;
+      max-width: 550px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--glow-dark);
+      color: white;
+      padding: 0.9rem 2.4rem;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: 0.2s;
+      border: 1px solid var(--glow-dark);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn:hover {
+      background: var(--glow-accent);
+      border-color: var(--glow-accent);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .hero-image {
+      flex: 1 1 300px;
+      text-align: center;
+      font-size: 8rem;
+      color: var(--glow-gold);
+      opacity: 0.9;
+    }
+
+    /* ABOUT */
+    .about {
+      background: #ffffff;
+      border-bottom: 1px solid #f5e4dd;
+    }
+
+    .about-grid {
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .about-text {
+      flex: 2 1 350px;
+      font-size: 1.15rem;
+      color: #3a302c;
+    }
+
+    .about-text p {
+      margin-bottom: 1.2rem;
+    }
+
+    .about-highlight {
+      flex: 1 1 220px;
+      background: var(--glow-cream);
+      padding: 2rem 1.8rem;
+      border-radius: 40px 40px 40px 0;
+      border-left: 6px solid var(--glow-gold);
+      font-style: italic;
+      color: #4d3b35;
+      box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* PRODUCTS */
+    .products {
+      background: #fffaf7;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 30px;
+      padding: 2rem 1.2rem 1.8rem;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.02);
+      transition: 0.25s ease;
+      border: 1px solid #f3e2da;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 30px -10px rgba(184, 124, 107, 0.15);
+      border-color: var(--glow-nude);
+    }
+
+    .product-icon {
+      font-size: 3.2rem;
+      color: var(--glow-gold);
+      margin-bottom: 0.8rem;
+    }
+
+    .product-card h3 {
+      font-weight: 500;
+      font-size: 1.5rem;
+      color: var(--glow-dark);
+      margin-bottom: 0.6rem;
+    }
+
+    .product-card p {
+      color: #6e5b54;
+      font-size: 0.95rem;
+    }
+
+    /* WHY CHOOSE US */
+    .why-choose {
+      background: linear-gradient(145deg, #f9e3de 0%, #fff2ec 100%);
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .feature-item {
+      background: white;
+      flex: 1 1 200px;
+      max-width: 240px;
+      padding: 2rem 1.2rem;
+      border-radius: 30px;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.02);
+      border: 1px solid #ffffff80;
+    }
+
+    .feature-item i {
+      font-size: 2.5rem;
+      color: var(--glow-accent);
+      margin-bottom: 1.2rem;
+    }
+
+    .feature-item h4 {
+      font-weight: 600;
+      font-size: 1.25rem;
+      margin-bottom: 0.6rem;
+      color: var(--glow-dark);
+    }
+
+    .feature-item p {
+      color: #5f4d47;
+      font-size: 0.95rem;
+    }
+
+    /* TESTIMONIALS */
+    .testimonials {
+      background: #ffffff;
+    }
+
+    .testimonial-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .testimonial-card {
+      background: var(--glow-cream);
+      padding: 2rem 1.8rem;
+      border-radius: 30px 30px 30px 0;
+      flex: 1 1 260px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      border: 1px solid #f1ddd4;
+    }
+
+    .testimonial-card i.fa-quote-left {
+      color: var(--glow-gold);
+      opacity: 0.5;
+      font-size: 1.8rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .testimonial-card p {
+      font-style: italic;
+      color: #3b2f2b;
+      margin-bottom: 1.2rem;
+    }
+
+    .testimonial-card h5 {
+      font-weight: 600;
+      color: var(--glow-accent);
+      font-size: 1rem;
+    }
+
+    .testimonial-card span {
+      font-weight: 300;
+      color: #8a7a74;
+      font-size: 0.9rem;
+    }
+
+    /* CONTACT */
+    .contact {
+      background: var(--glow-dark);
+      color: #f5e7e1;
+    }
+
+    .contact .section-title {
+      color: #f5e7e1;
+    }
+
+    .contact .section-title::after {
+      background: var(--glow-gold);
+    }
+
+    .contact-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem;
+      margin-top: 2.5rem;
+    }
+
+    .contact-info {
+      flex: 1 1 280px;
+    }
+
+    .contact-info p {
+      margin: 1.2rem 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1.2rem;
+      color: #ecd9d1;
+    }
+
+    .contact-info i {
+      width: 30px;
+      color: var(--glow-gold);
+      font-size: 1.4rem;
+    }
+
+    .contact-info a {
+      color: #ecd9d1;
+      text-decoration: none;
+      border-bottom: 1px dotted #c9a87c;
+    }
+
+    .contact-info a:hover {
+      color: white;
+    }
+
+    .contact-note {
+      flex: 1 1 240px;
+      background: #4d3b35;
+      padding: 2rem;
+      border-radius: 40px 40px 0 40px;
+      font-style: italic;
+      color: #f0dbd2;
+      border-left: 5px solid var(--glow-gold);
+    }
+
+    /* FOOTER */
+    footer {
+      background: #2b211e;
+      color: #d9c6bf;
+      padding: 2rem 8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      border-top: 1px solid #5a4740;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: #d9c6bf;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--glow-gold);
+    }
+
+    footer .copyright {
+      font-size: 0.9rem;
+      color: #a48f87;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        gap: 0.8rem;
+        padding: 1rem 5%;
+      }
+
+      .nav-links {
+        gap: 1.2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .hero {
+        flex-direction: column-reverse;
+        text-align: center;
+      }
+
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-content p {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      section {
+        padding: 3.5rem 6%;
+      }
+
+      .whatsapp-float {
+        width: 55px;
+        height: 55px;
+        font-size: 1.9rem;
+        bottom: 20px;
+        right: 20px;
+      }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- ========== HERO / HOME ========== -->
-    <section class="hero" id="home">
-        <div class="container hero-content">
-            <div class="hero-text">
-                <h1>Radiate with <span>Glomins</span></h1>
-                <p>Handcrafted cosmetics from Valanchery — pure, gentle, and made for your glow. Discover the beauty of nature with a touch of luxury.</p>
-                <a href="#products" class="btn">Explore Products</a>
-            </div>
-            <div class="hero-image">
-                <!-- Decorative SVG / image placeholder - using a clean cosmetic illustration -->
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Ccircle cx='200' cy='200' r='180' fill='%23ffffff' /%3E%3Ccircle cx='200' cy='200' r='150' fill='%23f9e7e3' /%3E%3Ctext x='200' y='220' font-family='Arial' font-size='70' fill='%23b87c7c' text-anchor='middle' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E"
-                     alt="Glomins cosmetics illustration">
-            </div>
-        </div>
-    </section>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="logo">GLOW<span>MINS</span></div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#why">Why Us</a></li>
+      <li><a href="#testimonials">Testimonials</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
 
-    <!-- ========== ABOUT ========== -->
-    <section id="about">
-        <div class="container">
-            <h2 class="section-title">Our Story</h2>
-            <p class="section-sub">Born in Valanchery, crafted with love</p>
-            <div class="about-grid">
-                <div class="about-img">
-                    <!-- simple image placeholder -->
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='450' viewBox='0 0 600 450'%3E%3Crect width='600' height='450' fill='%23f3dbd6' /%3E%3Ccircle cx='300' cy='200' r='100' fill='%23e6b8b8' /%3E%3Ctext x='300' y='330' font-family='Arial' font-size='36' fill='%23b87c7c' text-anchor='middle'%3EGlomins%3C/text%3E%3C/svg%3E"
-                         alt="Glomins story">
-                </div>
-                <div class="about-text">
-                    <h3>Pure. Nourishing. Uncomplicated.</h3>
-                    <p>Glomins started as a small dream in Valanchery — to create cosmetics that feel as good as they look. We blend age-old botanical wisdom with modern skin science.</p>
-                    <p>Every product is free from harsh chemicals, cruelty-free, and designed to celebrate your natural beauty. From our home to yours, we bring you the essence of Kerala's finest ingredients.</p>
-                    <a href="#contact" class="btn btn-outline" style="margin-top: 12px;">Get in touch</a>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- WHATSAPP FLOATING BUTTON (always visible) -->
+  <a href="https://wa.me/919947400278" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
 
-    <!-- ========== PRODUCTS ========== -->
-    <section id="products" style="background: #ffffff;">
-        <div class="container">
-            <h2 class="section-title">Our Bestsellers</h2>
-            <p class="section-sub">Loved by our Valanchery family & beyond</p>
-            <div class="product-grid">
-                <!-- Product 1 -->
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='240' viewBox='0 0 300 240'%3E%3Crect width='300' height='240' fill='%23f9ede9' /%3E%3Ccircle cx='150' cy='120' r='60' fill='%23e6b8b8' /%3E%3Ctext x='150' y='135' font-family='Arial' font-size='30' fill='%23b87c7c' text-anchor='middle'%3E%F0%9F%8C%B8%3C/text%3E%3C/svg%3E" alt="Rose Glow Serum">
-                    </div>
-                    <h4>Rose Glow Serum</h4>
-                    <p>Vitamin C + Rosehip for radiant skin</p>
-                    <div class="product-price">₹899</div>
-                </div>
-                <!-- Product 2 -->
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='240' viewBox='0 0 300 240'%3E%3Crect width='300' height='240' fill='%23f9ede9' /%3E%3Ccircle cx='150' cy='120' r='60' fill='%23d4b68a' /%3E%3Ctext x='150' y='135' font-family='Arial' font-size='30' fill='%23b87c7c' text-anchor='middle'%3E%F0%9F%92%A7%3C/text%3E%3C/svg%3E" alt="Velvet Matte Lipstick">
-                    </div>
-                    <h4>Velvet Matte Lipstick</h4>
-                    <p>Weightless, long-wear, 8 shades</p>
-                    <div class="product-price">₹649</div>
-                </div>
-                <!-- Product 3 -->
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='240' viewBox='0 0 300 240'%3E%3Crect width='300' height='240' fill='%23f9ede9' /%3E%3Ccircle cx='150' cy='120' r='60' fill='%23e6b8b8' /%3E%3Ctext x='150' y='135' font-family='Arial' font-size='30' fill='%23b87c7c' text-anchor='middle'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E" alt="Hydra Bloom Moisturizer">
-                    </div>
-                    <h4>Hydra Bloom Moisturizer</h4>
-                    <p>72h hydration with aloe & ceramides</p>
-                    <div class="product-price">₹799</div>
-                </div>
-                <!-- Product 4 -->
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='240' viewBox='0 0 300 240'%3E%3Crect width='300' height='240' fill='%23f9ede9' /%3E%3Ccircle cx='150' cy='120' r='60' fill='%23d4b68a' /%3E%3Ctext x='150' y='135' font-family='Arial' font-size='30' fill='%23b87c7c' text-anchor='middle'%3E%F0%9F%8C%BF%3C/text%3E%3C/svg%3E" alt="Green Tea Face Wash">
-                    </div>
-                    <h4>Green Tea Face Wash</h4>
-                    <p>Gentle purifying for all skin types</p>
-                    <div class="product-price">₹499</div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- HERO / HOME SECTION -->
+  <section id="home" class="hero">
+    <div class="hero-content">
+      <h1>Glow with <i>Glomins</i> —<br>Valanchery’s own cosmetics</h1>
+      <p>Handcrafted beauty essentials that celebrate your natural radiance. Made with love, powered by nature.</p>
+      <a href="#products" class="btn">Explore Products <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
+    </div>
+    <div class="hero-image">
+      <i class="fas fa-spa"></i>
+    </div>
+  </section>
 
-    <!-- ========== WHY CHOOSE US ========== -->
-    <section id="why-choose-us" style="background: #fff9f7;">
-        <div class="container">
-            <h2 class="section-title">Why Choose Glomins?</h2>
-            <p class="section-sub">We keep it honest, effective, and kind.</p>
-            <div class="why-grid">
-                <div class="why-item">
-                    <i class="fas fa-leaf"></i>
-                    <h4>100% Vegan</h4>
-                    <p>No animal testing, no animal ingredients — just pure botanicals.</p>
-                </div>
-                <div class="why-item">
-                    <i class="fas fa-flask"></i>
-                    <h4>Dermatologist Tested</h4>
-                    <p>Safe for sensitive skin, clinically approved formulas.</p>
-                </div>
-                <div class="why-item">
-                    <i class="fas fa-hand-holding-heart"></i>
-                    <h4>Handcrafted in Valanchery</h4>
-                    <p>Small batch, made with local love and care.</p>
-                </div>
-                <div class="why-item">
-                    <i class="fas fa-recycle"></i>
-                    <h4>Eco Packaging</h4>
-                    <p>Recyclable glass & biodegradable labels.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- ABOUT SECTION -->
+  <section id="about" class="about">
+    <h2 class="section-title">About Glomins</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>Born in the heart of Valanchery, Glomins is a homegrown cosmetics brand dedicated to clean, effective beauty. We blend traditional botanicals with modern skincare science to create products that are gentle, cruelty-free, and kind to your skin.</p>
+        <p>Every Glomins creation is crafted in small batches — ensuring freshness, purity, and a personal touch that mass-produced brands can’t replicate. From radiant glow serums to velvet lip tints, we believe beauty should feel as good as it looks.</p>
+      </div>
+      <div class="about-highlight">
+        <i class="fas fa-leaf" style="color: #c9a87c; font-size: 2rem; margin-bottom: 0.8rem; display: block;"></i>
+        “Pure botanicals. Honest beauty. That’s the Glomins promise.”
+      </div>
+    </div>
+  </section>
 
-    <!-- ========== TESTIMONIALS ========== -->
-    <section id="testimonials" style="background: #ffffff;">
-        <div class="container">
-            <h2 class="section-title">What Our Customers Say</h2>
-            <p class="section-sub">Real stories from our Glomins family</p>
-            <div class="testimonial-grid">
-                <div class="testimonial-card">
-                    <i class="fas fa-quote-left"></i>
-                    <p>“The Rose Glow Serum changed my skin! I've struggled with dullness for years, and now I get compliments daily. Valanchery is lucky to have this brand.”</p>
-                    <h5>Anjali Menon</h5>
-                    <span>Valanchery</span>
-                </div>
-                <div class="testimonial-card">
-                    <i class="fas fa-quote-left"></i>
-                    <p>“I love that Glomins is cruelty-free and the lipsticks stay on all day. Finally a local brand that rivals international ones.”</p>
-                    <h5>Rahul Nair</h5>
-                    <span>Kozhikode</span>
-                </div>
-                <div class="testimonial-card">
-                    <i class="fas fa-quote-left"></i>
-                    <p>“Their moisturizer is a game changer for my sensitive skin. No irritation, just soft, happy skin. Highly recommend!”</p>
-                    <h5>Sneha Thomas</h5>
-                    <span>Malappuram</span>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- PRODUCTS SECTION -->
+  <section id="products" class="products">
+    <h2 class="section-title">Our Bestsellers</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-icon"><i class="fas fa-pump-soap"></i></div>
+        <h3>Glow Serum</h3>
+        <p>Vitamin C + turmeric for a dewy, even-toned complexion.</p>
+      </div>
+      <div class="product-card">
+        <div class="product-icon"><i class="fas fa-lips"></i></div>
+        <h3>Velvet Lip Tint</h3>
+        <p>Sheer, buildable color with shea butter & rosehip oil.</p>
+      </div>
+      <div class="product-card">
+        <div class="product-icon"><i class="fas fa-hand-sparkles"></i></div>
+        <h3>Radiance Balm</h3>
+        <p>Multi-purpose glow balm for cheeks, lips & eyes.</p>
+      </div>
+      <div class="product-card">
+        <div class="product-icon"><i class="fas fa-seedling"></i></div>
+        <h3>Herbal Face Mist</h3>
+        <p>Refreshing rose & neem mist to soothe and hydrate.</p>
+      </div>
+    </div>
+  </section>
 
-    <!-- ========== CONTACT ========== -->
-    <section id="contact" style="padding-bottom: 60px;">
-        <div class="container">
-            <h2 class="section-title">Contact Us</h2>
-            <p class="section-sub">We’d love to hear from you — reach out anytime</p>
-            <div class="contact-wrapper">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-phone-alt"></i>
-                        <a href="tel:+919947400278">+91 99474 00278</a>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <a href="mailto:Saleelvt57@gmail.com">Saleelvt57@gmail.com</a>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-pin"></i>
-                        <span>Valanchery, Kerala, India</span>
-                    </div>
-                </div>
-                <div class="contact-cta">
-                    <p>Or click below to chat on WhatsApp — we reply fast!</p>
-                    <!-- WhatsApp direct link with phone number -->
-                    <a href="https://wa.me/919947400278?text=Hello%20Glomins%2C%20I%27m%20interested%20in%20your%20products" 
-                       class="btn" style="background: #25d366; display: inline-flex; align-items: center; gap: 10px;" target="_blank">
-                        <i class="fab fa-whatsapp" style="font-size: 1.4rem;"></i> Chat on WhatsApp
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- WHY CHOOSE US SECTION -->
+  <section id="why" class="why-choose">
+    <h2 class="section-title">Why Choose Glomins</h2>
+    <div class="features">
+      <div class="feature-item">
+        <i class="fas fa-flask"></i>
+        <h4>Small Batch</h4>
+        <p>Crafted in limited quantities for unmatched freshness.</p>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-rabbit"></i>
+        <h4>Cruelty-Free</h4>
+        <p>Never tested on animals — only on happy volunteers.</p>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-map-pin"></i>
+        <h4>Local & Proud</h4>
+        <p>Made in Valanchery with love, for your skin.</p>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-tint"></i>
+        <h4>Clean Beauty</h4>
+        <p>No parabens, sulfates or synthetic fragrance.</p>
+      </div>
+    </div>
+  </section>
 
-    <!-- ========== FLOATING WHATSAPP BUTTON ========== -->
-    <a href="https://wa.me/919947400278?text=Hello%20Glomins%2C%20I%27m%20interested%20in%20your%20products" 
-       class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+  <!-- TESTIMONIALS SECTION -->
+  <section id="testimonials" class="testimonials">
+    <h2 class="section-title">What Our Customers Say</h2>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <i class="fas fa-quote-left"></i>
+        <p>“Glomins lip tint is my everyday go-to. Feels weightless and the shade ‘Rosewood’ is perfection.”</p>
+        <h5>— Fathima R.</h5>
+        <span>Valanchery</span>
+      </div>
+      <div class="testimonial-card">
+        <i class="fas fa-quote-left"></i>
+        <p>“I’ve struggled with sensitive skin, but their glow serum calmed my redness in two weeks. Absolutely magical!”</p>
+        <h5>— Anjana K.</h5>
+        <span>Kuttippuram</span>
+      </div>
+      <div class="testimonial-card">
+        <i class="fas fa-quote-left"></i>
+        <p>“The face mist is so refreshing — I keep it in my bag always. Love that it’s local and natural.”</p>
+        <h5>— Sneha M.</h5>
+        <span>Pattambi</span>
+      </div>
+    </div>
+  </section>
 
-    <!-- ========== FOOTER ========== -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h3>Glomins</h3>
-                    <p>Pure cosmetics handcrafted in Valanchery. Glow naturally, live beautifully.</p>
-                </div>
-                <div class="footer-links">
-                    <div>
-                        <h5>Explore</h5>
-                        <ul>
-                            <li><a href="#home">Home</a></li>
-                            <li><a href="#about">About</a></li>
-                            <li><a href="#products">Products</a></li>
-                            <li><a href="#why-choose-us">Why Us</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h5>Support</h5>
-                        <ul>
-                            <li><a href="#contact">Contact</a></li>
-                            <li><a href="#testimonials">Reviews</a></li>
-                            <li><a href="#">Shipping</a></li>
-                            <li><a href="#">Returns</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2025 Glomins · Valanchery. All rights reserved.</p>
-                <div>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="contact">
+    <h2 class="section-title">Contact Glomins</h2>
+    <div class="contact-wrapper">
+      <div class="contact-info">
+        <p><i class="fas fa-phone-alt"></i> <a href="tel:+919947400278">+91 99474 00278</a></p>
+        <p><i class="fas fa-envelope"></i> <a href="mailto:Saleelvt57@gmail.com">Saleelvt57@gmail.com</a></p>
+        <p><i class="fas fa-map-marker-alt"></i> Valanchery, Kerala, India</p>
+      </div>
+      <div class="contact-note">
+        <i class="fas fa-comment-dots" style="color: #c9a87c; font-size: 1.6rem; margin-bottom: 0.5rem; display: block;"></i>
+        For orders, collaborations or any questions — just drop a message. We reply within a day!
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="logo" style="font-size: 1.5rem; color: #d9c6bf;">GLOW<span style="color: #c9a87c;">MINS</span></div>
+    <div class="footer-links">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#products">Products</a>
+      <a href="#why">Why Us</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="copyright">
+      &copy; 2025 Glomins · Valanchery. All rights reserved.
+    </div>
+  </footer>
 
 </body>
 </html>
