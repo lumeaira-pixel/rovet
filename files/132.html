@@ -1,916 +1,775 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jainis Mobile · Buy & Sell Second-Hand Phones in Delhi</title>
-  <!-- Font Awesome 6 (free) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Google Fonts: Inter (clean modern) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #ffffff;
-      color: #1e293b;
-      line-height: 1.5;
-    }
-
-    /* Blue & white clean palette */
-    :root {
-      --blue-deep: #0b2b5c;
-      --blue-primary: #1a56db;
-      --blue-light: #e8f0fe;
-      --blue-soft: #dbeafe;
-      --white: #ffffff;
-      --gray-bg: #f8fafc;
-      --gray-border: #e2e8f0;
-      --text-dark: #0f172a;
-      --text-muted: #475569;
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
-      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.05);
-    }
-
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* header / nav */
-    .navbar {
-      background: var(--white);
-      padding: 16px 0;
-      box-shadow: var(--shadow-sm);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      backdrop-filter: blur(4px);
-      border-bottom: 1px solid var(--gray-border);
-    }
-
-    .nav-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 700;
-      font-size: 1.7rem;
-      letter-spacing: -0.02em;
-      color: var(--blue-deep);
-      text-decoration: none;
-    }
-
-    .logo i {
-      color: var(--blue-primary);
-      font-size: 2rem;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-      flex-wrap: wrap;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      font-weight: 500;
-      color: var(--text-dark);
-      font-size: 1rem;
-      transition: color 0.15s;
-      white-space: nowrap;
-    }
-
-    .nav-links a:hover {
-      color: var(--blue-primary);
-    }
-
-    .nav-links a i {
-      margin-right: 6px;
-      color: var(--blue-primary);
-      font-size: 0.95rem;
-    }
-
-    /* buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 28px;
-      border-radius: 40px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      border: none;
-      cursor: pointer;
-      font-size: 0.95rem;
-      line-height: 1;
-    }
-
-    .btn-primary {
-      background: var(--blue-primary);
-      color: white;
-      box-shadow: 0 4px 14px rgba(26, 86, 219, 0.25);
-    }
-
-    .btn-primary:hover {
-      background: #0f3eb3;
-      transform: translateY(-1px);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1.5px solid var(--blue-primary);
-      color: var(--blue-primary);
-    }
-
-    .btn-outline:hover {
-      background: var(--blue-light);
-      border-color: var(--blue-primary);
-    }
-
-    .btn-white {
-      background: var(--white);
-      color: var(--blue-primary);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .btn-white:hover {
-      background: var(--blue-light);
-    }
-
-    /* section styling */
-    section {
-      padding: 72px 0;
-    }
-
-    .section-title {
-      font-size: 2.2rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--blue-deep);
-      margin-bottom: 16px;
-    }
-
-    .section-sub {
-      font-size: 1.2rem;
-      color: var(--text-muted);
-      max-width: 640px;
-      margin-bottom: 40px;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    .text-center .section-sub {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* hero */
-    .hero {
-      background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 70%);
-      padding: 48px 0 64px;
-    }
-
-    .hero-grid {
-      display: flex;
-      align-items: center;
-      gap: 48px;
-      flex-wrap: wrap;
-    }
-
-    .hero-content {
-      flex: 1 1 380px;
-    }
-
-    .hero-badge {
-      display: inline-block;
-      background: var(--blue-soft);
-      color: var(--blue-primary);
-      font-weight: 600;
-      font-size: 0.85rem;
-      padding: 6px 16px;
-      border-radius: 40px;
-      margin-bottom: 24px;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
-
-    .hero-content h1 {
-      font-size: 3.3rem;
-      font-weight: 700;
-      line-height: 1.2;
-      letter-spacing: -0.03em;
-      color: var(--blue-deep);
-      margin-bottom: 20px;
-    }
-
-    .hero-content h1 span {
-      color: var(--blue-primary);
-    }
-
-    .hero-content p {
-      font-size: 1.2rem;
-      color: var(--text-muted);
-      margin-bottom: 32px;
-      max-width: 540px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 40px;
-    }
-
-    .app-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .app-badge {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--blue-deep);
-      color: white;
-      padding: 12px 22px;
-      border-radius: 14px;
-      text-decoration: none;
-      transition: background 0.2s;
-      box-shadow: var(--shadow-sm);
-      min-width: 170px;
-    }
-
-    .app-badge i {
-      font-size: 2rem;
-    }
-
-    .app-badge div {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.2;
-    }
-
-    .app-badge .small-text {
-      font-size: 0.7rem;
-      opacity: 0.8;
-      letter-spacing: 0.02em;
-    }
-
-    .app-badge .big-text {
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-
-    .app-badge:hover {
-      background: #0a1f44;
-    }
-
-    .hero-visual {
-      flex: 1 1 320px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .phone-mock {
-      background: var(--white);
-      border-radius: 36px;
-      padding: 20px;
-      box-shadow: 0 30px 40px -20px rgba(0, 0, 0, 0.2);
-      border: 1px solid var(--gray-border);
-      max-width: 320px;
-      width: 100%;
-    }
-
-    .phone-screen {
-      background: var(--blue-light);
-      border-radius: 24px;
-      padding: 24px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .phone-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .phone-header i {
-      color: var(--blue-primary);
-      font-size: 1.5rem;
-    }
-
-    .phone-header span {
-      font-weight: 700;
-      color: var(--blue-deep);
-    }
-
-    .mock-item {
-      background: white;
-      border-radius: 14px;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-      border: 1px solid var(--gray-border);
-    }
-
-    .mock-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: var(--blue-soft);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--blue-primary);
-      font-size: 1.2rem;
-    }
-
-    .mock-lines {
-      flex: 1;
-    }
-
-    .mock-line {
-      height: 8px;
-      background: #cbd5e1;
-      border-radius: 8px;
-      margin-bottom: 6px;
-      width: 80%;
-    }
-
-    .mock-line.short {
-      width: 50%;
-    }
-
-    /* services / sections grid */
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 24px;
-      margin-top: 32px;
-    }
-
-    .service-card {
-      background: var(--white);
-      border: 1px solid var(--gray-border);
-      border-radius: 24px;
-      padding: 28px 20px;
-      text-align: center;
-      transition: all 0.2s;
-      box-shadow: var(--shadow-sm);
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-
-    .service-card:hover {
-      border-color: var(--blue-primary);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-4px);
-    }
-
-    .service-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 16px;
-      background: var(--blue-light);
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      color: var(--blue-primary);
-    }
-
-    .service-card h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--blue-deep);
-    }
-
-    .service-card p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    /* vendor / agent / valuer strip */
-    .roles-strip {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 24px;
-      margin: 40px 0 20px;
-    }
-
-    .role-pill {
-      background: var(--blue-light);
-      color: var(--blue-deep);
-      font-weight: 600;
-      padding: 12px 32px;
-      border-radius: 60px;
-      font-size: 1.1rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .role-pill i {
-      color: var(--blue-primary);
-      font-size: 1.3rem;
-    }
-
-    /* how it works / pickup & valuer */
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 32px;
-      margin-top: 40px;
-    }
-
-    .step-item {
-      text-align: center;
-    }
-
-    .step-number {
-      width: 48px;
-      height: 48px;
-      background: var(--blue-primary);
-      color: white;
-      border-radius: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 1.3rem;
-      margin: 0 auto 20px;
-    }
-
-    .step-item h4 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--blue-deep);
-    }
-
-    .step-item p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    /* app download section */
-    .app-section {
-      background: var(--blue-deep);
-      color: white;
-      border-radius: 48px;
-      padding: 56px 48px;
-      margin: 40px auto;
-      max-width: 1100px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 32px;
-    }
-
-    .app-section h2 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-    }
-
-    .app-section p {
-      color: #bfdbfe;
-      font-size: 1.1rem;
-      max-width: 400px;
-    }
-
-    .app-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .app-section .app-badge {
-      background: #0a1f44;
-      border: 1px solid #1e3a8a;
-    }
-
-    .app-section .app-badge:hover {
-      background: #0b2b5c;
-    }
-
-    /* contact / footer */
-    .contact-section {
-      background: var(--gray-bg);
-      border-radius: 40px;
-      padding: 56px 48px;
-      margin: 20px auto 40px;
-      max-width: 1100px;
-    }
-
-    .contact-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 48px;
-      justify-content: space-between;
-    }
-
-    .contact-info h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--blue-deep);
-      margin-bottom: 16px;
-    }
-
-    .contact-info p {
-      color: var(--text-muted);
-      margin-bottom: 28px;
-    }
-
-    .contact-detail {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 18px;
-      font-size: 1.1rem;
-    }
-
-    .contact-detail i {
-      width: 44px;
-      height: 44px;
-      background: var(--blue-light);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--blue-primary);
-      font-size: 1.3rem;
-    }
-
-    .contact-detail span {
-      font-weight: 500;
-    }
-
-    .contact-detail a {
-      color: var(--blue-deep);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .contact-detail a:hover {
-      color: var(--blue-primary);
-    }
-
-    .map-placeholder {
-      background: var(--blue-light);
-      border-radius: 28px;
-      padding: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 12px;
-      color: var(--blue-deep);
-      font-weight: 600;
-      min-width: 240px;
-    }
-
-    .map-placeholder i {
-      font-size: 3rem;
-      color: var(--blue-primary);
-    }
-
-    .footer {
-      text-align: center;
-      padding: 32px 0 24px;
-      border-top: 1px solid var(--gray-border);
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    /* responsive */
-    @media (max-width: 768px) {
-      .navbar {
-        padding: 12px 0;
-      }
-
-      .nav-links {
-        gap: 16px;
-      }
-
-      .nav-links a span {
-        display: none; /* show only icons on small screens? not for all, but we keep text maybe */
-      }
-
-      .nav-links a i {
-        margin-right: 0;
-        font-size: 1.2rem;
-      }
-
-      .hero-content h1 {
-        font-size: 2.4rem;
-      }
-
-      section {
-        padding: 48px 0;
-      }
-
-      .section-title {
-        font-size: 1.8rem;
-      }
-
-      .app-section {
-        padding: 36px 24px;
-        border-radius: 32px;
-      }
-
-      .app-section h2 {
-        font-size: 1.8rem;
-      }
-
-      .contact-section {
-        padding: 36px 24px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .hero-actions {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .app-badges {
-        flex-direction: column;
-        width: 100%;
-      }
-
-      .app-badge {
-        width: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jainis Mobile · Second-hand buy & sell</title>
+    <!-- Font Awesome for icons (clean modern touch) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #ffffff;
+            color: #1e2b3c;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* blue & white theme */
+        :root {
+            --blue: #1a5f9c;
+            --blue-light: #e8f0fe;
+            --blue-dark: #0d3b66;
+            --white: #ffffff;
+            --gray-light: #f8fafc;
+            --gray-border: #e2e8f0;
+            --text-muted: #4a5c6e;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 12px 28px rgba(0, 50, 100, 0.08);
+        }
+
+        /* Header & Nav */
+        .navbar {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--gray-border);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.96);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.7rem;
+            letter-spacing: -0.02em;
+            color: var(--blue-dark);
+        }
+
+        .logo i {
+            color: var(--blue);
+            font-size: 2rem;
+        }
+
+        .logo span {
+            color: var(--blue);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 6px 4px;
+            transition: color 0.2s, border-bottom 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-links a:hover {
+            color: var(--blue);
+            border-bottom-color: var(--blue);
+        }
+
+        .app-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .app-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--blue-dark);
+            color: white;
+            border-radius: 40px;
+            padding: 8px 18px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.1s;
+            border: 1px solid transparent;
+        }
+
+        .app-btn i {
+            font-size: 1.2rem;
+        }
+
+        .app-btn:hover {
+            background-color: var(--blue);
+            transform: scale(1.02);
+        }
+
+        .app-btn.outline {
+            background: transparent;
+            border: 1px solid var(--blue);
+            color: var(--blue);
+        }
+
+        .app-btn.outline:hover {
+            background: var(--blue-light);
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(145deg, #ffffff 0%, #f2f7ff 100%);
+            padding: 70px 0 60px;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .hero-text {
+            flex: 1 1 380px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--blue-light);
+            color: var(--blue-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 6px 14px;
+            border-radius: 100px;
+            margin-bottom: 20px;
+        }
+
+        .hero-text h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+            color: var(--blue-dark);
+            margin-bottom: 18px;
+        }
+
+        .hero-text h1 i {
+            color: var(--blue);
+            font-style: normal;
+            background: var(--blue-light);
+            padding: 0 8px;
+            border-radius: 20px;
+        }
+
+        .hero-text p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 550px;
+            margin-bottom: 28px;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            background-color: var(--blue);
+            color: white;
+            padding: 14px 30px;
+            border-radius: 40px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 6px 14px rgba(26, 95, 156, 0.25);
+        }
+
+        .btn-primary:hover {
+            background-color: #0f4a7a;
+            box-shadow: 0 10px 20px rgba(26, 95, 156, 0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--blue);
+            padding: 14px 30px;
+            border-radius: 40px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1.5px solid var(--blue);
+            transition: background 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--blue-light);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--blue-dark);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .hero-visual {
+            flex: 1 1 320px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .phone-mock {
+            background: var(--blue-dark);
+            border-radius: 40px;
+            padding: 18px 10px;
+            box-shadow: 0 30px 40px -20px rgba(0, 30, 70, 0.4);
+            width: 280px;
+            height: 480px;
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .phone-screen {
+            background: white;
+            border-radius: 30px;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--blue-dark);
+            font-weight: 600;
+            gap: 10px;
+            background: linear-gradient(135deg, #fff, #eef4fc);
+        }
+
+        .phone-screen i {
+            font-size: 4rem;
+            color: var(--blue);
+            opacity: 0.9;
+        }
+
+        .phone-screen span {
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
+        }
+
+        /* Sections */
+        section {
+            padding: 70px 0;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+            color: var(--blue-dark);
+        }
+
+        .section-sub {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 48px;
+            max-width: 700px;
+        }
+
+        .grid-3, .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 28px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 28px 24px;
+            border: 1px solid var(--gray-border);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: #cbd9eb;
+        }
+
+        .card-icon {
+            background: var(--blue-light);
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon i {
+            font-size: 1.8rem;
+            color: var(--blue);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--blue-dark);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* vendor & agent */
+        .badge-blue {
+            background: var(--blue-light);
+            color: var(--blue-dark);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 16px;
+        }
+
+        /* admin panel highlight */
+        .admin-section {
+            background: var(--blue-dark);
+            color: white;
+            border-radius: 40px;
+            padding: 50px 40px;
+            margin: 30px 0 20px;
+            box-shadow: 0 20px 30px -10px rgba(13, 59, 102, 0.4);
+        }
+
+        .admin-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .admin-section p {
+            color: #cfdef5;
+            max-width: 700px;
+            margin-bottom: 32px;
+        }
+
+        .admin-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px 40px;
+        }
+
+        .admin-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .admin-feature-item i {
+            font-size: 1.5rem;
+            color: #9bc3ff;
+        }
+
+        /* app download section */
+        .app-section {
+            background: var(--gray-light);
+            text-align: center;
+            padding: 60px 0;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .app-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .store-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--blue-dark);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .store-btn i {
+            font-size: 2rem;
+        }
+
+        .store-btn span {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        .store-btn small {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            letter-spacing: 0.3px;
+        }
+
+        .store-btn strong {
+            font-size: 1.1rem;
+        }
+
+        .store-btn:hover {
+            background: var(--blue);
+            transform: scale(1.03);
+        }
+
+        /* footer */
+        .footer {
+            padding: 40px 0;
+            background: var(--white);
+            color: var(--text-muted);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .footer i {
+            color: var(--blue);
+            margin: 0 4px;
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .hero-text h1 {
+                font-size: 2.4rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .admin-section {
+                padding: 36px 24px;
+            }
+
+            .phone-mock {
+                width: 240px;
+                height: 420px;
+            }
+
+            .app-btn span {
+                display: none;
+            }
+
+            .app-btn {
+                padding: 8px 14px;
+            }
+
+            .app-btn i {
+                margin: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+
+            .hero-cta .btn-primary, .hero-cta .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .store-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* utility */
+        .text-blue {
+            color: var(--blue);
+        }
+
+        .mt-2 {
+            margin-top: 16px;
+        }
+    </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <header class="navbar">
+
+<!-- NAVBAR -->
+<div class="navbar">
     <div class="container nav-container">
-      <a href="#" class="logo">
-        <i class="fas fa-mobile-alt"></i>
-        <span>Jainis Mobile</span>
-      </a>
-      <div class="nav-links">
-        <a href="#buy"><i class="fas fa-shopping-bag"></i> Buy</a>
-        <a href="#sell"><i class="fas fa-tag"></i> Sell</a>
-        <a href="#vendor"><i class="fas fa-store"></i> Vendor</a>
-        <a href="#agent"><i class="fas fa-user-tie"></i> Agent</a>
-        <a href="#pickup"><i class="fas fa-truck"></i> Pickup</a>
-        <a href="#valuer"><i class="fas fa-calculator"></i> Valuer</a>
-        <a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
-      </div>
-    </div>
-  </header>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <i class="fas fa-map-pin" style="margin-right: 6px;"></i> Delhi NCR
+        <div class="logo">
+            <i class="fas fa-mobile-alt"></i>
+            <div>Jainis<span>Mobile</span></div>
         </div>
-        <h1>
-          Buy & sell <span>second-hand mobiles</span> with trust
-        </h1>
-        <p>
-          Jainis Mobile — just like Cashify, but local. Sell your old phone, buy certified pre-owned devices, and get doorstep pickup & valuation. 
+        <div class="nav-links">
+            <a href="#buy">Buy</a>
+            <a href="#sell">Sell</a>
+            <a href="#vendor">Vendor</a>
+            <a href="#agent">Agent</a>
+            <a href="#pickup">Pickup</a>
+            <a href="#valuer">Valuer</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="app-buttons">
+            <a href="#" class="app-btn"><i class="fab fa-android"></i> <span>Android</span></a>
+            <a href="#" class="app-btn outline"><i class="fab fa-apple"></i> <span>iOS</span></a>
+        </div>
+    </div>
+</div>
+
+<!-- HERO SECTION -->
+<div class="hero">
+    <div class="container hero-content">
+        <div class="hero-text">
+            <div class="hero-badge"><i class="fas fa-map-pin"></i> Delhi NCR · trusted since 2022</div>
+            <h1>Buy & sell <i>second‑hand</i> mobiles with confidence</h1>
+            <p>Jainis Mobile — India's clean & modern marketplace for pre‑owned smartphones. Verified vendors, expert valuers, and doorstep pickup. All in one app.</p>
+            <div class="hero-cta">
+                <a href="#sell" class="btn-primary"><i class="fas fa-tag"></i> Sell your phone</a>
+                <a href="#buy" class="btn-secondary"><i class="fas fa-search"></i> Browse phones</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">12k+</span>
+                    <span class="stat-label">Devices sold</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4.8★</span>
+                    <span class="stat-label">User rating</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Verified vendors</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="phone-mock">
+                <div class="phone-screen">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Jainis Mobile</span>
+                    <div style="font-size: 0.85rem; color: #1a5f9c; margin-top: 10px;">Buy · Sell · Exchange</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BUY / SELL CARDS -->
+<section id="buy">
+    <div class="container">
+        <h2 class="section-title">Buy & Sell · one platform</h2>
+        <p class="section-sub">Whether you want a certified pre‑owned phone or want to sell your current one — we've got you.</p>
+        <div class="grid-3">
+            <!-- BUY -->
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-shopping-bag"></i></div>
+                <h3>Buy</h3>
+                <p>Choose from thousands of quality‑checked second‑hand mobiles. 6‑month warranty, transparent pricing, and fast delivery in Delhi.</p>
+                <div class="badge-blue">50‑point inspection</div>
+            </div>
+            <!-- SELL -->
+            <div class="card" id="sell">
+                <div class="card-icon"><i class="fas fa-dollar-sign"></i></div>
+                <h3>Sell</h3>
+                <p>Get instant valuation, free pickup, and same‑day payment. Sell your old phone at the best market price.</p>
+                <div class="badge-blue">Price match guarantee</div>
+            </div>
+            <!-- VENDOR -->
+            <div class="card" id="vendor">
+                <div class="card-icon"><i class="fas fa-store"></i></div>
+                <h3>Vendor</h3>
+                <p>Registered vendors can list bulk inventory, manage stock, and reach thousands of buyers. Easy onboarding & wallet system.</p>
+                <div class="badge-blue">Verified partner</div>
+            </div>
+            <!-- AGENT -->
+            <div class="card" id="agent">
+                <div class="card-icon"><i class="fas fa-user-tie"></i></div>
+                <h3>Agent</h3>
+                <p>Our field agents help with device inspection, pickup, and closing deals. Join the network and earn per transaction.</p>
+                <div class="badge-blue">Delhi NCR network</div>
+            </div>
+            <!-- PICKUP -->
+            <div class="card" id="pickup">
+                <div class="card-icon"><i class="fas fa-truck"></i></div>
+                <h3>Pickup</h3>
+                <p>Schedule a doorstep pickup at your convenience. Our agent will verify the device and initiate payment instantly.</p>
+                <div class="badge-blue">Free doorstep</div>
+            </div>
+            <!-- VALUER -->
+            <div class="card" id="valuer">
+                <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                <h3>Valuer</h3>
+                <p>Certified valuers assess your device accurately. Get a fair price based on real‑time market data and condition.</p>
+                <div class="badge-blue">Expert evaluation</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ADMIN PANEL + WALLET RECHARGE (highlighted) -->
+<section>
+    <div class="container">
+        <div class="admin-section">
+            <h2><i class="fas fa-sliders-h" style="margin-right: 12px;"></i> Admin panel · full control</h2>
+            <p>Manage everything from one dashboard — phone listings, vendor & agent approvals, and instant wallet recharge for vendors/agents.</p>
+            <div class="admin-features">
+                <div class="admin-feature-item"><i class="fas fa-list-ul"></i> Phone listings</div>
+                <div class="admin-feature-item"><i class="fas fa-check-circle"></i> Vendor approvals</div>
+                <div class="admin-feature-item"><i class="fas fa-user-check"></i> Agent approvals</div>
+                <div class="admin-feature-item"><i class="fas fa-wallet"></i> Wallet recharge</div>
+                <div class="admin-feature-item"><i class="fas fa-chart-pie"></i> Analytics</div>
+            </div>
+            <div style="margin-top: 32px; font-size: 0.95rem; background: rgba(255,255,255,0.1); padding: 16px 20px; border-radius: 20px;">
+                <i class="fas fa-bolt" style="margin-right: 10px;"></i> Admin can recharge vendor / agent wallet in one click — funds instantly reflect in their dashboard.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- APP DOWNLOAD LINKS (Android & iOS) -->
+<div class="app-section" id="app-download">
+    <div class="container">
+        <h2 class="section-title" style="margin-bottom: 8px;">Get the Jainis Mobile app</h2>
+        <p style="color: var(--text-muted); max-width: 550px; margin: 0 auto 16px;">Buy, sell, and manage on the go. Available for Android and iOS.</p>
+        <div class="app-links">
+            <a href="#" class="store-btn" aria-label="Download on Android">
+                <i class="fab fa-android"></i>
+                <span>
+                    <small>GET IT ON</small>
+                    <strong>Google Play</strong>
+                </span>
+            </a>
+            <a href="#" class="store-btn" aria-label="Download on iOS">
+                <i class="fab fa-apple"></i>
+                <span>
+                    <small>Download on the</small>
+                    <strong>App Store</strong>
+                </span>
+            </a>
+        </div>
+        <p style="margin-top: 24px; font-size: 0.9rem; color: var(--text-muted);"><i class="fas fa-shield-alt"></i> 100% secure · trusted by 10k+ users</p>
+    </div>
+</div>
+
+<!-- CONTACT / FOOTER -->
+<section id="contact" style="border-bottom: none; padding-bottom: 40px;">
+    <div class="container">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px;">
+            <div>
+                <h2 class="section-title" style="font-size: 1.8rem;">Contact Jainis Mobile</h2>
+                <p style="color: var(--text-muted); max-width: 400px;">Have questions? Reach out to our Delhi team — we’re here to help.</p>
+                <div style="margin-top: 24px;">
+                    <p><i class="fas fa-map-marker-alt" style="color: var(--blue); width: 24px;"></i> Delhi NCR, India</p>
+                    <p><i class="fas fa-phone-alt" style="color: var(--blue); width: 24px;"></i> +91 98765 43210</p>
+                    <p><i class="fas fa-envelope" style="color: var(--blue); width: 24px;"></i> hello@jainismobile.in</p>
+                </div>
+            </div>
+            <div style="background: var(--blue-light); padding: 28px 32px; border-radius: 32px; min-width: 280px;">
+                <h3 style="margin-bottom: 12px; color: var(--blue-dark);">Business hours</h3>
+                <p style="margin-bottom: 8px;"><i class="far fa-clock" style="color: var(--blue); margin-right: 10px;"></i> Mon–Sat: 9:00 AM – 8:00 PM</p>
+                <p><i class="far fa-clock" style="color: var(--blue); margin-right: 10px;"></i> Sunday: 10:00 AM – 6:00 PM</p>
+                <div style="margin-top: 20px;">
+                    <a href="#" class="btn-primary" style="padding: 12px 24px; font-size: 0.9rem;"><i class="fas fa-headset"></i> Chat with support</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="container">
+        <p>© 2025 Jainis Mobile · Second‑hand buy & sell · Delhi</p>
+        <p style="margin-top: 8px;">
+            <i class="fas fa-mobile-alt"></i> Buy <i class="fas fa-circle" style="font-size: 0.4rem; vertical-align: middle;"></i> 
+            Sell <i class="fas fa-circle" style="font-size: 0.4rem; vertical-align: middle;"></i> 
+            Vendor <i class="fas fa-circle" style="font-size: 0.4rem; vertical-align: middle;"></i> 
+            Agent <i class="fas fa-circle" style="font-size: 0.4rem; vertical-align: middle;"></i> 
+            Pickup <i class="fas fa-circle" style="font-size: 0.4rem; vertical-align: middle;"></i> 
+            Valuer
         </p>
-        <div class="hero-actions">
-          <a href="#sell" class="btn btn-primary"><i class="fas fa-tag"></i> Sell your phone</a>
-          <a href="#buy" class="btn btn-outline"><i class="fas fa-search"></i> Browse devices</a>
-        </div>
-        <div class="app-badges">
-          <a href="#" class="app-badge">
-            <i class="fab fa-android"></i>
-            <div>
-              <span class="small-text">GET IT ON</span>
-              <span class="big-text">Google Play</span>
-            </div>
-          </a>
-          <a href="#" class="app-badge">
-            <i class="fab fa-apple"></i>
-            <div>
-              <span class="small-text">Download on the</span>
-              <span class="big-text">App Store</span>
-            </div>
-          </a>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <div class="phone-mock">
-          <div class="phone-screen">
-            <div class="phone-header">
-              <i class="fas fa-mobile-alt"></i>
-              <span>Jainis Mobile</span>
-            </div>
-            <div class="mock-item">
-              <div class="mock-icon"><i class="fas fa-mobile"></i></div>
-              <div class="mock-lines">
-                <div class="mock-line"></div>
-                <div class="mock-line short"></div>
-              </div>
-            </div>
-            <div class="mock-item">
-              <div class="mock-icon"><i class="fas fa-rupee-sign"></i></div>
-              <div class="mock-lines">
-                <div class="mock-line"></div>
-                <div class="mock-line short"></div>
-              </div>
-            </div>
-            <div class="mock-item">
-              <div class="mock-icon"><i class="fas fa-check-circle"></i></div>
-              <div class="mock-lines">
-                <div class="mock-line"></div>
-                <div class="mock-line short"></div>
-              </div>
-            </div>
-            <div style="font-size: 0.8rem; text-align: center; color: var(--blue-primary); font-weight: 600; margin-top: 8px;">Trusted by 10k+ users</div>
-          </div>
-        </div>
-      </div>
     </div>
-  </section>
+</div>
 
-  <!-- Buy & Sell services grid (Buy, Sell, Vendor, Agent, Pickup, Valuer) -->
-  <section id="buy" style="padding-top: 20px;">
-    <div class="container">
-      <h2 class="section-title text-center">Everything for your pre-owned phone</h2>
-      <p class="section-sub text-center">Buy, sell, vendor, agent, pickup, valuer — all in one place.</p>
-      
-      <div class="services-grid">
-        <a href="#buy" class="service-card" id="buy">
-          <div class="service-icon"><i class="fas fa-shopping-cart"></i></div>
-          <h3>Buy</h3>
-          <p>Certified pre-owned phones with warranty</p>
-        </a>
-        <a href="#sell" class="service-card" id="sell">
-          <div class="service-icon"><i class="fas fa-tag"></i></div>
-          <h3>Sell</h3>
-          <p>Instant quote, free pickup, quick payment</p>
-        </a>
-        <a href="#vendor" class="service-card" id="vendor">
-          <div class="service-icon"><i class="fas fa-store-alt"></i></div>
-          <h3>Vendor</h3>
-          <p>Partner with us for bulk devices</p>
-        </a>
-        <a href="#agent" class="service-card" id="agent">
-          <div class="service-icon"><i class="fas fa-user-tie"></i></div>
-          <h3>Agent</h3>
-          <p>Become an agent & earn commissions</p>
-        </a>
-        <a href="#pickup" class="service-card" id="pickup">
-          <div class="service-icon"><i class="fas fa-truck"></i></div>
-          <h3>Pickup</h3>
-          <p>Doorstep pickup at your convenience</p>
-        </a>
-        <a href="#valuer" class="service-card" id="valuer">
-          <div class="service-icon"><i class="fas fa-calculator"></i></div>
-          <h3>Valuer</h3>
-          <p>Expert device valuation in minutes</p>
-        </a>
-      </div>
-    </div>
-  </section>
+<!-- smooth scrolling (optional) -->
+<script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href === "#" || href === "") return;
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+</script>
 
-  <!-- Roles strip (vendor, agent, valuer, pickup) -->
-  <section style="padding: 0 0 20px;">
-    <div class="container">
-      <div class="roles-strip">
-        <span class="role-pill"><i class="fas fa-handshake"></i> Vendor</span>
-        <span class="role-pill"><i class="fas fa-id-card"></i> Agent</span>
-        <span class="role-pill"><i class="fas fa-clipboard-check"></i> Valuer</span>
-        <span class="role-pill"><i class="fas fa-box-open"></i> Pickup</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- How pickup and valuer works -->
-  <section style="background: var(--gray-bg); padding: 72px 0;">
-    <div class="container">
-      <h2 class="section-title text-center">Pickup & valuation, simplified</h2>
-      <p class="section-sub text-center">Get your phone valued and picked up from home — no hassle.</p>
-      <div class="steps-grid">
-        <div class="step-item">
-          <div class="step-number">1</div>
-          <h4>Tell us your phone</h4>
-          <p>Select brand, model, and condition in the app.</p>
-        </div>
-        <div class="step-item">
-          <div class="step-number">2</div>
-          <h4>Get instant quote</h4>
-          <p>Our valuer engine gives a fair market price.</p>
-        </div>
-        <div class="step-item">
-          <div class="step-number">3</div>
-          <h4>Schedule pickup</h4>
-          <p>Choose a time slot; our agent comes to you.</p>
-        </div>
-        <div class="step-item">
-          <div class="step-number">4</div>
-          <h4>Get paid instantly</h4>
-          <p>On-spot payment after quick verification.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- App download section -->
-  <div class="container">
-    <div class="app-section" id="app-download">
-      <div>
-        <h2>Get the Jainis Mobile app</h2>
-        <p>Buy, sell, and manage pickups — all from your phone. Available on Android & iOS.</p>
-      </div>
-      <div class="app-buttons">
-        <a href="#" class="app-badge">
-          <i class="fab fa-android"></i>
-          <div>
-            <span class="small-text">GET IT ON</span>
-            <span class="big-text">Google Play</span>
-          </div>
-        </a>
-        <a href="#" class="app-badge">
-          <i class="fab fa-apple"></i>
-          <div>
-            <span class="small-text">Download on the</span>
-            <span class="big-text">App Store</span>
-          </div>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Contact section -->
-  <div class="container" id="contact">
-    <div class="contact-section">
-      <div class="contact-grid">
-        <div class="contact-info">
-          <h2>Contact Jainis Mobile</h2>
-          <p>We're here to help you buy or sell. Reach out for any query.</p>
-          <div class="contact-detail">
-            <i class="fas fa-map-marker-alt"></i>
-            <span>Delhi, India</span>
-          </div>
-          <div class="contact-detail">
-            <i class="fas fa-phone-alt"></i>
-            <span><a href="tel:+911234567890">+91 12345 67890</a></span>
-          </div>
-          <div class="contact-detail">
-            <i class="fas fa-envelope"></i>
-            <span><a href="mailto:hello@jainismobile.in">hello@jainismobile.in</a></span>
-          </div>
-        </div>
-        <div class="map-placeholder">
-          <i class="fas fa-map"></i>
-          <span>Delhi NCR — service available</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <p>© 2025 Jainis Mobile — second-hand mobile buy & sell, Delhi. All rights reserved.</p>
-      <p style="margin-top: 8px; font-size: 0.85rem;">
-        <i class="fas fa-mobile-alt" style="color: var(--blue-primary);"></i> Buy · Sell · Vendor · Agent · Pickup · Valuer
-      </p>
-    </div>
-  </footer>
 </body>
 </html>
