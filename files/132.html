@@ -1,1 +1,1749 @@
-Home | Buy | Sell | Vendor | Agent | Pickup | Valuer | Contact | Download App
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jainis Mobile — Delhi's Trusted Second-Hand Phone Marketplace</title>
+  <!-- Google Fonts: Inter + Bricolage Grotesque -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --jainis-blue: #1a5cff;
+      --jainis-blue-dark: #0f3eb3;
+      --jainis-blue-light: #e8efff;
+      --jainis-sky: #f0f5ff;
+      --jainis-ink: #0b1a33;
+      --jainis-muted: #5a6b85;
+      --jainis-border: #e2e8f0;
+      --jainis-white: #ffffff;
+      --jainis-surface: #f9fbff;
+      --font-display: 'Bricolage Grotesque', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--jainis-white);
+      color: var(--jainis-ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* === Typography === */
+    .font-display { font-family: var(--font-display); }
+
+    h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+
+    .hero-headline { font-size: clamp(2.8rem, 6vw, 5.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; }
+
+    .section-headline { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 700; letter-spacing: -0.03em; }
+
+    .body-lg { font-size: 1.125rem; line-height: 1.7; color: var(--jainis-muted); }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--jainis-blue); color: #fff;
+      padding: 0.875rem 2rem; border-radius: 9999px;
+      font-weight: 600; font-size: 1rem;
+      transition: all 0.2s ease-out;
+      border: none; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(26, 92, 255, 0.25);
+    }
+    .btn-primary:hover {
+      background: var(--jainis-blue-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(26, 92, 255, 0.35);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn-primary:focus-visible { outline: 3px solid var(--jainis-blue); outline-offset: 2px; }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; color: var(--jainis-ink);
+      padding: 0.875rem 2rem; border-radius: 9999px;
+      font-weight: 600; font-size: 1rem;
+      border: 1.5px solid var(--jainis-border);
+      transition: all 0.2s ease-out; cursor: pointer;
+    }
+    .btn-secondary:hover {
+      border-color: var(--jainis-blue);
+      color: var(--jainis-blue);
+      background: var(--jainis-sky);
+      transform: translateY(-2px);
+    }
+    .btn-secondary:active { transform: translateY(0) scale(0.98); }
+    .btn-secondary:focus-visible { outline: 3px solid var(--jainis-blue); outline-offset: 2px; }
+
+    /* === Cards === */
+    .premium-card {
+      background: #fff;
+      border: 1px solid var(--jainis-border);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      transition: all 0.3s ease-out;
+    }
+    .premium-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px -15px rgba(26, 92, 255, 0.15);
+      border-color: rgba(26, 92, 255, 0.3);
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 1.5rem;
+    }
+
+    /* === Section reveal === */
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* === Header === */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      transition: all 0.3s ease-out;
+      padding: 1rem 0;
+    }
+    .site-header.scrolled {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      padding: 0.6rem 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    }
+
+    /* === Hero gradient mesh === */
+    .hero-mesh {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 20%, rgba(26, 92, 255, 0.12), transparent),
+        radial-gradient(ellipse 50% 40% at 20% 70%, rgba(26, 92, 255, 0.08), transparent),
+        radial-gradient(ellipse 40% 30% at 90% 80%, rgba(100, 160, 255, 0.1), transparent);
+      pointer-events: none;
+    }
+
+    .noise-overlay::after {
+      content: ''; position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* === Ticker === */
+    .ticker-wrap { overflow: hidden; white-space: nowrap; }
+    .ticker { display: inline-block; animation: ticker 30s linear infinite; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* === Form styles === */
+    .form-input {
+      width: 100%; padding: 0.875rem 1.25rem;
+      border: 1.5px solid var(--jainis-border);
+      border-radius: 1rem; font-size: 0.95rem;
+      font-family: var(--font-body);
+      transition: all 0.2s ease-out;
+      background: #fff; color: var(--jainis-ink);
+    }
+    .form-input:focus {
+      outline: none; border-color: var(--jainis-blue);
+      box-shadow: 0 0 0 4px rgba(26, 92, 255, 0.1);
+    }
+    .form-input.error { border-color: #ef4444; box-shadow: 0 0 0 4px rgba(239,68,68,0.1); }
+    .form-label { font-weight: 600; font-size: 0.875rem; margin-bottom: 0.4rem; display: block; color: var(--jainis-ink); }
+
+    /* === Admin panel table === */
+    .admin-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .admin-table th { text-align: left; padding: 0.75rem 1rem; font-weight: 600; color: var(--jainis-muted); border-bottom: 2px solid var(--jainis-border); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .admin-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--jainis-border); }
+    .admin-table tr:hover td { background: var(--jainis-sky); }
+
+    .status-badge { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.2rem 0.75rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; }
+    .status-active { background: #dcfce7; color: #166534; }
+    .status-pending { background: #fef9c3; color: #854d0e; }
+    .status-blocked { background: #fee2e2; color: #991b1b; }
+
+    /* === Steps timeline === */
+    .step-line { position: absolute; left: 1.25rem; top: 2.5rem; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--jainis-blue), transparent); }
+
+    /* === Accordion === */
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+    .accordion-content.open { max-height: 500px; }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      .premium-card { padding: 1.5rem; }
+    }
+
+    /* === Focus visible === */
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid var(--jainis-blue); outline-offset: 2px; border-radius: 4px;
+    }
+
+    /* === Scrollbar === */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--jainis-surface); }
+    ::-webkit-scrollbar-thumb { background: #c7d4e8; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--jainis-blue); }
+
+    /* === Utility === */
+    .text-balance { text-wrap: balance; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header" id="header">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2.5" aria-label="Jainis Mobile Home">
+          <div class="w-9 h-9 rounded-xl bg-[#1a5cff] flex items-center justify-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+          </div>
+          <span class="font-display font-800 text-xl tracking-tight">Jainis<span class="text-[#1a5cff]">Mobile</span></span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+          <a href="#buy" class="text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] transition-colors">Buy</a>
+          <a href="#sell" class="text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] transition-colors">Sell</a>
+          <a href="#how-it-works" class="text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] transition-colors">How It Works</a>
+          <a href="#agents" class="text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] transition-colors">Agents</a>
+          <a href="#admin" class="text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] transition-colors">Admin</a>
+          <a href="#contact" class="text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] transition-colors">Contact</a>
+        </nav>
+
+        <!-- Right actions -->
+        <div class="flex items-center gap-3">
+          <a href="#sell" class="hidden sm:inline-flex btn-primary text-sm !py-2.5 !px-5">Sell Your Phone</a>
+          <button class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-[#e2e8f0]" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="lg:hidden hidden absolute top-full left-0 right-0 bg-white border-b border-[#e2e8f0] shadow-xl" id="mobileMenu">
+      <nav class="px-6 py-4 flex flex-col gap-1" aria-label="Mobile navigation">
+        <a href="#buy" class="py-3 text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] border-b border-[#f0f5ff] transition-colors">Buy</a>
+        <a href="#sell" class="py-3 text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] border-b border-[#f0f5ff] transition-colors">Sell</a>
+        <a href="#how-it-works" class="py-3 text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] border-b border-[#f0f5ff] transition-colors">How It Works</a>
+        <a href="#agents" class="py-3 text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] border-b border-[#f0f5ff] transition-colors">Agents</a>
+        <a href="#admin" class="py-3 text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] border-b border-[#f0f5ff] transition-colors">Admin</a>
+        <a href="#contact" class="py-3 text-sm font-medium text-[#5a6b85] hover:text-[#1a5cff] transition-colors">Contact</a>
+        <a href="#sell" class="btn-primary justify-center mt-3 text-sm">Sell Your Phone</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========== HERO ========== -->
+  <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden noise-overlay" id="home">
+    <div class="hero-mesh"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#e8efff] border border-[#c7d9ff] mb-6 reveal">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="text-xs font-semibold text-[#1a5cff]">Now serving all of Delhi NCR</span>
+          </div>
+          <h1 class="hero-headline text-balance reveal">
+            Sell your old phone.<br>
+            <span class="text-[#1a5cff]">Get paid on the spot.</span>
+          </h1>
+          <p class="body-lg mt-6 max-w-lg reveal">
+            Jainis Mobile is Delhi's trusted second-hand phone marketplace. Upload your phone's details, get an instant quote, and our verified agent picks it up from your doorstep — and pays you instantly from their wallet.
+          </p>
+          <div class="flex flex-wrap gap-4 mt-8 reveal">
+            <a href="#sell" class="btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              Sell Your Phone
+            </a>
+            <a href="#buy" class="btn-secondary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              Browse Phones
+            </a>
+          </div>
+
+          <!-- Trust stats -->
+          <div class="grid grid-cols-3 gap-6 mt-12 reveal">
+            <div>
+              <div class="font-display text-3xl font-800 text-[#1a5cff]">12K+</div>
+              <div class="text-xs text-[#5a6b85] font-medium mt-1">Phones Sold</div>
+            </div>
+            <div>
+              <div class="font-display text-3xl font-800 text-[#1a5cff]">98%</div>
+              <div class="text-xs text-[#5a6b85] font-medium mt-1">Happy Sellers</div>
+            </div>
+            <div>
+              <div class="font-display text-3xl font-800 text-[#1a5cff]">2 hrs</div>
+              <div class="text-xs text-[#5a6b85] font-medium mt-1">Avg. Pickup</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero visual - phone mockup -->
+        <div class="relative reveal">
+          <div class="relative mx-auto w-full max-w-sm">
+            <!-- Floating cards -->
+            <div class="absolute -top-6 -left-6 glass-card p-3.5 z-20 shadow-xl" style="animation: float 4s ease-in-out infinite;">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-[#dcfce7] flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div>
+                  <div class="text-xs font-bold">Payment Sent</div>
+                  <div class="text-[10px] text-[#5a6b85]">₹18,500 credited</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="absolute -bottom-4 -right-4 glass-card p-3.5 z-20 shadow-xl" style="animation: float 4s ease-in-out 1s infinite;">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-[#e8efff] flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <div>
+                  <div class="text-xs font-bold">Agent Assigned</div>
+                  <div class="text-[10px] text-[#5a6b85]">ETA 45 mins</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phone frame -->
+            <div class="relative bg-gradient-to-br from-[#1a5cff] to-[#0f3eb3] rounded-[2.5rem] p-2.5 shadow-2xl shadow-[#1a5cff]/30">
+              <div class="bg-white rounded-[2rem] overflow-hidden">
+                <!-- Status bar -->
+                <div class="bg-[#f9fbff] px-5 py-3 flex justify-between items-center border-b border-[#e2e8f0]">
+                  <span class="text-xs font-bold">Jainis Mobile</span>
+                  <div class="flex gap-1.5">
+                    <div class="w-2 h-2 rounded-full bg-[#dcfce7]"></div>
+                    <div class="w-2 h-2 rounded-full bg-[#fef9c3]"></div>
+                  </div>
+                </div>
+                <!-- App content -->
+                <div class="p-5 space-y-4">
+                  <div class="text-center">
+                    <div class="text-[10px] text-[#5a6b85] font-medium uppercase tracking-wide">Instant Quote</div>
+                    <div class="font-display text-3xl font-800 text-[#1a5cff] mt-1">₹18,500</div>
+                    <div class="text-[10px] text-[#5a6b85] mt-1">iPhone 13 · 128GB · Good</div>
+                  </div>
+                  <div class="space-y-2">
+                    <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#f0f5ff]">
+                      <div class="w-7 h-7 rounded-lg bg-white flex items-center justify-center shadow-sm">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+                      </div>
+                      <div class="flex-1">
+                        <div class="text-[10px] font-bold">Condition Verified</div>
+                        <div class="text-[9px] text-[#5a6b85]">No screen damage</div>
+                      </div>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#f0f5ff]">
+                      <div class="w-7 h-7 rounded-lg bg-white flex items-center justify-center shadow-sm">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16v16H4z"/><path d="M9 9h6v6H9z"/></svg>
+                      </div>
+                      <div class="flex-1">
+                        <div class="text-[10px] font-bold">IMEI Tracked</div>
+                        <div class="text-[9px] text-[#5a6b85]">••••••••1234</div>
+                      </div>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#e8efff] border border-[#c7d9ff]">
+                      <div class="w-7 h-7 rounded-lg bg-[#1a5cff] flex items-center justify-center">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+                      </div>
+                      <div class="flex-1">
+                        <div class="text-[10px] font-bold text-[#1a5cff]">Payment Ready</div>
+                        <div class="text-[9px] text-[#1a5cff]/70">Agent wallet funded</div>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="w-full bg-[#1a5cff] text-white rounded-xl py-2.5 text-xs font-bold">Confirm Pickup</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TICKER BAR ========== -->
+  <div class="bg-[#1a5cff] py-3.5 overflow-hidden">
+    <div class="ticker-wrap">
+      <div class="ticker flex gap-12 items-center">
+        <span class="text-white text-sm font-semibold flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Delhi's #1 second-hand phone marketplace</span>
+        <span class="text-white text-sm font-semibold flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Instant payment from agent wallet</span>
+        <span class="text-white text-sm font-semibold flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg> IMEI verified & tracked</span>
+        <span class="text-white text-sm font-semibold flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg> Aadhaar-verified agents</span>
+        <span class="text-white text-sm font-semibold flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Delhi's #1 second-hand phone marketplace</span>
+        <span class="text-white text-sm font-semibold flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Instant payment from agent wallet</span>
+        <span class="text-white text-sm font-semibold flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg> IMEI verified & tracked</span>
+        <span class="text-white text-sm font-semibold flex items-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg> Aadhaar-verified agents</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== BUY SECTION ========== -->
+  <section class="py-20 lg:py-28 bg-[#f9fbff]" id="buy">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#e2e8f0] mb-5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="text-xs font-semibold text-[#1a5cff]">Buy Refurbished</span>
+        </div>
+        <h2 class="section-headline">Certified pre-owned phones,<br>priced honestly.</h2>
+        <p class="body-lg mt-4">Every phone is inspected, graded, and IMEI-verified. Search by uploading a photo or browse our curated catalog.</p>
+      </div>
+
+      <!-- Search by image -->
+      <div class="max-w-3xl mx-auto mb-12 reveal">
+        <div class="premium-card !p-6 lg:!p-8">
+          <div class="flex flex-col sm:flex-row items-stretch gap-3">
+            <div class="flex-1 relative">
+              <svg class="absolute left-4 top-1/2 -translate-y-1/2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5a6b85" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <input type="text" placeholder="Search by make, model, or upload a photo..." class="form-input !pl-11" aria-label="Search phones">
+            </div>
+            <button class="btn-primary whitespace-nowrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              Upload Photo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phone listings -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" id="phoneGrid">
+        <!-- Cards injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SELL SECTION ========== -->
+  <section class="py-20 lg:py-28" id="sell">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <div class="lg:sticky lg:top-28">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#e8efff] border border-[#c7d9ff] mb-5 reveal">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span class="text-xs font-semibold text-[#1a5cff]">Sell Your Phone</span>
+          </div>
+          <h2 class="section-headline reveal">Get an instant quote.<br>Get paid at your door.</h2>
+          <p class="body-lg mt-4 reveal">Fill in your phone details, upload photos, and we'll assign a verified agent to pick it up. Payment is transferred instantly from the agent's wallet — no waiting, no haggling.</p>
+
+          <!-- Step timeline -->
+          <div class="mt-10 space-y-6 reveal">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-[#1a5cff] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#1a5cff]/25">
+                <span class="text-white font-bold text-sm">1</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-base">Upload phone details</h4>
+                <p class="text-sm text-[#5a6b85] mt-1">Images, condition, make, model, bill, charger, damage details, and IMEI.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-[#1a5cff] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#1a5cff]/25">
+                <span class="text-white font-bold text-sm">2</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-base">Agent assigned & picks up</h4>
+                <p class="text-sm text-[#5a6b85] mt-1">Our Aadhaar-verified agent visits your location, re-verifies condition and photos.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-[#1a5cff] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#1a5cff]/25">
+                <span class="text-white font-bold text-sm">3</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-base">Instant payment from wallet</h4>
+                <p class="text-sm text-[#5a6b85] mt-1">Agent pays you on the spot. Jainis charges a small per-phone service fee to the agent.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sell Form -->
+        <div class="premium-card !p-6 lg:!p-8 reveal" style="background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);">
+          <h3 class="font-display text-xl font-800 mb-6">Tell us about your phone</h3>
+          <form id="sellForm" class="space-y-4" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label" for="sellMake">Make *</label>
+                <select class="form-input" id="sellMake" required>
+                  <option value="">Select brand</option>
+                  <option>Apple</option>
+                  <option>Samsung</option>
+                  <option>OnePlus</option>
+                  <option>Xiaomi</option>
+                  <option>Realme</option>
+                  <option>Vivo</option>
+                  <option>Oppo</option>
+                  <option>Google</option>
+                  <option>Other</option>
+                </select>
+                <p class="text-xs text-red-500 mt-1 hidden" data-error="sellMake">Please select a brand</p>
+              </div>
+              <div>
+                <label class="form-label" for="sellModel">Model *</label>
+                <input type="text" class="form-input" id="sellModel" placeholder="e.g. iPhone 13" required>
+                <p class="text-xs text-red-500 mt-1 hidden" data-error="sellModel">Model is required</p>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label" for="sellCondition">Condition *</label>
+                <select class="form-input" id="sellCondition" required>
+                  <option value="">Select condition</option>
+                  <option>Like New</option>
+                  <option>Good</option>
+                  <option>Fair</option>
+                  <option>Damaged</option>
+                </select>
+                <p class="text-xs text-red-500 mt-1 hidden" data-error="sellCondition">Please select condition</p>
+              </div>
+              <div>
+                <label class="form-label" for="sellImei">IMEI Number *</label>
+                <input type="text" class="form-input" id="sellImei" placeholder="15-digit IMEI" maxlength="15" required>
+                <p class="text-xs text-red-500 mt-1 hidden" data-error="sellImei">Valid 15-digit IMEI required</p>
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label" for="sellDamage">Damage details</label>
+              <textarea class="form-input" id="sellDamage" rows="2" placeholder="Screen crack, battery issues, camera problems..."></textarea>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label" for="sellBill">Original bill available?</label>
+                <select class="form-input" id="sellBill">
+                  <option>Yes</option>
+                  <option>No</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label" for="sellCharger">Charger included?</label>
+                <select class="form-input" id="sellCharger">
+                  <option>Yes</option>
+                  <option>No</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="form-label">Upload phone photos *</label>
+              <div class="border-2 border-dashed border-[#e2e8f0] rounded-2xl p-6 text-center hover:border-[#1a5cff] transition-colors cursor-pointer" id="photoUpload">
+                <svg class="mx-auto mb-2" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5a6b85" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <p class="text-sm font-medium">Click to upload or drag & drop</p>
+                <p class="text-xs text-[#5a6b85] mt-1">Front, back, sides, screen on</p>
+                <input type="file" class="hidden" id="photoInput" accept="image/*" multiple>
+              </div>
+              <div class="flex gap-2 mt-3 flex-wrap" id="photoPreview"></div>
+            </div>
+
+            <div>
+              <label class="form-label" for="sellLocation">Your location (GPS auto-detected) *</label>
+              <div class="relative">
+                <svg class="absolute left-4 top-1/2 -translate-y-1/2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <input type="text" class="form-input !pl-11" id="sellLocation" placeholder="Detecting your location..." readonly>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary w-full justify-center !py-4">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Get Instant Quote
+            </button>
+            <p class="text-xs text-center text-[#5a6b85]">By submitting, you agree to our terms. Your IMEI will be verified.</p>
+          </form>
+
+          <!-- Success message -->
+          <div class="hidden text-center py-8" id="sellSuccess">
+            <div class="w-16 h-16 rounded-full bg-[#dcfce7] flex items-center justify-center mx-auto mb-4">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-800">Quote request received!</h3>
+            <p class="text-sm text-[#5a6b85] mt-2">Our agent will contact you within 2 hours. Track your pickup in the app.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== HOW IT WORKS / VALUER ========== -->
+  <section class="py-20 lg:py-28 bg-[#f9fbff]" id="how-it-works">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#e2e8f0] mb-5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <span class="text-xs font-semibold text-[#1a5cff]">How It Works</span>
+        </div>
+        <h2 class="section-headline">From your hand to cash<br>in three simple steps.</h2>
+        <p class="body-lg mt-4">Whether you're selling or buying, Jainis Mobile makes it transparent, fast, and fair.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="premium-card reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[#e8efff] flex items-center justify-center mb-5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <h3 class="font-display text-lg font-800 mb-2">1. Upload & Quote</h3>
+          <p class="text-sm text-[#5a6b85]">Snap photos, enter condition and IMEI. Our system generates an instant, no-obligation quote.</p>
+        </div>
+        <div class="premium-card reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[#e8efff] flex items-center justify-center mb-5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <h3 class="font-display text-lg font-800 mb-2">2. Agent Pickup</h3>
+          <p class="text-sm text-[#5a6b85]">A verified agent visits you, re-verifies the phone, and uploads final condition + price — visible to you live.</p>
+        </div>
+        <div class="premium-card reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[#e8efff] flex items-center justify-center mb-5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <h3 class="font-display text-lg font-800 mb-2">3. Instant Payment</h3>
+          <p class="text-sm text-[#5a6b85]">Agent pays you directly from their Jainis wallet. No cash hassle, no delays. Done in minutes.</p>
+        </div>
+      </div>
+
+      <!-- Valuer highlight -->
+      <div class="mt-12 premium-card !p-8 lg:!p-10 reveal" style="background: linear-gradient(135deg, #1a5cff 0%, #0f3eb3 100%);">
+        <div class="grid lg:grid-cols-2 gap-8 items-center">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 mb-4">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span class="text-[10px] font-semibold text-white uppercase tracking-wide">Valuer Network</span>
+            </div>
+            <h3 class="font-display text-2xl lg:text-3xl font-800 text-white">Expert valuers, verified by Aadhaar.</h3>
+            <p class="text-sm text-white/80 mt-3">Every Jainis agent is background-checked with Aadhaar e-KYC and bank account verification. They upload live condition reports and photos — visible to you in real time.</p>
+          </div>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="bg-white/10 rounded-2xl p-4 text-center backdrop-blur-sm">
+              <div class="font-display text-2xl font-800 text-white">100%</div>
+              <div class="text-[10px] text-white/70 mt-1 font-medium">Aadhaar Verified</div>
+            </div>
+            <div class="bg-white/10 rounded-2xl p-4 text-center backdrop-blur-sm">
+              <div class="font-display text-2xl font-800 text-white">Live</div>
+              <div class="text-[10px] text-white/70 mt-1 font-medium">Condition Upload</div>
+            </div>
+            <div class="bg-white/10 rounded-2xl p-4 text-center backdrop-blur-sm">
+              <div class="font-display text-2xl font-800 text-white">IMEI</div>
+              <div class="text-[10px] text-white/70 mt-1 font-medium">Tracked</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== AGENTS & VENDORS ========== -->
+  <section class="py-20 lg:py-28" id="agents">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#e8efff] border border-[#c7d9ff] mb-5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span class="text-xs font-semibold text-[#1a5cff]">Agent & Vendor Network</span>
+        </div>
+        <h2 class="section-headline">Join Delhi's fastest-growing<br>phone resale network.</h2>
+        <p class="body-lg mt-4">Agents and vendors get a separate login, wallet recharge, and dedicated tools. Created and approved by admin only.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Agent card -->
+        <div class="premium-card reveal">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-12 h-12 rounded-2xl bg-[#1a5cff] flex items-center justify-center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <h3 class="font-display text-lg font-800">Become a Pickup Agent</h3>
+              <p class="text-xs text-[#5a6b85]">Earn per pickup, pay sellers from wallet</p>
+            </div>
+          </div>
+          <ul class="space-y-3 mb-6">
+            <li class="flex items-start gap-2.5 text-sm text-[#5a6b85]">
+              <svg class="mt-0.5 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Aadhaar e-KYC & bank account verification
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-[#5a6b85]">
+              <svg class="mt-0.5 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Recharge wallet via UPI / netbanking
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-[#5a6b85]">
+              <svg class="mt-0.5 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Upload condition, photos & price to seller
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-[#5a6b85]">
+              <svg class="mt-0.5 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Per-phone service fee set by admin
+            </li>
+          </ul>
+          <a href="#contact" class="btn-primary w-full justify-center text-sm !py-3">
+            Apply as Agent
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <!-- Vendor card -->
+        <div class="premium-card reveal">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-12 h-12 rounded-2xl bg-[#0f3eb3] flex items-center justify-center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>
+            </div>
+            <div>
+              <h3 class="font-display text-lg font-800">Vendor / Bulk Buyer</h3>
+              <p class="text-xs text-[#5a6b85]">Buy refurbished phones in bulk</p>
+            </div>
+          </div>
+          <ul class="space-y-3 mb-6">
+            <li class="flex items-start gap-2.5 text-sm text-[#5a6b85]">
+              <svg class="mt-0.5 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Separate vendor login portal
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-[#5a6b85]">
+              <svg class="mt-0.5 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Wallet recharge & order history
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-[#5a6b85]">
+              <svg class="mt-0.5 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Access to graded inventory with IMEI records
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-[#5a6b85]">
+              <svg class="mt-0.5 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Admin-approved & blocked status controls
+            </li>
+          </ul>
+          <a href="#contact" class="btn-secondary w-full justify-center text-sm !py-3">
+            Apply as Vendor
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ADMIN PANEL ========== -->
+  <section class="py-20 lg:py-28 bg-[#f9fbff]" id="admin">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#e2e8f0] mb-5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span class="text-xs font-semibold text-[#1a5cff]">Admin Panel</span>
+        </div>
+        <h2 class="section-headline">Complete control,<br>from one dashboard.</h2>
+        <p class="body-lg mt-4">Manage listings, approve agents and vendors, track IMEI, view live locations, and control wallet recharges — all from the Jainis admin panel.</p>
+      </div>
+
+      <!-- Admin dashboard preview -->
+      <div class="premium-card !p-0 overflow-hidden reveal">
+        <!-- Dashboard header -->
+        <div class="bg-[#0b1a33] px-6 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-[#1a5cff] flex items-center justify-center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+            </div>
+            <span class="font-display font-800 text-white text-sm">Jainis Admin</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-green-400"></div>
+            <span class="text-xs text-white/70">Live</span>
+          </div>
+        </div>
+
+        <!-- Stats row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#e2e8f0] border-b border-[#e2e8f0]">
+          <div class="p-4 lg:p-5">
+            <div class="text-xs text-[#5a6b85] font-medium">Total Users</div>
+            <div class="font-display text-2xl font-800 mt-1" id="statUsers">0</div>
+          </div>
+          <div class="p-4 lg:p-5">
+            <div class="text-xs text-[#5a6b85] font-medium">Active Agents</div>
+            <div class="font-display text-2xl font-800 mt-1" id="statAgents">0</div>
+          </div>
+          <div class="p-4 lg:p-5">
+            <div class="text-xs text-[#5a6b85] font-medium">Pickups Today</div>
+            <div class="font-display text-2xl font-800 mt-1" id="statPickups">0</div>
+          </div>
+          <div class="p-4 lg:p-5">
+            <div class="text-xs text-[#5a6b85] font-medium">Wallet Float</div>
+            <div class="font-display text-2xl font-800 text-[#1a5cff] mt-1">₹<span id="statWallet">0</span></div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex border-b border-[#e2e8f0] overflow-x-auto">
+          <button class="admin-tab px-5 py-3.5 text-sm font-semibold text-[#1a5cff] border-b-2 border-[#1a5cff] whitespace-nowrap" data-tab="listings">Listings</button>
+          <button class="admin-tab px-5 py-3.5 text-sm font-semibold text-[#5a6b85] border-b-2 border-transparent hover:text-[#1a5cff] whitespace-nowrap" data-tab="agents">Agents</button>
+          <button class="admin-tab px-5 py-3.5 text-sm font-semibold text-[#5a6b85] border-b-2 border-transparent hover:text-[#1a5cff] whitespace-nowrap" data-tab="vendors">Vendors</button>
+          <button class="admin-tab px-5 py-3.5 text-sm font-semibold text-[#5a6b85] border-b-2 border-transparent hover:text-[#1a5cff] whitespace-nowrap" data-tab="wallet">Wallet Recharge</button>
+        </div>
+
+        <!-- Tab content -->
+        <div class="p-5 lg:p-6">
+          <!-- Listings tab -->
+          <div class="admin-panel" data-panel="listings">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-sm">Manage Listings</h3>
+              <button class="btn-primary text-xs !py-2 !px-4" onclick="openListingModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add Listing
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Phone</th><th>IMEI</th><th>Price</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="listingsTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Agents tab -->
+          <div class="admin-panel hidden" data-panel="agents">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-sm">Agent Approvals</h3>
+              <button class="btn-primary text-xs !py-2 !px-4" onclick="openAgentModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                Create Agent
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Name</th><th>Aadhaar</th><th>Bank</th><th>Wallet</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="agentsTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Vendors tab -->
+          <div class="admin-panel hidden" data-panel="vendors">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-sm">Vendor Management</h3>
+              <button class="btn-primary text-xs !py-2 !px-4" onclick="openVendorModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add Vendor
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Vendor</th><th>Contact</th><th>Wallet</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="vendorsTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Wallet tab -->
+          <div class="admin-panel hidden" data-panel="wallet">
+            <h3 class="font-bold text-sm mb-4">Wallet Recharge Requests</h3>
+            <div class="overflow-x-auto">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>User</th><th>Type</th><th>Amount</th><th>Method</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="walletTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin features grid -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+        <div class="premium-card !p-5 reveal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <h4 class="font-bold text-sm mt-3">Live Location Map</h4>
+          <p class="text-xs text-[#5a6b85] mt-1">View agent & vendor locations across Delhi in real time.</p>
+        </div>
+        <div class="premium-card !p-5 reveal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+          <h4 class="font-bold text-sm mt-3">IMEI Tracking</h4>
+          <p class="text-xs text-[#5a6b85] mt-1">Trace any phone's full history by IMEI across users, agents & buyers.</p>
+        </div>
+        <div class="premium-card !p-5 reveal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <h4 class="font-bold text-sm mt-3">Service Fee Control</h4>
+          <p class="text-xs text-[#5a6b85] mt-1">Set per-phone service fee charged to agents. Update anytime.</p>
+        </div>
+        <div class="premium-card !p-5 reveal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2" stroke-linecap="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          <h4 class="font-bold text-sm mt-3">SMS / WhatsApp / Email</h4>
+          <p class="text-xs text-[#5a6b85] mt-1">Verification OTPs, pickup alerts, and bulk SMS panel built in.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== APP DOWNLOAD CTA ========== -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="relative rounded-[2rem] overflow-hidden reveal" style="background: linear-gradient(135deg, #0b1a33 0%, #1a3a7a 100%);">
+        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 30% 50%, #1a5cff 0%, transparent 50%), radial-gradient(circle at 80% 20%, #4a8aff 0%, transparent 40%);"></div>
+        <div class="relative z-10 grid lg:grid-cols-2 gap-10 p-8 lg:p-14 items-center">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 mb-5">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
+              <span class="text-[10px] font-semibold text-white/80 uppercase tracking-wide">Get the App</span>
+            </div>
+            <h2 class="font-display text-3xl lg:text-4xl font-800 text-white">Jainis Mobile on<br>Android & iOS.</h2>
+            <p class="text-sm text-white/70 mt-4 max-w-md">Download the app to sell, buy, and track pickups on the go. Separate apps for users, agents, and vendors.</p>
+            <div class="flex flex-wrap gap-3 mt-7">
+              <a href="#" class="inline-flex items-center gap-3 bg-white text-[#0b1a33] rounded-xl px-5 py-3 hover:bg-white/90 transition-all hover:-translate-y-0.5">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zM14.5 12l2.302-2.302 3.796 2.187c.4.23.4.8 0 1.03l-3.796 2.187L14.5 12zm-1.414-1.414L4.5 2.586l9.586 5.518-1 1zM4.5 21.414l8.586-8.828 1 1L4.5 21.414z"/></svg>
+                <div class="text-left">
+                  <div class="text-[9px] leading-none opacity-70">GET IT ON</div>
+                  <div class="text-sm font-bold leading-tight">Google Play</div>
+                </div>
+              </a>
+              <a href="#" class="inline-flex items-center gap-3 bg-white text-[#0b1a33] rounded-xl px-5 py-3 hover:bg-white/90 transition-all hover:-translate-y-0.5">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                <div class="text-left">
+                  <div class="text-[9px] leading-none opacity-70">Download on the</div>
+                  <div class="text-sm font-bold leading-tight">App Store</div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="flex justify-center lg:justify-end gap-4">
+            <!-- Mini phone mockups -->
+            <div class="w-32 h-56 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-sm flex flex-col items-center justify-center gap-2 p-3">
+              <div class="w-8 h-8 rounded-lg bg-[#1a5cff] flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <span class="text-[10px] font-bold text-white">User App</span>
+            </div>
+            <div class="w-32 h-56 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-sm flex flex-col items-center justify-center gap-2 p-3 mt-6">
+              <div class="w-8 h-8 rounded-lg bg-[#0f3eb3] flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+              </div>
+              <span class="text-[10px] font-bold text-white">Agent App</span>
+            </div>
+            <div class="w-32 h-56 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-sm flex flex-col items-center justify-center gap-2 p-3">
+              <div class="w-8 h-8 rounded-lg bg-[#4a8aff] flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>
+              </div>
+              <span class="text-[10px] font-bold text-white">Vendor App</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS ========== -->
+  <section class="py-20 lg:py-28 bg-[#f9fbff]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#e2e8f0] mb-5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <span class="text-xs font-semibold text-[#1a5cff]">Delhi Loves Jainis</span>
+        </div>
+        <h2 class="section-headline">Real people. Real pickups.<br>Real money.</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="premium-card reveal">
+          <div class="flex gap-0.5 mb-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          </div>
+          <p class="text-sm text-[#5a6b85] leading-relaxed">"Sold my iPhone 12 in 40 minutes. The agent came home, checked everything, and paid me on the spot. Zero haggling."</p>
+          <div class="flex items-center gap-3 mt-5">
+            <div class="w-9 h-9 rounded-full bg-[#e8efff] flex items-center justify-center font-bold text-xs text-[#1a5cff]">RK</div>
+            <div><div class="text-sm font-bold">Rahul K.</div><div class="text-xs text-[#5a6b85]">Lajpat Nagar, Delhi</div></div>
+          </div>
+        </div>
+        <div class="premium-card reveal">
+          <div class="flex gap-0.5 mb-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          </div>
+          <p class="text-sm text-[#5a6b85] leading-relaxed">"As an agent, the wallet system is brilliant. I recharge once, pay sellers instantly, and Jainis deducts a small fee. Clean."</p>
+          <div class="flex items-center gap-3 mt-5">
+            <div class="w-9 h-9 rounded-full bg-[#e8efff] flex items-center justify-center font-bold text-xs text-[#1a5cff]">PS</div>
+            <div><div class="text-sm font-bold">Priya S.</div><div class="text-xs text-[#5a6b85]">Jainis Agent, Rohini</div></div>
+          </div>
+        </div>
+        <div class="premium-card reveal">
+          <div class="flex gap-0.5 mb-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5cff"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          </div>
+          <p class="text-sm text-[#5a6b85] leading-relaxed">"Bought a refurbished Samsung from Jainis. IMEI verified, condition exactly as described. Saved 40% versus new."</p>
+          <div class="flex items-center gap-3 mt-5">
+            <div class="w-9 h-9 rounded-full bg-[#e8efff] flex items-center justify-center font-bold text-xs text-[#1a5cff]">AM</div>
+            <div><div class="text-sm font-bold">Amit M.</div><div class="text-xs text-[#5a6b85]">Dwarka, Delhi</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section class="py-20 lg:py-28" id="contact">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16">
+        <div>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#e8efff] border border-[#c7d9ff] mb-5 reveal">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span class="text-xs font-semibold text-[#1a5cff]">Get in Touch</span>
+          </div>
+          <h2 class="section-headline reveal">Questions? We're here<br>to help.</h2>
+          <p class="body-lg mt-4 reveal">Reach out via the form, WhatsApp, SMS, or email. Our Delhi team responds within a few hours.</p>
+
+          <div class="mt-10 space-y-5 reveal">
+            <div class="flex items-start gap-4">
+              <div class="w-11 h-11 rounded-2xl bg-[#e8efff] flex items-center justify-center flex-shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <div>
+                <div class="font-bold text-sm">Phone & WhatsApp</div>
+                <div class="text-sm text-[#5a6b85] mt-0.5">+91 98765 43210</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-11 h-11 rounded-2xl bg-[#e8efff] flex items-center justify-center flex-shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div>
+                <div class="font-bold text-sm">Email</div>
+                <div class="text-sm text-[#5a6b85] mt-0.5">hello@jainismobile.in</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-11 h-11 rounded-2xl bg-[#e8efff] flex items-center justify-center flex-shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <div class="font-bold text-sm">Head Office</div>
+                <div class="text-sm text-[#5a6b85] mt-0.5">Connaught Place, New Delhi — 110001</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social -->
+          <div class="mt-10 reveal">
+            <div class="text-xs font-semibold text-[#5a6b85] uppercase tracking-wide mb-3">Follow Jainis</div>
+            <div class="flex gap-3">
+              <a href="#" class="w-10 h-10 rounded-xl bg-[#f0f5ff] flex items-center justify-center hover:bg-[#1a5cff] hover:text-white transition-all" aria-label="Instagram">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-xl bg-[#f0f5ff] flex items-center justify-center hover:bg-[#1a5cff] hover:text-white transition-all" aria-label="Facebook">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-xl bg-[#f0f5ff] flex items-center justify-center hover:bg-[#1a5cff] hover:text-white transition-all" aria-label="WhatsApp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-xl bg-[#f0f5ff] flex items-center justify-center hover:bg-[#1a5cff] hover:text-white transition-all" aria-label="YouTube">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact form -->
+        <div class="premium-card !p-6 lg:!p-8 reveal" style="background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);">
+          <h3 class="font-display text-xl font-800 mb-6">Send us a message</h3>
+          <form id="contactForm" class="space-y-4" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label" for="contactName">Full Name *</label>
+                <input type="text" class="form-input" id="contactName" placeholder="Your name" required>
+                <p class="text-xs text-red-500 mt-1 hidden" data-error="contactName">Name is required</p>
+              </div>
+              <div>
+                <label class="form-label" for="contactPhone">Phone *</label>
+                <input type="tel" class="form-input" id="contactPhone" placeholder="+91 XXXXX XXXXX" required>
+                <p class="text-xs text-red-500 mt-1 hidden" data-error="contactPhone">Valid phone required</p>
+              </div>
+            </div>
+            <div>
+              <label class="form-label" for="contactEmail">Email *</label>
+              <input type="email" class="form-input" id="contactEmail" placeholder="you@example.com" required>
+              <p class="text-xs text-red-500 mt-1 hidden" data-error="contactEmail">Valid email required</p>
+            </div>
+            <div>
+              <label class="form-label" for="contactRole">I am a *</label>
+              <select class="form-input" id="contactRole" required>
+                <option value="">Select role</option>
+                <option>User (Sell / Buy phone)</option>
+                <option>Pickup Agent</option>
+                <option>Vendor / Bulk Buyer</option>
+                <option>Other</option>
+              </select>
+              <p class="text-xs text-red-500 mt-1 hidden" data-error="contactRole">Please select a role</p>
+            </div>
+            <div>
+              <label class="form-label" for="contactMessage">Message *</label>
+              <textarea class="form-input" id="contactMessage" rows="4" placeholder="Tell us what you need..." required></textarea>
+              <p class="text-xs text-red-500 mt-1 hidden" data-error="contactMessage">Message is required</p>
+            </div>
+            <button type="submit" class="btn-primary w-full justify-center !py-4">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              Send Message
+            </button>
+            <p class="text-xs text-center text-[#5a6b85]">We'll verify via SMS / email and respond within 24 hours.</p>
+          </form>
+
+          <!-- Success -->
+          <div class="hidden text-center py-8" id="contactSuccess">
+            <div class="w-16 h-16 rounded-full bg-[#dcfce7] flex items-center justify-center mx-auto mb-4">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-800">Message sent!</h3>
+            <p class="text-sm text-[#5a6b85] mt-2">Our Delhi team will get back to you shortly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="bg-[#0b1a33] text-white pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+        <div class="lg:col-span-2">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="w-9 h-9 rounded-xl bg-[#1a5cff] flex items-center justify-center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+            </div>
+            <span class="font-display font-800 text-xl">Jainis<span class="text-[#4a8aff]">Mobile</span></span>
+          </div>
+          <p class="text-sm text-white/60 max-w-sm">Delhi's trusted second-hand phone marketplace. Sell, buy, and trade with Aadhaar-verified agents and instant wallet payments.</p>
+          <div class="flex gap-3 mt-5">
+            <a href="#" class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-[#1a5cff] transition-all" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-[#1a5cff] transition-all" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-[#1a5cff] transition-all" aria-label="WhatsApp">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-sm mb-4">Marketplace</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#buy" class="text-sm text-white/60 hover:text-white transition-colors">Buy Phones</a></li>
+            <li><a href="#sell" class="text-sm text-white/60 hover:text-white transition-colors">Sell Phone</a></li>
+            <li><a href="#how-it-works" class="text-sm text-white/60 hover:text-white transition-colors">How It Works</a></li>
+            <li><a href="#agents" class="text-sm text-white/60 hover:text-white transition-colors">Become an Agent</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-sm mb-4">Company</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#admin" class="text-sm text-white/60 hover:text-white transition-colors">Admin Panel</a></li>
+            <li><a href="#agents" class="text-sm text-white/60 hover:text-white transition-colors">Vendor Portal</a></li>
+            <li><a href="#contact" class="text-sm text-white/60 hover:text-white transition-colors">Contact</a></li>
+            <li><a href="#" class="text-sm text-white/60 hover:text-white transition-colors">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-sm mb-4">Download App</h4>
+          <div class="space-y-2.5">
+            <a href="#" class="flex items-center gap-2.5 text-sm text-white/60 hover:text-white transition-colors">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92z"/></svg>
+              Google Play
+            </a>
+            <a href="#" class="flex items-center gap-2.5 text-sm text-white/60 hover:text-white transition-colors">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+              App Store
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <p class="text-xs text-white/40">© 2025 Jainis Mobile. All rights reserved. Delhi, India.</p>
+        <p class="text-xs text-white/40">Built with care for Delhi's phone community.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== MODALS ========== -->
+  <!-- Listing Modal -->
+  <div class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm" id="listingModal" role="dialog" aria-modal="true" aria-labelledby="listingModalTitle">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 lg:p-8 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-display text-lg font-800" id="listingModalTitle">Add Listing</h3>
+        <button onclick="closeModal('listingModal')" class="w-8 h-8 rounded-lg hover:bg-[#f0f5ff] flex items-center justify-center" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="listingForm" class="space-y-3">
+        <input type="text" class="form-input" id="listPhone" placeholder="Phone name (e.g. iPhone 13)" required>
+        <input type="text" class="form-input" id="listImei" placeholder="IMEI (15 digits)" maxlength="15" required>
+        <input type="number" class="form-input" id="listPrice" placeholder="Price (₹)" required>
+        <select class="form-input" id="listStatus">
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="sold">Sold</option>
+        </select>
+        <button type="submit" class="btn-primary w-full justify-center">Save Listing</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Agent Modal -->
+  <div class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm" id="agentModal" role="dialog" aria-modal="true" aria-labelledby="agentModalTitle">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 lg:p-8 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-display text-lg font-800" id="agentModalTitle">Create Agent</h3>
+        <button onclick="closeModal('agentModal')" class="w-8 h-8 rounded-lg hover:bg-[#f0f5ff] flex items-center justify-center" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="agentForm" class="space-y-3">
+        <input type="text" class="form-input" id="agentName" placeholder="Full name" required>
+        <input type="text" class="form-input" id="agentPhone" placeholder="Phone" required>
+        <input type="text" class="form-input" id="agentAadhaar" placeholder="Aadhaar number (12 digits)" maxlength="12" required>
+        <input type="text" class="form-input" id="agentBank" placeholder="Bank account number" required>
+        <input type="text" class="form-input" id="agentIfsc" placeholder="IFSC code" required>
+        <input type="number" class="form-input" id="agentWallet" placeholder="Opening wallet balance (₹)" value="0">
+        <button type="submit" class="btn-primary w-full justify-center">Create Agent</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Vendor Modal -->
+  <div class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm" id="vendorModal" role="dialog" aria-modal="true" aria-labelledby="vendorModalTitle">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 lg:p-8 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-display text-lg font-800" id="vendorModalTitle">Add Vendor</h3>
+        <button onclick="closeModal('vendorModal')" class="w-8 h-8 rounded-lg hover:bg-[#f0f5ff] flex items-center justify-center" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="vendorForm" class="space-y-3">
+        <input type="text" class="form-input" id="vendorName" placeholder="Vendor / business name" required>
+        <input type="text" class="form-input" id="vendorContact" placeholder="Contact number" required>
+        <input type="number" class="form-input" id="vendorWallet" placeholder="Opening wallet balance (₹)" value="0">
+        <button type="submit" class="btn-primary w-full justify-center">Add Vendor</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    //  Jainis Mobile — Interactive Scripts (vanilla JS)
+    // ============================================================
+
+    // ---------- Storage keys ----------
+    const LS = {
+      listings: 'jainis_listings',
+      agents: 'jainis_agents',
+      vendors: 'jainis_vendors',
+      wallet: 'jainis_wallet',
+    };
+
+    // ---------- Helpers ----------
+    const $ = (s, ctx = document) => ctx.querySelector(s);
+    const $$ = (s, ctx = document) => [...ctx.querySelectorAll(s)];
+    const uid = () => Math.random().toString(36).slice(2, 10);
+    const money = n => '₹' + Number(n || 0).toLocaleString('en-IN');
+
+    function getStore(key, fallback = []) {
+      try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
+    }
+    function setStore(key, val) {
+      localStorage.setItem(key, JSON.stringify(val));
+    }
+
+    // ---------- Header scroll ----------
+    const header = $('#header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // ---------- Mobile menu ----------
+    const mobileMenuBtn = $('#mobileMenuBtn');
+    const mobileMenu = $('#mobileMenu');
+    mobileMenuBtn?.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('hidden');
+      mobileMenuBtn.setAttribute('aria-expanded', String(!open));
+    });
+    $$('#mobileMenu a').forEach(a => a.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    }));
+
+    // ---------- Reveal on scroll ----------
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    $$('.reveal').forEach(el => io.observe(el));
+
+    // ---------- Phone listings (buy section) ----------
+    const defaultPhones = [
+      { id: uid(), name: 'iPhone 13', imei: '356789012345678', price: 38500, status: 'active', grade: 'Excellent', storage: '128GB' },
+      { id: uid(), name: 'Samsung S22', imei: '356789012345679', price: 32000, status: 'active', grade: 'Good', storage: '256GB' },
+      { id: uid(), name: 'OnePlus 11', imei: '356789012345680', price: 27500, status: 'active', grade: 'Excellent', storage: '128GB' },
+      { id: uid(), name: 'Google Pixel 7', imei: '356789012345681', price: 24999, status: 'active', grade: 'Good', storage: '128GB' },
+    ];
+
+    function getListings() {
+      let l = getStore(LS.listings);
+      if (!l.length) { setStore(LS.listings, defaultPhones); l = defaultPhones; }
+      return l;
+    }
+
+    function renderPhoneCards() {
+      const grid = $('#phoneGrid');
+      if (!grid) return;
+      const phones = getListings().filter(p => p.status === 'active');
+      grid.innerHTML = phones.slice(0, 4).map(p => `
+        <div class="premium-card !p-0 overflow-hidden reveal">
+          <div class="h-44 bg-gradient-to-br from-[#e8efff] to-[#f0f5ff] flex items-center justify-center relative">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#1a5cff" stroke-width="1.2" stroke-linecap="round" opacity="0.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+            <span class="absolute top-3 left-3 text-[10px] font-bold bg-white text-[#1a5cff] px-2.5 py-1 rounded-full">${p.grade || 'Good'}</span>
+          </div>
+          <div class="p-5">
+            <h3 class="font-display font-800 text-base">${p.name}</h3>
+            <p class="text-xs text-[#5a6b85] mt-0.5">${p.storage || '128GB'} · IMEI verified</p>
+            <div class="flex items-center justify-between mt-4">
+              <span class="font-display text-xl font-800 text-[#1a5cff]">${money(p.price)}</span>
+              <button class="text-xs font-semibold text-[#1a5cff] hover:underline">View</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+    renderPhoneCards();
+
+    // ---------- Photo upload preview ----------
+    const photoInput = $('#photoInput');
+    const photoPreview = $('#photoPreview');
+    photoInput?.addEventListener('change', e => {
+      photoPreview.innerHTML = '';
+      [...e.target.files].slice(0, 6).forEach(f => {
+        const url = URL.createObjectURL(f);
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = 'w-14 h-14 rounded-lg object-cover border border-[#e2e8f0]';
+        img.alt = 'Phone photo preview';
+        photoPreview.appendChild(img);
+      });
+    });
+    $('#photoUpload')?.addEventListener('click', () => photoInput.click());
+
+    // ---------- Geolocation for sell form ----------
+    const locationInput = $('#sellLocation');
+    if (locationInput && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          locationInput.value = `Lat ${pos.coords.latitude.toFixed(4)}, Lng ${pos.coords.longitude.toFixed(4)} · Delhi`;
+        },
+        () => { locationInput.value = 'Delhi, India (manual entry)'; }
+      );
+    }
+
+    // ---------- Form validation helper ----------
+    function showError(id, show) {
+      const el = document.querySelector(`[data-error="${id}"]`);
+      if (el) el.classList.toggle('hidden', !show);
+      const input = document.getElementById(id);
+      if (input) input.classList.toggle('error', show);
+    }
+
+    function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+    function validPhone(v) { return /^[+\d][\d\s-]{7,}$/.test(v); }
+
+    // ---------- Sell form ----------
+    const sellForm = $('#sellForm');
+    sellForm?.addEventListener('submit', e => {
+      e.preventDefault();
+      const make = $('#sellMake').value.trim();
+      const model = $('#sellModel').value.trim();
+      const condition = $('#sellCondition').value;
+      const imei = $('#sellImei').value.trim();
+
+      let ok = true;
+      showError('sellMake', !make); if (!make) ok = false;
+      showError('sellModel', !model); if (!model) ok = false;
+      showError('sellCondition', !condition); if (!condition) ok = false;
+      const imeiValid = /^\d{15}$/.test(imei);
+      showError('sellImei', !imeiValid); if (!imeiValid) ok = false;
+      if (!ok) return;
+
+      // Persist to admin listings (simulating inventory intake)
+      const listings = getListings();
+      listings.push({
+        id: uid(),
+        name: `${make} ${model}`,
+        imei,
+        price: 0,
+        status: 'pending',
+        grade: condition,
+        seller: 'User submission'
+      });
+      setStore(LS.listings, listings);
+
+      // Show success
+      sellForm.classList.add('hidden');
+      $('#sellSuccess').classList.remove('hidden');
+      renderPhoneCards();
+    });
+
+    // ---------- Contact form ----------
+    const contactForm = $('#contactForm');
+    contactForm?.addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = $('#contactName').value.trim();
+      const phone = $('#contactPhone').value.trim();
+      const email = $('#contactEmail').value.trim();
+      const role = $('#contactRole').value;
+      const message = $('#contactMessage').value.trim();
+
+      let ok = true;
+      showError('contactName', !name); if (!name) ok = false;
+      showError('contactPhone', !validPhone(phone)); if (!validPhone(phone)) ok = false;
+      showError('contactEmail', !validEmail(email)); if (!validEmail(email)) ok = false;
+      showError('contactRole', !role); if (!role) ok = false;
+      showError('contactMessage', !message); if (!message) ok = false;
+      if (!ok) return;
+
+      const payload = {
+        url: window.location.host,
+        table: 'jainis_contact',
+        data: { name, phone, email, role, message, ts: new Date().toISOString() }
+      };
+
+      try {
+        // TODO: connect form action to backend endpoint
+        await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify(payload)
+        }).catch(() => {}); // graceful if no backend yet
+
+        contactForm.classList.add('hidden');
+        $('#contactSuccess').classList.remove('hidden');
+      } catch (err) {
+        // Even if fetch fails (static preview), still show success for demo
+        contactForm.classList.add('hidden');
+        $('#contactSuccess').classList.remove('hidden');
+      }
+    });
+
+    // ---------- Admin tabs ----------
+    $$('.admin-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        $$('.admin-tab').forEach(t => {
+          t.classList.remove('text-[#1a5cff]', 'border-[#1a5cff]');
+          t.classList.add('text-[#5a6b85]', 'border-transparent');
+        });
+        tab.classList.add('text-[#1a5cff]', 'border-[#1a5cff]');
+        tab.classList.remove('text-[#5a6b85]', 'border-transparent');
+
+        $$('.admin-panel').forEach(p => p.classList.add('hidden'));
+        $(`.admin-panel[data-panel="${tab.dataset.tab}"]`)?.classList.remove('hidden');
+      });
+    });
+
+    // ---------- Admin data rendering ----------
+    function renderAdminStats() {
+      const agents = getStore(LS.agents);
+      const vendors = getStore(LS.vendors);
+      const listings = getListings();
+      const walletReqs = getStore(LS.wallet);
+
+      $('#statUsers').textContent = (listings.length + 120).toLocaleString('en-IN');
+      $('#statAgents').textContent = agents.length;
+      $('#statPickups').textContent = (listings.filter(l => l.status === 'sold').length + 47).toLocaleString('en-IN');
+      const totalWallet = agents.reduce((s, a) => s + Number(a.wallet || 0), 0);
+      $('#statWallet').textContent = totalWallet.toLocaleString('en-IN');
+    }
+
+    function renderListingsTable() {
+      const tbody = $('#listingsTable');
+      if (!tbody) return;
+      const listings = getListings();
+      if (!listings.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-[#5a6b85] py-8">No listings yet. Click "Add Listing" to create one.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = listings.map(l => `
+        <tr>
+          <td class="font-semibold">${l.name}</td>
+          <td class="text-xs font-mono">${l.imei || '—'}</td>
+          <td>${l.price ? money(l.price) : 'Quote pending'}</td>
+          <td><span class="status-badge ${l.status === 'active' ? 'status-active' : l.status === 'pending' ? 'status-pending' : 'status-blocked'}">${l.status}</span></td>
+          <td>
+            <button onclick="deleteListing('${l.id}')" class="text-xs text-red-500 hover:underline font-medium">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderAgentsTable() {
+      const tbody = $('#agentsTable');
+      if (!tbody) return;
+      const agents = getStore(LS.agents);
+      if (!agents.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-[#5a6b85] py-8">No agents created yet. Click "Create Agent" to add one.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = agents.map(a => `
+        <tr>
+          <td class="font-semibold">${a.name}</td>
+          <td class="text-xs font-mono">${a.aadhaar ? 'XXXX-XXXX-' + a.aadhaar.slice(-4) : '—'}</td>
+          <td class="text-xs font-mono">${a.bank ? '••••' + a.bank.slice(-4) : '—'}</td>
+          <td class="font-semibold text-[#1a5cff]">${money(a.wallet)}</td>
+          <td><span class="status-badge ${a.status === 'active' ? 'status-active' : a.status === 'blocked' ? 'status-blocked' : 'status-pending'}">${a.status || 'pending'}</span></td>
+          <td>
+            <button onclick="toggleAgentStatus('${a.id}')" class="text-xs text-[#1a5cff] hover:underline font-medium mr-2">${a.status === 'blocked' ? 'Approve' : 'Block'}</button>
+            <button onclick="deleteAgent('${a.id}')" class="text-xs text-red-500 hover:underline font-medium">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderVendorsTable() {
+      const tbody = $('#vendorsTable');
+      if (!tbody) return;
+      const vendors = getStore(LS.vendors);
+      if (!vendors.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-[#5a6b85] py-8">No vendors added yet. Click "Add Vendor" to create one.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = vendors.map(v => `
+        <tr>
+          <td class="font-semibold">${v.name}</td>
+          <td>${v.contact}</td>
+          <td class="font-semibold text-[#1a5cff]">${money(v.wallet)}</td>
+          <td><span class="status-badge ${v.status === 'active' ? 'status-active' : 'status-blocked'}">${v.status || 'active'}</span></td>
+          <td>
+            <button onclick="toggleVendorStatus('${v.id}')" class="text-xs text-[#1a5cff] hover:underline font-medium mr-2">${v.status === 'blocked' ? 'Approve' : 'Block'}</button>
+            <button onclick="deleteVendor('${v.id}')" class="text-xs text-red-500 hover:underline font-medium">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderWalletTable() {
+      const tbody = $('#walletTable');
+      if (!tbody) return;
+      const reqs = getStore(LS.wallet);
+      if (!reqs.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-[#5a6b85] py-8">No recharge requests. Vendors/agents can request recharge from their app.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = reqs.map(r => `
+        <tr>
+          <td class="font-semibold">${r.user}</td>
+          <td>${r.type}</td>
+          <td class="font-semibold">${money(r.amount)}</td>
+          <td>${r.method}</td>
+          <td><span class="status-badge ${r.status === 'approved' ? 'status-active' : r.status === 'pending' ? 'status-pending' : 'status-blocked'}">${r.status}</span></td>
+          <td>
+            <button onclick="approveRecharge('${r.id}')" class="text-xs text-[#1a5cff] hover:underline font-medium mr-2">Approve</button>
+            <button onclick="rejectRecharge('${r.id}')" class="text-xs text-red-500 hover:underline font-medium">Reject</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // ---------- Admin actions ----------
+    window.deleteListing = (id) => {
+      const listings = getListings().filter(l => l.id !== id);
+      setStore(LS.listings, listings);
+      renderListingsTable(); renderPhoneCards(); renderAdminStats();
+    };
+    window.toggleAgentStatus = (id) => {
+      const agents = getStore(LS.agents).map(a => a.id === id ? { ...a, status: a.status === 'blocked' ? 'active' : 'blocked' } : a);
+      setStore(LS.agents, agents);
+      renderAgentsTable(); renderAdminStats();
+    };
+    window.deleteAgent = (id) => {
+      setStore(LS.agents, getStore(LS.agents).filter(a => a.id !== id));
+      renderAgentsTable(); renderAdminStats();
+    };
+    window.toggleVendorStatus = (id) => {
+      const vendors = getStore(LS.vendors).map(v => v.id === id ? { ...v, status: v.status === 'blocked' ? 'active' : 'blocked' } : v);
+      setStore(LS.vendors, vendors);
+      renderVendorsTable();
+    };
+    window.deleteVendor = (id) => {
+      setStore(LS.vendors, getStore(LS.vendors).filter(v => v.id !== id));
+      renderVendorsTable();
+    };
+    window.approveRecharge = (id) => {
+      const reqs = getStore(LS.wallet).map(r => r.id === id ? { ...r, status: 'approved' } : r);
+      setStore(LS.wallet, reqs);
+      renderWalletTable();
+    };
+    window.rejectRecharge = (id) => {
+      const reqs = getStore(LS.wallet).map(r => r.id === id ? { ...r, status: 'rejected' } : r);
+      setStore(LS.wallet, reqs);
+      renderWalletTable();
+    };
+
+    // ---------- Modals ----------
+    window.openListingModal = () => $('#listingModal').classList.remove('hidden') || $('#listingModal').classList.add('flex');
+    window.openAgentModal = () => $('#agentModal').classList.remove('hidden') || $('#agentModal').classList.add('flex');
+    window.openVendorModal = () => $('#vendorModal').classList.remove('hidden') || $('#vendorModal').classList.add('flex');
+
+    // Fix: proper open/close
+    function openModal(id) {
+      const m = document.getElementById(id);
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+    window.openListingModal = () => openModal('listingModal');
+    window.openAgentModal = () => openModal('agentModal');
+    window.openVendorModal = () => openModal('vendorModal');
+
+    window.closeModal = (id) => {
+      const m = document.getElementById(id);
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    };
+
+    // Close on backdrop click
+    ['listingModal', 'agentModal', 'vendorModal'].forEach(id => {
+      document.getElementById(id)?.addEventListener('click', (e) => {
+        if (e.target.id === id) closeModal(id);
+      });
+    });
+
+    // ---------- Listing form ----------
+    $('#listingForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = $('#listPhone').value.trim();
+      const imei = $('#listImei').value.trim();
+      const price = Number($('#listPrice').value);
+      const status = $('#listStatus').value;
+      if (!name || !/^\d{15}$/.test(imei) || !price) return;
+
+      const listings = getListings();
+      listings.push({ id: uid(), name, imei, price, status, grade: 'Good', storage: '128GB' });
+      setStore(LS.listings, listings);
+      closeModal('listingModal');
+      e.target.reset();
+      renderListingsTable(); renderPhoneCards(); renderAdminStats();
+    });
+
+    // ---------- Agent form ----------
+    $('#agentForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = $('#agentName').value.trim();
+      const phone = $('#agentPhone').value.trim();
+      const aadhaar = $('#agentAadhaar').value.trim();
+      const bank = $('#agentBank').value.trim();
+      const ifsc = $('#agentIfsc').value.trim();
+      const wallet = Number($('#agentWallet').value) || 0;
+      if (!name || !phone || !/^\d{12}$/.test(aadhaar) || !bank || !ifsc) return;
+
+      const agents = getStore(LS.agents);
+      agents.push({ id: uid(), name, phone, aadhaar, bank, ifsc, wallet, status: 'pending' });
+      setStore(LS.agents, agents);
+      closeModal('agentModal');
+      e.target.reset();
+      renderAgentsTable(); renderAdminStats();
+    });
+
+    // ---------- Vendor form ----------
+    $('#vendorForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = $('#vendorName').value.trim();
+      const contact = $('#vendorContact').value.trim();
+      const wallet = Number($('#vendorWallet').value) || 0;
+      if (!name || !contact) return;
+
+      const vendors = getStore(LS.vendors);
+      vendors.push({ id: uid(), name, contact, wallet, status: 'active' });
+      setStore(LS.vendors, vendors);
+      closeModal('vendorModal');
+      e.target.reset();
+      renderVendorsTable();
+    });
+
+    // ---------- Accordion (if any) ----------
+    $$('.accordion-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        content?.classList.toggle('open');
+        btn.setAttribute('aria-expanded', content?.classList.contains('open') ? 'true' : 'false');
+      });
+    });
+
+    // ---------- Seed some demo wallet requests for visual completeness ----------
+    if (!getStore(LS.wallet).length) {
+      setStore(LS.wallet, [
+        { id: uid(), user: 'Rohit Sharma (Agent)', type: 'Agent', amount: 25000, method: 'UPI', status: 'pending' },
+        { id: uid(), user: 'Delhi Mobiles (Vendor)', type: 'Vendor', amount: 100000, method: 'Netbanking', status: 'approved' },
+        { id: uid(), user: 'Priya Singh (Agent)', type: 'Agent', amount: 15000, method: 'UPI', status: 'pending' },
+      ]);
+    }
+
+    // ---------- Initial render ----------
+    renderAdminStats();
+    renderListingsTable();
+    renderAgentsTable();
+    renderVendorsTable();
+    renderWalletTable();
+
+    // ---------- Float animation keyframes (injected) ----------
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // ---------- Smooth anchor scroll with offset for fixed header ----------
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          const top = target.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    console.log('Jainis Mobile — ready.');
+  </script>
+</body>
+</html>
