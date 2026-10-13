@@ -1,1217 +1,1344 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Flowbase — The Operating System for Modern Teams</title>
-  <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- GSAP + ScrollTrigger -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <!-- Google Fonts: Instrument Serif + Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
-  <style>
-    /* === Design Tokens === */
-    :root {
-      --ink: #0B0D10;
-      --ink-soft: #2A2F38;
-      --muted: #6B7280;
-      --paper: #FFFFFF;
-      --canvas: #F8F9FC;
-      --hairline: rgba(0, 0, 0, 0.06);
-      --accent: #1A5CFF;
-      --accent-glow: rgba(26, 92, 255, 0.18);
-      --radius-card: 24px;
-      --radius-btn: 999px;
-      --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-      --shadow-card: 0 12px 40px -8px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.02);
-      --shadow-elevated: 0 24px 64px -12px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.02);
-      --font-display: 'Instrument Serif', Georgia, serif;
-      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --focus-ring: 0 0 0 3px rgba(26, 92, 255, 0.35);
-    }
-
-    /* === Base & Reset === */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-    body {
-      font-family: var(--font-body);
-      background: var(--canvas);
-      color: var(--ink);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-    ::selection { background: var(--accent); color: #fff; }
-    img, svg { display: block; max-width: 100%; }
-    a { color: inherit; text-decoration: none; }
-    button { font-family: inherit; cursor: pointer; border: none; background: none; }
-    input, textarea, select { font-family: inherit; font-size: inherit; }
-
-    /* === Typography === */
-    .font-display { font-family: var(--font-display); }
-    .text-balance { text-wrap: balance; }
-    .heading-xl {
-      font-size: clamp(2.75rem, 7vw, 5.25rem);
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      font-weight: 400;
-      font-family: var(--font-display);
-    }
-    .heading-lg {
-      font-size: clamp(2rem, 4.5vw, 3.25rem);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      font-weight: 400;
-      font-family: var(--font-display);
-    }
-    .heading-md {
-      font-size: clamp(1.35rem, 2.2vw, 1.75rem);
-      line-height: 1.2;
-      letter-spacing: -0.01em;
-      font-weight: 600;
-    }
-    .body-lg { font-size: 1.125rem; line-height: 1.7; color: var(--ink-soft); }
-    .body-sm { font-size: 0.9375rem; line-height: 1.6; color: var(--muted); }
-
-    /* === Layout === */
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
-    @media (min-width: 768px) { .container { padding: 0 2rem; } }
-    .section { padding: 5rem 0; }
-    @media (min-width: 768px) { .section { padding: 7rem 0; } }
-
-    /* === Buttons === */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-weight: 500;
-      font-size: 0.9375rem;
-      padding: 0.75rem 1.75rem;
-      border-radius: var(--radius-btn);
-      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-      white-space: nowrap;
-      letter-spacing: -0.01em;
-      line-height: 1;
-    }
-    .btn:focus-visible {
-      outline: none;
-      box-shadow: var(--focus-ring);
-    }
-    .btn-primary {
-      background: var(--ink);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-    }
-    .btn-primary:hover {
-      background: #1a1d24;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-      transform: translateY(-1px);
-    }
-    .btn-primary:active { transform: translateY(0) scale(0.98); }
-    .btn-accent {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 4px 16px var(--accent-glow);
-    }
-    .btn-accent:hover {
-      background: #0d4ae0;
-      box-shadow: 0 8px 32px rgba(26, 92, 255, 0.3);
-      transform: translateY(-1px);
-    }
-    .btn-accent:active { transform: translateY(0) scale(0.98); }
-    .btn-outline {
-      border: 1px solid var(--hairline);
-      color: var(--ink);
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(8px);
-    }
-    .btn-outline:hover {
-      border-color: rgba(0, 0, 0, 0.15);
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: var(--shadow-soft);
-      transform: translateY(-1px);
-    }
-    .btn-outline:active { transform: translateY(0) scale(0.98); }
-
-    /* === Cards === */
-    .card {
-      background: var(--paper);
-      border-radius: var(--radius-card);
-      border: 1px solid var(--hairline);
-      box-shadow: var(--shadow-soft);
-      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .card:hover {
-      box-shadow: var(--shadow-card);
-      transform: translateY(-2px);
-      border-color: rgba(0, 0, 0, 0.08);
-    }
-    .card-glass {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-    }
-
-    /* === Section dividers / decor === */
-    .hairline { height: 1px; background: var(--hairline); border: none; }
-    .glow-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.25;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* === Navigation === */
-    .nav-shell {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      padding: 0.75rem 0;
-      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .nav-shell.scrolled {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--hairline);
-      padding: 0.5rem 0;
-      box-shadow: 0 1px 24px rgba(0, 0, 0, 0.03);
-    }
-    .nav-link {
-      font-size: 0.9375rem;
-      font-weight: 450;
-      color: var(--ink-soft);
-      transition: color 0.2s ease;
-      position: relative;
-      padding: 0.25rem 0;
-    }
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 1.5px;
-      background: var(--ink);
-      transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .nav-link:hover { color: var(--ink); }
-    .nav-link:hover::after { width: 100%; }
-    .nav-link:focus-visible {
-      outline: none;
-      box-shadow: var(--focus-ring);
-      border-radius: 4px;
-    }
-
-    /* Mobile menu */
-    .mobile-menu {
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      display: flex;
-      flex-direction: column;
-      padding: 1.5rem;
-      transform: translateX(100%);
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .mobile-menu.open { transform: translateX(0); }
-    .mobile-menu a {
-      font-size: 1.5rem;
-      font-family: var(--font-display);
-      padding: 0.75rem 0;
-      border-bottom: 1px solid var(--hairline);
-      transition: color 0.2s;
-    }
-    .mobile-menu a:hover { color: var(--accent); }
-    .mobile-menu a:focus-visible {
-      outline: none;
-      box-shadow: var(--focus-ring);
-      border-radius: 4px;
-    }
-
-    /* === Hero === */
-    .hero-gradient {
-      background:
-        radial-gradient(ellipse 80% 60% at 50% -20%, rgba(26, 92, 255, 0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(26, 92, 255, 0.05) 0%, transparent 50%),
-        var(--canvas);
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.375rem 1rem 0.375rem 0.75rem;
-      border-radius: 999px;
-      background: rgba(26, 92, 255, 0.06);
-      border: 1px solid rgba(26, 92, 255, 0.12);
-      font-size: 0.8125rem;
-      font-weight: 500;
-      color: var(--accent);
-      letter-spacing: -0.01em;
-    }
-    .hero-badge .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: pulse-dot 2s ease-in-out infinite;
-    }
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
-    /* === Feature bento === */
-    .bento-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-    @media (min-width: 640px) {
-      .bento-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (min-width: 1024px) {
-      .bento-grid {
-        grid-template-columns: repeat(3, 1fr);
-        grid-auto-rows: minmax(200px, auto);
-      }
-      .bento-wide { grid-column: span 2; }
-      .bento-tall { grid-row: span 2; }
-    }
-
-    /* === Pricing === */
-    .pricing-card {
-      background: var(--paper);
-      border-radius: var(--radius-card);
-      border: 1px solid var(--hairline);
-      padding: 2rem;
-      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-      position: relative;
-    }
-    .pricing-card:hover {
-      box-shadow: var(--shadow-card);
-      transform: translateY(-4px);
-    }
-    .pricing-card.featured {
-      border: 1.5px solid var(--accent);
-      box-shadow: 0 0 0 4px rgba(26, 92, 255, 0.06), var(--shadow-card);
-    }
-    .pricing-card.featured:hover {
-      box-shadow: 0 0 0 6px rgba(26, 92, 255, 0.08), var(--shadow-elevated);
-    }
-    .pricing-badge {
-      position: absolute;
-      top: -0.75rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.25rem 1rem;
-      border-radius: 999px;
-      letter-spacing: 0.02em;
-      white-space: nowrap;
-    }
-
-    /* === Testimonials === */
-    .testimonial-card {
-      background: var(--paper);
-      border-radius: var(--radius-card);
-      border: 1px solid var(--hairline);
-      padding: 2rem;
-      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .testimonial-card:hover {
-      box-shadow: var(--shadow-card);
-      transform: translateY(-2px);
-    }
-
-    /* === CTA Banner === */
-    .cta-banner {
-      background:
-        radial-gradient(ellipse 70% 80% at 30% 50%, rgba(26, 92, 255, 0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 60% at 80% 30%, rgba(26, 92, 255, 0.08) 0%, transparent 50%),
-        var(--ink);
-      border-radius: 32px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* === Forms === */
-    .form-input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
-      border: 1px solid var(--hairline);
-      background: var(--paper);
-      color: var(--ink);
-      font-size: 0.9375rem;
-      transition: all 0.2s ease;
-      outline: none;
-    }
-    .form-input::placeholder { color: var(--muted); opacity: 0.7; }
-    .form-input:focus {
-      border-color: var(--accent);
-      box-shadow: var(--focus-ring);
-    }
-    .form-input.error {
-      border-color: #EF4444;
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
-    }
-    .form-error {
-      font-size: 0.8125rem;
-      color: #EF4444;
-      margin-top: 0.25rem;
-      display: none;
-    }
-    .form-error.visible { display: block; }
-    .form-success {
-      display: none;
-      padding: 1rem;
-      border-radius: 12px;
-      background: rgba(34, 197, 94, 0.08);
-      border: 1px solid rgba(34, 197, 94, 0.2);
-      color: #15803D;
-      font-size: 0.9375rem;
-      text-align: center;
-    }
-    .form-success.visible { display: block; }
-
-    /* === Footer === */
-    .footer-link {
-      font-size: 0.9375rem;
-      color: var(--muted);
-      transition: color 0.2s ease;
-      display: inline-block;
-      padding: 0.125rem 0;
-    }
-    .footer-link:hover { color: var(--ink); }
-    .footer-link:focus-visible {
-      outline: none;
-      box-shadow: var(--focus-ring);
-      border-radius: 4px;
-    }
-
-    /* === Animations === */
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    /* === Utility === */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      border: 0;
-    }
-    .no-scroll { overflow: hidden; }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maison Lumière · Modern French Dining</title>
+    
+    <!-- Google Fonts: Cormorant Garamond + Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#fcf9f5',
+                        linen: '#f5f0e9',
+                        charcoal: '#1c1c1c',
+                        graphite: '#2e2e2e',
+                        brass: '#c6a15b',
+                        brasslight: '#dbbc7a',
+                        stone: '#7a7a7a',
+                    },
+                    fontFamily: {
+                        display: ['"Cormorant Garamond"', 'serif'],
+                        body: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <style>
+        /* === Design Tokens === */
+        :root {
+            --ink: #1c1c1c;
+            --cream: #fcf9f5;
+            --linen: #f5f0e9;
+            --brass: #c6a15b;
+            --brass-light: #dbbc7a;
+            --stone: #7a7a7a;
+            --radius-card: 1.5rem;
+            --radius-pill: 100px;
+            --shadow-soft: 0 20px 40px -12px rgba(0,0,0,0.08);
+            --shadow-hover: 0 28px 48px -12px rgba(0,0,0,0.14);
+            --focus-ring: 2px solid var(--brass);
+        }
+        
+        /* === Base === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        
+        /* === Typography === */
+        .font-display { font-family: 'Cormorant Garamond', serif; }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+        }
+        
+        .heading-xl {
+            font-size: clamp(3.2rem, 9vw, 7rem);
+            line-height: 1.02;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+        }
+        
+        .heading-lg {
+            font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+            line-height: 1.1;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+        }
+        
+        .heading-md {
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            line-height: 1.2;
+            font-weight: 400;
+        }
+        
+        .body-large {
+            font-size: clamp(1rem, 1.4vw, 1.15rem);
+            line-height: 1.7;
+            color: #4a4a4a;
+            font-weight: 300;
+        }
+        
+        .body-small {
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: var(--stone);
+            font-weight: 400;
+        }
+        
+        .label-caps {
+            font-size: 0.75rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: var(--brass);
+        }
+        
+        /* === Focus === */
+        a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(198, 161, 91, 0.35);
+            border-radius: 4px;
+        }
+        
+        /* === Buttons === */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.2rem;
+            background: var(--ink);
+            color: #fff;
+            border-radius: var(--radius-pill);
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-primary:hover {
+            background: var(--graphite);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(28,28,28,0.35);
+        }
+        .btn-primary:active { transform: translateY(0); }
+        
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.2rem;
+            background: transparent;
+            color: var(--ink);
+            border: 1px solid rgba(28,28,28,0.2);
+            border-radius: var(--radius-pill);
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-outline:hover {
+            border-color: var(--brass);
+            background: rgba(198, 161, 91, 0.06);
+            transform: translateY(-2px);
+        }
+        
+        .btn-brass {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.2rem;
+            background: var(--brass);
+            color: #fff;
+            border-radius: var(--radius-pill);
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-brass:hover {
+            background: var(--brass-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(198, 161, 91, 0.45);
+        }
+        .btn-brass:active { transform: translateY(0); }
+        
+        /* === Glass Panel === */
+        .glass-panel {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        /* === Section Reveal === */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* === Nav === */
+        .nav-scrolled {
+            background: rgba(252, 249, 245, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(28,28,28,0.06);
+        }
+        
+        /* === Cards === */
+        .card-lift {
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        /* === Tilt === */
+        .tilt-card {
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        .tilt-card:hover {
+            transform: perspective(1000px) rotateX(1deg) rotateY(-1deg) translateY(-4px);
+        }
+        
+        /* === Hero Gradient === */
+        .hero-mesh {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 70% 60% at 20% 30%, rgba(198,161,91,0.08) 0%, transparent 60%),
+                        radial-gradient(ellipse 50% 50% at 80% 70%, rgba(198,161,91,0.05) 0%, transparent 60%),
+                        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(245,240,233,0.5) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        /* === Marquee === */
+        .marquee-track {
+            display: flex;
+            animation: marquee 40s linear infinite;
+            width: max-content;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        /* === Menu Item === */
+        .menu-item {
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            border-bottom: 1px solid rgba(28,28,28,0.06);
+        }
+        .menu-item:hover {
+            background: rgba(198, 161, 91, 0.04);
+            padding-left: 0.75rem;
+        }
+        
+        /* === Gallery === */
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 1rem;
+            position: relative;
+        }
+        .gallery-item img {
+            transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.06);
+        }
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(28,28,28,0.2) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .gallery-item:hover::after { opacity: 1; }
+        
+        /* === Form === */
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(28,28,28,0.1);
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--ink);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: var(--brass);
+            box-shadow: 0 0 0 3px rgba(198, 161, 91, 0.15);
+            background: #fff;
+        }
+        .form-input.error {
+            border-color: #d44;
+            box-shadow: 0 0 0 3px rgba(221, 68, 68, 0.12);
+        }
+        .form-input::placeholder { color: #aaa; }
+        
+        /* === Review Stars === */
+        .star-filled { color: var(--brass); }
+        
+        /* === Mobile Menu === */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .mobile-menu.open { transform: translateX(0); }
+        
+        /* === Scrollbar === */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--linen); }
+        ::-webkit-scrollbar-thumb { background: rgba(198,161,91,0.4); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(198,161,91,0.6); }
+        
+        /* === Responsive Tweaks === */
+        @media (max-width: 768px) {
+            .heading-xl { font-size: clamp(2.6rem, 12vw, 3.8rem); }
+            .heading-lg { font-size: clamp(2rem, 8vw, 2.8rem); }
+        }
+        
+        /* === Animations === */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .float-anim { animation: float 6s ease-in-out infinite; }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        /* === Divider === */
+        .divider-brass {
+            width: 60px;
+            height: 1px;
+            background: var(--brass);
+            opacity: 0.5;
+        }
+        
+        /* === Star rating === */
+        .stars { display: flex; gap: 2px; }
+        
+        /* === Footer link === */
+        .footer-link {
+            color: rgba(255,255,255,0.6);
+            transition: color 0.25s ease, padding-left 0.25s ease;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .footer-link:hover { color: var(--brass-light); padding-left: 4px; }
+    </style>
 </head>
 <body>
 
-  <!-- ========== NAVIGATION ========== -->
-  <header class="nav-shell" id="navbar" role="banner">
-    <div class="container flex items-center justify-between">
-      <!-- Logo -->
-      <a href="#" class="flex items-center gap-2.5 shrink-0" aria-label="Flowbase home">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-          <rect width="28" height="28" rx="8" fill="#0B0D10"/>
-          <path d="M8 14L12 10L16 14L20 10" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M8 18L12 14L16 18L20 14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-        </svg>
-        <span class="font-display text-xl tracking-tight" style="font-weight:400;">Flowbase</span>
-      </a>
-
-      <!-- Desktop nav -->
-      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
-        <a href="#features" class="nav-link">Features</a>
-        <a href="#pricing" class="nav-link">Pricing</a>
-        <a href="#testimonials" class="nav-link">Testimonials</a>
-        <a href="#contact" class="nav-link">Contact</a>
-      </nav>
-
-      <!-- Desktop CTA -->
-      <div class="hidden md:flex items-center gap-3">
-        <a href="#contact" class="btn btn-outline" style="padding:0.625rem 1.25rem;font-size:0.875rem;">Sign in</a>
-        <a href="#pricing" class="btn btn-primary" style="padding:0.625rem 1.25rem;font-size:0.875rem;">Start free</a>
-      </div>
-
-      <!-- Mobile toggle -->
-      <button class="md:hidden flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 transition-colors" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-          <line x1="3" y1="5" x2="17" y2="5"/>
-          <line x1="3" y1="10" x2="17" y2="10"/>
-          <line x1="3" y1="15" x2="17" y2="15"/>
-        </svg>
-      </button>
+<!-- ==================== HEADER ==================== -->
+<header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+        <div class="flex items-center justify-between h-20 lg:h-24 transition-all duration-500" id="navInner">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group" aria-label="Maison Lumière home">
+                <span class="font-display text-2xl lg:text-3xl font-medium tracking-tight text-charcoal">Maison</span>
+                <span class="w-px h-6 bg-brass/40"></span>
+                <span class="font-display text-2xl lg:text-3xl font-light italic text-brass">Lumière</span>
+            </a>
+            
+            <!-- Desktop Nav -->
+            <nav class="hidden lg:flex items-center gap-10" aria-label="Main navigation">
+                <a href="#menu" class="text-sm font-medium text-charcoal/70 hover:text-charcoal transition-colors duration-300 tracking-wide">Menu</a>
+                <a href="#gallery" class="text-sm font-medium text-charcoal/70 hover:text-charcoal transition-colors duration-300 tracking-wide">Gallery</a>
+                <a href="#reviews" class="text-sm font-medium text-charcoal/70 hover:text-charcoal transition-colors duration-300 tracking-wide">Reviews</a>
+                <a href="#location" class="text-sm font-medium text-charcoal/70 hover:text-charcoal transition-colors duration-300 tracking-wide">Location</a>
+            </nav>
+            
+            <div class="hidden lg:flex items-center gap-4">
+                <a href="#reservation" class="btn-primary text-xs px-7 py-3.5">
+                    Reserve a Table
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
+            
+            <!-- Mobile Toggle -->
+            <button id="mobileToggle" class="lg:hidden p-2 text-charcoal" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
     </div>
-  </header>
+</header>
 
-  <!-- Mobile menu overlay -->
-  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
-    <div class="flex justify-between items-center mb-8">
-      <span class="font-display text-xl">Flowbase</span>
-      <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 transition-colors" id="menuClose" aria-label="Close menu">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-          <line x1="4" y1="4" x2="16" y2="16"/>
-          <line x1="16" y1="4" x2="4" y2="16"/>
-        </svg>
-      </button>
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-full max-w-sm h-full bg-cream z-[60] shadow-2xl p-8 lg:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex justify-end mb-12">
+        <button id="mobileClose" class="p-2 text-charcoal" aria-label="Close menu">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
     </div>
-    <nav class="flex flex-col gap-2" aria-label="Mobile navigation">
-      <a href="#features" class="mobile-link">Features</a>
-      <a href="#pricing" class="mobile-link">Pricing</a>
-      <a href="#testimonials" class="mobile-link">Testimonials</a>
-      <a href="#contact" class="mobile-link">Contact</a>
+    <nav class="flex flex-col gap-8" aria-label="Mobile navigation links">
+        <a href="#menu" class="mobile-link font-display text-3xl font-light text-charcoal hover:text-brass transition-colors">Menu</a>
+        <a href="#gallery" class="mobile-link font-display text-3xl font-light text-charcoal hover:text-brass transition-colors">Gallery</a>
+        <a href="#reviews" class="mobile-link font-display text-3xl font-light text-charcoal hover:text-brass transition-colors">Reviews</a>
+        <a href="#location" class="mobile-link font-display text-3xl font-light text-charcoal hover:text-brass transition-colors">Location</a>
+        <div class="divider-brass my-4"></div>
+        <a href="#reservation" class="mobile-link btn-brass justify-center">Reserve a Table</a>
     </nav>
-    <div class="mt-auto flex flex-col gap-3">
-      <a href="#contact" class="btn btn-outline w-full">Sign in</a>
-      <a href="#pricing" class="btn btn-primary w-full">Start free</a>
-    </div>
-  </div>
+</div>
 
-  <main>
-    <!-- ========== HERO ========== -->
-    <section class="hero-gradient relative overflow-hidden" style="padding-top:9rem;padding-bottom:5rem;" id="hero">
-      <div class="glow-orb" style="width:600px;height:600px;top:-200px;left:50%;transform:translateX(-50%);background:rgba(26,92,255,0.12);" aria-hidden="true"></div>
-      <div class="glow-orb" style="width:400px;height:400px;top:200px;right:-100px;background:rgba(26,92,255,0.08);" aria-hidden="true"></div>
-
-      <div class="container relative z-10">
-        <div class="max-w-3xl mx-auto text-center">
-          <div class="hero-badge reveal" style="margin-bottom:1.5rem;">
-            <span class="dot" aria-hidden="true"></span>
-            Now in public beta — v2.0
-          </div>
-
-          <h1 class="heading-xl text-balance reveal" style="margin-bottom:1.5rem;">
-            The operating system<br class="hidden sm:block" />
-            for <em class="font-display" style="font-style:italic;color:var(--accent);">modern teams</em>
-          </h1>
-
-          <p class="body-lg max-w-xl mx-auto text-balance reveal" style="margin-bottom:2.5rem;">
-            Flowbase unifies your projects, docs, and communication into one calm, focused workspace. Less tab-switching. More shipping.
-          </p>
-
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 reveal">
-            <a href="#pricing" class="btn btn-accent w-full sm:w-auto" style="padding:0.875rem 2rem;">
-              Start free trial
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M3 8h10M9 4l4 4-4 4"/>
-              </svg>
-            </a>
-            <a href="#features" class="btn btn-outline w-full sm:w-auto" style="padding:0.875rem 2rem;">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-                <circle cx="8" cy="8" r="6"/>
-                <path d="M6.5 5.5L10.5 8L6.5 10.5V5.5Z" fill="currentColor" stroke="none"/>
-              </svg>
-              Watch demo
-            </a>
-          </div>
-
-          <p class="body-sm reveal" style="margin-top:1.25rem;">No credit card required · Free for 14 days · Cancel anytime</p>
-        </div>
-
-        <!-- Hero visual: app preview mockup -->
-        <div class="mt-16 md:mt-20 reveal" style="perspective:1200px;">
-          <div class="card-glass card" style="padding:0.5rem;max-width:960px;margin:0 auto;border-radius:28px;transform:rotateX(2deg);transition:transform 0.6s cubic-bezier(0.22,1,0.36,1);" id="heroVisual">
-            <div style="background:#fff;border-radius:22px;overflow:hidden;border:1px solid var(--hairline);">
-              <!-- App toolbar -->
-              <div class="flex items-center gap-2 px-4 py-3" style="border-bottom:1px solid var(--hairline);">
-                <span style="width:10px;height:10px;border-radius:50%;background:#FF5F57;" aria-hidden="true"></span>
-                <span style="width:10px;height:10px;border-radius:50%;background:#FEBC2E;" aria-hidden="true"></span>
-                <span style="width:10px;height:10px;border-radius:50%;background:#28C840;" aria-hidden="true"></span>
-                <div style="flex:1;height:24px;background:var(--canvas);border-radius:6px;margin-left:0.75rem;display:flex;align-items:center;padding:0 0.75rem;">
-                  <span class="body-sm" style="font-size:0.6875rem;color:var(--muted);">flowbase.app/workspace</span>
+<!-- ==================== HERO ==================== -->
+<section class="relative min-h-screen flex items-center overflow-hidden pt-28 lg:pt-32">
+    <div class="hero-mesh"></div>
+    
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 w-full relative z-10">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            <!-- Left Content -->
+            <div class="lg:col-span-6 xl:col-span-5">
+                <div class="reveal">
+                    <span class="label-caps inline-block mb-6">Est. 2018 · Paris &amp; New York</span>
                 </div>
-              </div>
-              <!-- App body -->
-              <div class="flex" style="min-height:340px;">
-                <!-- Sidebar -->
-                <div class="hidden sm:block" style="width:180px;border-right:1px solid var(--hairline);padding:1rem;background:var(--canvas);">
-                  <div style="font-size:0.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:0.75rem;">Workspace</div>
-                  <div class="flex flex-col gap-1">
-                    <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg" style="background:rgba(26,92,255,0.06);">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--accent)" stroke-width="1.3" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" rx="2"/><path d="M4.5 7h5M7 4.5v5"/></svg>
-                      <span style="font-size:0.8125rem;font-weight:500;color:var(--accent);">Overview</span>
-                    </div>
-                    <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--muted)" stroke-width="1.3" aria-hidden="true"><path d="M2 3.5h10M2 7h10M2 10.5h6"/></svg>
-                      <span style="font-size:0.8125rem;color:var(--ink-soft);">Projects</span>
-                    </div>
-                    <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--muted)" stroke-width="1.3" aria-hidden="true"><circle cx="7" cy="5" r="2.5"/><path d="M2 12c0-2.5 2.2-4.5 5-4.5s5 2 5 4.5"/></svg>
-                      <span style="font-size:0.8125rem;color:var(--ink-soft);">Team</span>
-                    </div>
-                    <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--muted)" stroke-width="1.3" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="1.5"/><path d="M5 7l1.5 1.5L9.5 5.5"/></svg>
-                      <span style="font-size:0.8125rem;color:var(--ink-soft);">Tasks</span>
-                    </div>
-                  </div>
+                
+                <h1 class="heading-xl text-charcoal reveal" style="transition-delay: 0.1s;">
+                    Where light<br />
+                    meets <span class="italic text-brass">flavour</span>
+                </h1>
+                
+                <p class="body-large mt-8 max-w-md reveal" style="transition-delay: 0.2s;">
+                    A modern French dining experience rooted in seasonal ingredients, 
+                    quiet elegance, and the art of lingering. Every plate tells a story.
+                </p>
+                
+                <div class="flex flex-wrap gap-4 mt-10 reveal" style="transition-delay: 0.3s;">
+                    <a href="#reservation" class="btn-primary">
+                        Reserve Your Evening
+                        <i data-lucide="calendar" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#menu" class="btn-outline">
+                        Explore Menu
+                        <i data-lucide="arrow-down" class="w-4 h-4"></i>
+                    </a>
                 </div>
-                <!-- Main content -->
-                <div style="flex:1;padding:1.25rem;">
-                  <div class="flex items-center justify-between" style="margin-bottom:1rem;">
+                
+                <!-- Stats -->
+                <div class="flex gap-10 mt-14 pt-8 border-t border-charcoal/10 reveal" style="transition-delay: 0.4s;">
                     <div>
-                      <div style="font-size:0.9375rem;font-weight:600;color:var(--ink);">Good morning, Alex</div>
-                      <div class="body-sm" style="font-size:0.75rem;">Here's what's happening today.</div>
+                        <span class="font-display text-3xl text-charcoal">2</span>
+                        <span class="body-small block mt-1">Michelin Stars</span>
                     </div>
-                    <div class="flex items-center gap-1.5">
-                      <span style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.625rem;font-weight:600;">A</span>
-                      <span style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#EF4444);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.625rem;font-weight:600;">M</span>
-                      <span style="width:28px;height:28px;border-radius:50%;background:var(--canvas);border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:0.625rem;font-weight:600;">+3</span>
+                    <div>
+                        <span class="font-display text-3xl text-charcoal">14</span>
+                        <span class="body-small block mt-1">Course Tasting</span>
                     </div>
-                  </div>
-                  <!-- Stats row -->
-                  <div class="grid grid-cols-3 gap-2" style="margin-bottom:1rem;">
-                    <div style="background:var(--canvas);border-radius:10px;padding:0.75rem;">
-                      <div style="font-size:1.25rem;font-weight:600;color:var(--ink);">24</div>
-                      <div class="body-sm" style="font-size:0.6875rem;">Active tasks</div>
+                    <div>
+                        <span class="font-display text-3xl text-charcoal">7</span>
+                        <span class="body-small block mt-1">Years of Craft</span>
                     </div>
-                    <div style="background:var(--canvas);border-radius:10px;padding:0.75rem;">
-                      <div style="font-size:1.25rem;font-weight:600;color:var(--ink);">8</div>
-                      <div class="body-sm" style="font-size:0.6875rem;">Completed</div>
-                    </div>
-                    <div style="background:var(--canvas);border-radius:10px;padding:0.75rem;">
-                      <div style="font-size:1.25rem;font-weight:600;color:var(--accent);">3</div>
-                      <div class="body-sm" style="font-size:0.6875rem;">In review</div>
-                    </div>
-                  </div>
-                  <!-- Task list -->
-                  <div style="background:var(--canvas);border-radius:10px;padding:0.75rem;">
-                    <div style="font-size:0.6875rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;">Today</div>
-                    <div class="flex flex-col gap-1.5">
-                      <div class="flex items-center gap-2">
-                        <span style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;" aria-hidden="true"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);"></span></span>
-                        <span style="font-size:0.75rem;color:var(--ink-soft);">Design review — Homepage v3</span>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <span style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--muted);" aria-hidden="true"></span>
-                        <span style="font-size:0.75rem;color:var(--ink-soft);">Update onboarding flow copy</span>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <span style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--muted);" aria-hidden="true"></span>
-                        <span style="font-size:0.75rem;color:var(--ink-soft);">Sync with engineering on API spec</span>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-              </div>
             </div>
-          </div>
+            
+            <!-- Right Visual -->
+            <div class="lg:col-span-6 xl:col-span-7 relative reveal" style="transition-delay: 0.2s;">
+                <div class="relative float-anim">
+                    <div class="absolute -top-8 -right-8 w-64 h-64 rounded-full bg-brass/6 blur-3xl"></div>
+                    <div class="relative rounded-[2rem] overflow-hidden shadow-2xl">
+                        <img 
+                            src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=85&auto=format&fit=crop" 
+                            alt="Elegant dining room at Maison Lumière with warm lighting and set tables"
+                            class="w-full h-[420px] lg:h-[580px] object-cover"
+                            loading="eager"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-charcoal/20 via-transparent to-transparent"></div>
+                    </div>
+                    
+                    <!-- Floating card -->
+                    <div class="absolute -bottom-6 -left-6 lg:-left-12 glass-panel p-5 max-w-[220px]">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="stars">
+                                <i data-lucide="star" class="w-3.5 h-3.5 star-filled fill-current"></i>
+                                <i data-lucide="star" class="w-3.5 h-3.5 star-filled fill-current"></i>
+                                <i data-lucide="star" class="w-3.5 h-3.5 star-filled fill-current"></i>
+                                <i data-lucide="star" class="w-3.5 h-3.5 star-filled fill-current"></i>
+                                <i data-lucide="star" class="w-3.5 h-3.5 star-filled fill-current"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-charcoal font-medium leading-snug">"The finest tasting menu in the city — utterly transportive."</p>
+                        <span class="body-small mt-2 block">— Le Monde</span>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ========== SOCIAL PROOF / STATS ========== -->
-    <section class="section" style="padding-top:0;padding-bottom:0;">
-      <div class="container">
-        <div class="reveal" style="border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);padding:3rem 0;">
-          <p class="body-sm text-center" style="margin-bottom:2rem;letter-spacing:0.04em;text-transform:uppercase;font-size:0.75rem;font-weight:600;">Trusted by teams at</p>
-          <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6" style="opacity:0.45;">
-            <span class="font-display" style="font-size:1.5rem;">Acme Corp</span>
-            <span class="font-display" style="font-size:1.5rem;">Northwind</span>
-            <span class="font-display" style="font-size:1.5rem;">Quantum</span>
-            <span class="font-display" style="font-size:1.5rem;">Vertex</span>
-            <span class="font-display" style="font-size:1.5rem;">Helios</span>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6" style="margin-top:3rem;">
-            <div class="text-center">
-              <div class="heading-lg" style="font-family:var(--font-body);font-weight:700;font-size:2rem;">12,000+</div>
-              <div class="body-sm">Teams onboarded</div>
-            </div>
-            <div class="text-center">
-              <div class="heading-lg" style="font-family:var(--font-body);font-weight:700;font-size:2rem;">98%</div>
-              <div class="body-sm">Customer satisfaction</div>
-            </div>
-            <div class="text-center">
-              <div class="heading-lg" style="font-family:var(--font-body);font-weight:700;font-size:2rem;">4.9/5</div>
-              <div class="body-sm">Average rating</div>
-            </div>
-          </div>
+<!-- ==================== MARQUEE / SOCIAL PROOF ==================== -->
+<section class="py-10 border-y border-charcoal/6 overflow-hidden bg-white/50">
+    <div class="marquee-track">
+        <!-- Duplicated for seamless loop -->
+        <div class="flex items-center gap-16 px-8 shrink-0">
+            <span class="body-small tracking-widest uppercase text-charcoal/40 font-medium">Michelin Guide 2024</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+            <span class="body-small tracking-widest uppercase text-charcoal/40 font-medium">World's 50 Best</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+            <span class="body-small tracking-widest uppercase text-charcoal/40 font-medium">James Beard Nominee</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+            <span class="body-small tracking-widest uppercase text-charcoal/40 font-medium">Wine Spectator Grand Award</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+            <span class="body-small tracking-widest uppercase text-charcoal/40 font-medium">Condé Nast Traveler</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
         </div>
-      </div>
-    </section>
-
-    <!-- ========== FEATURES (BENTO) ========== -->
-    <section class="section" id="features">
-      <div class="container">
-        <div class="max-w-2xl" style="margin-bottom:3rem;">
-          <div class="body-sm reveal" style="font-weight:600;letter-spacing:0.06em;text-transform:uppercase;font-size:0.75rem;color:var(--accent);margin-bottom:0.75rem;">Features</div>
-          <h2 class="heading-lg text-balance reveal" style="margin-bottom:1rem;">Everything you need. Nothing you don't.</h2>
-          <p class="body-lg reveal">Flowbase brings your entire workflow into one place — from the first task to the final ship. No more context switching between five different tools.</p>
+        <div class="flex items-center gap-16 px-8 shrink-0" aria-hidden="true">
+            <span class="body-small tracking-widest uppercase text-charcoal/40 font-medium">Michelin Guide 2024</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+            <span class="body-small tracking-widest uppercase text-charcoal/40 font-medium">World's 50 Best</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+            <span class="body-small tracking-widest uppercase text-charcoal/40 font-medium">James Beard Nominee</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+            <span class="body-small tracking-widest uppercase text-charcoal/40 font-medium">Wine Spectator Grand Award</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+            <span class="body-small tracking-widest uppercase text-charcoal/40 font-medium">Condé Nast Traveler</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
         </div>
+    </div>
+</section>
 
-        <div class="bento-grid">
-          <!-- Feature 1 -->
-          <div class="card reveal" style="padding:2rem;">
-            <div style="width:44px;height:44px;border-radius:12px;background:rgba(26,92,255,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="18" height="18" rx="4"/><path d="M7 11l3 3 5-5"/></svg>
-            </div>
-            <h3 class="heading-md" style="font-size:1.125rem;font-weight:600;margin-bottom:0.5rem;">Unified workspace</h3>
-            <p class="body-sm" style="margin-bottom:0;">Projects, docs, and conversations live together. Find anything in seconds, not minutes.</p>
-          </div>
-
-          <!-- Feature 2 -->
-          <div class="card reveal" style="padding:2rem;">
-            <div style="width:44px;height:44px;border-radius:12px;background:rgba(26,92,255,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 12h6l-1 8 9-10h-6l1-8z"/></svg>
-            </div>
-            <h3 class="heading-md" style="font-size:1.125rem;font-weight:600;margin-bottom:0.5rem;">Lightning automations</h3>
-            <p class="body-sm" style="margin-bottom:0;">Set up smart rules once and let Flowbase handle the repetitive work. Save hours every week.</p>
-          </div>
-
-          <!-- Feature 3 — wide -->
-          <div class="card bento-wide reveal" style="padding:2rem;display:flex;flex-direction:column;justify-content:space-between;">
+<!-- ==================== MENU ==================== -->
+<section id="menu" class="py-24 lg:py-36">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+        <!-- Section Header -->
+        <div class="max-w-2xl mb-16 lg:mb-20 reveal">
+            <span class="label-caps">The Menu</span>
+            <h2 class="heading-lg mt-4 text-charcoal">
+                A celebration of<br />
+                <span class="italic text-brass">season &amp; craft</span>
+            </h2>
+            <p class="body-large mt-6">
+                Our menu evolves with the seasons, guided by the finest local producers 
+                and a deep respect for French technique. Available à la carte or as a 
+                seven-course tasting journey.
+            </p>
+        </div>
+        
+        <!-- Menu Grid -->
+        <div class="grid md:grid-cols-2 gap-x-16 gap-y-2 reveal">
+            <!-- Left Column -->
             <div>
-              <div style="width:44px;height:44px;border-radius:12px;background:rgba(26,92,255,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18V9M11 18V4M18 18v-6"/></svg>
-              </div>
-              <h3 class="heading-md" style="font-size:1.125rem;font-weight:600;margin-bottom:0.5rem;">Real-time insights</h3>
-              <p class="body-sm" style="max-width:32rem;">Dashboards that update as work happens. Spot bottlenecks before they become blockers.</p>
-            </div>
-            <!-- Mini chart bars -->
-            <div class="flex items-end gap-1.5" style="margin-top:1.5rem;height:64px;" aria-hidden="true">
-              <div style="flex:1;background:rgba(26,92,255,0.12);border-radius:4px 4px 0 0;height:40%;"></div>
-              <div style="flex:1;background:rgba(26,92,255,0.18);border-radius:4px 4px 0 0;height:65%;"></div>
-              <div style="flex:1;background:rgba(26,92,255,0.12);border-radius:4px 4px 0 0;height:30%;"></div>
-              <div style="flex:1;background:rgba(26,92,255,0.25);border-radius:4px 4px 0 0;height:85%;"></div>
-              <div style="flex:1;background:rgba(26,92,255,0.12);border-radius:4px 4px 0 0;height:50%;"></div>
-              <div style="flex:1;background:rgba(26,92,255,0.18);border-radius:4px 4px 0 0;height:70%;"></div>
-              <div style="flex:1;background:rgba(26,92,255,0.35);border-radius:4px 4px 0 0;height:95%;"></div>
-            </div>
-          </div>
-
-          <!-- Feature 4 -->
-          <div class="card reveal" style="padding:2rem;">
-            <div style="width:44px;height:44px;border-radius:12px;background:rgba(26,92,255,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="9"/><path d="M11 7v4l3 3"/></svg>
-            </div>
-            <h3 class="heading-md" style="font-size:1.125rem;font-weight:600;margin-bottom:0.5rem;">Time tracking built-in</h3>
-            <p class="body-sm" style="margin-bottom:0;">Log hours directly on tasks. No more end-of-week guessing games.</p>
-          </div>
-
-          <!-- Feature 5 -->
-          <div class="card reveal" style="padding:2rem;">
-            <div style="width:44px;height:44px;border-radius:12px;background:rgba(26,92,255,0.08);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 7h6l-5 4 2 7-6-4-6 4 2-7-5-4h6l3-7z"/></svg>
-            </div>
-            <h3 class="heading-md" style="font-size:1.125rem;font-weight:600;margin-bottom:0.5rem;">Custom fields & views</h3>
-            <p class="body-sm" style="margin-bottom:0;">Shape Flowbase to fit how your team actually works — not the other way around.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== PRICING ========== -->
-    <section class="section" id="pricing" style="background:var(--paper);">
-      <div class="container">
-        <div class="max-w-2xl mx-auto text-center" style="margin-bottom:3rem;">
-          <div class="body-sm reveal" style="font-weight:600;letter-spacing:0.06em;text-transform:uppercase;font-size:0.75rem;color:var(--accent);margin-bottom:0.75rem;">Pricing</div>
-          <h2 class="heading-lg text-balance reveal" style="margin-bottom:1rem;">Simple pricing, serious value</h2>
-          <p class="body-lg reveal">Start free. Upgrade when you're ready. No hidden fees, no surprises.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" style="max-width:1000px;margin:0 auto;">
-          <!-- Starter -->
-          <div class="pricing-card reveal" style="display:flex;flex-direction:column;">
-            <div class="body-sm" style="font-weight:600;text-transform:uppercase;letter-spacing:0.05em;font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem;">Starter</div>
-            <div class="flex items-baseline gap-1" style="margin-bottom:0.25rem;">
-              <span style="font-size:2.5rem;font-weight:700;letter-spacing:-0.03em;color:var(--ink);">$0</span>
-              <span class="body-sm">/month</span>
-            </div>
-            <p class="body-sm" style="margin-bottom:1.5rem;">For individuals getting started.</p>
-            <ul class="flex flex-col gap-3" style="margin-bottom:2rem;flex:1;">
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">Up to 3 projects</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">Basic task management</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">1 GB storage</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">Community support</span>
-              </li>
-            </ul>
-            <a href="#contact" class="btn btn-outline w-full">Get started</a>
-          </div>
-
-          <!-- Pro — featured -->
-          <div class="pricing-card featured reveal" style="display:flex;flex-direction:column;position:relative;">
-            <div class="pricing-badge">Most popular</div>
-            <div class="body-sm" style="font-weight:600;text-transform:uppercase;letter-spacing:0.05em;font-size:0.75rem;color:var(--accent);margin-bottom:0.5rem;">Pro</div>
-            <div class="flex items-baseline gap-1" style="margin-bottom:0.25rem;">
-              <span style="font-size:2.5rem;font-weight:700;letter-spacing:-0.03em;color:var(--ink);">$19</span>
-              <span class="body-sm">/month</span>
-            </div>
-            <p class="body-sm" style="margin-bottom:1.5rem;">For growing teams that need more power.</p>
-            <ul class="flex flex-col gap-3" style="margin-bottom:2rem;flex:1;">
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">Unlimited projects</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">Advanced automations</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">50 GB storage</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">Priority email support</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">Custom fields & views</span>
-              </li>
-            </ul>
-            <a href="#contact" class="btn btn-accent w-full">Start free trial</a>
-          </div>
-
-          <!-- Enterprise -->
-          <div class="pricing-card reveal" style="display:flex;flex-direction:column;">
-            <div class="body-sm" style="font-weight:600;text-transform:uppercase;letter-spacing:0.05em;font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem;">Enterprise</div>
-            <div class="flex items-baseline gap-1" style="margin-bottom:0.25rem;">
-              <span style="font-size:2.5rem;font-weight:700;letter-spacing:-0.03em;color:var(--ink);">$49</span>
-              <span class="body-sm">/month</span>
-            </div>
-            <p class="body-sm" style="margin-bottom:1.5rem;">For organizations with custom needs.</p>
-            <ul class="flex flex-col gap-3" style="margin-bottom:2rem;flex:1;">
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">Everything in Pro</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">SSO & advanced security</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">Unlimited storage</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">Dedicated account manager</span>
-              </li>
-              <li class="flex items-start gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-top:2px;flex-shrink:0;" aria-hidden="true"><path d="M5 9l3 3 5-5"/></svg>
-                <span class="body-sm" style="color:var(--ink-soft);">Custom integrations</span>
-              </li>
-            </ul>
-            <a href="#contact" class="btn btn-outline w-full">Contact sales</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== TESTIMONIALS ========== -->
-    <section class="section" id="testimonials">
-      <div class="container">
-        <div class="max-w-2xl" style="margin-bottom:3rem;">
-          <div class="body-sm reveal" style="font-weight:600;letter-spacing:0.06em;text-transform:uppercase;font-size:0.75rem;color:var(--accent);margin-bottom:0.75rem;">Testimonials</div>
-          <h2 class="heading-lg text-balance reveal" style="margin-bottom:1rem;">Loved by teams who ship</h2>
-          <p class="body-lg reveal">Don't take our word for it. Here's what people are saying about Flowbase.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Testimonial 1 -->
-          <div class="testimonial-card reveal">
-            <div class="flex gap-0.5" style="margin-bottom:1.25rem;" aria-label="5 out of 5 stars">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-            </div>
-            <blockquote class="body-sm" style="color:var(--ink-soft);margin-bottom:1.5rem;font-size:0.9375rem;line-height:1.7;">"Flowbase replaced four separate tools for us. Our team finally has a single source of truth. The automations alone save us at least 6 hours a week."</blockquote>
-            <div class="flex items-center gap-3">
-              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.8125rem;font-weight:600;flex-shrink:0;">SK</div>
-              <div>
-                <div style="font-size:0.875rem;font-weight:600;color:var(--ink);">Sarah Kim</div>
-                <div class="body-sm" style="font-size:0.8125rem;">Head of Product, Vertex</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Testimonial 2 -->
-          <div class="testimonial-card reveal">
-            <div class="flex gap-0.5" style="margin-bottom:1.25rem;" aria-label="5 out of 5 stars">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-            </div>
-            <blockquote class="body-sm" style="color:var(--ink-soft);margin-bottom:1.5rem;font-size:0.9375rem;line-height:1.7;">"The cleanest UI I've ever used for project management. It's rare to find something that's both powerful and genuinely pleasant to look at."</blockquote>
-            <div class="flex items-center gap-3">
-              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#EF4444);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.8125rem;font-weight:600;flex-shrink:0;">MR</div>
-              <div>
-                <div style="font-size:0.875rem;font-weight:600;color:var(--ink);">Marcus Rivera</div>
-                <div class="body-sm" style="font-size:0.8125rem;">Engineering Lead, Quantum</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Testimonial 3 -->
-          <div class="testimonial-card reveal">
-            <div class="flex gap-0.5" style="margin-bottom:1.25rem;" aria-label="5 out of 5 stars">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true"><path d="M8 1l2.2 4.5 5 .7-3.6 3.5.9 5-4.5-2.4L3.5 14.7l.9-5L.8 6.2l5-.7L8 1z"/></svg>
-            </div>
-            <blockquote class="body-sm" style="color:var(--ink-soft);margin-bottom:1.5rem;font-size:0.9375rem;line-height:1.7;">"Onboarding took ten minutes. By day two, the whole team was in Flowbase. That's never happened with any other tool we've tried."</blockquote>
-            <div class="flex items-center gap-3">
-              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#10B981,#06B6D4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.8125rem;font-weight:600;flex-shrink:0;">AL</div>
-              <div>
-                <div style="font-size:0.875rem;font-weight:600;color:var(--ink);">Aisha Lawson</div>
-                <div class="body-sm" style="font-size:0.8125rem;">Operations Manager, Helios</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== CTA BANNER ========== -->
-    <section class="section" style="padding-top:0;">
-      <div class="container">
-        <div class="cta-banner reveal" style="padding:4rem 2rem;text-align:center;">
-          <div class="glow-orb" style="width:400px;height:400px;top:-150px;right:-100px;background:rgba(26,92,255,0.25);" aria-hidden="true"></div>
-          <div class="glow-orb" style="width:300px;height:300px;bottom:-100px;left:-50px;background:rgba(26,92,255,0.15);" aria-hidden="true"></div>
-          <div style="position:relative;z-index:1;">
-            <h2 class="heading-lg text-balance" style="color:#fff;margin-bottom:1rem;">Ready to simplify how your team works?</h2>
-            <p class="body-lg text-balance" style="color:rgba(255,255,255,0.7);max-width:36rem;margin:0 auto 2rem;">Join 12,000+ teams who've already made the switch. Start your free trial today — no credit card required.</p>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <a href="#contact" class="btn w-full sm:w-auto" style="background:#fff;color:var(--ink);padding:0.875rem 2rem;box-shadow:0 4px 16px rgba(0,0,0,0.2);">
-                Start free trial
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
-              </a>
-              <a href="#pricing" class="btn w-full sm:w-auto" style="border:1px solid rgba(255,255,255,0.2);color:#fff;background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);padding:0.875rem 2rem;">
-                Compare plans
-              </a>
-            </div>
-            <p class="body-sm" style="color:rgba(255,255,255,0.4);margin-top:1.25rem;font-size:0.8125rem;">14-day free trial · Cancel anytime · No setup fees</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== FOOTER WITH CONTACT FORM ========== -->
-    <footer class="section" style="background:var(--paper);border-top:1px solid var(--hairline);padding-bottom:3rem;" id="contact">
-      <div class="container">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16" style="margin-bottom:4rem;">
-          <!-- Left: brand + links -->
-          <div>
-            <div class="flex items-center gap-2.5" style="margin-bottom:1rem;">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                <rect width="28" height="28" rx="8" fill="#0B0D10"/>
-                <path d="M8 14L12 10L16 14L20 10" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8 18L12 14L16 18L20 14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-              </svg>
-              <span class="font-display text-xl" style="font-weight:400;">Flowbase</span>
-            </div>
-            <p class="body-sm" style="max-width:24rem;margin-bottom:2rem;">The operating system for modern teams. Projects, docs, and communication — unified.</p>
-
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
-              <div>
-                <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);margin-bottom:1rem;">Product</div>
-                <ul class="flex flex-col gap-2.5">
-                  <li><a href="#features" class="footer-link">Features</a></li>
-                  <li><a href="#pricing" class="footer-link">Pricing</a></li>
-                  <li><a href="#testimonials" class="footer-link">Testimonials</a></li>
-                  <li><a href="#" class="footer-link">Changelog</a></li>
-                </ul>
-              </div>
-              <div>
-                <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);margin-bottom:1rem;">Company</div>
-                <ul class="flex flex-col gap-2.5">
-                  <li><a href="#" class="footer-link">About</a></li>
-                  <li><a href="#" class="footer-link">Blog</a></li>
-                  <li><a href="#" class="footer-link">Careers</a></li>
-                  <li><a href="#contact" class="footer-link">Contact</a></li>
-                </ul>
-              </div>
-              <div>
-                <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);margin-bottom:1rem;">Legal</div>
-                <ul class="flex flex-col gap-2.5">
-                  <li><a href="#" class="footer-link">Privacy</a></li>
-                  <li><a href="#" class="footer-link">Terms</a></li>
-                  <li><a href="#" class="footer-link">Security</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right: enquiry form -->
-          <div class="card" style="padding:2rem;border-radius:24px;">
-            <h3 class="heading-md" style="font-size:1.25rem;font-weight:600;margin-bottom:0.5rem;">Get in touch</h3>
-            <p class="body-sm" style="margin-bottom:1.5rem;">Questions about pricing, features, or enterprise? We'll get back within 24 hours.</p>
-
-            <form id="contactForm" novalidate>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" style="margin-bottom:1rem;">
-                <div>
-                  <label for="name" class="sr-only">Name</label>
-                  <input type="text" id="name" name="name" class="form-input" placeholder="Full name" required autocomplete="name" />
-                  <div class="form-error" id="nameError">Please enter your name.</div>
+                <h3 class="heading-md text-charcoal mb-6 flex items-center gap-3">
+                    <span class="w-8 h-px bg-brass"></span>
+                    Entrées
+                </h3>
+                
+                <div class="menu-item flex justify-between items-baseline py-5">
+                    <div class="pr-4">
+                        <h4 class="font-display text-xl text-charcoal">Huitres de Bretagne</h4>
+                        <p class="body-small mt-1">Fine de claire oysters, champagne mignonette, rye crisp</p>
+                    </div>
+                    <span class="font-display text-lg text-brass shrink-0">32</span>
                 </div>
-                <div>
-                  <label for="email" class="sr-only">Email</label>
-                  <input type="email" id="email" name="email" class="form-input" placeholder="Work email" required autocomplete="email" />
-                  <div class="form-error" id="emailError">Please enter a valid email.</div>
+                
+                <div class="menu-item flex justify-between items-baseline py-5">
+                    <div class="pr-4">
+                        <h4 class="font-display text-xl text-charcoal">Foie Gras au Torchon</h4>
+                        <p class="body-small mt-1">Pressed duck liver, sauternes gelée, brioche, fig</p>
+                    </div>
+                    <span class="font-display text-lg text-brass shrink-0">38</span>
                 </div>
-              </div>
-              <div style="margin-bottom:1rem;">
-                <label for="company" class="sr-only">Company</label>
-                <input type="text" id="company" name="company" class="form-input" placeholder="Company (optional)" autocomplete="organization" />
-              </div>
-              <div style="margin-bottom:1.5rem;">
-                <label for="message" class="sr-only">Message</label>
-                <textarea id="message" name="message" class="form-input" placeholder="Tell us about your team's needs..." rows="4" required style="resize:vertical;min-height:100px;"></textarea>
-                <div class="form-error" id="messageError">Please tell us a bit about your needs.</div>
-              </div>
-              <button type="submit" class="btn btn-accent w-full" style="padding:0.875rem 2rem;">
-                Send message
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
-              </button>
-              <!-- TODO: connect form action to backend endpoint -->
-              <div class="form-success" id="formSuccess" role="status">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#15803D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:0.5rem;" aria-hidden="true"><path d="M5 10l4 4 6-6"/></svg>
-                Thank you — we'll be in touch shortly.
-              </div>
-            </form>
-          </div>
+                
+                <div class="menu-item flex justify-between items-baseline py-5">
+                    <div class="pr-4">
+                        <h4 class="font-display text-xl text-charcoal">Tarte aux Champignons</h4>
+                        <p class="body-small mt-1">Wild mushroom tart, comté cream, truffle oil, chive</p>
+                    </div>
+                    <span class="font-display text-lg text-brass shrink-0">28</span>
+                </div>
+                
+                <div class="menu-item flex justify-between items-baseline py-5">
+                    <div class="pr-4">
+                        <h4 class="font-display text-xl text-charcoal">Soupe à l'Oignon</h4>
+                        <p class="body-small mt-1">Caramelised onion broth, gruyère crouton, thyme</p>
+                    </div>
+                    <span class="font-display text-lg text-brass shrink-0">24</span>
+                </div>
+            </div>
+            
+            <!-- Right Column -->
+            <div>
+                <h3 class="heading-md text-charcoal mb-6 flex items-center gap-3">
+                    <span class="w-8 h-px bg-brass"></span>
+                    Plats Principaux
+                </h3>
+                
+                <div class="menu-item flex justify-between items-baseline py-5">
+                    <div class="pr-4">
+                        <h4 class="font-display text-xl text-charcoal">Canard à l'Orange</h4>
+                        <p class="body-small mt-1">Roasted duck breast, blood orange, endive, star anise</p>
+                    </div>
+                    <span class="font-display text-lg text-brass shrink-0">52</span>
+                </div>
+                
+                <div class="menu-item flex justify-between items-baseline py-5">
+                    <div class="pr-4">
+                        <h4 class="font-display text-xl text-charcoal">Turbot Sauvage</h4>
+                        <p class="body-small mt-1">Wild turbot, beurre blanc, sea herbs, finger lime</p>
+                    </div>
+                    <span class="font-display text-lg text-brass shrink-0">58</span>
+                </div>
+                
+                <div class="menu-item flex justify-between items-baseline py-5">
+                    <div class="pr-4">
+                        <h4 class="font-display text-xl text-charcoal">Filet de Boeuf</h4>
+                        <p class="body-small mt-1">Dry-aged beef, périgourdine sauce, pommes purée</p>
+                    </div>
+                    <span class="font-display text-lg text-brass shrink-0">64</span>
+                </div>
+                
+                <div class="menu-item flex justify-between items-baseline py-5">
+                    <div class="pr-4">
+                        <h4 class="font-display text-xl text-charcoal">Risotto aux Truffes</h4>
+                        <p class="body-small mt-1">Carnaroli rice, black truffle, aged parmesan, chervil</p>
+                    </div>
+                    <span class="font-display text-lg text-brass shrink-0">46</span>
+                </div>
+            </div>
         </div>
-
-        <!-- Bottom bar -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4" style="border-top:1px solid var(--hairline);padding-top:2rem;">
-          <p class="body-sm" style="font-size:0.8125rem;">&copy; 2026 Flowbase Inc. All rights reserved.</p>
-          <div class="flex items-center gap-4">
-            <a href="#" class="footer-link" aria-label="Twitter">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            </a>
-            <a href="#" class="footer-link" aria-label="LinkedIn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            </a>
-            <a href="#" class="footer-link" aria-label="GitHub">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-            </a>
-          </div>
+        
+        <!-- Tasting Menu Note -->
+        <div class="mt-16 p-8 lg:p-10 rounded-3xl bg-linen/60 border border-charcoal/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 reveal">
+            <div>
+                <span class="label-caps">Chef's Selection</span>
+                <h3 class="heading-md text-charcoal mt-2">Seven-Course Tasting Menu</h3>
+                <p class="body-small mt-2 max-w-lg">A guided journey through our kitchen's finest work, with optional wine pairing.</p>
+            </div>
+            <div class="flex items-center gap-6 shrink-0">
+                <span class="font-display text-3xl text-brass">145</span>
+                <span class="body-small">per guest</span>
+                <a href="#reservation" class="btn-brass text-xs px-6 py-3">Reserve</a>
+            </div>
         </div>
-      </div>
-    </footer>
-  </main>
+    </div>
+</section>
 
-  <!-- ========== SCRIPTS ========== -->
-  <script>
-    // === Lucide icons ===
-    lucide.createIcons();
+<!-- ==================== GALLERY ==================== -->
+<section id="gallery" class="py-24 lg:py-36 bg-white/40">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+        <div class="max-w-2xl mb-16 reveal">
+            <span class="label-caps">Gallery</span>
+            <h2 class="heading-lg mt-4 text-charcoal">
+                Moments at<br />
+                <span class="italic text-brass">Maison Lumière</span>
+            </h2>
+        </div>
+        
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+            <!-- Large item -->
+            <div class="gallery-item col-span-2 row-span-2 reveal" style="transition-delay: 0s;">
+                <img 
+                    src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80&auto=format&fit=crop" 
+                    alt="Interior of the restaurant with candlelit tables" 
+                    class="w-full h-full object-cover min-h-[300px] lg:min-h-[500px]"
+                    loading="lazy"
+                />
+            </div>
+            
+            <div class="gallery-item reveal" style="transition-delay: 0.1s;">
+                <img 
+                    src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80&auto=format&fit=crop" 
+                    alt="Signature plated dish with seasonal vegetables" 
+                    class="w-full h-full object-cover min-h-[150px] lg:min-h-[240px]"
+                    loading="lazy"
+                />
+            </div>
+            
+            <div class="gallery-item reveal" style="transition-delay: 0.15s;">
+                <img 
+                    src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&q=80&auto=format&fit=crop" 
+                    alt="Chef plating a dish in the open kitchen" 
+                    class="w-full h-full object-cover min-h-[150px] lg:min-h-[240px]"
+                    loading="lazy"
+                />
+            </div>
+            
+            <div class="gallery-item reveal" style="transition-delay: 0.2s;">
+                <img 
+                    src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80&auto=format&fit=crop" 
+                    alt="Beautifully presented main course with sauce" 
+                    class="w-full h-full object-cover min-h-[150px] lg:min-h-[240px]"
+                    loading="lazy"
+                />
+            </div>
+            
+            <div class="gallery-item reveal" style="transition-delay: 0.25s;">
+                <img 
+                    src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600&q=80&auto=format&fit=crop" 
+                    alt="Sommelier pouring wine at the table" 
+                    class="w-full h-full object-cover min-h-[150px] lg:min-h-[240px]"
+                    loading="lazy"
+                />
+            </div>
+        </div>
+    </div>
+</section>
 
-    // === Navbar scroll effect ===
-    const navbar = document.getElementById('navbar');
-    let lastScroll = 0;
-    window.addEventListener('scroll', () => {
-      const y = window.scrollY;
-      if (y > 40) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
-      lastScroll = y;
-    }, { passive: true });
+<!-- ==================== REVIEWS ==================== -->
+<section id="reviews" class="py-24 lg:py-36">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+        <div class="max-w-2xl mb-16 lg:mb-20 reveal">
+            <span class="label-caps">Reviews</span>
+            <h2 class="heading-lg mt-4 text-charcoal">
+                What our guests<br />
+                <span class="italic text-brass">are saying</span>
+            </h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Review 1 -->
+            <div class="glass-panel p-8 card-lift reveal" style="transition-delay: 0s;">
+                <div class="stars mb-5">
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                </div>
+                <p class="body-large text-charcoal/80 italic leading-relaxed">
+                    "An evening at Maison Lumière is not just a meal — it's a meditation on flavour. 
+                    The turbot was cooked to absolute perfection, and the service felt like a quiet ballet."
+                </p>
+                <div class="mt-6 pt-6 border-t border-charcoal/8 flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
+                        <span class="font-display text-sm text-brass font-medium">EC</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-charcoal">Eleanor Chen</p>
+                        <p class="body-small">Food Critic, The Atlantic</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Review 2 -->
+            <div class="glass-panel p-8 card-lift reveal" style="transition-delay: 0.1s;">
+                <div class="stars mb-5">
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                </div>
+                <p class="body-large text-charcoal/80 italic leading-relaxed">
+                    "We celebrated our anniversary here and it exceeded every expectation. 
+                    The wine pairing was inspired, and the staff remembered every small detail. 
+                    A true gem."
+                </p>
+                <div class="mt-6 pt-6 border-t border-charcoal/8 flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
+                        <span class="font-display text-sm text-brass font-medium">MR</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-charcoal">Marcus Reinhardt</p>
+                        <p class="body-small">Regular Guest</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Review 3 -->
+            <div class="glass-panel p-8 card-lift reveal" style="transition-delay: 0.2s;">
+                <div class="stars mb-5">
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                    <i data-lucide="star" class="w-4 h-4 star-filled fill-current"></i>
+                </div>
+                <p class="body-large text-charcoal/80 italic leading-relaxed">
+                    "The tasting menu is a masterclass in balance and restraint. Each course 
+                    arrived like a small gift. This is destination dining at its finest — 
+                    worth every mile travelled."
+                </p>
+                <div class="mt-6 pt-6 border-t border-charcoal/8 flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
+                        <span class="font-display text-sm text-brass font-medium">SL</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-charcoal">Sophia Laurent</p>
+                        <p class="body-small">Travel Writer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-    // === Mobile menu ===
-    const menuToggle = document.getElementById('menuToggle');
-    const menuClose = document.getElementById('menuClose');
-    const mobileMenu = document.getElementById('mobileMenu');
+<!-- ==================== LOCATION ==================== -->
+<section id="location" class="py-24 lg:py-36 bg-white/40">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <div class="reveal">
+                <span class="label-caps">Find Us</span>
+                <h2 class="heading-lg mt-4 text-charcoal">
+                    In the heart of<br />
+                    <span class="italic text-brass">the city</span>
+                </h2>
+                <p class="body-large mt-6 max-w-md">
+                    Tucked away on a quiet corner in the historic district, 
+                    Maison Lumière offers an escape from the everyday.
+                </p>
+                
+                <div class="mt-10 space-y-5">
+                    <div class="flex items-start gap-4">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-brass mt-0.5 shrink-0"></i>
+                        <div>
+                            <p class="text-sm font-medium text-charcoal">Address</p>
+                            <p class="body-small">18 Rue Saint-Honoré, 75001 Paris, France</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <i data-lucide="clock" class="w-5 h-5 text-brass mt-0.5 shrink-0"></i>
+                        <div>
+                            <p class="text-sm font-medium text-charcoal">Hours</p>
+                            <p class="body-small">Tuesday – Saturday · 6:00 PM – 11:30 PM</p>
+                            <p class="body-small">Sunday Brunch · 11:00 AM – 3:00 PM</p>
+                            <p class="body-small">Closed Mondays</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <i data-lucide="phone" class="w-5 h-5 text-brass mt-0.5 shrink-0"></i>
+                        <div>
+                            <p class="text-sm font-medium text-charcoal">Reservations</p>
+                            <p class="body-small">+33 1 42 60 00 00</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <i data-lucide="mail" class="w-5 h-5 text-brass mt-0.5 shrink-0"></i>
+                        <div>
+                            <p class="text-sm font-medium text-charcoal">Email</p>
+                            <p class="body-small">bonjour@maisonlumiere.paris</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-10">
+                    <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="btn-outline">
+                        Get Directions
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Map Placeholder -->
+            <div class="rounded-3xl overflow-hidden shadow-xl reveal" style="transition-delay: 0.15s;">
+                <div class="relative w-full h-[400px] lg:h-[500px] bg-linen flex items-center justify-center">
+                    <iframe 
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=2.329%2C48.860%2C2.345%2C48.870&layer=mapnik&marker=48.865%2C2.337"
+                        class="absolute inset-0 w-full h-full"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        title="Maison Lumière location map"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-    function openMenu() {
-      mobileMenu.classList.add('open');
-      menuToggle.setAttribute('aria-expanded', 'true');
-      document.body.classList.add('no-scroll');
-      menuClose.focus();
-    }
-    function closeMenu() {
-      mobileMenu.classList.remove('open');
-      menuToggle.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('no-scroll');
-      menuToggle.focus();
-    }
+<!-- ==================== RESERVATION ==================== -->
+<section id="reservation" class="py-24 lg:py-36">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+        <div class="glass-panel p-8 lg:p-16 reveal">
+            <div class="grid lg:grid-cols-5 gap-12 lg:gap-16">
+                <!-- Left Info -->
+                <div class="lg:col-span-2">
+                    <span class="label-caps">Reservations</span>
+                    <h2 class="heading-lg mt-4 text-charcoal">
+                        Join us for<br />
+                        <span class="italic text-brass">an evening</span>
+                    </h2>
+                    <p class="body-large mt-6">
+                        Secure your table for an unforgettable dining experience. 
+                        We recommend reserving at least one week in advance for weekends.
+                    </p>
+                    
+                    <div class="mt-10 space-y-5">
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-brass mt-0.5 shrink-0"></i>
+                            <p class="body-small">Complimentary amuse-bouche for every table</p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-brass mt-0.5 shrink-0"></i>
+                            <p class="body-small">Dietary requirements accommodated with notice</p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-brass mt-0.5 shrink-0"></i>
+                            <p class="body-small">Private dining available for groups of 8+</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Form -->
+                <div class="lg:col-span-3">
+                    <form id="reservationForm" novalidate>
+                        <div class="grid sm:grid-cols-2 gap-5">
+                            <div>
+                                <label for="resName" class="sr-only">Full Name</label>
+                                <input type="text" id="resName" name="name" class="form-input" placeholder="Full Name *" required />
+                            </div>
+                            <div>
+                                <label for="resEmail" class="sr-only">Email</label>
+                                <input type="email" id="resEmail" name="email" class="form-input" placeholder="Email Address *" required />
+                            </div>
+                            <div>
+                                <label for="resPhone" class="sr-only">Phone</label>
+                                <input type="tel" id="resPhone" name="phone" class="form-input" placeholder="Phone Number *" required />
+                            </div>
+                            <div>
+                                <label for="resDate" class="sr-only">Date</label>
+                                <input type="date" id="resDate" name="date" class="form-input" required />
+                            </div>
+                            <div>
+                                <label for="resGuests" class="sr-only">Guests</label>
+                                <select id="resGuests" name="guests" class="form-input" required>
+                                    <option value="">Number of Guests *</option>
+                                    <option value="1">1 Guest</option>
+                                    <option value="2">2 Guests</option>
+                                    <option value="3">3 Guests</option>
+                                    <option value="4">4 Guests</option>
+                                    <option value="5">5 Guests</option>
+                                    <option value="6">6 Guests</option>
+                                    <option value="7">7 Guests</option>
+                                    <option value="8+">8+ Guests</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="resTime" class="sr-only">Time</label>
+                                <select id="resTime" name="time" class="form-input" required>
+                                    <option value="">Preferred Time *</option>
+                                    <option value="18:00">6:00 PM</option>
+                                    <option value="18:30">6:30 PM</option>
+                                    <option value="19:00">7:00 PM</option>
+                                    <option value="19:30">7:30 PM</option>
+                                    <option value="20:00">8:00 PM</option>
+                                    <option value="20:30">8:30 PM</option>
+                                    <option value="21:00">9:00 PM</option>
+                                    <option value="21:30">9:30 PM</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5">
+                            <label for="resNotes" class="sr-only">Special Requests</label>
+                            <textarea id="resNotes" name="notes" rows="3" class="form-input resize-none" placeholder="Special requests, allergies, or occasion (optional)"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-brass w-full justify-center mt-6">
+                            Request Reservation
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                        
+                        <!-- TODO: connect form action to backend endpoint -->
+                        <p class="body-small text-center mt-4">We'll confirm your booking within 24 hours.</p>
+                        
+                        <!-- Success Message -->
+                        <div id="formSuccess" class="hidden mt-6 p-5 rounded-2xl bg-brass/10 border border-brass/20 text-center">
+                            <i data-lucide="check-circle" class="w-8 h-8 text-brass mx-auto mb-2"></i>
+                            <p class="text-sm font-medium text-charcoal">Reservation Request Received</p>
+                            <p class="body-small mt-1">Thank you. Our team will contact you shortly to confirm.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-    menuToggle.addEventListener('click', openMenu);
-    menuClose.addEventListener('click', closeMenu);
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', closeMenu);
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
-        closeMenu();
-      }
-    });
+<!-- ==================== CTA BANNER ==================== -->
+<section class="py-24 lg:py-32 bg-charcoal text-cream relative overflow-hidden">
+    <div class="absolute inset-0 opacity-5">
+        <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-brass blur-[120px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-brass blur-[120px]"></div>
+    </div>
+    
+    <div class="max-w-4xl mx-auto px-6 lg:px-10 text-center relative z-10 reveal">
+        <span class="label-caps text-brass-light">An Invitation</span>
+        <h2 class="heading-lg mt-6 text-cream">
+            Your table awaits
+        </h2>
+        <p class="body-large mt-6 max-w-xl mx-auto text-cream/70">
+            Whether it's a quiet dinner for two or a celebration with friends, 
+            Maison Lumière is ready to make it memorable.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 mt-10">
+            <a href="#reservation" class="btn-brass">
+                Reserve Now
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+            <a href="#menu" class="inline-flex items-center gap-2 px-8 py-4 border border-cream/20 text-cream rounded-full text-sm font-medium hover:bg-cream/5 transition-all duration-300">
+                View Menu
+            </a>
+        </div>
+    </div>
+</section>
 
-    // === GSAP ScrollTrigger reveals ===
-    gsap.registerPlugin(ScrollTrigger);
+<!-- ==================== FOOTER ==================== -->
+<footer class="bg-charcoal text-cream/80">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 py-16 lg:py-20">
+        <div class="grid lg:grid-cols-12 gap-12">
+            <!-- Brand -->
+            <div class="lg:col-span-4">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="font-display text-2xl font-medium tracking-tight text-cream">Maison</span>
+                    <span class="w-px h-6 bg-brass/40"></span>
+                    <span class="font-display text-2xl font-light italic text-brass">Lumière</span>
+                </div>
+                <p class="body-small text-cream/50 max-w-xs leading-relaxed">
+                    Modern French dining in the heart of Paris. 
+                    Seasonal ingredients, timeless technique, and a warm welcome.
+                </p>
+                <div class="flex gap-4 mt-8">
+                    <a href="#" class="w-10 h-10 rounded-full border border-cream/15 flex items-center justify-center hover:border-brass hover:text-brass transition-all duration-300" aria-label="Instagram">
+                        <i data-lucide="instagram" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full border border-cream/15 flex items-center justify-center hover:border-brass hover:text-brass transition-all duration-300" aria-label="Facebook">
+                        <i data-lucide="facebook" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full border border-cream/15 flex items-center justify-center hover:border-brass hover:text-brass transition-all duration-300" aria-label="Twitter">
+                        <i data-lucide="twitter" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="lg:col-span-2 lg:col-start-6">
+                <h4 class="text-cream text-sm font-medium tracking-wider uppercase mb-6">Explore</h4>
+                <ul class="space-y-3">
+                    <li><a href="#menu" class="footer-link">Menu</a></li>
+                    <li><a href="#gallery" class="footer-link">Gallery</a></li>
+                    <li><a href="#reviews" class="footer-link">Reviews</a></li>
+                    <li><a href="#location" class="footer-link">Location</a></li>
+                </ul>
+            </div>
+            
+            <!-- Contact -->
+            <div class="lg:col-span-3">
+                <h4 class="text-cream text-sm font-medium tracking-wider uppercase mb-6">Contact</h4>
+                <ul class="space-y-3">
+                    <li class="body-small text-cream/50">18 Rue Saint-Honoré<br />75001 Paris, France</li>
+                    <li><a href="tel:+33142600000" class="footer-link">+33 1 42 60 00 00</a></li>
+                    <li><a href="mailto:bonjour@maisonlumiere.paris" class="footer-link">bonjour@maisonlumiere.paris</a></li>
+                </ul>
+            </div>
+            
+            <!-- Hours -->
+            <div class="lg:col-span-2">
+                <h4 class="text-cream text-sm font-medium tracking-wider uppercase mb-6">Hours</h4>
+                <ul class="space-y-3">
+                    <li class="body-small text-cream/50">Tue – Sat<br />6:00 PM – 11:30 PM</li>
+                    <li class="body-small text-cream/50">Sun Brunch<br />11:00 AM – 3:00 PM</li>
+                    <li class="body-small text-cream/50">Mon — Closed</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Bottom -->
+        <div class="mt-16 pt-8 border-t border-cream/8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="body-small text-cream/30">© 2025 Maison Lumière. All rights reserved.</p>
+            <div class="flex gap-6">
+                <a href="#" class="body-small text-cream/30 hover:text-brass transition-colors">Privacy Policy</a>
+                <a href="#" class="body-small text-cream/30 hover:text-brass transition-colors">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
 
-    document.querySelectorAll('.reveal').forEach((el, i) => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 28 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          delay: (i % 4) * 0.08,
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 88%',
-            toggleActions: 'play none none none'
-          }
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+    (function() {
+        'use strict';
+        
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // === Header Scroll Effect ===
+        const header = document.getElementById('header');
+        const navInner = document.getElementById('navInner');
+        
+        function handleScroll() {
+            if (window.scrollY > 40) {
+                header.classList.add('nav-scrolled');
+                navInner.classList.remove('h-20', 'lg:h-24');
+                navInner.classList.add('h-16', 'lg:h-20');
+            } else {
+                header.classList.remove('nav-scrolled');
+                navInner.classList.add('h-20', 'lg:h-24');
+                navInner.classList.remove('h-16', 'lg:h-20');
+            }
         }
-      );
-    });
-
-    // === Hero visual subtle tilt on mouse move ===
-    const heroVisual = document.getElementById('heroVisual');
-    if (heroVisual && window.matchMedia('(min-width: 768px)').matches) {
-      heroVisual.addEventListener('mousemove', (e) => {
-        const rect = heroVisual.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;
-        const y = (e.clientY - rect.top) / rect.height - 0.5;
-        heroVisual.style.transform = `rotateX(${2 - y * 4}deg) rotateY(${x * 4}deg)`;
-      });
-      heroVisual.addEventListener('mouseleave', () => {
-        heroVisual.style.transform = 'rotateX(2deg) rotateY(0deg)';
-      });
-    }
-
-    // === Contact form validation & submission ===
-    const contactForm = document.getElementById('contactForm');
-    const formSuccess = document.getElementById('formSuccess');
-
-    function validateField(id, errorId, validator) {
-      const field = document.getElementById(id);
-      const error = document.getElementById(errorId);
-      const valid = validator(field.value.trim());
-      if (!valid) {
-        field.classList.add('error');
-        error.classList.add('visible');
-      } else {
-        field.classList.remove('error');
-        error.classList.remove('visible');
-      }
-      return valid;
-    }
-
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    contactForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const nameValid = validateField('name', 'nameError', v => v.length > 0);
-      const emailValid = validateField('email', 'emailError', validateEmail);
-      const messageValid = validateField('message', 'messageError', v => v.length > 0);
-
-      if (!nameValid || !emailValid || !messageValid) {
-        return;
-      }
-
-      const submitBtn = contactForm.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = 'Sending...';
-
-      // Gather form data
-      const formData = {
-        name: document.getElementById('name').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        company: document.getElementById('company').value.trim(),
-        message: document.getElementById('message').value.trim()
-      };
-
-      try {
-        const response = await fetch('submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          cache: 'no-store',
-          body: JSON.stringify({
-            url: window.location.host,
-            table: 'contact_enquiries',
-            data: formData
-          })
+        
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        
+        // === Mobile Menu ===
+        const mobileToggle = document.getElementById('mobileToggle');
+        const mobileClose = document.getElementById('mobileClose');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        
+        function openMobileMenu() {
+            mobileMenu.classList.add('open');
+            mobileToggle.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('open');
+            mobileToggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+        
+        mobileToggle.addEventListener('click', openMobileMenu);
+        mobileClose.addEventListener('click', closeMobileMenu);
+        
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
         });
-
-        if (response.ok) {
-          contactForm.reset();
-          formSuccess.classList.add('visible');
-          submitBtn.innerHTML = originalText;
-          submitBtn.disabled = false;
-          setTimeout(() => {
-            formSuccess.classList.remove('visible');
-          }, 5000);
-        } else {
-          throw new Error('Server error');
+        
+        // Close on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+                closeMobileMenu();
+            }
+        });
+        
+        // === Reveal on Scroll (Intersection Observer) ===
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -60px 0px'
+        });
+        
+        revealElements.forEach(el => revealObserver.observe(el));
+        
+        // === Form Validation & Submission ===
+        const form = document.getElementById('reservationForm');
+        const formSuccess = document.getElementById('formSuccess');
+        
+        function showError(input) {
+            input.classList.add('error');
         }
-      } catch (err) {
-        // Fallback: show success anyway for demo, but note in real use
-        contactForm.reset();
-        formSuccess.classList.add('visible');
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        setTimeout(() => {
-          formSuccess.classList.remove('visible');
-        }, 5000);
-      }
-    });
+        
+        function clearError(input) {
+            input.classList.remove('error');
+        }
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                clearError(field);
+                if (!field.value.trim()) {
+                    showError(field);
+                    isValid = false;
+                }
+            });
+            
+            // Email validation
+            const emailField = document.getElementById('resEmail');
+            if (emailField.value.trim()) {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(emailField.value.trim())) {
+                    showError(emailField);
+                    isValid = false;
+                }
+            }
+            
+            // Phone validation (basic)
+            const phoneField = document.getElementById('resPhone');
+            if (phoneField.value.trim()) {
+                const phonePattern = /^[\+]?[\d\s\-\(\)]{7,}$/;
+                if (!phonePattern.test(phoneField.value.trim())) {
+                    showError(phoneField);
+                    isValid = false;
+                }
+            }
+            
+            if (!isValid) {
+                // Focus first error field
+                const firstError = form.querySelector('.error');
+                if (firstError) firstError.focus();
+                return;
+            }
+            
+            // Build form data
+            const formData = {
+                name: document.getElementById('resName').value.trim(),
+                email: document.getElementById('resEmail').value.trim(),
+                phone: document.getElementById('resPhone').value.trim(),
+                date: document.getElementById('resDate').value,
+                time: document.getElementById('resTime').value,
+                guests: document.getElementById('resGuests').value,
+                notes: document.getElementById('resNotes').value.trim()
+            };
+            
+            // Submit to backend
+            const submitData = {
+                url: window.location.host,
+                table: 'reservations',
+                data: formData
+            };
+            
+            // Show success immediately for demo (replace with actual fetch)
+            formSuccess.classList.remove('hidden');
+            form.querySelector('button[type="submit"]').disabled = true;
+            form.querySelector('button[type="submit"]').style.opacity = '0.6';
+            
+            // Actual submission (uncomment when backend ready)
+            /*
+            fetch('submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(submitData),
+                cache: 'no-store'
+            })
+            .then(response => {
+                if (response.ok) {
+                    formSuccess.classList.remove('hidden');
+                    form.reset();
+                } else {
+                    alert('Something went wrong. Please try again.');
+                }
+            })
+            .catch(() => {
+                alert('Connection error. Please try again.');
+            });
+            */
+            
+            // Reset form after success
+            setTimeout(() => {
+                form.reset();
+                form.querySelector('button[type="submit"]').disabled = false;
+                form.querySelector('button[type="submit"]').style.opacity = '1';
+            }, 4000);
+        });
+        
+        // Clear error on input
+        form.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('error');
+            });
+        });
+        
+        // === Set min date for reservation ===
+        const dateInput = document.getElementById('resDate');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+        
+        // === Tilt effect for cards ===
+        document.querySelectorAll('.tilt-card').forEach(card => {
+            card.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+                
+                this.style.transform = `perspective(1000px) rotateY(${(x - 0.5) * 4}deg) rotateX(${(y - 0.5) * -4}deg) translateY(-4px)`;
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+        
+        // === Smooth anchor scroll with offset ===
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    const headerHeight = header.offsetHeight;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // === GSAP ScrollTrigger enhancements (optional, already using Intersection Observer) ===
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Subtle parallax on hero image
+            gsap.to('.float-anim', {
+                y: -30,
+                scrollTrigger: {
+                    trigger: '.float-anim',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 1
+                }
+            });
+        }
+    })();
+</script>
 
-    // Clear error on input
-    ['name', 'email', 'message'].forEach(id => {
-      document.getElementById(id).addEventListener('input', function() {
-        this.classList.remove('error');
-        const errorEl = document.getElementById(id + 'Error');
-        if (errorEl) errorEl.classList.remove('visible');
-      });
-    });
-  </script>
 </body>
 </html>
