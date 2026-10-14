@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Élise Laurent — Design Portfolio</title>
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- Google Fonts: Instrument Serif + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1A1A;
+      --ink-soft: #2E2E2E;
+      --cream: #FAFAF8;
+      --paper: #FFFFFF;
+      --stone: #E8E6E1;
+      --stone-soft: #F3F1EC;
+      --brass: #C6A87C;
+      --brass-soft: #E8DCCA;
+      --accent: #8B6B4B;
+      --muted: #6B6B6B;
+      --muted-light: #8E8E8E;
+      --focus-ring: #C6A87C;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.02), 0 4px 16px rgba(0,0,0,0.02);
+      --shadow-md: 0 8px 32px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+      --shadow-lg: 0 24px 64px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.03);
+      --shadow-glow: 0 8px 32px rgba(198,168,124,0.20);
+      --radius-xl: 1.5rem;
+      --radius-2xl: 2rem;
+      --radius-3xl: 2.5rem;
+    }
+
+    /* === Base === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    ::selection {
+      background: var(--brass-soft);
+      color: var(--ink);
+    }
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Typography === */
+    .font-display {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+    .font-display-italic {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+    }
+    .text-balance {
+      text-wrap: balance;
+    }
+
+    /* === Custom Cursor === */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--brass);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease-out, opacity 0.3s ease;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      width: 40px;
+      height: 40px;
+      border: 1.5px solid rgba(198,168,124,0.5);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease, width 0.3s, height 0.3s, border-color 0.3s;
+    }
+    .cursor-ring.hover-expand {
+      width: 64px;
+      height: 64px;
+      border-color: var(--brass);
+      background: rgba(198,168,124,0.06);
+    }
+    @media (max-width: 1024px) {
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+
+    /* === Header === */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 1.25rem 0;
+      transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease;
+    }
+    .site-header.scrolled {
+      background: rgba(250,250,248,0.82);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      padding: 0.85rem 0;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.02);
+    }
+    .nav-link {
+      position: relative;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      letter-spacing: 0.01em;
+      padding: 0.25rem 0;
+      transition: color 0.2s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--brass);
+      transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .nav-link:hover {
+      color: var(--ink);
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--ink);
+      color: var(--cream);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      padding: 0.85rem 1.75rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 4px 16px rgba(26,26,26,0.12);
+    }
+    .btn-primary:hover {
+      background: var(--ink-soft);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(26,26,26,0.18);
+    }
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      padding: 0.85rem 1.75rem;
+      border-radius: 100px;
+      border: 1.5px solid rgba(26,26,26,0.15);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .btn-outline:hover {
+      border-color: var(--brass);
+      background: rgba(198,168,124,0.06);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+    .btn-outline:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* === Hero === */
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 50% at 70% 20%, rgba(198,168,124,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 20% 80%, rgba(139,107,75,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,255,255,0.8) 0%, transparent 70%);
+    }
+    .hero-grain {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* === Project Cards === */
+    .project-card {
+      position: relative;
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.5s ease;
+      transform-style: preserve-3d;
+      perspective: 1200px;
+    }
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
+    .project-card:hover .project-img {
+      transform: scale(1.05);
+    }
+    .project-img {
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .project-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(26,26,26,0.6) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .project-card:hover .project-overlay {
+      opacity: 1;
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      gap: 3rem;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-wrapper {
+      mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+
+    /* === Stats === */
+    .stat-number {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    /* === Contact Form === */
+    .form-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1.5px solid var(--stone);
+      padding: 0.85rem 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: border-color 0.3s ease;
+      outline: none;
+    }
+    .form-input::placeholder {
+      color: var(--muted-light);
+    }
+    .form-input:focus {
+      border-color: var(--brass);
+    }
+    .form-input.error {
+      border-color: #D44;
+    }
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    /* === Reveal Animations === */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal-up.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === Text Reveal === */
+    .text-reveal-line {
+      overflow: hidden;
+      display: block;
+    }
+    .text-reveal-inner {
+      display: block;
+      transform: translateY(110%);
+      transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .text-reveal-inner.revealed {
+      transform: translateY(0);
+    }
+
+    /* === Divider === */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--stone), transparent);
+    }
+
+    /* === Footer === */
+    .footer-link {
+      font-size: 0.875rem;
+      color: var(--muted);
+      transition: color 0.2s ease, padding-left 0.2s ease;
+      display: inline-block;
+    }
+    .footer-link:hover {
+      color: var(--ink);
+      padding-left: 4px;
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: rgba(250,250,248,0.98);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .mobile-menu.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .mobile-menu a {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 2rem;
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .mobile-menu a:hover {
+      color: var(--brass);
+    }
+
+    /* === Custom Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--cream);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--stone);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--brass);
+    }
+
+    /* === Success Toast === */
+    .toast-success {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      box-shadow: var(--shadow-lg);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transform: translateY(120%);
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .toast-success.show {
+      transform: translateY(0);
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1A1A1A',
+            cream: '#FAFAF8',
+            paper: '#FFFFFF',
+            stone: '#E8E6E1',
+            brass: '#C6A87C',
+            accent: '#8B6B4B',
+          },
+          fontFamily: {
+            display: ['"Instrument Serif"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-cream text-ink antialiased">
+
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <!-- Skip to content -->
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:bg-ink focus:text-cream focus:px-4 focus:py-2 focus:rounded-lg">Skip to content</a>
+
+  <!-- Header -->
+  <header class="site-header" id="siteHeader" role="banner">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+      <a href="#" class="font-display text-2xl tracking-tight text-ink" aria-label="Élise Laurent home">Élise Laurent</a>
+      <nav class="hidden md:flex items-center gap-10" aria-label="Main navigation">
+        <a href="#work" class="nav-link">Work</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+      <div class="hidden md:flex items-center gap-4">
+        <a href="#contact" class="btn-primary text-xs px-6 py-3">
+          Start a project
+          <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+      <!-- Mobile menu button -->
+      <button class="md:hidden flex flex-col gap-1.5 p-2" id="mobileMenuBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span class="block w-6 h-[1.5px] bg-ink transition-all duration-300" id="bar1"></span>
+        <span class="block w-6 h-[1.5px] bg-ink transition-all duration-300" id="bar2"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+    <button class="absolute top-6 right-6 p-2" id="mobileMenuClose" aria-label="Close menu">
+      <i data-lucide="x" class="w-6 h-6 text-ink"></i>
+    </button>
+    <a href="#work" class="mobile-nav-link">Work</a>
+    <a href="#about" class="mobile-nav-link">About</a>
+    <a href="#contact" class="mobile-nav-link">Contact</a>
+    <a href="#contact" class="btn-primary mt-4">Start a project</a>
+  </div>
+
+  <!-- Main -->
+  <main id="main">
+
+    <!-- Hero -->
+    <section class="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden" aria-label="Hero">
+      <div class="hero-gradient"></div>
+      <div class="hero-grain"></div>
+      <div class="max-w-7xl mx-auto px-6 lg:px-12 w-full relative z-10">
+        <div class="grid lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-7">
+            <p class="text-xs font-semibold tracking-[0.2em] uppercase text-brass mb-6 reveal-up">Independent Designer · Paris & New York</p>
+            <h1 class="font-display text-[clamp(2.8rem,7vw,5.5rem)] leading-[1.05] tracking-[-0.03em] text-ink text-balance">
+              <span class="text-reveal-line"><span class="text-reveal-inner">Design that</span></span>
+              <span class="text-reveal-line"><span class="text-reveal-inner" style="transition-delay: 0.1s;">feels <em class="font-display-italic text-brass">inevitable</em>.</span></span>
+            </h1>
+            <p class="mt-8 text-lg text-muted max-w-lg leading-relaxed reveal-up" style="transition-delay: 0.3s;">
+              I craft brand identities, digital products, and editorial experiences for ambitious teams who believe great design is a competitive advantage — not a finishing touch.
+            </p>
+            <div class="mt-10 flex flex-wrap gap-4 reveal-up" style="transition-delay: 0.4s;">
+              <a href="#work" class="btn-primary">
+                View selected work
+                <i data-lucide="arrow-down" class="w-4 h-4"></i>
+              </a>
+              <a href="#about" class="btn-outline">
+                More about me
+              </a>
+            </div>
+          </div>
+          <div class="lg:col-span-5 relative reveal-up" style="transition-delay: 0.5s;">
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl" style="transform: perspective(1200px) rotateY(-4deg) rotateX(2deg);">
+              <img
+                src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1000&auto=format&fit=crop"
+                alt="Designer workspace with material samples and sketches"
+                class="w-full h-[480px] object-cover"
+                loading="eager"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-ink/20 to-transparent"></div>
+            </div>
+            <!-- Floating badge -->
+            <div class="absolute -bottom-6 -left-6 bg-paper rounded-2xl shadow-lg p-5 max-w-[200px] hidden lg:block">
+              <p class="text-xs font-semibold tracking-wider uppercase text-brass mb-1">Currently</p>
+              <p class="text-sm text-ink font-medium leading-snug">Available for select projects for Q3–Q4 2026</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marquee / Social proof -->
+    <section class="py-12 border-y border-stone overflow-hidden" aria-label="Selected clients">
+      <div class="marquee-wrapper">
+        <div class="marquee-track">
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">Aesop</span>
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">Kinfolk</span>
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">Norm Architects</span>
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">The Row</span>
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">Bottega Veneta</span>
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">Monocle</span>
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">Aesop</span>
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">Kinfolk</span>
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">Norm Architects</span>
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">The Row</span>
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">Bottega Veneta</span>
+          <span class="font-display text-2xl md:text-3xl text-stone whitespace-nowrap">Monocle</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Work / Projects -->
+    <section id="work" class="py-24 lg:py-32" aria-label="Selected work">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16 reveal-up">
+          <div>
+            <p class="text-xs font-semibold tracking-[0.2em] uppercase text-brass mb-4">Selected Work</p>
+            <h2 class="font-display text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.1] tracking-[-0.02em] text-ink text-balance">
+              Projects that<br class="hidden sm:block" /> <em class="font-display-italic">move the needle</em>
+            </h2>
+          </div>
+          <p class="mt-6 lg:mt-0 text-muted max-w-sm text-sm leading-relaxed lg:text-right">
+            A selection of recent collaborations across brand identity, digital product, and editorial design.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 lg:gap-10">
+          <!-- Project 1 -->
+          <article class="project-card reveal-up group" style="transition-delay: 0.1s;">
+            <div class="overflow-hidden aspect-[4/3]">
+              <img
+                src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?q=80&w=1000&auto=format&fit=crop"
+                alt="Aesop brand identity system on packaging"
+                class="project-img w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div class="project-overlay"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-8">
+              <p class="text-xs font-semibold tracking-[0.15em] uppercase text-brass-soft mb-2">Brand Identity</p>
+              <h3 class="font-display text-2xl text-white mb-1">Aesop — Sensory Retail</h3>
+              <p class="text-sm text-white/70">A tactile identity system for a flagship concept store.</p>
+            </div>
+          </article>
+
+          <!-- Project 2 -->
+          <article class="project-card reveal-up group md:mt-16" style="transition-delay: 0.2s;">
+            <div class="overflow-hidden aspect-[4/3]">
+              <img
+                src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?q=80&w=1000&auto=format&fit=crop"
+                alt="Editorial layout spread for Kinfolk magazine"
+                class="project-img w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div class="project-overlay"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-8">
+              <p class="text-xs font-semibold tracking-[0.15em] uppercase text-brass-soft mb-2">Editorial Design</p>
+              <h3 class="font-display text-2xl text-white mb-1">Kinfolk — Issue 48</h3>
+              <p class="text-sm text-white/70">Art direction and layout for a 180-page quarterly.</p>
+            </div>
+          </article>
+
+          <!-- Project 3 -->
+          <article class="project-card reveal-up group" style="transition-delay: 0.15s;">
+            <div class="overflow-hidden aspect-[4/3]">
+              <img
+                src="https://images.unsplash.com/photo-1559028012-481c04fa702d?q=80&w=1000&auto=format&fit=crop"
+                alt="Digital product interface for Norm Architects"
+                class="project-img w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div class="project-overlay"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-8">
+              <p class="text-xs font-semibold tracking-[0.15em] uppercase text-brass-soft mb-2">Digital Product</p>
+              <h3 class="font-display text-2xl text-white mb-1">Norm — Project Portal</h3>
+              <p class="text-sm text-white/70">A calm, considered client experience for architects.</p>
+            </div>
+          </article>
+
+          <!-- Project 4 -->
+          <article class="project-card reveal-up group md:mt-16" style="transition-delay: 0.25s;">
+            <div class="overflow-hidden aspect-[4/3]">
+              <img
+                src="https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=1000&auto=format&fit=crop"
+                alt="The Row fashion campaign art direction"
+                class="project-img w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div class="project-overlay"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-8">
+              <p class="text-xs font-semibold tracking-[0.15em] uppercase text-brass-soft mb-2">Art Direction</p>
+              <h3 class="font-display text-2xl text-white mb-1">The Row — SS26 Campaign</h3>
+              <p class="text-sm text-white/70">Visual language and typographic system for a global campaign.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider max-w-7xl mx-auto"></div>
+
+    <!-- About -->
+    <section id="about" class="py-24 lg:py-32" aria-label="About Élise Laurent">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+          <!-- Image -->
+          <div class="lg:col-span-5 reveal-up">
+            <div class="relative">
+              <div class="rounded-3xl overflow-hidden shadow-xl">
+                <img
+                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop"
+                  alt="Portrait of Élise Laurent, designer"
+                  class="w-full h-[520px] object-cover"
+                  loading="lazy"
+                />
+              </div>
+              <div class="absolute -bottom-5 -right-5 bg-paper rounded-2xl shadow-lg p-6 hidden lg:block">
+                <p class="font-display text-4xl text-brass">12+</p>
+                <p class="text-xs font-semibold tracking-wider uppercase text-muted mt-1">Years of practice</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Text -->
+          <div class="lg:col-span-7 reveal-up" style="transition-delay: 0.15s;">
+            <p class="text-xs font-semibold tracking-[0.2em] uppercase text-brass mb-4">About</p>
+            <h2 class="font-display text-[clamp(2rem,4.5vw,3.2rem)] leading-[1.15] tracking-[-0.02em] text-ink text-balance">
+              Design is the <em class="font-display-italic">quiet</em> architecture of how a brand feels.
+            </h2>
+            <div class="mt-8 space-y-5 text-muted leading-relaxed max-w-xl">
+              <p>
+                I'm Élise — an independent designer working between Paris and New York. For over a decade, I've partnered with founders, creative directors, and cultural institutions to build identities and digital experiences that feel both timeless and entirely of their moment.
+              </p>
+              <p>
+                My practice sits at the intersection of craft and strategy. I believe the best design work is never decorative — it's structural. It clarifies. It creates recognition, trust, and a sense of place. Whether it's a wordmark, a product interface, or a 200-page book, the question is always the same: <em class="font-display-italic text-ink">does this feel inevitable?</em>
+              </p>
+              <p>
+                I work in small, focused engagements — usually one or two projects at a time — so every detail gets the attention it deserves.
+              </p>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-12 grid grid-cols-2 sm:grid-cols-3 gap-8">
+              <div>
+                <p class="stat-number">48</p>
+                <p class="text-xs font-semibold tracking-wider uppercase text-muted mt-2">Projects shipped</p>
+              </div>
+              <div>
+                <p class="stat-number">12</p>
+                <p class="text-xs font-semibold tracking-wider uppercase text-muted mt-2">Years experience</p>
+              </div>
+              <div>
+                <p class="stat-number">7</p>
+                <p class="text-xs font-semibold tracking-wider uppercase text-muted mt-2">Design awards</p>
+              </div>
+            </div>
+
+            <!-- Services list -->
+            <div class="mt-12 pt-8 border-t border-stone">
+              <p class="text-xs font-semibold tracking-[0.2em] uppercase text-brass mb-6">Capabilities</p>
+              <div class="grid sm:grid-cols-2 gap-x-8 gap-y-3">
+                <div class="flex items-center gap-3">
+                  <i data-lucide="circle-check" class="w-4 h-4 text-brass flex-shrink-0"></i>
+                  <span class="text-sm text-ink-soft">Brand Identity & Strategy</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <i data-lucide="circle-check" class="w-4 h-4 text-brass flex-shrink-0"></i>
+                  <span class="text-sm text-ink-soft">Digital Product Design</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <i data-lucide="circle-check" class="w-4 h-4 text-brass flex-shrink-0"></i>
+                  <span class="text-sm text-ink-soft">Editorial & Print</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <i data-lucide="circle-check" class="w-4 h-4 text-brass flex-shrink-0"></i>
+                  <span class="text-sm text-ink-soft">Art Direction</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <i data-lucide="circle-check" class="w-4 h-4 text-brass flex-shrink-0"></i>
+                  <span class="text-sm text-ink-soft">Packaging Design</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <i data-lucide="circle-check" class="w-4 h-4 text-brass flex-shrink-0"></i>
+                  <span class="text-sm text-ink-soft">Design Systems</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonial -->
+    <section class="py-24 lg:py-32 bg-paper" aria-label="Testimonial">
+      <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center reveal-up">
+        <i data-lucide="quote" class="w-8 h-8 text-brass mx-auto mb-8"></i>
+        <blockquote class="font-display text-[clamp(1.5rem,3.5vw,2.4rem)] leading-[1.35] tracking-[-0.01em] text-ink text-balance">
+          "Élise has a rare ability to make complex ideas feel simple and beautiful. She didn't just redesign our brand — she clarified our entire point of view."
+        </blockquote>
+        <div class="mt-8 flex items-center justify-center gap-4">
+          <img
+            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop"
+            alt="Portrait of Marcus Chen"
+            class="w-12 h-12 rounded-full object-cover"
+            loading="lazy"
+          />
+          <div class="text-left">
+            <p class="text-sm font-semibold text-ink">Marcus Chen</p>
+            <p class="text-xs text-muted">Founder, Norm Architects</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="py-24 lg:py-32" aria-label="Call to action">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="relative rounded-3xl overflow-hidden bg-ink px-8 py-20 lg:px-20 lg:py-28 text-center reveal-up">
+          <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle at 30% 40%, white 0%, transparent 50%), radial-gradient(circle at 80% 70%, white 0%, transparent 50%);"></div>
+          <div class="relative z-10">
+            <p class="text-xs font-semibold tracking-[0.2em] uppercase text-brass mb-6">Let's work together</p>
+            <h2 class="font-display text-[clamp(2rem,5vw,3.8rem)] leading-[1.1] tracking-[-0.02em] text-cream text-balance">
+              Have a project in mind?<br />
+              <em class="font-display-italic text-brass">Let's make it memorable.</em>
+            </h2>
+            <p class="mt-6 text-cream/60 max-w-lg mx-auto text-sm leading-relaxed">
+              I'm currently booking select projects for Q3–Q4 2026. Tell me what you're working on.
+            </p>
+            <div class="mt-10">
+              <a href="#contact" class="inline-flex items-center gap-2 bg-cream text-ink font-medium text-sm px-8 py-4 rounded-full transition-all duration-300 hover:bg-brass-soft hover:shadow-xl hover:-translate-y-0.5">
+                Start a conversation
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="py-24 lg:py-32 bg-paper" aria-label="Contact">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-20">
+          <!-- Left -->
+          <div class="lg:col-span-5 reveal-up">
+            <p class="text-xs font-semibold tracking-[0.2em] uppercase text-brass mb-4">Contact</p>
+            <h2 class="font-display text-[clamp(2rem,4.5vw,3.2rem)] leading-[1.15] tracking-[-0.02em] text-ink text-balance">
+              Tell me about<br /> your project.
+            </h2>
+            <p class="mt-6 text-muted text-sm leading-relaxed max-w-sm">
+              Fill out the form or reach me directly. I read every message personally and typically respond within 48 hours.
+            </p>
+            <div class="mt-10 space-y-5">
+              <a href="mailto:studio@elise-laurent.com" class="flex items-center gap-4 group">
+                <div class="w-11 h-11 rounded-full bg-stone-soft flex items-center justify-center group-hover:bg-brass/10 transition-colors duration-300">
+                  <i data-lucide="mail" class="w-4 h-4 text-brass"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold tracking-wider uppercase text-muted">Email</p>
+                  <p class="text-sm text-ink font-medium">studio@elise-laurent.com</p>
+                </div>
+              </a>
+              <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-full bg-stone-soft flex items-center justify-center">
+                  <i data-lucide="map-pin" class="w-4 h-4 text-brass"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold tracking-wider uppercase text-muted">Studio</p>
+                  <p class="text-sm text-ink font-medium">Paris · New York</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-full bg-stone-soft flex items-center justify-center">
+                  <i data-lucide="calendar" class="w-4 h-4 text-brass"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold tracking-wider uppercase text-muted">Availability</p>
+                  <p class="text-sm text-ink font-medium">Booking Q3–Q4 2026</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div class="lg:col-span-7 reveal-up" style="transition-delay: 0.15s;">
+            <form id="contactForm" class="space-y-8" novalidate>
+              <!-- TODO: connect form action to backend endpoint -->
+              <div class="grid sm:grid-cols-2 gap-8">
+                <div>
+                  <label for="name" class="form-label">Name</label>
+                  <input type="text" id="name" name="name" class="form-input" placeholder="Your full name" required />
+                  <p class="error-msg text-xs text-red-500 mt-1 hidden" id="nameError">Please enter your name.</p>
+                </div>
+                <div>
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" id="email" name="email" class="form-input" placeholder="you@company.com" required />
+                  <p class="error-msg text-xs text-red-500 mt-1 hidden" id="emailError">Please enter a valid email.</p>
+                </div>
+              </div>
+              <div class="grid sm:grid-cols-2 gap-8">
+                <div>
+                  <label for="phone" class="form-label">Phone (optional)</label>
+                  <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 (555) 000-0000" />
+                </div>
+                <div>
+                  <label for="budget" class="form-label">Budget range</label>
+                  <select id="budget" name="budget" class="form-input cursor-pointer">
+                    <option value="" disabled selected>Select a range</option>
+                    <option value="10-25k">$10k – $25k</option>
+                    <option value="25-50k">$25k – $50k</option>
+                    <option value="50-100k">$50k – $100k</option>
+                    <option value="100k+">$100k+</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label for="message" class="form-label">Project details</label>
+                <textarea id="message" name="message" rows="4" class="form-input resize-none" placeholder="Tell me about your project, timeline, and what success looks like." required></textarea>
+                <p class="error-msg text-xs text-red-500 mt-1 hidden" id="messageError">Please share a few details about your project.</p>
+              </div>
+              <div class="flex items-center gap-4 pt-2">
+                <button type="submit" class="btn-primary" id="submitBtn">
+                  Send enquiry
+                  <i data-lucide="send" class="w-4 h-4"></i>
+                </button>
+                <p class="text-xs text-muted">I'll respond within 48 hours.</p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-cream border-t border-stone" role="contentinfo">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 py-16 lg:py-20">
+      <div class="grid md:grid-cols-12 gap-12">
+        <!-- Brand -->
+        <div class="md:col-span-5">
+          <a href="#" class="font-display text-2xl text-ink">Élise Laurent</a>
+          <p class="mt-4 text-sm text-muted max-w-xs leading-relaxed">
+            Independent designer crafting brand identities, digital products, and editorial experiences that feel inevitable.
+          </p>
+          <div class="flex items-center gap-3 mt-6">
+            <a href="#" class="w-9 h-9 rounded-full bg-stone-soft flex items-center justify-center hover:bg-brass/10 transition-colors duration-300" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4 text-ink"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full bg-stone-soft flex items-center justify-center hover:bg-brass/10 transition-colors duration-300" aria-label="LinkedIn">
+              <i data-lucide="linkedin" class="w-4 h-4 text-ink"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full bg-stone-soft flex items-center justify-center hover:bg-brass/10 transition-colors duration-300" aria-label="Behance">
+              <i data-lucide="dribbble" class="w-4 h-4 text-ink"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Sitemap -->
+        <div class="md:col-span-3">
+          <p class="text-xs font-semibold tracking-[0.15em] uppercase text-muted mb-5">Navigate</p>
+          <ul class="space-y-3">
+            <li><a href="#work" class="footer-link">Work</a></li>
+            <li><a href="#about" class="footer-link">About</a></li>
+            <li><a href="#contact" class="footer-link">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Services -->
+        <div class="md:col-span-4">
+          <p class="text-xs font-semibold tracking-[0.15em] uppercase text-muted mb-5">Services</p>
+          <ul class="space-y-3">
+            <li><span class="footer-link">Brand Identity</span></li>
+            <li><span class="footer-link">Digital Product Design</span></li>
+            <li><span class="footer-link">Editorial & Print</span></li>
+            <li><span class="footer-link">Art Direction</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-16 pt-8 border-t border-stone flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-muted-light">&copy; 2026 Élise Laurent. All rights reserved.</p>
+        <p class="text-xs text-muted-light">Crafted with intention.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Success Toast -->
+  <div class="toast-success" id="toastSuccess" role="status" aria-live="polite">
+    <i data-lucide="check-circle" class="w-5 h-5 text-brass"></i>
+    <span>Thank you — your message has been sent.</span>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // === Custom Cursor ===
+    const cursorDot = document.getElementById('cursorDot');
+    const cursorRing = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursorDot.style.left = mouseX - 4 + 'px';
+      cursorDot.style.top = mouseY - 4 + 'px';
+    });
+
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+      cursorRing.style.left = ringX - 20 + 'px';
+      cursorRing.style.top = ringY - 20 + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    // Cursor expand on hover
+    const interactiveElements = document.querySelectorAll('a, button, .project-card, input, textarea, select');
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', () => cursorRing.classList.add('hover-expand'));
+      el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover-expand'));
+    });
+
+    // === Header Scroll Effect ===
+    const header = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    }, { passive: true });
+
+    // === Mobile Menu ===
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+    let menuOpen = false;
+
+    function toggleMenu() {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      mobileMenuBtn.setAttribute('aria-expanded', menuOpen);
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
+    }
+
+    mobileMenuBtn.addEventListener('click', toggleMenu);
+    mobileMenuClose.addEventListener('click', toggleMenu);
+    mobileNavLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+    // === Text Reveal on Load ===
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.querySelectorAll('.text-reveal-inner').forEach((el, i) => {
+          setTimeout(() => el.classList.add('revealed'), i * 150);
+        });
+      }, 200);
+    });
+
+    // === Scroll Reveal with GSAP ScrollTrigger ===
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+
+      document.querySelectorAll('.reveal-up').forEach((el) => {
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 88%',
+          once: true,
+          onEnter: () => el.classList.add('revealed'),
+        });
+      });
+    } else {
+      // Fallback: Intersection Observer
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
+    }
+
+    // === Contact Form Validation & Submission ===
+    const contactForm = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const toastSuccess = document.getElementById('toastSuccess');
+
+    function showError(inputId, errorId) {
+      const input = document.getElementById(inputId);
+      const error = document.getElementById(errorId);
+      input.classList.add('error');
+      error.classList.remove('hidden');
+    }
+
+    function clearError(inputId, errorId) {
+      const input = document.getElementById(inputId);
+      const error = document.getElementById(errorId);
+      input.classList.remove('error');
+      error.classList.add('hidden');
+    }
+
+    // Real-time validation clearing
+    ['name', 'email', 'message'].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener('input', () => {
+        clearError(id, id + 'Error');
+      });
+    });
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      let valid = true;
+
+      // Validate name
+      const name = document.getElementById('name').value.trim();
+      if (!name) {
+        showError('name', 'nameError');
+        valid = false;
+      } else {
+        clearError('name', 'nameError');
+      }
+
+      // Validate email
+      const email = document.getElementById('email').value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !emailRegex.test(email)) {
+        showError('email', 'emailError');
+        valid = false;
+      } else {
+        clearError('email', 'emailError');
+      }
+
+      // Validate message
+      const message = document.getElementById('message').value.trim();
+      if (!message || message.length < 10) {
+        showError('message', 'messageError');
+        valid = false;
+      } else {
+        clearError('message', 'messageError');
+      }
+
+      if (!valid) return;
+
+      // Submit
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending... <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
+      lucide.createIcons();
+
+      const formData = {
+        name: name,
+        email: email,
+        phone: document.getElementById('phone').value.trim(),
+        budget: document.getElementById('budget').value,
+        message: message
+      };
+
+      try {
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'contact_enquiries',
+            data: formData
+          })
+        });
+
+        // Simulate success regardless (static fallback)
+        showSuccess();
+      } catch (err) {
+        // Still show success for static demo — in production, handle real errors
+        showSuccess();
+      }
+    });
+
+    function showSuccess() {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Send enquiry <i data-lucide="send" class="w-4 h-4"></i>';
+      lucide.createIcons();
+      contactForm.reset();
+
+      toastSuccess.classList.add('show');
+      setTimeout(() => {
+        toastSuccess.classList.remove('show');
+      }, 4000);
+    }
+
+    // === Smooth anchor scroll offset for fixed header ===
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
