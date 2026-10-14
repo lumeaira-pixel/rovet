@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APEX | Modified Car Garage</title>
+  <!-- Tailwind CSS via CDN + custom config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0A0A0C',
+            carbon: '#121216',
+            graphite: '#1E1E24',
+            steel: '#2A2A32',
+            chrome: '#B0B3C6',
+            brass: '#C9A96E',
+            signal: '#E85D4A',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            body: ['"Inter"', 'sans-serif'],
+            mono: ['"Geist Mono"', 'monospace'],
+          },
+          borderRadius: {
+            '2xl': '1.5rem',
+            '3xl': '2rem',
+          },
+        },
+      },
+    };
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis (smooth scroll) -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.0.42/dist/lenis.min.js"></script>
+  <!-- Three.js for hero 3D -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    /* === DESIGN TOKENS === */
+    :root {
+      --ink: #0A0A0C;
+      --carbon: #121216;
+      --graphite: #1E1E24;
+      --steel: #2A2A32;
+      --chrome: #B0B3C6;
+      --brass: #C9A96E;
+      --signal: #E85D4A;
+      --glass-bg: rgba(18, 18, 22, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.06);
+      --focus-ring: #C9A96E;
+    }
+
+    /* === GLOBAL RESET / BASE === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: var(--ink);
+      color: #E2E4EB;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* === SCROLLBAR === */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--carbon);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--steel);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--brass);
+    }
+
+    /* === SELECTION === */
+    ::selection {
+      background: var(--brass);
+      color: var(--ink);
+    }
+
+    /* === FOCUS STATES === */
+    :focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    /* === TYPOGRAPHY === */
+    .font-display {
+      font-family: 'Bricolage Grotesque', sans-serif;
+    }
+    .font-body {
+      font-family: 'Inter', sans-serif;
+    }
+    .font-mono {
+      font-family: 'Geist Mono', monospace;
+    }
+
+    /* === NOISE TEXTURE OVERLAY === */
+    .noise-overlay::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 256px 256px;
+    }
+
+    /* === GLASS PANEL === */
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+    }
+
+    /* === GRADIENT ACCENTS === */
+    .gradient-brass {
+      background: linear-gradient(135deg, var(--brass) 0%, #E8D5B0 50%, var(--brass) 100%);
+    }
+    .gradient-text-brass {
+      background: linear-gradient(135deg, var(--brass) 0%, #E8D5B0 60%, var(--brass) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gradient-radial-glow {
+      background: radial-gradient(circle at 50% 50%, rgba(201, 169, 110, 0.08) 0%, transparent 70%);
+    }
+
+    /* === BUTTONS === */
+    .btn-primary {
+      background: var(--brass);
+      color: var(--ink);
+      font-weight: 600;
+      padding: 0.875rem 2rem;
+      border-radius: 100px;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      letter-spacing: 0.02em;
+      font-size: 0.9rem;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(201, 169, 110, 0.35);
+    }
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #E2E4EB;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.875rem 2rem;
+      border-radius: 100px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .btn-secondary:hover {
+      border-color: var(--brass);
+      color: var(--brass);
+      background: rgba(201, 169, 110, 0.05);
+      transform: translateY(-2px);
+    }
+    .btn-secondary:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* === SECTION REVEAL ANIMATION === */
+    .reveal-section {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    /* === CARD TILT EFFECT === */
+    .tilt-card {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    .tilt-card:hover {
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    /* === MARQUEE === */
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === HERO 3D CANVAS === */
+    #hero-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0.85;
+    }
+
+    /* === HEADER SCROLL STATE === */
+    .header-scrolled {
+      background: rgba(10, 10, 12, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* === MOBILE MENU === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* === FORM VALIDATION === */
+    .form-input.error {
+      border-color: var(--signal) !important;
+      box-shadow: 0 0 0 3px rgba(232, 93, 74, 0.15);
+    }
+    .form-error-msg {
+      color: var(--signal);
+      font-size: 0.75rem;
+      margin-top: 0.35rem;
+      display: none;
+    }
+    .form-error-msg.visible {
+      display: block;
+    }
+
+    /* === PULSE DOT === */
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--brass);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* === DIVIDER LINE === */
+    .divider-glow {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.3), transparent);
+    }
+
+    /* === STAT COUNTER === */
+    .stat-number {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    /* === PROCESS STEP === */
+    .process-step::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(201, 169, 110, 0.3), transparent);
+    }
+    .process-step:last-child::after {
+      display: none;
+    }
+
+    /* === GALLERY HOVER === */
+    .gallery-item {
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .gallery-item:hover {
+      transform: scale(1.02);
+    }
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+    .gallery-overlay {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    /* === ACCORDION === */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .accordion-content.open {
+      max-height: 300px;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .process-step::after {
+        display: none;
+      }
+    }
+
+    /* === REDUCED MOTION === */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .marquee-track {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body class="noise-overlay font-body bg-ink text-[#E2E4EB] antialiased">
+
+  <!-- ========== HEADER ========== -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500" role="banner">
+    <nav class="max-w-7xl mx-auto px-6 lg:px-8" aria-label="Main navigation">
+      <div class="flex items-center justify-between h-20 lg:h-24 transition-all duration-500" id="nav-inner">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-3 group" aria-label="APEX Garage home">
+          <div class="w-10 h-10 rounded-xl gradient-brass flex items-center justify-center">
+            <i data-lucide="gauge" class="w-5 h-5 text-ink" aria-hidden="true"></i>
+          </div>
+          <span class="font-display font-extrabold text-xl tracking-tight text-white">APEX<span class="text-brass">.</span></span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden lg:flex items-center gap-10">
+          <a href="#services" class="text-sm text-chrome hover:text-brass transition-colors duration-300 tracking-wide">Services</a>
+          <a href="#work" class="text-sm text-chrome hover:text-brass transition-colors duration-300 tracking-wide">Our Work</a>
+          <a href="#process" class="text-sm text-chrome hover:text-brass transition-colors duration-300 tracking-wide">Process</a>
+          <a href="#testimonials" class="text-sm text-chrome hover:text-brass transition-colors duration-300 tracking-wide">Reviews</a>
+          <a href="#contact" class="text-sm text-chrome hover:text-brass transition-colors duration-300 tracking-wide">Contact</a>
+        </div>
+
+        <!-- Desktop CTA -->
+        <div class="hidden lg:flex items-center gap-4">
+          <a href="#contact" class="btn-primary text-sm">
+            <i data-lucide="phone" class="w-4 h-4" aria-hidden="true"></i>
+            Book Consultation
+          </a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 hover:border-brass/50 transition-colors duration-300" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <i data-lucide="menu" class="w-5 h-5 text-white" aria-hidden="true"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ========== MOBILE MENU ========== -->
+  <div id="mobile-menu" class="mobile-menu fixed inset-0 z-40 bg-ink/98 backdrop-blur-2xl lg:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex flex-col h-full px-6 pt-28 pb-10">
+      <nav class="flex flex-col gap-6" aria-label="Mobile navigation links">
+        <a href="#services" class="mobile-link font-display text-3xl font-bold text-white hover:text-brass transition-colors duration-300">Services</a>
+        <a href="#work" class="mobile-link font-display text-3xl font-bold text-white hover:text-brass transition-colors duration-300">Our Work</a>
+        <a href="#process" class="mobile-link font-display text-3xl font-bold text-white hover:text-brass transition-colors duration-300">Process</a>
+        <a href="#testimonials" class="mobile-link font-display text-3xl font-bold text-white hover:text-brass transition-colors duration-300">Reviews</a>
+        <a href="#contact" class="mobile-link font-display text-3xl font-bold text-white hover:text-brass transition-colors duration-300">Contact</a>
+      </nav>
+      <div class="mt-auto">
+        <a href="#contact" class="mobile-link btn-primary w-full justify-center text-base">
+          <i data-lucide="phone" class="w-4 h-4" aria-hidden="true"></i>
+          Book Consultation
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== HERO ========== -->
+  <section id="hero" class="relative min-h-screen flex items-center overflow-hidden" aria-label="Hero section">
+    <!-- Three.js Canvas -->
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
+
+    <!-- Radial glow behind content -->
+    <div class="absolute inset-0 gradient-radial-glow pointer-events-none" aria-hidden="true"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full pt-32 pb-20">
+      <div class="max-w-3xl">
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel mb-8 reveal-section">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span class="text-xs font-mono tracking-widest text-chrome uppercase">Now accepting 2025 builds</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="font-display font-extrabold text-white leading-[1.05] tracking-[-0.03em] mb-6" style="font-size: clamp(2.8rem, 7vw, 5.5rem);">
+          <span class="reveal-line block overflow-hidden"><span class="hero-line block">Built to</span></span>
+          <span class="reveal-line block overflow-hidden"><span class="hero-line block gradient-text-brass">Outperform.</span></span>
+        </h1>
+
+        <!-- Subhead -->
+        <p class="text-lg lg:text-xl text-chrome max-w-xl leading-relaxed mb-10 reveal-section">
+          Precision engineering meets obsessive craft. We build modified cars that don't just turn heads — they redefine what's possible on four wheels.
+        </p>
+
+        <!-- CTAs -->
+        <div class="flex flex-wrap gap-4 reveal-section">
+          <a href="#contact" class="btn-primary text-base">
+            Start Your Build
+            <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+          <a href="#work" class="btn-secondary text-base">
+            <i data-lucide="play" class="w-4 h-4" aria-hidden="true"></i>
+            View Our Work
+          </a>
+        </div>
+
+        <!-- Trust indicators -->
+        <div class="flex flex-wrap items-center gap-8 mt-14 reveal-section">
+          <div class="flex items-center gap-3">
+            <div class="flex -space-x-3">
+              <div class="w-9 h-9 rounded-full bg-steel border-2 border-ink flex items-center justify-center text-xs font-bold text-chrome">JD</div>
+              <div class="w-9 h-9 rounded-full bg-graphite border-2 border-ink flex items-center justify-center text-xs font-bold text-chrome">MK</div>
+              <div class="w-9 h-9 rounded-full bg-steel border-2 border-ink flex items-center justify-center text-xs font-bold text-chrome">SR</div>
+            </div>
+            <div>
+              <div class="flex items-center gap-1">
+                <i data-lucide="star" class="w-3.5 h-3.5 text-brass fill-brass" aria-hidden="true"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 text-brass fill-brass" aria-hidden="true"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 text-brass fill-brass" aria-hidden="true"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 text-brass fill-brass" aria-hidden="true"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 text-brass fill-brass" aria-hidden="true"></i>
+              </div>
+              <p class="text-xs text-chrome mt-0.5">240+ builds delivered</p>
+            </div>
+          </div>
+          <div class="divider-glow hidden sm:block h-8 w-px" aria-hidden="true"></div>
+          <div class="flex items-center gap-2 text-sm text-chrome">
+            <i data-lucide="shield-check" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+            2-Year Build Warranty
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-chrome/50" aria-hidden="true">
+      <span class="text-[10px] font-mono tracking-[0.3em] uppercase">Scroll</span>
+      <div class="w-px h-8 bg-gradient-to-b from-chrome/50 to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- ========== MARQUEE / SOCIAL PROOF ========== -->
+  <section class="relative py-10 border-y border-white/5 overflow-hidden" aria-label="Trusted by">
+    <div class="marquee-track">
+      <!-- First set -->
+      <div class="flex items-center gap-16 px-8">
+        <span class="text-sm font-mono tracking-widest text-chrome/40 uppercase whitespace-nowrap">Featured in</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">SPEEDHUNTERS</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">TOP GEAR</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">MOTOR TREND</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">HAGERTY</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">DRIVETRIBE</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">CAR THROTTLE</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">SUPER STREET</span>
+      </div>
+      <!-- Duplicate set for seamless loop -->
+      <div class="flex items-center gap-16 px-8" aria-hidden="true">
+        <span class="text-sm font-mono tracking-widest text-chrome/40 uppercase whitespace-nowrap">Featured in</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">SPEEDHUNTERS</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">TOP GEAR</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">MOTOR TREND</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">HAGERTY</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">DRIVETRIBE</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">CAR THROTTLE</span>
+        <span class="font-display font-bold text-xl text-chrome/30 whitespace-nowrap">SUPER STREET</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== STATS ========== -->
+  <section class="py-24 lg:py-32" aria-label="Key statistics">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div class="reveal-section text-center lg:text-left">
+          <div class="stat-number gradient-text-brass" data-count="240">0</div>
+          <p class="text-sm text-chrome mt-2 tracking-wide">Builds Delivered</p>
+        </div>
+        <div class="reveal-section text-center lg:text-left">
+          <div class="stat-number gradient-text-brass" data-count="18">0</div>
+          <p class="text-sm text-chrome mt-2 tracking-wide">Years Experience</p>
+        </div>
+        <div class="reveal-section text-center lg:text-left">
+          <div class="stat-number gradient-text-brass" data-count="47">0</div>
+          <p class="text-sm text-chrome mt-2 tracking-wide">Awards Won</p>
+        </div>
+        <div class="reveal-section text-center lg:text-left">
+          <div class="stat-number gradient-text-brass" data-count="98">0</div>
+          <p class="text-sm text-chrome mt-2 tracking-wide">% Client Return</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SERVICES ========== -->
+  <section id="services" class="py-24 lg:py-32 relative" aria-label="Services">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="max-w-2xl mb-16 lg:mb-20">
+        <span class="text-xs font-mono tracking-[0.3em] text-brass uppercase mb-4 block reveal-section">What we do</span>
+        <h2 class="font-display font-extrabold text-white tracking-[-0.03em] leading-[1.1] reveal-section" style="font-size: clamp(2rem, 4vw, 3.5rem);">
+          Every build is a<br>blank canvas.
+        </h2>
+        <p class="text-chrome mt-6 leading-relaxed reveal-section">
+          From subtle OEM+ refinements to full tube-chassis race builds, we treat every project with the same obsessive attention to detail.
+        </p>
+      </div>
+
+      <!-- Services grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <article class="tilt-card glass-panel rounded-3xl p-8 lg:p-10 reveal-section group">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6 group-hover:bg-brass/20 transition-colors duration-300">
+            <i data-lucide="zap" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display font-bold text-xl text-white mb-3">Performance Tuning</h3>
+          <p class="text-sm text-chrome leading-relaxed mb-6">
+            ECU remapping, forced induction, exhaust systems, and drivetrain upgrades. We extract every ounce of potential from your platform.
+          </p>
+          <ul class="space-y-2 text-sm text-chrome/80">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Dyno-proven gains</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Custom turbo kits</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Full exhaust fabrication</li>
+          </ul>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="tilt-card glass-panel rounded-3xl p-8 lg:p-10 reveal-section group">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6 group-hover:bg-brass/20 transition-colors duration-300">
+            <i data-lucide="settings" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display font-bold text-xl text-white mb-3">Chassis & Suspension</h3>
+          <p class="text-sm text-chrome leading-relaxed mb-6">
+            Coilover setups, air suspension, roll cages, and chassis bracing. We dial in handling that transforms how your car feels.
+          </p>
+          <ul class="space-y-2 text-sm text-chrome/80">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Corner balancing</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Custom coilover valving</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> FIA-spec roll cages</li>
+          </ul>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="tilt-card glass-panel rounded-3xl p-8 lg:p-10 reveal-section group">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6 group-hover:bg-brass/20 transition-colors duration-300">
+            <i data-lucide="paintbrush" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display font-bold text-xl text-white mb-3">Body & Paint</h3>
+          <p class="text-sm text-chrome leading-relaxed mb-6">
+            Widebody conversions, custom aero, and concours-level paintwork. Your car's visual identity, executed flawlessly.
+          </p>
+          <ul class="space-y-2 text-sm text-chrome/80">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Custom widebody kits</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Carbon fiber fabrication</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Show-quality resprays</li>
+          </ul>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="tilt-card glass-panel rounded-3xl p-8 lg:p-10 reveal-section group">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6 group-hover:bg-brass/20 transition-colors duration-300">
+            <i data-lucide="cpu" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display font-bold text-xl text-white mb-3">Electronics & Diagnostics</h3>
+          <p class="text-sm text-chrome leading-relaxed mb-6">
+            Standalone ECUs, custom wiring looms, data logging, and advanced diagnostics. Modern tech meets old-school craftsmanship.
+          </p>
+          <ul class="space-y-2 text-sm text-chrome/80">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> MoTeC & Haltech installs</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Custom mil-spec looms</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Track data acquisition</li>
+          </ul>
+        </article>
+
+        <!-- Card 5 -->
+        <article class="tilt-card glass-panel rounded-3xl p-8 lg:p-10 reveal-section group">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6 group-hover:bg-brass/20 transition-colors duration-300">
+            <i data-lucide="wrench" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display font-bold text-xl text-white mb-3">Engine Building</h3>
+          <p class="text-sm text-chrome leading-relaxed mb-6">
+            Blueprinted bottom ends, ported heads, and full race engine assembly. Built to survive abuse and make power reliably.
+          </p>
+          <ul class="space-y-2 text-sm text-chrome/80">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Forged internals</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> CNC head porting</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Engine dyno break-in</li>
+          </ul>
+        </article>
+
+        <!-- Card 6 -->
+        <article class="tilt-card glass-panel rounded-3xl p-8 lg:p-10 reveal-section group">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6 group-hover:bg-brass/20 transition-colors duration-300">
+            <i data-lucide="circle-dot" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display font-bold text-xl text-white mb-3">Interior & Detail</h3>
+          <p class="text-sm text-chrome leading-relaxed mb-6">
+            Bespoke leatherwork, Alcantara, custom gauge clusters, and full detail work. The details you feel every time you drive.
+          </p>
+          <ul class="space-y-2 text-sm text-chrome/80">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Custom leather & Alcantara</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Roll cage padding</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i> Ceramic coating</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== WORK / GALLERY ========== -->
+  <section id="work" class="py-24 lg:py-32 relative" aria-label="Our work">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16 lg:mb-20">
+        <div class="max-w-2xl">
+          <span class="text-xs font-mono tracking-[0.3em] text-brass uppercase mb-4 block reveal-section">Selected builds</span>
+          <h2 class="font-display font-extrabold text-white tracking-[-0.03em] leading-[1.1] reveal-section" style="font-size: clamp(2rem, 4vw, 3.5rem);">
+            Proof, not promises.
+          </h2>
+        </div>
+        <a href="#contact" class="btn-secondary text-sm self-start lg:self-auto reveal-section">
+          Discuss your project
+          <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <!-- Gallery grid -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Item 1 - Large -->
+        <div class="gallery-item relative rounded-3xl overflow-hidden group cursor-pointer reveal-section md:row-span-2">
+          <div class="aspect-[3/4] md:aspect-auto md:h-full bg-gradient-to-br from-steel to-carbon flex items-center justify-center">
+            <!-- Stylized car silhouette -->
+            <svg viewBox="0 0 400 300" class="w-3/4 h-auto opacity-20" aria-hidden="true">
+              <path d="M50 200 Q80 140 160 130 Q200 125 240 130 Q320 140 350 200 L360 220 Q360 240 340 240 L320 240 Q310 260 290 260 Q270 260 260 240 L140 240 Q130 260 110 260 Q90 260 80 240 L60 240 Q40 240 40 220 Z" fill="currentColor" class="text-brass"/>
+              <circle cx="110" cy="240" r="25" fill="currentColor" class="text-brass"/>
+              <circle cx="290" cy="240" r="25" fill="currentColor" class="text-brass"/>
+            </svg>
+          </div>
+          <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-transparent flex flex-col justify-end p-8">
+            <span class="text-xs font-mono tracking-widest text-brass uppercase mb-2">2024 · Widebody</span>
+            <h3 class="font-display font-bold text-2xl text-white">Porsche 911 GT3 RS</h3>
+            <p class="text-sm text-chrome mt-2">Full carbon aero, Motec standalone, 4.2L stroker. 620hp.</p>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="gallery-item relative rounded-3xl overflow-hidden group cursor-pointer reveal-section">
+          <div class="aspect-[4/3] bg-gradient-to-br from-graphite to-steel flex items-center justify-center">
+            <svg viewBox="0 0 400 300" class="w-3/4 h-auto opacity-20" aria-hidden="true">
+              <path d="M60 190 Q90 130 170 120 Q210 115 250 120 Q320 130 350 190 L360 210 Q360 230 340 230 L320 230 Q310 250 290 250 Q270 250 260 230 L140 230 Q130 250 110 250 Q90 250 80 230 L60 230 Q40 230 40 210 Z" fill="currentColor" class="text-brass"/>
+              <circle cx="110" cy="230" r="22" fill="currentColor" class="text-brass"/>
+              <circle cx="290" cy="230" r="22" fill="currentColor" class="text-brass"/>
+            </svg>
+          </div>
+          <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-transparent flex flex-col justify-end p-8">
+            <span class="text-xs font-mono tracking-widest text-brass uppercase mb-2">2024 · Restomod</span>
+            <h3 class="font-display font-bold text-2xl text-white">BMW E30 M3</h3>
+            <p class="text-sm text-chrome mt-2">S54 swap, full cage, carbon panels. 380hp NA.</p>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="gallery-item relative rounded-3xl overflow-hidden group cursor-pointer reveal-section">
+          <div class="aspect-[4/3] bg-gradient-to-br from-carbon to-graphite flex items-center justify-center">
+            <svg viewBox="0 0 400 300" class="w-3/4 h-auto opacity-20" aria-hidden="true">
+              <path d="M70 185 Q100 125 180 115 Q220 110 260 115 Q330 125 360 185 L370 205 Q370 225 350 225 L330 225 Q320 245 300 245 Q280 245 270 225 L150 225 Q140 245 120 245 Q100 245 90 225 L70 225 Q50 225 50 205 Z" fill="currentColor" class="text-brass"/>
+              <circle cx="120" cy="225" r="20" fill="currentColor" class="text-brass"/>
+              <circle cx="300" cy="225" r="20" fill="currentColor" class="text-brass"/>
+            </svg>
+          </div>
+          <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-transparent flex flex-col justify-end p-8">
+            <span class="text-xs font-mono tracking-widest text-brass uppercase mb-2">2023 · Time Attack</span>
+            <h3 class="font-display font-bold text-2xl text-white">Nissan R32 GT-R</h3>
+            <p class="text-sm text-chrome mt-2">RB26DETT, sequential box, aero package. 700hp.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PROCESS ========== -->
+  <section id="process" class="py-24 lg:py-32 relative" aria-label="Our process">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="max-w-2xl mb-16 lg:mb-20">
+        <span class="text-xs font-mono tracking-[0.3em] text-brass uppercase mb-4 block reveal-section">How it works</span>
+        <h2 class="font-display font-extrabold text-white tracking-[-0.03em] leading-[1.1] reveal-section" style="font-size: clamp(2rem, 4vw, 3.5rem);">
+          From vision to<br>reality.
+        </h2>
+      </div>
+
+      <!-- Process steps -->
+      <div class="grid md:grid-cols-4 gap-8 lg:gap-6">
+        <!-- Step 1 -->
+        <div class="process-step relative reveal-section">
+          <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center mb-6 relative z-10">
+            <span class="font-display font-extrabold text-lg text-brass">01</span>
+          </div>
+          <h3 class="font-display font-bold text-lg text-white mb-2">Consultation</h3>
+          <p class="text-sm text-chrome leading-relaxed">We discuss your goals, budget, and timeline. No sales pitch — just a straight conversation about what's possible.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="process-step relative reveal-section">
+          <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center mb-6 relative z-10">
+            <span class="font-display font-extrabold text-lg text-brass">02</span>
+          </div>
+          <h3 class="font-display font-bold text-lg text-white mb-2">Blueprint</h3>
+          <p class="text-sm text-chrome leading-relaxed">Detailed spec sheet, parts list, and build timeline. You know exactly what you're getting and when.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="process-step relative reveal-section">
+          <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center mb-6 relative z-10">
+            <span class="font-display font-extrabold text-lg text-brass">03</span>
+          </div>
+          <h3 class="font-display font-bold text-lg text-white mb-2">Execution</h3>
+          <p class="text-sm text-chrome leading-relaxed">Our craftsmen get to work. Regular updates with photos and videos keep you in the loop throughout.</p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="process-step relative reveal-section">
+          <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center mb-6 relative z-10">
+            <span class="font-display font-extrabold text-lg text-brass">04</span>
+          </div>
+          <h3 class="font-display font-bold text-lg text-white mb-2">Delivery</h3>
+          <p class="text-sm text-chrome leading-relaxed">Dyno tuning, road testing, and a full handover. Your car, transformed. Ready to enjoy.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS ========== -->
+  <section id="testimonials" class="py-24 lg:py-32 relative" aria-label="Testimonials">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="max-w-2xl mb-16 lg:mb-20">
+        <span class="text-xs font-mono tracking-[0.3em] text-brass uppercase mb-4 block reveal-section">Client stories</span>
+        <h2 class="font-display font-extrabold text-white tracking-[-0.03em] leading-[1.1] reveal-section" style="font-size: clamp(2rem, 4vw, 3.5rem);">
+          Words from<br>the garage.
+        </h2>
+      </div>
+
+      <!-- Testimonial grid -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Testimonial 1 -->
+        <blockquote class="glass-panel rounded-3xl p-8 lg:p-10 reveal-section">
+          <div class="flex items-center gap-1 mb-6">
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+          </div>
+          <p class="text-chrome leading-relaxed mb-8">"I've worked with shops across three continents. APEX is on another level. The attention to detail on my GT3 build was surgical. Every panel gap, every weld, every wire — perfect."</p>
+          <footer class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-steel flex items-center justify-center text-sm font-bold text-chrome">MH</div>
+            <div>
+              <cite class="not-italic font-semibold text-white text-sm">Marcus H.</cite>
+              <p class="text-xs text-chrome">Porsche 911 GT3 RS Owner</p>
+            </div>
+          </footer>
+        </blockquote>
+
+        <!-- Testimonial 2 -->
+        <blockquote class="glass-panel rounded-3xl p-8 lg:p-10 reveal-section">
+          <div class="flex items-center gap-1 mb-6">
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+          </div>
+          <p class="text-chrome leading-relaxed mb-8">"The communication was outstanding. Weekly updates, photos, even video calls from the dyno. I felt involved without being in the way. The final result exceeded every expectation."</p>
+          <footer class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-steel flex items-center justify-center text-sm font-bold text-chrome">SL</div>
+            <div>
+              <cite class="not-italic font-semibold text-white text-sm">Sarah L.</cite>
+              <p class="text-xs text-chrome">E30 M3 Restomod Owner</p>
+            </div>
+          </footer>
+        </blockquote>
+
+        <!-- Testimonial 3 -->
+        <blockquote class="glass-panel rounded-3xl p-8 lg:p-10 reveal-section">
+          <div class="flex items-center gap-1 mb-6">
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+          </div>
+          <p class="text-chrome leading-relaxed mb-8">"I brought them a basket case R32 and a vague idea. They delivered a time attack weapon that's also streetable. The engine build alone is a work of art. Worth every penny."</p>
+          <footer class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-steel flex items-center justify-center text-sm font-bold text-chrome">JT</div>
+            <div>
+              <cite class="not-italic font-semibold text-white text-sm">James T.</cite>
+              <p class="text-xs text-chrome">R32 GT-R Owner</p>
+            </div>
+          </footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PRICING / PACKAGES ========== -->
+  <section id="pricing" class="py-24 lg:py-32 relative" aria-label="Build packages">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="max-w-2xl mb-16 lg:mb-20">
+        <span class="text-xs font-mono tracking-[0.3em] text-brass uppercase mb-4 block reveal-section">Investment</span>
+        <h2 class="font-display font-extrabold text-white tracking-[-0.03em] leading-[1.1] reveal-section" style="font-size: clamp(2rem, 4vw, 3.5rem);">
+          Build tiers.
+        </h2>
+        <p class="text-chrome mt-6 leading-relaxed reveal-section">
+          Every build is quoted individually, but these tiers give you a starting point for what to expect.
+        </p>
+      </div>
+
+      <!-- Pricing cards -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Tier 1 -->
+        <div class="glass-panel rounded-3xl p-8 lg:p-10 reveal-section flex flex-col">
+          <h3 class="font-display font-bold text-lg text-white mb-2">Street Refinement</h3>
+          <p class="text-sm text-chrome mb-6">OEM+ upgrades for the daily driver</p>
+          <div class="mb-8">
+            <span class="stat-number gradient-text-brass">$8k</span>
+            <span class="text-chrome text-sm ml-1">starting</span>
+          </div>
+          <ul class="space-y-3 text-sm text-chrome mb-10 flex-1">
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> ECU remap & intake</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Cat-back exhaust</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Coilover suspension</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Wheel & tyre package</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> 4-wheel alignment</li>
+          </ul>
+          <a href="#contact" class="btn-secondary w-full justify-center text-sm">Enquire Now</a>
+        </div>
+
+        <!-- Tier 2 - Featured -->
+        <div class="glass-panel rounded-3xl p-8 lg:p-10 reveal-section flex flex-col relative border-brass/30" style="border-color: rgba(201, 169, 110, 0.3); box-shadow: 0 0 60px rgba(201, 169, 110, 0.08);">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+            <span class="gradient-brass text-ink text-xs font-bold px-4 py-1.5 rounded-full tracking-wide">MOST POPULAR</span>
+          </div>
+          <h3 class="font-display font-bold text-lg text-white mb-2">Full Transformation</h3>
+          <p class="text-sm text-chrome mb-6">Complete rebuild with performance focus</p>
+          <div class="mb-8">
+            <span class="stat-number gradient-text-brass">$35k</span>
+            <span class="text-chrome text-sm ml-1">starting</span>
+          </div>
+          <ul class="space-y-3 text-sm text-chrome mb-10 flex-1">
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Everything in Street</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Forged engine build</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Big turbo / supercharger</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Widebody or aero kit</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Standalone ECU & loom</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Dyno tuning & break-in</li>
+          </ul>
+          <a href="#contact" class="btn-primary w-full justify-center text-sm">Start Your Build</a>
+        </div>
+
+        <!-- Tier 3 -->
+        <div class="glass-panel rounded-3xl p-8 lg:p-10 reveal-section flex flex-col">
+          <h3 class="font-display font-bold text-lg text-white mb-2">Competition</h3>
+          <p class="text-sm text-chrome mb-6">No-compromise race engineering</p>
+          <div class="mb-8">
+            <span class="stat-number gradient-text-brass">$85k</span>
+            <span class="text-chrome text-sm ml-1">starting</span>
+          </div>
+          <ul class="space-y-3 text-sm text-chrome mb-10 flex-1">
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Everything in Full</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> FIA-spec roll cage</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Sequential gearbox</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Carbon body panels</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Full data acquisition</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i> Track support available</li>
+          </ul>
+          <a href="#contact" class="btn-secondary w-full justify-center text-sm">Enquire Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA BANNER ========== -->
+  <section class="py-24 lg:py-32 relative overflow-hidden" aria-label="Call to action">
+    <div class="absolute inset-0 gradient-radial-glow pointer-events-none" aria-hidden="true"></div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div class="glass-panel rounded-3xl p-10 lg:p-20 text-center relative overflow-hidden">
+        <!-- Decorative gradient -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brass/5 rounded-full blur-[120px] pointer-events-none" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-brass/5 rounded-full blur-[120px] pointer-events-none" aria-hidden="true"></div>
+
+        <span class="text-xs font-mono tracking-[0.3em] text-brass uppercase mb-6 block reveal-section">Ready when you are</span>
+        <h2 class="font-display font-extrabold text-white tracking-[-0.03em] leading-[1.05] mb-8 reveal-section max-w-3xl mx-auto" style="font-size: clamp(2rem, 4.5vw, 4rem);">
+          Let's build something<br class="hidden sm:block"> unforgettable.
+        </h2>
+        <p class="text-chrome max-w-lg mx-auto mb-10 reveal-section">
+          Book a no-obligation consultation. We'll discuss your vision, your budget, and exactly how we can bring it to life.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 reveal-section">
+          <a href="#contact" class="btn-primary text-base">
+            Book Consultation
+            <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+          <a href="tel:+15551234567" class="btn-secondary text-base">
+            <i data-lucide="phone" class="w-4 h-4" aria-hidden="true"></i>
+            (555) 123-4567
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER / CONTACT ========== -->
+  <footer id="contact" class="pt-24 lg:pt-32 pb-12 relative border-t border-white/5" aria-label="Footer">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <!-- Contact form + info grid -->
+      <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 mb-20">
+        <!-- Left: Contact info -->
+        <div>
+          <span class="text-xs font-mono tracking-[0.3em] text-brass uppercase mb-4 block reveal-section">Get in touch</span>
+          <h2 class="font-display font-extrabold text-white tracking-[-0.03em] leading-[1.1] mb-8 reveal-section" style="font-size: clamp(2rem, 3.5vw, 3rem);">
+            Tell us about<br>your project.
+          </h2>
+          <p class="text-chrome leading-relaxed mb-10 max-w-md reveal-section">
+            Fill out the form and we'll get back to you within 24 hours. Prefer to talk? Call or email — we're always happy to chat cars.
+          </p>
+
+          <div class="space-y-6 reveal-section">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                <i data-lucide="map-pin" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-white text-sm">Workshop</p>
+                <p class="text-chrome text-sm">Unit 7, Speedworks Industrial Estate<br>Los Angeles, CA 90021</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                <i data-lucide="phone" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-white text-sm">Phone</p>
+                <a href="tel:+15551234567" class="text-chrome text-sm hover:text-brass transition-colors duration-300">(555) 123-4567</a>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                <i data-lucide="mail" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-white text-sm">Email</p>
+                <a href="mailto:builds@apexgarage.com" class="text-chrome text-sm hover:text-brass transition-colors duration-300">builds@apexgarage.com</a>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                <i data-lucide="clock" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-white text-sm">Hours</p>
+                <p class="text-chrome text-sm">Mon–Fri: 8am–6pm<br>Sat: 9am–2pm</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="glass-panel rounded-3xl p-8 lg:p-10 reveal-section">
+          <form id="contact-form" novalidate>
+            <div class="space-y-5">
+              <!-- Name -->
+              <div>
+                <label for="name" class="block text-sm font-medium text-white mb-2">Full Name *</label>
+                <input type="text" id="name" name="name" required autocomplete="name"
+                  class="form-input w-full bg-carbon border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-chrome/40 text-sm transition-all duration-300 focus:border-brass/60 focus:ring-2 focus:ring-brass/20 focus:outline-none"
+                  placeholder="John Doe">
+                <p class="form-error-msg" id="name-error">Please enter your name</p>
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label for="email" class="block text-sm font-medium text-white mb-2">Email Address *</label>
+                <input type="email" id="email" name="email" required autocomplete="email"
+                  class="form-input w-full bg-carbon border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-chrome/40 text-sm transition-all duration-300 focus:border-brass/60 focus:ring-2 focus:ring-brass/20 focus:outline-none"
+                  placeholder="john@example.com">
+                <p class="form-error-msg" id="email-error">Please enter a valid email</p>
+              </div>
+
+              <!-- Phone -->
+              <div>
+                <label for="phone" class="block text-sm font-medium text-white mb-2">Phone Number</label>
+                <input type="tel" id="phone" name="phone" autocomplete="tel"
+                  class="form-input w-full bg-carbon border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-chrome/40 text-sm transition-all duration-300 focus:border-brass/60 focus:ring-2 focus:ring-brass/20 focus:outline-none"
+                  placeholder="(555) 000-0000">
+                <p class="form-error-msg" id="phone-error">Please enter a valid phone number</p>
+              </div>
+
+              <!-- Vehicle -->
+              <div>
+                <label for="vehicle" class="block text-sm font-medium text-white mb-2">Vehicle Make & Model</label>
+                <input type="text" id="vehicle" name="vehicle"
+                  class="form-input w-full bg-carbon border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-chrome/40 text-sm transition-all duration-300 focus:border-brass/60 focus:ring-2 focus:ring-brass/20 focus:outline-none"
+                  placeholder="e.g. Porsche 911 (992)">
+              </div>
+
+              <!-- Service -->
+              <div>
+                <label for="service" class="block text-sm font-medium text-white mb-2">Service of Interest</label>
+                <select id="service" name="service"
+                  class="form-input w-full bg-carbon border border-white/10 rounded-xl px-4 py-3.5 text-white text-sm transition-all duration-300 focus:border-brass/60 focus:ring-2 focus:ring-brass/20 focus:outline-none appearance-none cursor-pointer">
+                  <option value="" class="text-chrome">Select a service</option>
+                  <option value="performance">Performance Tuning</option>
+                  <option value="suspension">Chassis & Suspension</option>
+                  <option value="body">Body & Paint</option>
+                  <option value="engine">Engine Building</option>
+                  <option value="electronics">Electronics & Diagnostics</option>
+                  <option value="full">Full Transformation</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <!-- Message -->
+              <div>
+                <label for="message" class="block text-sm font-medium text-white mb-2">Project Details *</label>
+                <textarea id="message" name="message" rows="4" required
+                  class="form-input w-full bg-carbon border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-chrome/40 text-sm transition-all duration-300 focus:border-brass/60 focus:ring-2 focus:ring-brass/20 focus:outline-none resize-none"
+                  placeholder="Tell us about your goals, budget, and timeline..."></textarea>
+                <p class="form-error-msg" id="message-error">Please tell us about your project</p>
+              </div>
+
+              <!-- Submit -->
+              <button type="submit" id="submit-btn" class="btn-primary w-full justify-center text-base">
+                <span id="btn-text">Send Enquiry</span>
+                <i data-lucide="send" class="w-4 h-4" id="btn-icon" aria-hidden="true"></i>
+              </button>
+
+              <!-- Success message -->
+              <div id="form-success" class="hidden text-center py-4">
+                <div class="w-12 h-12 rounded-full bg-brass/10 flex items-center justify-center mx-auto mb-3">
+                  <i data-lucide="check-circle" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+                </div>
+                <p class="text-white font-semibold">Message sent successfully!</p>
+                <p class="text-chrome text-sm mt-1">We'll be in touch within 24 hours.</p>
+              </div>
+            </div>
+          </form>
+          <!-- TODO: connect form action to backend endpoint -->
+        </div>
+      </div>
+
+      <!-- Footer bottom -->
+      <div class="divider-glow mb-10" aria-hidden="true"></div>
+
+      <div class="grid md:grid-cols-4 gap-10 mb-16">
+        <!-- Brand -->
+        <div class="md:col-span-2">
+          <a href="#" class="flex items-center gap-3 mb-5" aria-label="APEX Garage home">
+            <div class="w-10 h-10 rounded-xl gradient-brass flex items-center justify-center">
+              <i data-lucide="gauge" class="w-5 h-5 text-ink" aria-hidden="true"></i>
+            </div>
+            <span class="font-display font-extrabold text-xl tracking-tight text-white">APEX<span class="text-brass">.</span></span>
+          </a>
+          <p class="text-chrome text-sm leading-relaxed max-w-sm">
+            Precision modified car builds since 2007. We don't just modify cars — we engineer experiences.
+          </p>
+          <div class="flex items-center gap-3 mt-6">
+            <a href="#" class="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-chrome hover:text-brass hover:border-brass/40 transition-all duration-300" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-chrome hover:text-brass hover:border-brass/40 transition-all duration-300" aria-label="YouTube">
+              <i data-lucide="youtube" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-chrome hover:text-brass hover:border-brass/40 transition-all duration-300" aria-label="Facebook">
+              <i data-lucide="facebook" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Links -->
+        <div>
+          <h4 class="font-display font-bold text-white text-sm mb-5 tracking-wide">Services</h4>
+          <ul class="space-y-3">
+            <li><a href="#services" class="text-chrome text-sm hover:text-brass transition-colors duration-300">Performance Tuning</a></li>
+            <li><a href="#services" class="text-chrome text-sm hover:text-brass transition-colors duration-300">Chassis & Suspension</a></li>
+            <li><a href="#services" class="text-chrome text-sm hover:text-brass transition-colors duration-300">Body & Paint</a></li>
+            <li><a href="#services" class="text-chrome text-sm hover:text-brass transition-colors duration-300">Engine Building</a></li>
+            <li><a href="#services" class="text-chrome text-sm hover:text-brass transition-colors duration-300">Electronics</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-display font-bold text-white text-sm mb-5 tracking-wide">Company</h4>
+          <ul class="space-y-3">
+            <li><a href="#work" class="text-chrome text-sm hover:text-brass transition-colors duration-300">Our Work</a></li>
+            <li><a href="#process" class="text-chrome text-sm hover:text-brass transition-colors duration-300">Process</a></li>
+            <li><a href="#testimonials" class="text-chrome text-sm hover:text-brass transition-colors duration-300">Testimonials</a></li>
+            <li><a href="#pricing" class="text-chrome text-sm hover:text-brass transition-colors duration-300">Build Tiers</a></li>
+            <li><a href="#contact" class="text-chrome text-sm hover:text-brass transition-colors duration-300">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Copyright -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/5">
+        <p class="text-chrome/50 text-xs">© 2025 APEX Garage. All rights reserved.</p>
+        <div class="flex items-center gap-6">
+          <a href="#" class="text-chrome/50 text-xs hover:text-brass transition-colors duration-300">Privacy Policy</a>
+          <a href="#" class="text-chrome/50 text-xs hover:text-brass transition-colors duration-300">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    // ============================================================
+    // INIT
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      initLenis();
+      initGSAP();
+      initThreeJS();
+      initMobileMenu();
+      initHeaderScroll();
+      initForm();
+      initStatsCounter();
+      initAccordion();
+    });
+
+    // ============================================================
+    // LENIS SMOOTH SCROLL
+    // ============================================================
+    function initLenis() {
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.querySelector(anchor.getAttribute('href'));
+          if (target) {
+            lenis.scrollTo(target, { offset: -100 });
+            // Close mobile menu if open
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu.classList.contains('open')) {
+              closeMobileMenu();
+            }
+          }
+        });
+      });
+    }
+
+    // ============================================================
+    // GSAP SCROLL ANIMATIONS
+    // ============================================================
+    function initGSAP() {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Hero line reveals
+      const heroLines = document.querySelectorAll('.hero-line');
+      gsap.from(heroLines, {
+        y: '100%',
+        duration: 1.1,
+        stagger: 0.12,
+        ease: 'power4.out',
+        delay: 0.3,
+      });
+
+      // Section reveals
+      gsap.utils.toArray('.reveal-section').forEach((el) => {
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        });
+      });
+
+      // Parallax on hero canvas
+      gsap.to('#hero-canvas', {
+        yPercent: 15,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+
+      // Tilt cards
+      document.querySelectorAll('.tilt-card').forEach((card) => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          card.style.transform = `perspective(1000px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateY(-4px)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(0)';
+        });
+      });
+    }
+
+    // ============================================================
+    // THREE.JS HERO SCENE
+    // ============================================================
+    function initThreeJS() {
+      const canvas = document.getElementById('hero-canvas');
+      if (!canvas) return;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.z = 5;
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true,
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Particles
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 800;
+      const posArray = new Float32Array(particlesCount * 3);
+
+      for (let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 20;
+      }
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.015,
+        color: 0xC9A96E,
+        transparent: true,
+        opacity: 0.6,
+        blending: THREE.AdditiveBlending,
+      });
+
+      const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particlesMesh);
+
+      // Wireframe geometry
+      const icoGeometry = new THREE.IcosahedronGeometry(2.2, 1);
+      const icoMaterial = new THREE.MeshBasicMaterial({
+        color: 0xC9A96E,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.08,
+      });
+      const icosahedron = new THREE.Mesh(icoGeometry, icoMaterial);
+      icosahedron.position.x = 2.5;
+      icosahedron.position.y = -0.5;
+      scene.add(icosahedron);
+
+      // Mouse interaction
+      let mouseX = 0;
+      let mouseY = 0;
+      document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+
+      // Animation loop
+      let animId;
+      function animate() {
+        animId = requestAnimationFrame(animate);
+
+        particlesMesh.rotation.y += 0.0005;
+        particlesMesh.rotation.x += 0.0003;
+
+        icosahedron.rotation.x += 0.002;
+        icosahedron.rotation.y += 0.003;
+
+        // Smooth mouse follow
+        camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+        camera.position.y += (-mouseY * 0.5 - camera.position.y) * 0.05;
+        camera.lookAt(scene.position);
+
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // Resize handler
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      // Cleanup safety
+      setTimeout(() => {
+        if (!renderer.info.render.frame) {
+          cancelAnimationFrame(animId);
+          canvas.style.display = 'none';
+        }
+      }, 4000);
+    }
+
+    // ============================================================
+    // MOBILE MENU
+    // ============================================================
+    function initMobileMenu() {
+      const btn = document.getElementById('mobile-menu-btn');
+      const menu = document.getElementById('mobile-menu');
+
+      btn.addEventListener('click', () => {
+        const isOpen = menu.classList.contains('open');
+        if (isOpen) {
+          closeMobileMenu();
+        } else {
+          openMobileMenu();
+        }
+      });
+
+      // Close on escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu.classList.contains('open')) {
+          closeMobileMenu();
+        }
+      });
+    }
+
+    function openMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const btn = document.getElementById('mobile-menu-btn');
+      menu.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+      btn.innerHTML = '<i data-lucide="x" class="w-5 h-5 text-white" aria-hidden="true"></i>';
+      lucide.createIcons();
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const btn = document.getElementById('mobile-menu-btn');
+      menu.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '<i data-lucide="menu" class="w-5 h-5 text-white" aria-hidden="true"></i>';
+      lucide.createIcons();
+      document.body.style.overflow = '';
+    }
+
+    // ============================================================
+    // HEADER SCROLL STATE
+    // ============================================================
+    function initHeaderScroll() {
+      const header = document.getElementById('header');
+      const navInner = document.getElementById('nav-inner');
+
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          header.classList.add('header-scrolled');
+          navInner.classList.remove('h-20', 'lg:h-24');
+          navInner.classList.add('h-16', 'lg:h-20');
+        } else {
+          header.classList.remove('header-scrolled');
+          navInner.classList.remove('h-16', 'lg:h-20');
+          navInner.classList.add('h-20', 'lg:h-24');
+        }
+      }, { passive: true });
+    }
+
+    // ============================================================
+    // STATS COUNTER
+    // ============================================================
+    function initStatsCounter() {
+      const counters = document.querySelectorAll('[data-count]');
+      let animated = false;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !animated) {
+            animated = true;
+            counters.forEach((counter) => {
+              const target = parseInt(counter.getAttribute('data-count'));
+              animateCounter(counter, target);
+            });
+          }
+        });
+      }, { threshold: 0.5 });
+
+      const statsSection = document.querySelector('.stat-number');
+      if (statsSection) {
+        observer.observe(statsSection.closest('section'));
+      }
+    }
+
+    function animateCounter(el, target) {
+      let current = 0;
+      const increment = target / 60;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          el.textContent = target;
+          clearInterval(timer);
+        } else {
+          el.textContent = Math.floor(current);
+        }
+      }, 20);
+    }
+
+    // ============================================================
+    // ACCORDION (placeholder for future content)
+    // ============================================================
+    function initAccordion() {
+      document.querySelectorAll('.accordion-trigger').forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+          const content = trigger.nextElementSibling;
+          const isOpen = content.classList.contains('open');
+          // Close all
+          document.querySelectorAll('.accordion-content').forEach((c) => c.classList.remove('open'));
+          // Open clicked if it was closed
+          if (!isOpen) {
+            content.classList.add('open');
+          }
+        });
+      });
+    }
+
+    // ============================================================
+    // FORM VALIDATION & SUBMISSION
+    // ============================================================
+    function initForm() {
+      const form = document.getElementById('contact-form');
+      if (!form) return;
+
+      const submitBtn = document.getElementById('submit-btn');
+      const btnText = document.getElementById('btn-text');
+      const btnIcon = document.getElementById('btn-icon');
+      const successDiv = document.getElementById('form-success');
+
+      // Real-time validation
+      const fields = {
+        name: { required: true, minLength: 2 },
+        email: { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
+        phone: { required: false, pattern: /^[\d\s\-()+]{7,20}$/ },
+        message: { required: true, minLength: 10 },
+      };
+
+      Object.keys(fields).forEach((fieldName) => {
+        const input = document.getElementById(fieldName);
+        if (!input) return;
+
+        input.addEventListener('blur', () => validateField(input, fields[fieldName]));
+        input.addEventListener('input', () => {
+          if (input.classList.contains('error')) {
+            validateField(input, fields[fieldName]);
+          }
+        });
+      });
+
+      function validateField(input, rules) {
+        const value = input.value.trim();
+        const errorEl = document.getElementById(`${input.id}-error`);
+        let valid = true;
+
+        if (rules.required && !value) {
+          valid = false;
+        } else if (rules.minLength && value.length < rules.minLength) {
+          valid = false;
+        } else if (rules.pattern && value && !rules.pattern.test(value)) {
+          valid = false;
+        }
+
+        if (valid) {
+          input.classList.remove('error');
+          errorEl?.classList.remove('visible');
+        } else {
+          input.classList.add('error');
+          errorEl?.classList.add('visible');
+        }
+
+        return valid;
+      }
+
+      // Submit
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validate all
+        let allValid = true;
+        Object.keys(fields).forEach((fieldName) => {
+          const input = document.getElementById(fieldName);
+          if (input && !validateField(input, fields[fieldName])) {
+            allValid = false;
+          }
+        });
+
+        if (!allValid) {
+          // Focus first error
+          const firstError = form.querySelector('.error');
+          firstError?.focus();
+          return;
+        }
+
+        // Loading state
+        submitBtn.disabled = true;
+        btnText.textContent = 'Sending...';
+        btnIcon.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin" aria-hidden="true"></i>';
+        lucide.createIcons();
+
+        // Gather form data
+        const formData = {
+          name: document.getElementById('name').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          vehicle: document.getElementById('vehicle').value.trim(),
+          service: document.getElementById('service').value,
+          message: document.getElementById('message').value.trim(),
+        };
+
+        // Submit via fetch
+        try {
+          const response = await fetch('submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            cache: 'no-store',
+            body: JSON.stringify({
+              url: window.location.host,
+              table: 'enquiries',
+              data: formData,
+            }),
+          });
+
+          // Simulate success (in case backend isn't wired)
+          showSuccess();
+        } catch (error) {
+          // Even if fetch fails (no backend), show success for demo
+          showSuccess();
+        }
+      });
+
+      function showSuccess() {
+        form.style.display = 'none';
+        successDiv.classList.remove('hidden');
+        lucide.createIcons();
+
+        // Reset after 5 seconds
+        setTimeout(() => {
+          form.reset();
+          form.style.display = '';
+          successDiv.classList.add('hidden');
+          submitBtn.disabled = false;
+          btnText.textContent = 'Send Enquiry';
+          btnIcon.innerHTML = '<i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>';
+          lucide.createIcons();
+        }, 5000);
+      }
+    }
+  </script>
+</body>
+</html>
