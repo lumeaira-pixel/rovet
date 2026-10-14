@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maison Élan — Luxury Fashion</title>
+  <!-- Google Fonts: Instrument Serif + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1A1A1A',
+            cream: '#F9F7F4',
+            beige: '#EFE9E2',
+            brass: '#B89A7A',
+            stone: '#8B7E74',
+          },
+          fontFamily: {
+            serif: ['"Instrument Serif"', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1A1A;
+      --cream: #F9F7F4;
+      --beige: #EFE9E2;
+      --brass: #B89A7A;
+      --stone: #8B7E74;
+      --white: #FFFFFF;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+      --shadow-lg: 0 16px 48px rgba(0,0,0,0.08);
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Instrument Serif', serif; font-weight: 400; letter-spacing: -0.02em; }
+
+    /* === Focus Ring === */
+    :focus-visible {
+      outline: 2px solid var(--brass);
+      outline-offset: 3px;
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--ink); color: var(--white);
+      padding: 14px 32px; border-radius: 100px;
+      font-size: 13px; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; transition: all 0.3s ease;
+      border: 1px solid var(--ink); cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--brass); border-color: var(--brass); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(184,154,122,0.3); }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--ink);
+      padding: 14px 32px; border-radius: 100px;
+      font-size: 13px; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; transition: all 0.3s ease;
+      border: 1px solid var(--ink); cursor: pointer;
+    }
+    .btn-outline:hover { background: var(--ink); color: var(--white); transform: translateY(-2px); }
+    .btn-outline:active { transform: scale(0.97); }
+
+    /* === Header === */
+    .header-glass {
+      background: rgba(249, 247, 244, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .nav-link {
+      position: relative;
+      font-size: 13px; font-weight: 500; letter-spacing: 0.04em;
+      text-transform: uppercase; color: var(--ink);
+      padding: 4px 0; transition: color 0.2s ease;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1.5px; background: var(--brass);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover { color: var(--brass); }
+    .nav-link:hover::after { width: 100%; }
+
+    /* === Product Card === */
+    .product-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(184,154,122,0.2);
+    }
+    .product-card .img-wrap {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      background: var(--beige);
+    }
+    .product-card .img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .product-card:hover .img-wrap img { transform: scale(1.06); }
+
+    .badge {
+      position: absolute; top: 12px; left: 12px;
+      background: var(--ink); color: var(--white);
+      font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 4px 12px;
+      border-radius: 100px;
+    }
+    .badge.sale { background: var(--brass); }
+
+    /* === Hero === */
+    .hero-bg {
+      background: linear-gradient(135deg, var(--cream) 0%, var(--beige) 100%);
+    }
+
+    /* === Section Reveal === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Gallery === */
+    .gallery-item {
+      overflow: hidden;
+      border-radius: var(--radius);
+      aspect-ratio: 1;
+      background: var(--beige);
+    }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.08); }
+
+    /* === Testimonial === */
+    .testimonial-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px;
+      border: 1px solid rgba(0,0,0,0.04);
+      transition: all 0.3s ease;
+    }
+    .testimonial-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+    }
+
+    /* === Admin Panel === */
+    .admin-panel {
+      position: fixed; top: 0; right: 0; width: 100%; max-width: 480px;
+      height: 100vh; background: var(--white);
+      box-shadow: -8px 0 48px rgba(0,0,0,0.1);
+      z-index: 200; overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .admin-panel.open { transform: translateX(0); }
+
+    /* === Form === */
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 10px;
+      font-size: 14px;
+      background: var(--white);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184,154,122,0.15);
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--stone);
+      margin-bottom: 6px;
+    }
+
+    /* === Newsletter === */
+    .newsletter-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+      color: var(--white);
+      padding: 12px 0;
+      width: 100%;
+      font-size: 14px;
+    }
+    .newsletter-input::placeholder { color: rgba(255,255,255,0.5); }
+    .newsletter-input:focus { outline: none; border-bottom-color: var(--brass); }
+
+    /* === Scrollbar === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--stone); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--brass); }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      position: fixed; inset: 0; background: var(--cream);
+      z-index: 150; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 24px;
+      transform: translateY(-100%);
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .mobile-menu.open { transform: translateY(0); }
+
+    /* === Utility === */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); border: 0;
+    }
+
+    .divider { width: 60px; height: 2px; background: var(--brass); }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.8rem !important; }
+      .section-title { font-size: 2rem !important; }
+    }
+
+    /* === Loading === */
+    .page-loader {
+      position: fixed; inset: 0; background: var(--cream);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999; transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .page-loader.hidden { opacity: 0; visibility: hidden; }
+
+    /* === Tilt === */
+    .tilt-card {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page Loader -->
+  <div class="page-loader" id="pageLoader">
+    <div class="flex flex-col items-center gap-4">
+      <div class="w-10 h-10 border-2 border-brass border-t-transparent rounded-full animate-spin"></div>
+      <span class="text-xs tracking-[0.2em] uppercase text-stone">Maison Élan</span>
+    </div>
+  </div>
+
+  <!-- Announcement Bar -->
+  <div class="bg-ink text-white text-center py-2.5 text-xs tracking-[0.12em] uppercase font-medium">
+    Complimentary shipping on orders over $200 — Use code <span class="text-brass">ELAN10</span> for 10% off
+  </div>
+
+  <!-- Header -->
+  <header class="header-glass sticky top-0 z-50" id="mainHeader">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20">
+        <!-- Mobile menu button -->
+        <button class="lg:hidden p-2 -ml-2" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2">
+          <span class="font-serif text-2xl lg:text-3xl tracking-tight">Maison Élan</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+          <a href="#new" class="nav-link">New Arrivals</a>
+          <a href="#women" class="nav-link">Women</a>
+          <a href="#men" class="nav-link">Men</a>
+          <a href="#kids" class="nav-link">Kids</a>
+          <a href="#ethnic" class="nav-link">Ethnic</a>
+          <a href="#western" class="nav-link">Western</a>
+          <a href="#collections" class="nav-link">Collections</a>
+          <a href="#sale" class="nav-link text-brass">Sale</a>
+        </nav>
+
+        <!-- Icons -->
+        <div class="flex items-center gap-1 sm:gap-2">
+          <button class="p-2 hover:text-brass transition-colors" aria-label="Search">
+            <i data-lucide="search" class="w-5 h-5"></i>
+          </button>
+          <button class="p-2 hover:text-brass transition-colors hidden sm:block" aria-label="Account">
+            <i data-lucide="user" class="w-5 h-5"></i>
+          </button>
+          <button class="p-2 hover:text-brass transition-colors relative hidden sm:block" aria-label="Wishlist">
+            <i data-lucide="heart" class="w-5 h-5"></i>
+            <span class="absolute top-0 right-0 w-4 h-4 bg-brass text-white text-[9px] rounded-full flex items-center justify-center font-medium">3</span>
+          </button>
+          <button class="p-2 hover:text-brass transition-colors relative" aria-label="Cart" id="cartBtn">
+            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            <span class="absolute top-0 right-0 w-4 h-4 bg-brass text-white text-[9px] rounded-full flex items-center justify-center font-medium" id="cartCount">2</span>
+          </button>
+          <button class="p-2 hover:text-brass transition-colors hidden lg:block" aria-label="Admin panel" id="adminToggle">
+            <i data-lucide="settings" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu lg:hidden" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button class="absolute top-6 right-6 p-2" id="mobileMenuClose" aria-label="Close menu">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <a href="#new" class="font-serif text-3xl mobile-nav-link">New Arrivals</a>
+    <a href="#women" class="font-serif text-3xl mobile-nav-link">Women</a>
+    <a href="#men" class="font-serif text-3xl mobile-nav-link">Men</a>
+    <a href="#kids" class="font-serif text-3xl mobile-nav-link">Kids</a>
+    <a href="#ethnic" class="font-serif text-3xl mobile-nav-link">Ethnic Wear</a>
+    <a href="#western" class="font-serif text-3xl mobile-nav-link">Western Wear</a>
+    <a href="#collections" class="font-serif text-3xl mobile-nav-link">Collections</a>
+    <a href="#sale" class="font-serif text-3xl text-brass mobile-nav-link">Sale</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero-bg relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div class="reveal">
+          <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">Spring / Summer 2025</span>
+          <h1 class="hero-title font-serif text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-[0.95] mt-4 mb-6">
+            The Art of<br><em class="text-brass">Quiet Luxury</em>
+          </h1>
+          <p class="text-stone text-base lg:text-lg max-w-md mb-10 leading-relaxed">
+            Discover a curated collection of timeless dresses and modern silhouettes, crafted from the finest fabrics for the discerning wardrobe.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a href="#new" class="btn-primary">Shop Now <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+            <a href="#collections" class="btn-outline">View Collections</a>
+          </div>
+        </div>
+        <div class="relative reveal">
+          <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80" alt="Elegant woman in a flowing dress" class="w-full h-full object-cover" loading="lazy">
+          </div>
+          <div class="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-lg max-w-[200px] hidden sm:block">
+            <div class="flex items-center gap-1 mb-2">
+              <i data-lucide="star" class="w-3.5 h-3.5 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-3.5 h-3.5 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-3.5 h-3.5 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-3.5 h-3.5 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-3.5 h-3.5 fill-brass text-brass"></i>
+            </div>
+            <p class="text-xs text-stone leading-relaxed">"Exceptional quality and timeless design."</p>
+            <p class="text-xs font-medium mt-2">— Sofia R.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="bg-ink text-white py-4 overflow-hidden">
+    <div class="marquee-track">
+      <span class="text-sm tracking-[0.15em] uppercase font-light px-8">Free Shipping Over $200</span>
+      <span class="text-brass px-8">•</span>
+      <span class="text-sm tracking-[0.15em] uppercase font-light px-8">Ethically Crafted</span>
+      <span class="text-brass px-8">•</span>
+      <span class="text-sm tracking-[0.15em] uppercase font-light px-8">30-Day Returns</span>
+      <span class="text-brass px-8">•</span>
+      <span class="text-sm tracking-[0.15em] uppercase font-light px-8">Complimentary Alterations</span>
+      <span class="text-brass px-8">•</span>
+      <span class="text-sm tracking-[0.15em] uppercase font-light px-8">Free Shipping Over $200</span>
+      <span class="text-brass px-8">•</span>
+      <span class="text-sm tracking-[0.15em] uppercase font-light px-8">Ethically Crafted</span>
+      <span class="text-brass px-8">•</span>
+      <span class="text-sm tracking-[0.15em] uppercase font-light px-8">30-Day Returns</span>
+      <span class="text-brass px-8">•</span>
+      <span class="text-sm tracking-[0.15em] uppercase font-light px-8">Complimentary Alterations</span>
+      <span class="text-brass px-8">•</span>
+    </div>
+  </div>
+
+  <!-- Shop by Category -->
+  <section class="py-20 lg:py-28" id="categories">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 reveal">
+        <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">Curated For You</span>
+        <h2 class="section-title font-serif text-4xl lg:text-5xl mt-3 mb-4">Shop by Category</h2>
+        <div class="divider mx-auto"></div>
+      </div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <a href="#women" class="group relative rounded-2xl overflow-hidden aspect-[3/4] reveal">
+          <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80" alt="Women's dresses" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+          <div class="absolute bottom-5 left-5 text-white">
+            <h3 class="font-serif text-xl lg:text-2xl">Women</h3>
+            <span class="text-xs tracking-wider uppercase opacity-80">120+ Styles</span>
+          </div>
+        </a>
+        <a href="#men" class="group relative rounded-2xl overflow-hidden aspect-[3/4] reveal">
+          <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&q=80" alt="Men's fashion" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+          <div class="absolute bottom-5 left-5 text-white">
+            <h3 class="font-serif text-xl lg:text-2xl">Men</h3>
+            <span class="text-xs tracking-wider uppercase opacity-80">80+ Styles</span>
+          </div>
+        </a>
+        <a href="#kids" class="group relative rounded-2xl overflow-hidden aspect-[3/4] reveal">
+          <img src="https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=600&q=80" alt="Kids fashion" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+          <div class="absolute bottom-5 left-5 text-white">
+            <h3 class="font-serif text-xl lg:text-2xl">Kids</h3>
+            <span class="text-xs tracking-wider uppercase opacity-80">45+ Styles</span>
+          </div>
+        </a>
+        <a href="#ethnic" class="group relative rounded-2xl overflow-hidden aspect-[3/4] reveal">
+          <img src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&q=80" alt="Ethnic wear" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+          <div class="absolute bottom-5 left-5 text-white">
+            <h3 class="font-serif text-xl lg:text-2xl">Ethnic</h3>
+            <span class="text-xs tracking-wider uppercase opacity-80">60+ Styles</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- New Arrivals -->
+  <section class="py-20 lg:py-28 bg-white" id="new">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 reveal">
+        <div>
+          <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">Just In</span>
+          <h2 class="section-title font-serif text-4xl lg:text-5xl mt-3">New Arrivals</h2>
+        </div>
+        <a href="#" class="text-sm tracking-wider uppercase font-medium flex items-center gap-2 hover:text-brass transition-colors mt-4 sm:mt-0">
+          View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <!-- Product 1 -->
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <span class="badge">New</span>
+            <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80" alt="Silk Wrap Dress" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Women</p>
+            <h3 class="font-serif text-lg mb-1">Silk Wrap Dress</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$189</span>
+              <span class="text-xs text-stone line-through">$240</span>
+              <span class="text-[10px] text-brass font-medium">-21%</span>
+            </div>
+          </div>
+        </div>
+        <!-- Product 2 -->
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <span class="badge">New</span>
+            <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&q=80" alt="Linen Blazer" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Men</p>
+            <h3 class="font-serif text-lg mb-1">Linen Blazer</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$249</span>
+            </div>
+          </div>
+        </div>
+        <!-- Product 3 -->
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <span class="badge">New</span>
+            <img src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&q=80" alt="Embroidered Kurta" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Ethnic</p>
+            <h3 class="font-serif text-lg mb-1">Embroidered Kurta</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$129</span>
+              <span class="text-xs text-stone line-through">$160</span>
+              <span class="text-[10px] text-brass font-medium">-19%</span>
+            </div>
+          </div>
+        </div>
+        <!-- Product 4 -->
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <span class="badge">New</span>
+            <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80" alt="Pleated Midi Skirt" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Women</p>
+            <h3 class="font-serif text-lg mb-1">Pleated Midi Skirt</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$145</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Best Sellers -->
+  <section class="py-20 lg:py-28" id="best">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 reveal">
+        <div>
+          <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">Most Loved</span>
+          <h2 class="section-title font-serif text-4xl lg:text-5xl mt-3">Best Sellers</h2>
+        </div>
+        <a href="#" class="text-sm tracking-wider uppercase font-medium flex items-center gap-2 hover:text-brass transition-colors mt-4 sm:mt-0">
+          View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <span class="badge sale">Best Seller</span>
+            <img src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=600&q=80" alt="Cashmere Turtleneck" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Women</p>
+            <h3 class="font-serif text-lg mb-1">Cashmere Turtleneck</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$210</span>
+              <span class="text-xs text-stone line-through">$280</span>
+              <span class="text-[10px] text-brass font-medium">-25%</span>
+            </div>
+          </div>
+        </div>
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <span class="badge sale">Best Seller</span>
+            <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80" alt="Wool Overcoat" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Men</p>
+            <h3 class="font-serif text-lg mb-1">Wool Overcoat</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$395</span>
+            </div>
+          </div>
+        </div>
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <span class="badge sale">Best Seller</span>
+            <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80" alt="Floral Maxi Dress" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Women</p>
+            <h3 class="font-serif text-lg mb-1">Floral Maxi Dress</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$165</span>
+              <span class="text-xs text-stone line-through">$220</span>
+              <span class="text-[10px] text-brass font-medium">-25%</span>
+            </div>
+          </div>
+        </div>
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <span class="badge sale">Best Seller</span>
+            <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&q=80" alt="Tailored Trousers" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Men</p>
+            <h3 class="font-serif text-lg mb-1">Tailored Trousers</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$175</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Collections -->
+  <section class="py-20 lg:py-28 bg-white" id="collections">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 reveal">
+        <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">Editorial</span>
+        <h2 class="section-title font-serif text-4xl lg:text-5xl mt-3 mb-4">Featured Collections</h2>
+        <div class="divider mx-auto"></div>
+      </div>
+      <div class="grid lg:grid-cols-2 gap-6">
+        <a href="#" class="group relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-auto lg:h-[600px] reveal">
+          <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80" alt="The Summer Edit collection" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-8 left-8 text-white">
+            <span class="text-xs tracking-[0.2em] uppercase opacity-80">Collection 01</span>
+            <h3 class="font-serif text-3xl lg:text-4xl mt-2 mb-3">The Summer Edit</h3>
+            <span class="text-sm tracking-wider uppercase flex items-center gap-2 group-hover:gap-4 transition-all">
+              Explore <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="group relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-auto lg:h-[600px] reveal">
+          <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&q=80" alt="Evening Noir collection" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-8 left-8 text-white">
+            <span class="text-xs tracking-[0.2em] uppercase opacity-80">Collection 02</span>
+            <h3 class="font-serif text-3xl lg:text-4xl mt-2 mb-3">Evening Noir</h3>
+            <span class="text-sm tracking-wider uppercase flex items-center gap-2 group-hover:gap-4 transition-all">
+              Explore <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Special Offers Banner -->
+  <section class="py-20 lg:py-28 bg-ink text-white relative overflow-hidden" id="sale">
+    <div class="absolute inset-0 opacity-20">
+      <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600&q=80" alt="" class="w-full h-full object-cover" loading="lazy" aria-hidden="true">
+    </div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium reveal">Limited Time</span>
+      <h2 class="section-title font-serif text-4xl lg:text-6xl mt-4 mb-6 reveal">Seasonal Sale — Up to 40% Off</h2>
+      <p class="text-white/70 max-w-lg mx-auto mb-10 reveal">Refresh your wardrobe with our most coveted pieces. Complimentary shipping on all orders over $200.</p>
+      <div class="flex flex-wrap justify-center gap-4 reveal">
+        <a href="#" class="btn-primary !bg-brass !border-brass hover:!bg-white hover:!text-ink hover:!border-white">Shop Sale</a>
+        <a href="#" class="btn-outline !text-white !border-white/40 hover:!bg-white hover:!text-ink">View Lookbook</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trending Products -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 reveal">
+        <div>
+          <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">What's Hot</span>
+          <h2 class="section-title font-serif text-4xl lg:text-5xl mt-3">Trending Now</h2>
+        </div>
+        <a href="#" class="text-sm tracking-wider uppercase font-medium flex items-center gap-2 hover:text-brass transition-colors mt-4 sm:mt-0">
+          View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80" alt="Satin Slip Dress" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Women</p>
+            <h3 class="font-serif text-lg mb-1">Satin Slip Dress</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$155</span>
+            </div>
+          </div>
+        </div>
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80" alt="Cotton Oxford Shirt" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Men</p>
+            <h3 class="font-serif text-lg mb-1">Cotton Oxford Shirt</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$89</span>
+            </div>
+          </div>
+        </div>
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&q=80" alt="Block Print Saree" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Ethnic</p>
+            <h3 class="font-serif text-lg mb-1">Block Print Saree</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$220</span>
+            </div>
+          </div>
+        </div>
+        <div class="product-card reveal">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80" alt="Knit Cardigan" loading="lazy">
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] tracking-[0.15em] uppercase text-stone mb-1">Women</p>
+            <h3 class="font-serif text-lg mb-1">Knit Cardigan</h3>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium">$135</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 reveal">
+        <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">Kind Words</span>
+        <h2 class="section-title font-serif text-4xl lg:text-5xl mt-3 mb-4">What Our Clients Say</h2>
+        <div class="divider mx-auto"></div>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="testimonial-card reveal">
+          <div class="flex gap-1 mb-4">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="text-stone text-sm leading-relaxed mb-6">"The quality of the silk dress is exceptional. It drapes beautifully and the fit is perfect. I've received so many compliments."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-beige flex items-center justify-center font-serif text-sm">SR</div>
+            <div>
+              <p class="text-sm font-medium">Sofia Ramirez</p>
+              <p class="text-xs text-stone">Verified Buyer</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="flex gap-1 mb-4">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="text-stone text-sm leading-relaxed mb-6">"Impeccable craftsmanship and fast shipping. The wool overcoat is now my favorite piece. Worth every penny."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-beige flex items-center justify-center font-serif text-sm">JM</div>
+            <div>
+              <p class="text-sm font-medium">James Mitchell</p>
+              <p class="text-xs text-stone">Verified Buyer</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="flex gap-1 mb-4">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="text-stone text-sm leading-relaxed mb-6">"The attention to detail is remarkable. From the packaging to the fabric, everything feels luxurious. My go-to store now."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-beige flex items-center justify-center font-serif text-sm">AP</div>
+            <div>
+              <p class="text-sm font-medium">Ananya Patel</p>
+              <p class="text-xs text-stone">Verified Buyer</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Instagram Gallery -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12 reveal">
+        <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">@maisonelan</span>
+        <h2 class="section-title font-serif text-4xl lg:text-5xl mt-3 mb-4">Follow Our Journey</h2>
+        <div class="divider mx-auto"></div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <a href="#" class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&q=80" alt="Fashion editorial 1" loading="lazy"></a>
+        <a href="#" class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80" alt="Fashion editorial 2" loading="lazy"></a>
+        <a href="#" class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&q=80" alt="Fashion editorial 3" loading="lazy"></a>
+        <a href="#" class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&q=80" alt="Fashion editorial 4" loading="lazy"></a>
+        <a href="#" class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&q=80" alt="Fashion editorial 5" loading="lazy"></a>
+        <a href="#" class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=400&q=80" alt="Fashion editorial 6" loading="lazy"></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="py-20 lg:py-28 bg-ink text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-2xl mx-auto text-center reveal">
+        <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">Stay Connected</span>
+        <h2 class="section-title font-serif text-4xl lg:text-5xl mt-3 mb-4">Join the Maison Élan Circle</h2>
+        <p class="text-white/60 mb-10">Be the first to discover new collections, private sales, and styling inspiration.</p>
+        <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto" id="newsletterForm">
+          <input type="email" placeholder="Your email address" class="newsletter-input flex-1" required aria-label="Email address">
+          <button type="submit" class="btn-primary !bg-brass !border-brass hover:!bg-white hover:!text-ink hover:!border-white whitespace-nowrap">Subscribe</button>
+        </form>
+        <p class="text-xs text-white/40 mt-4">By subscribing, you agree to our Privacy Policy.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-ink text-white/70 pt-20 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 mb-16">
+        <div class="col-span-2 lg:col-span-2">
+          <h3 class="font-serif text-2xl text-white mb-4">Maison Élan</h3>
+          <p class="text-sm leading-relaxed max-w-xs mb-6">Timeless fashion for the modern wardrobe. Ethically crafted, responsibly sourced, and designed to last.</p>
+          <div class="flex gap-3">
+            <a href="#" class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center hover:bg-brass hover:border-brass transition-colors" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center hover:bg-brass hover:border-brass transition-colors" aria-label="Facebook">
+              <i data-lucide="facebook" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center hover:bg-brass hover:border-brass transition-colors" aria-label="Pinterest">
+              <i data-lucide="twitter" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-white text-sm font-medium tracking-wider uppercase mb-4">Shop</h4>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#" class="hover:text-brass transition-colors">New Arrivals</a></li>
+            <li><a href="#" class="hover:text-brass transition-colors">Women</a></li>
+            <li><a href="#" class="hover:text-brass transition-colors">Men</a></li>
+            <li><a href="#" class="hover:text-brass transition-colors">Kids</a></li>
+            <li><a href="#" class="hover:text-brass transition-colors">Sale</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white text-sm font-medium tracking-wider uppercase mb-4">Support</h4>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#" class="hover:text-brass transition-colors">Contact Us</a></li>
+            <li><a href="#" class="hover:text-brass transition-colors">Shipping Policy</a></li>
+            <li><a href="#" class="hover:text-brass transition-colors">Returns</a></li>
+            <li><a href="#" class="hover:text-brass transition-colors">Size Guide</a></li>
+            <li><a href="#" class="hover:text-brass transition-colors">FAQs</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white text-sm font-medium tracking-wider uppercase mb-4">Company</h4>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#" class="hover:text-brass transition-colors">About Us</a></li>
+            <li><a href="#" class="hover:text-brass transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-brass transition-colors">Terms & Conditions</a></li>
+            <li><a href="#" class="hover:text-brass transition-colors">Order Tracking</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <p class="text-xs text-white/40">&copy; 2025 Maison Élan. All rights reserved.</p>
+        <div class="flex items-center gap-4 text-xs text-white/40">
+          <span>Secure payments by</span>
+          <i data-lucide="credit-card" class="w-5 h-5"></i>
+          <i data-lucide="shield-check" class="w-5 h-5"></i>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Admin Panel -->
+  <div class="admin-panel" id="adminPanel" role="dialog" aria-modal="true" aria-label="Admin dashboard">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="font-serif text-2xl">Admin Dashboard</h2>
+        <button class="p-2 hover:bg-beige rounded-lg transition-colors" id="adminClose" aria-label="Close admin panel">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+        <button class="admin-tab active px-4 py-2 rounded-lg text-xs font-medium tracking-wider uppercase whitespace-nowrap" data-tab="products">Products</button>
+        <button class="admin-tab px-4 py-2 rounded-lg text-xs font-medium tracking-wider uppercase whitespace-nowrap" data-tab="orders">Orders</button>
+        <button class="admin-tab px-4 py-2 rounded-lg text-xs font-medium tracking-wider uppercase whitespace-nowrap" data-tab="settings">Settings</button>
+        <button class="admin-tab px-4 py-2 rounded-lg text-xs font-medium tracking-wider uppercase whitespace-nowrap" data-tab="analytics">Analytics</button>
+      </div>
+
+      <!-- Products Tab -->
+      <div class="admin-tab-content" id="tab-products">
+        <button class="btn-primary w-full justify-center mb-4" id="addProductBtn">
+          <i data-lucide="plus" class="w-4 h-4"></i> Add Product
+        </button>
+        <div id="adminProductList" class="space-y-3">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Orders Tab -->
+      <div class="admin-tab-content hidden" id="tab-orders">
+        <div class="space-y-3" id="adminOrderList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Settings Tab -->
+      <div class="admin-tab-content hidden" id="tab-settings">
+        <form id="settingsForm" class="space-y-4">
+          <div>
+            <label class="form-label">Store Name</label>
+            <input type="text" class="form-input" value="Maison Élan" data-setting="storeName">
+          </div>
+          <div>
+            <label class="form-label">Contact Email</label>
+            <input type="email" class="form-input" value="hello@maisonelan.com" data-setting="contactEmail">
+          </div>
+          <div>
+            <label class="form-label">Phone</label>
+            <input type="text" class="form-input" value="+1 (555) 123-4567" data-setting="phone">
+          </div>
+          <div>
+            <label class="form-label">Announcement Bar Text</label>
+            <input type="text" class="form-input" value="Complimentary shipping on orders over $200" data-setting="announcement">
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center">Save Settings</button>
+        </form>
+      </div>
+
+      <!-- Analytics Tab -->
+      <div class="admin-tab-content hidden" id="tab-analytics">
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="bg-beige rounded-xl p-4">
+            <p class="text-xs text-stone uppercase tracking-wider mb-1">Total Sales</p>
+            <p class="font-serif text-2xl" id="analyticsSales">$0</p>
+          </div>
+          <div class="bg-beige rounded-xl p-4">
+            <p class="text-xs text-stone uppercase tracking-wider mb-1">Orders</p>
+            <p class="font-serif text-2xl" id="analyticsOrders">0</p>
+          </div>
+          <div class="bg-beige rounded-xl p-4">
+            <p class="text-xs text-stone uppercase tracking-wider mb-1">Pending</p>
+            <p class="font-serif text-2xl" id="analyticsPending">0</p>
+          </div>
+          <div class="bg-beige rounded-xl p-4">
+            <p class="text-xs text-stone uppercase tracking-wider mb-1">Products</p>
+            <p class="font-serif text-2xl" id="analyticsProducts">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Overlay -->
+  <div class="fixed inset-0 bg-black/30 backdrop-blur-sm z-[190] hidden" id="adminOverlay"></div>
+
+  <!-- Add/Edit Product Modal -->
+  <div class="fixed inset-0 z-[300] hidden items-center justify-center p-4" id="productModal">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeProductModal()"></div>
+    <div class="relative bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-serif text-2xl" id="modalTitle">Add Product</h3>
+        <button class="p-2 hover:bg-beige rounded-lg transition-colors" onclick="closeProductModal()" aria-label="Close">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form id="productForm" class="space-y-4">
+        <input type="hidden" id="productId">
+        <div>
+          <label class="form-label" for="productName">Product Name</label>
+          <input type="text" id="productName" class="form-input" required>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="form-label" for="productPrice">Price ($)</label>
+            <input type="number" id="productPrice" class="form-input" required min="0" step="0.01">
+          </div>
+          <div>
+            <label class="form-label" for="productCompare">Compare Price ($)</label>
+            <input type="number" id="productCompare" class="form-input" min="0" step="0.01">
+          </div>
+        </div>
+        <div>
+          <label class="form-label" for="productCategory">Category</label>
+          <select id="productCategory" class="form-input">
+            <option value="Women">Women</option>
+            <option value="Men">Men</option>
+            <option value="Kids">Kids</option>
+            <option value="Ethnic">Ethnic</option>
+            <option value="Western">Western</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label" for="productImage">Image URL</label>
+          <input type="url" id="productImage" class="form-input" placeholder="https://..." required>
+        </div>
+        <div>
+          <label class="form-label" for="productDesc">Description</label>
+          <textarea id="productDesc" class="form-input" rows="3"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="form-label" for="productStock">Stock</label>
+            <input type="number" id="productStock" class="form-input" value="10" min="0">
+          </div>
+          <div>
+            <label class="form-label" for="productSku">SKU</label>
+            <input type="text" id="productSku" class="form-input">
+          </div>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="submit" class="btn-primary flex-1 justify-center">Save Product</button>
+          <button type="button" class="btn-outline flex-1 justify-center" onclick="closeProductModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // === Initialize Lucide Icons ===
+    lucide.createIcons();
+
+    // === Page Loader ===
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 600);
+    });
+
+    // === Scroll Reveal ===
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // === Mobile Menu ===
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.add('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    });
+
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    mobileMenuClose.addEventListener('click', closeMobileMenu);
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+
+    // === Header Scroll Effect ===
+    const header = document.getElementById('mainHeader');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
+      } else {
+        header.style.boxShadow = 'none';
+      }
+    });
+
+    // === Cart State ===
+    let cart = JSON.parse(localStorage.getItem('maison_cart')) || [
+      { id: 1, name: 'Silk Wrap Dress', price: 189, qty: 1, image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80' },
+      { id: 2, name: 'Cashmere Turtleneck', price: 210, qty: 1, image: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=200&q=80' }
+    ];
+
+    function saveCart() {
+      localStorage.setItem('maison_cart', JSON.stringify(cart));
+      updateCartCount();
+    }
+
+    function updateCartCount() {
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cartCount').textContent = count;
+    }
+
+    updateCartCount();
+
+    // === Products Data ===
+    let products = JSON.parse(localStorage.getItem('maison_products')) || [
+      { id: 1, name: 'Silk Wrap Dress', price: 189, compare: 240, category: 'Women', image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80', desc: 'Luxurious silk wrap dress with a flattering silhouette.', stock: 15, sku: 'MED-001', badge: 'New' },
+      { id: 2, name: 'Linen Blazer', price: 249, compare: null, category: 'Men', image: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&q=80', desc: 'Tailored linen blazer for a refined summer look.', stock: 8, sku: 'MED-002', badge: 'New' },
+      { id: 3, name: 'Embroidered Kurta', price: 129, compare: 160, category: 'Ethnic', image: 'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600&q=80', desc: 'Hand-embroidered kurta in breathable cotton.', stock: 22, sku: 'MED-003', badge: 'New' },
+      { id: 4, name: 'Pleated Midi Skirt', price: 145, compare: null, category: 'Women', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80', desc: 'Elegant pleated midi skirt with a fluid drape.', stock: 12, sku: 'MED-004', badge: 'New' },
+      { id: 5, name: 'Cashmere Turtleneck', price: 210, compare: 280, category: 'Women', image: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=600&q=80', desc: 'Pure cashmere turtleneck, exceptionally soft.', stock: 6, sku: 'MED-005', badge: 'Best Seller' },
+      { id: 6, name: 'Wool Overcoat', price: 395, compare: null, category: 'Men', image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80', desc: 'Classic wool overcoat with a tailored fit.', stock: 4, sku: 'MED-006', badge: 'Best Seller' }
+    ];
+
+    function saveProducts() {
+      localStorage.setItem('maison_products', JSON.stringify(products));
+      renderAdminProducts();
+    }
+
+    // === Admin Panel ===
+    const adminPanel = document.getElementById('adminPanel');
+    const adminOverlay = document.getElementById('adminOverlay');
+    const adminToggle = document.getElementById('adminToggle');
+    const adminClose = document.getElementById('adminClose');
+
+    function openAdmin() {
+      adminPanel.classList.add('open');
+      adminOverlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      renderAdminProducts();
+      renderAdminOrders();
+      updateAnalytics();
+    }
+
+    function closeAdmin() {
+      adminPanel.classList.remove('open');
+      adminOverlay.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    adminToggle.addEventListener('click', openAdmin);
+    adminClose.addEventListener('click', closeAdmin);
+    adminOverlay.addEventListener('click', closeAdmin);
+
+    // === Admin Tabs ===
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => {
+          t.classList.remove('active', 'bg-ink', 'text-white');
+        });
+        tab.classList.add('active', 'bg-ink', 'text-white');
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById('tab-' + tab.dataset.tab).classList.remove('hidden');
+      });
+    });
+
+    // Set default active tab style
+    document.querySelector('.admin-tab.active').classList.add('bg-ink', 'text-white');
+
+    // === Render Admin Products ===
+    function renderAdminProducts() {
+      const list = document.getElementById('adminProductList');
+      list.innerHTML = '';
+      if (products.length === 0) {
+        list.innerHTML = '<p class="text-stone text-sm text-center py-8">No products yet. Add your first product.</p>';
+        return;
+      }
+      products.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'bg-beige rounded-xl p-4 flex gap-4';
+        div.innerHTML = `
+          <img src="${p.image}" alt="${p.name}" class="w-16 h-20 object-cover rounded-lg" loading="lazy">
+          <div class="flex-1 min-w-0">
+            <h4 class="font-medium text-sm truncate">${p.name}</h4>
+            <p class="text-xs text-stone mt-1">${p.category} · $${p.price}</p>
+            <p class="text-xs text-stone">Stock: ${p.stock} · SKU: ${p.sku || '—'}</p>
+            <div class="flex gap-2 mt-2">
+              <button class="text-xs text-brass hover:underline" onclick="editProduct(${p.id})">Edit</button>
+              <button class="text-xs text-red-400 hover:underline" onclick="deleteProduct(${p.id})">Delete</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // === Product Modal ===
+    const productModal = document.getElementById('productModal');
+    const productForm = document.getElementById('productForm');
+
+    document.getElementById('addProductBtn').addEventListener('click', () => {
+      document.getElementById('modalTitle').textContent = 'Add Product';
+      document.getElementById('productId').value = '';
+      productForm.reset();
+      document.getElementById('productStock').value = '10';
+      productModal.classList.remove('hidden');
+      productModal.classList.add('flex');
+    });
+
+    function closeProductModal() {
+      productModal.classList.add('hidden');
+      productModal.classList.remove('flex');
+    }
+
+    function editProduct(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      document.getElementById('modalTitle').textContent = 'Edit Product';
+      document.getElementById('productId').value = p.id;
+      document.getElementById('productName').value = p.name;
+      document.getElementById('productPrice').value = p.price;
+      document.getElementById('productCompare').value = p.compare || '';
+      document.getElementById('productCategory').value = p.category;
+      document.getElementById('productImage').value = p.image;
+      document.getElementById('productDesc').value = p.desc || '';
+      document.getElementById('productStock').value = p.stock || 10;
+      document.getElementById('productSku').value = p.sku || '';
+      productModal.classList.remove('hidden');
+      productModal.classList.add('flex');
+    }
+
+    function deleteProduct(id) {
+      if (!confirm('Delete this product?')) return;
+      products = products.filter(x => x.id !== id);
+      saveProducts();
+    }
+
+    productForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('productId').value;
+      const data = {
+        name: document.getElementById('productName').value,
+        price: parseFloat(document.getElementById('productPrice').value),
+        compare: document.getElementById('productCompare').value ? parseFloat(document.getElementById('productCompare').value) : null,
+        category: document.getElementById('productCategory').value,
+        image: document.getElementById('productImage').value,
+        desc: document.getElementById('productDesc').value,
+        stock: parseInt(document.getElementById('productStock').value) || 0,
+        sku: document.getElementById('productSku').value,
+        badge: 'New'
+      };
+
+      if (id) {
+        const idx = products.findIndex(x => x.id === parseInt(id));
+        if (idx > -1) products[idx] = { ...products[idx], ...data };
+      } else {
+        data.id = Date.now();
+        products.push(data);
+      }
+      saveProducts();
+      closeProductModal();
+    });
+
+    // === Orders ===
+    let orders = JSON.parse(localStorage.getItem('maison_orders')) || [];
+
+    function renderAdminOrders() {
+      const list = document.getElementById('adminOrderList');
+      list.innerHTML = '';
+      if (orders.length === 0) {
+        list.innerHTML = '<p class="text-stone text-sm text-center py-8">No orders yet.</p>';
+        return;
+      }
+      orders.forEach(o => {
+        const div = document.createElement('div');
+        div.className = 'bg-beige rounded-xl p-4';
+        div.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <p class="font-medium text-sm">Order #${o.id}</p>
+              <p class="text-xs text-stone">${o.customer} · ${o.date}</p>
+            </div>
+            <span class="text-xs px-2 py-1 rounded-full ${o.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">${o.status}</span>
+          </div>
+          <p class="text-xs text-stone">Total: $${o.total}</p>
+          <div class="flex gap-2 mt-2">
+            <select class="text-xs border rounded-lg px-2 py-1" onchange="updateOrderStatus(${o.id}, this.value)">
+              <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
+              <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
+              <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+              <option value="Completed" ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
+              <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+            </select>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function updateOrderStatus(id, status) {
+      const o = orders.find(x => x.id === id);
+      if (o) { o.status = status; localStorage.setItem('maison_orders', JSON.stringify(orders)); renderAdminOrders(); updateAnalytics(); }
+    }
+
+    // === Analytics ===
+    function updateAnalytics() {
+      const totalSales = orders.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
+      const pending = orders.filter(o => o.status === 'Pending').length;
+      document.getElementById('analyticsSales').textContent = '$' + totalSales.toFixed(2);
+      document.getElementById('analyticsOrders').textContent = orders.length;
+      document.getElementById('analyticsPending').textContent = pending;
+      document.getElementById('analyticsProducts').textContent = products.length;
+    }
+
+    // === Settings ===
+    document.getElementById('settingsForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const settings = {};
+      document.querySelectorAll('[data-setting]').forEach(input => {
+        settings[input.dataset.setting] = input.value;
+      });
+      localStorage.setItem('maison_settings', JSON.stringify(settings));
+      alert('Settings saved successfully.');
+    });
+
+    // Load settings
+    const savedSettings = JSON.parse(localStorage.getItem('maison_settings'));
+    if (savedSettings) {
+      Object.keys(savedSettings).forEach(key => {
+        const input = document.querySelector(`[data-setting="${key}"]`);
+        if (input) input.value = savedSettings[key];
+      });
+    }
+
+    // === Newsletter Form ===
+    document.getElementById('newsletterForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = e.target.querySelector('input');
+      if (input.value) {
+        input.value = '';
+        alert('Thank you for subscribing to Maison Élan.');
+      }
+    });
+
+    // === Add to Cart (delegated) ===
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.add-to-cart');
+      if (btn) {
+        const id = parseInt(btn.dataset.id);
+        const product = products.find(p => p.id === id);
+        if (!product) return;
+        const existing = cart.find(c => c.id === id);
+        if (existing) {
+          existing.qty++;
+        } else {
+          cart.push({ id: product.id, name: product.name, price: product.price, qty: 1, image: product.image });
+        }
+        saveCart();
+        btn.textContent = 'Added';
+        setTimeout(() => { btn.innerHTML = '<i data-lucide="plus" class="w-3 h-3"></i> Add'; lucide.createIcons(); }, 1200);
+      }
+    });
+
+    // === Cart Click ===
+    document.getElementById('cartBtn').addEventListener('click', () => {
+      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      alert(`Cart Summary:\n${cart.map(i => `${i.name} x${i.qty} — $${(i.price * i.qty).toFixed(2)}`).join('\n')}\n\nTotal: $${total.toFixed(2)}`);
+    });
+
+    // === Smooth Scroll for Anchor Links ===
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
