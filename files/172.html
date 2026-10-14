@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nisha & Albin — Wedding Invitation</title>
+  <!-- Tailwind CDN + custom config -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDF8F4',
+            blush: '#FBE9E7',
+            coral: '#F08A7E',
+            gold: '#D4AF37',
+            rose: '#E8B4B8',
+            ink: '#3E2C2C',
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'serif'],
+            sans: ['"Inter"', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --cream: #FDF8F4;
+      --blush: #FBE9E7;
+      --coral: #F08A7E;
+      --gold: #D4AF37;
+      --rose: #E8B4B8;
+      --ink: #3E2C2C;
+      --soft-shadow: 0 20px 40px -12px rgba(62, 44, 44, 0.15);
+      --glass: rgba(253, 248, 244, 0.7);
+      --radius-card: 2rem;
+      --radius-btn: 999px;
+    }
+
+    /* === Base === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* === Scrollbar === */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--coral); border-radius: 10px; }
+
+    /* === Typography === */
+    h1, h2, h3, .serif {
+      font-family: 'Playfair Display', serif;
+      letter-spacing: -0.02em;
+    }
+    .display {
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      line-height: 1.05;
+      font-weight: 700;
+    }
+    .display-sm {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.1;
+      font-weight: 600;
+    }
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--coral);
+      font-weight: 500;
+    }
+
+    /* === Glass & Cards === */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: var(--radius-card);
+      box-shadow: var(--soft-shadow);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 30px 60px -16px rgba(240, 138, 126, 0.35);
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2rem;
+      background: linear-gradient(135deg, var(--coral), var(--rose));
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-btn);
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px -6px rgba(240, 138, 126, 0.5);
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 14px 32px -6px rgba(240, 138, 126, 0.65);
+    }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2rem;
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--coral);
+      border-radius: var(--radius-btn);
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    .btn-outline:hover {
+      background: var(--coral);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* === Floating petals === */
+    .petal {
+      position: fixed;
+      top: -5%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.6; }
+      100% { transform: translateY(105vh) rotate(720deg) scale(0.3); opacity: 0; }
+    }
+
+    /* === Hero gradient === */
+    .hero-gradient {
+      background:
+        radial-gradient(circle at 20% 30%, rgba(251, 233, 231, 0.9) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(232, 180, 184, 0.5) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 70%),
+        var(--cream);
+    }
+
+    /* === Countdown === */
+    .countdown-box {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px -8px rgba(62, 44, 44, 0.1);
+      transition: transform 0.3s ease;
+    }
+    .countdown-box:hover {
+      transform: translateY(-4px) scale(1.02);
+    }
+    .countdown-number {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      color: var(--coral);
+      line-height: 1;
+    }
+
+    /* === Timeline === */
+    .timeline-item {
+      position: relative;
+      padding-left: 2.5rem;
+      padding-bottom: 2.5rem;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.4rem;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--coral), var(--gold));
+      border: 3px solid var(--cream);
+      box-shadow: 0 0 0 2px var(--coral);
+      z-index: 1;
+    }
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 1.2rem;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--rose), transparent);
+    }
+    .timeline-item:last-child::after { display: none; }
+
+    /* === Photo placeholders === */
+    .photo-frame {
+      border-radius: 1.5rem;
+      overflow: hidden;
+      background: linear-gradient(145deg, var(--blush), #fff);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 16px 40px -12px rgba(240, 138, 126, 0.25);
+      aspect-ratio: 3/4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s ease;
+    }
+    .photo-frame:hover { transform: scale(1.03) rotate(-1deg); }
+
+    /* === RSVP Form === */
+    .form-input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border-radius: 1rem;
+      border: 1.5px solid rgba(240, 138, 126, 0.25);
+      background: rgba(255, 255, 255, 0.8);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: border-color 0.3s, box-shadow 0.3s;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--coral);
+      box-shadow: 0 0 0 4px rgba(240, 138, 126, 0.15);
+    }
+    .form-input::placeholder { color: #B8A9A9; }
+
+    /* === Section reveal === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === Map embed === */
+    .map-container {
+      border-radius: 2rem;
+      overflow: hidden;
+      box-shadow: var(--soft-shadow);
+      border: 3px solid rgba(255, 255, 255, 0.8);
+    }
+
+    /* === Nav === */
+    .nav-blur {
+      background: rgba(253, 248, 244, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(240, 138, 126, 0.1);
+    }
+
+    /* === Success message === */
+    .success-msg {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 1.5rem;
+      background: #E8F5E9;
+      border-radius: 1rem;
+      color: #2E7D32;
+      font-weight: 500;
+      margin-top: 1rem;
+    }
+    .success-msg.show { display: flex; }
+
+    /* === WhatsApp float === */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      background: #25D366;
+      color: #fff;
+      border-radius: 50%;
+      box-shadow: 0 8px 24px -4px rgba(37, 211, 102, 0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-decoration: none;
+    }
+    .whatsapp-float:hover {
+      transform: scale(1.1) translateY(-3px);
+      box-shadow: 0 14px 32px -4px rgba(37, 211, 102, 0.6);
+    }
+
+    /* === Responsive === */
+    @media (max-width: 640px) {
+      .timeline-item { padding-left: 2rem; }
+      .whatsapp-float { bottom: 1.2rem; right: 1.2rem; width: 48px; height: 48px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- === Floating Petals (JS injected) === -->
+  <div id="petals" aria-hidden="true"></div>
+
+  <!-- === NAVIGATION === -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-40 nav-blur transition-all duration-500">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#hero" class="serif text-xl font-semibold tracking-wide text-ink">
+        N <span class="text-coral">&</span> A
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm font-medium text-ink/70">
+        <a href="#countdown" class="hover:text-coral transition-colors duration-300">Countdown</a>
+        <a href="#schedule" class="hover:text-coral transition-colors duration-300">Schedule</a>
+        <a href="#story" class="hover:text-coral transition-colors duration-300">Our Story</a>
+        <a href="#rsvp" class="hover:text-coral transition-colors duration-300">RSVP</a>
+      </div>
+      <a href="#rsvp" class="btn-primary text-sm !py-2.5 !px-5">
+        <i data-lucide="heart" class="w-4 h-4"></i> RSVP
+      </a>
+    </div>
+  </nav>
+
+  <!-- === HERO === -->
+  <section id="hero" class="hero-gradient min-h-screen flex items-center justify-center relative pt-24 pb-16">
+    <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+      <p class="section-label mb-6 reveal">Together with our families</p>
+      <h1 class="display text-ink mb-2 reveal">
+        Nisha
+        <span class="text-coral italic font-normal">&</span>
+        Albin
+      </h1>
+      <p class="serif text-xl md:text-2xl text-ink/60 italic mt-4 mb-8 reveal">
+        "Two hearts, one journey, forever begins here."
+      </p>
+
+      <div class="flex items-center justify-center gap-3 mb-10 reveal">
+        <span class="h-px w-12 bg-coral/40"></span>
+        <i data-lucide="calendar-heart" class="w-5 h-5 text-coral"></i>
+        <span class="h-px w-12 bg-coral/40"></span>
+      </div>
+
+      <p class="text-lg md:text-xl font-medium text-ink/80 tracking-wide mb-2 reveal">
+        12 · 10 · 2026
+      </p>
+      <p class="text-sm text-ink/50 tracking-[0.2em] uppercase reveal">December 2026</p>
+
+      <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 reveal">
+        <a href="#rsvp" class="btn-primary">
+          <i data-lucide="mail" class="w-4 h-4"></i> Confirm Your Presence
+        </a>
+        <a href="#schedule" class="btn-outline">
+          <i data-lucide="clock" class="w-4 h-4"></i> View Schedule
+        </a>
+      </div>
+    </div>
+
+    <!-- Decorative gradient blobs -->
+    <div class="absolute top-20 left-10 w-72 h-72 bg-rose/20 rounded-full blur-3xl" aria-hidden="true"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-gold/10 rounded-full blur-3xl" aria-hidden="true"></div>
+  </section>
+
+  <!-- === COUNTDOWN === -->
+  <section id="countdown" class="py-20 md:py-28 bg-white/50">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <p class="section-label mb-3 reveal">Counting down to forever</p>
+      <h2 class="display-sm text-ink mb-12 reveal">The Big Day Approaches</h2>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 reveal" id="countdown-grid">
+        <div class="countdown-box p-6 md:p-8">
+          <div class="countdown-number" id="days">00</div>
+          <div class="text-xs tracking-[0.2em] uppercase text-ink/50 mt-2">Days</div>
+        </div>
+        <div class="countdown-box p-6 md:p-8">
+          <div class="countdown-number" id="hours">00</div>
+          <div class="text-xs tracking-[0.2em] uppercase text-ink/50 mt-2">Hours</div>
+        </div>
+        <div class="countdown-box p-6 md:p-8">
+          <div class="countdown-number" id="minutes">00</div>
+          <div class="text-xs tracking-[0.2em] uppercase text-ink/50 mt-2">Minutes</div>
+        </div>
+        <div class="countdown-box p-6 md:p-8">
+          <div class="countdown-number" id="seconds">00</div>
+          <div class="text-xs tracking-[0.2em] uppercase text-ink/50 mt-2">Seconds</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === SCHEDULE / TIMELINE === -->
+  <section id="schedule" class="py-20 md:py-28">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <p class="section-label mb-3 reveal">Wedding day timeline</p>
+        <h2 class="display-sm text-ink reveal">Celebration Schedule</h2>
+      </div>
+
+      <div class="glass-card p-8 md:p-12 reveal">
+        <div class="timeline-item">
+          <p class="text-sm font-medium text-coral tracking-wide mb-1">10:00 AM — 11:30 AM</p>
+          <h3 class="serif text-xl md:text-2xl font-semibold text-ink mb-1">Muhurtham Ceremony</h3>
+          <p class="text-ink/60 text-sm leading-relaxed">The sacred union. Join us as we exchange vows and begin our forever under the blessings of our families and the divine.</p>
+        </div>
+
+        <div class="timeline-item">
+          <p class="text-sm font-medium text-coral tracking-wide mb-1">12:00 PM — 2:00 PM</p>
+          <h3 class="serif text-xl md:text-2xl font-semibold text-ink mb-1">Grand Reception Lunch</h3>
+          <p class="text-ink/60 text-sm leading-relaxed">A joyful feast celebrating love and togetherness. Enjoy a curated menu of traditional and contemporary dishes.</p>
+        </div>
+
+        <div class="timeline-item">
+          <p class="text-sm font-medium text-coral tracking-wide mb-1">6:00 PM — 9:00 PM</p>
+          <h3 class="serif text-xl md:text-2xl font-semibold text-ink mb-1">Evening Reception & Party</h3>
+          <p class="text-ink/60 text-sm leading-relaxed">Dance, music, laughter, and celebration. Let's make unforgettable memories together as we toast to the newlyweds.</p>
+        </div>
+
+        <div class="timeline-item">
+          <p class="text-sm font-medium text-coral tracking-wide mb-1">9:00 PM onwards</p>
+          <h3 class="serif text-xl md:text-2xl font-semibold text-ink mb-1">After-Party & Send-off</h3>
+          <p class="text-ink/60 text-sm leading-relaxed">The night continues with more laughter and love. Join us as we bid the couple a beautiful farewell.</p>
+        </div>
+      </div>
+
+      <!-- Venue / Map -->
+      <div class="mt-12 reveal">
+        <div class="text-center mb-8">
+          <p class="section-label mb-2">Find your way</p>
+          <h3 class="serif text-2xl font-semibold text-ink">Venue Location</h3>
+        </div>
+        <div class="map-container">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d248849.84916296526!2d77.4908506!3d12.9538477!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4fe0!2sBengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            width="100%"
+            height="320"
+            style="border:0; display:block;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Wedding venue location"
+          ></iframe>
+        </div>
+        <div class="text-center mt-4">
+          <a href="https://maps.app.goo.gl/5Uzaj9bDjJdUzGCk9?g_st=ic" target="_blank" rel="noopener" class="btn-outline text-sm !py-2 !px-5">
+            <i data-lucide="map-pin" class="w-4 h-4"></i> Open in Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === COUPLE STORY === -->
+  <section id="story" class="py-20 md:py-28 bg-gradient-to-b from-blush/40 to-cream">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <p class="section-label mb-3 reveal">Our journey</p>
+        <h2 class="display-sm text-ink reveal">The Couple's Story</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <!-- Bride -->
+        <div class="reveal">
+          <div class="glass-card p-6 md:p-8 text-center">
+            <div class="photo-frame mb-6 mx-auto max-w-[260px]">
+              <div class="text-center p-6">
+                <i data-lucide="camera" class="w-10 h-10 text-coral/40 mx-auto mb-3"></i>
+                <p class="text-sm text-ink/40">Photo of Nisha</p>
+              </div>
+            </div>
+            <h3 class="serif text-2xl font-semibold text-ink mb-1">Nisha</h3>
+            <p class="text-sm text-coral tracking-wide mb-3">The Bride</p>
+            <p class="text-ink/60 text-sm leading-relaxed">A soul full of warmth, creativity, and quiet strength. Nisha finds joy in the little things — morning chai, old melodies, and the people she loves.</p>
+          </div>
+        </div>
+
+        <!-- Groom -->
+        <div class="reveal">
+          <div class="glass-card p-6 md:p-8 text-center">
+            <div class="photo-frame mb-6 mx-auto max-w-[260px]">
+              <div class="text-center p-6">
+                <i data-lucide="camera" class="w-10 h-10 text-coral/40 mx-auto mb-3"></i>
+                <p class="text-sm text-ink/40">Photo of Albin</p>
+              </div>
+            </div>
+            <h3 class="serif text-2xl font-semibold text-ink mb-1">Albin</h3>
+            <p class="text-sm text-coral tracking-wide mb-3">The Groom</p>
+            <p class="text-ink/60 text-sm leading-relaxed">Grounded, adventurous, and endlessly kind. Albin believes in big dreams, long drives, and building a life filled with laughter and purpose.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-12 text-center reveal">
+        <div class="glass-card inline-block px-8 py-6 max-w-2xl">
+          <i data-lucide="quote" class="w-6 h-6 text-coral/50 mx-auto mb-3"></i>
+          <p class="serif text-lg md:text-xl italic text-ink/70 leading-relaxed">
+            "We met as strangers, grew as friends, and fell in love as soulmates. Now, we invite you to witness the beginning of our forever."
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === RSVP & CONTACT === -->
+  <section id="rsvp" class="py-20 md:py-28">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <p class="section-label mb-3 reveal">Be a part of our day</p>
+        <h2 class="display-sm text-ink reveal">RSVP & Contact</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-10">
+        <!-- Contact info -->
+        <div class="reveal">
+          <div class="glass-card p-8 h-full">
+            <h3 class="serif text-xl font-semibold text-ink mb-6">Key Contacts</h3>
+
+            <div class="space-y-5">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-blush flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="phone" class="w-4 h-4 text-coral"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-ink text-sm">Rajan (Family Coordinator)</p>
+                  <a href="tel:+919876543210" class="text-ink/60 text-sm hover:text-coral transition-colors">+91 98765 43210</a>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-blush flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="phone" class="w-4 h-4 text-coral"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-ink text-sm">Meera (Bride's Sister)</p>
+                  <a href="tel:+919876543211" class="text-ink/60 text-sm hover:text-coral transition-colors">+91 98765 43211</a>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-blush flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="mail" class="w-4 h-4 text-coral"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-ink text-sm">Email Us</p>
+                  <a href="mailto:nisha.albin.wedding@example.com" class="text-ink/60 text-sm hover:text-coral transition-colors">nisha.albin.wedding@example.com</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-coral/10">
+              <a href="https://wa.me/919876543210?text=Hi!%20We%20are%20excited%20for%20Nisha%20%26%20Albin's%20wedding!" target="_blank" rel="noopener" class="btn-primary w-full justify-center">
+                <i data-lucide="message-circle" class="w-4 h-4"></i> Chat on WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- RSVP Form -->
+        <div class="reveal">
+          <div class="glass-card p-8">
+            <h3 class="serif text-xl font-semibold text-ink mb-6">Will you join us?</h3>
+            <form id="rsvp-form" class="space-y-4" novalidate>
+              <div>
+                <label for="name" class="sr-only">Full Name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Your Full Name" required />
+              </div>
+              <div>
+                <label for="email" class="sr-only">Email Address</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="Email Address" required />
+              </div>
+              <div>
+                <label for="guests" class="sr-only">Number of Guests</label>
+                <select id="guests" name="guests" class="form-input" required>
+                  <option value="" disabled selected>Number of Guests</option>
+                  <option value="1">1 Guest</option>
+                  <option value="2">2 Guests</option>
+                  <option value="3">3 Guests</option>
+                  <option value="4">4 Guests</option>
+                  <option value="5+">5+ Guests</option>
+                </select>
+              </div>
+              <div>
+                <label for="message" class="sr-only">Message</label>
+                <textarea id="message" name="message" rows="3" class="form-input" placeholder="A note for the couple (optional)"></textarea>
+              </div>
+              <button type="submit" class="btn-primary w-full justify-center">
+                <i data-lucide="send" class="w-4 h-4"></i> Send RSVP
+              </button>
+              <div class="success-msg" id="success-msg">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                Thank you! Your RSVP has been received.
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === FOOTER === -->
+  <footer class="py-12 border-t border-coral/10">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+      <p class="serif text-3xl text-ink mb-2">
+        Nisha <span class="text-coral italic font-normal">&</span> Albin
+      </p>
+      <p class="text-sm text-ink/50 mb-6">12 October 2026 · Bengaluru, India</p>
+      <div class="flex items-center justify-center gap-5 mb-6">
+        <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-full bg-blush flex items-center justify-center text-coral hover:bg-coral hover:text-white transition-all duration-300">
+          <i data-lucide="instagram" class="w-4 h-4"></i>
+        </a>
+        <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-full bg-blush flex items-center justify-center text-coral hover:bg-coral hover:text-white transition-all duration-300">
+          <i data-lucide="facebook" class="w-4 h-4"></i>
+        </a>
+        <a href="#" aria-label="Share" class="w-9 h-9 rounded-full bg-blush flex items-center justify-center text-coral hover:bg-coral hover:text-white transition-all duration-300">
+          <i data-lucide="share-2" class="w-4 h-4"></i>
+        </a>
+      </div>
+      <p class="text-xs text-ink/40">Made with love · #NishaWedsAlbin</p>
+    </div>
+  </footer>
+
+  <!-- === WhatsApp Float === -->
+  <a href="https://wa.me/919876543210?text=Hi!%20We%20are%20excited%20for%20Nisha%20%26%20Albin's%20wedding!" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Chat on WhatsApp">
+    <i data-lucide="message-circle" class="w-6 h-6"></i>
+  </a>
+
+  <script>
+    // === Initialize Lucide icons ===
+    lucide.createIcons();
+
+    // === Floating Petals ===
+    (function createPetals() {
+      const container = document.getElementById('petals');
+      const petalCount = 14;
+      const colors = ['#F08A7E', '#E8B4B8', '#D4AF37', '#FBE9E7'];
+      const shapes = ['50% 0 50% 50%', '0 50% 50% 50%', '50% 50% 0 50%', '50% 50% 50% 0'];
+
+      for (let i = 0; i < petalCount; i++) {
+        const petal = document.createElement('div');
+        petal.classList.add('petal');
+        const size = Math.random() * 16 + 8;
+        petal.style.width = size + 'px';
+        petal.style.height = size + 'px';
+        petal.style.left = Math.random() * 100 + '%';
+        petal.style.background = colors[Math.floor(Math.random() * colors.length)];
+        petal.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
+        petal.style.animationDuration = (Math.random() * 8 + 8) + 's';
+        petal.style.animationDelay = (Math.random() * 10) + 's';
+        petal.style.opacity = Math.random() * 0.4 + 0.15;
+        container.appendChild(petal);
+      }
+    })();
+
+    // === Countdown Timer ===
+    (function countdown() {
+      const targetDate = new Date('2026-10-12T10:00:00+05:30').getTime();
+
+      function update() {
+        const now = Date.now();
+        const diff = targetDate - now;
+
+        if (diff <= 0) {
+          document.getElementById('days').textContent = '00';
+          document.getElementById('hours').textContent = '00';
+          document.getElementById('minutes').textContent = '00';
+          document.getElementById('seconds').textContent = '00';
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('days').textContent = String(days).padStart(2, '0');
+        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+      }
+
+      update();
+      setInterval(update, 1000);
+    })();
+
+    // === GSAP Scroll Reveals ===
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+          delay: (i % 4) * 0.08,
+        }
+      );
+    });
+
+    // === Navbar shrink on scroll ===
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        navbar.style.boxShadow = '0 4px 30px -8px rgba(62,44,44,0.08)';
+      } else {
+        navbar.style.boxShadow = 'none';
+      }
+    }, { passive: true });
+
+    // === RSVP Form ===
+    const rsvpForm = document.getElementById('rsvp-form');
+    const successMsg = document.getElementById('success-msg');
+
+    rsvpForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const guests = document.getElementById('guests').value;
+
+      if (!name || !email || !guests) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      const formData = {
+        name: name,
+        email: email,
+        guests: guests,
+        message: document.getElementById('message').value.trim(),
+        submittedAt: new Date().toISOString(),
+      };
+
+      // TODO: connect form action to backend endpoint
+      fetch('submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({
+          url: window.location.host,
+          table: 'rsvp',
+          data: formData,
+        }),
+      })
+        .then(() => {
+          successMsg.classList.add('show');
+          rsvpForm.reset();
+          setTimeout(() => successMsg.classList.remove('show'), 5000);
+        })
+        .catch(() => {
+          successMsg.classList.add('show');
+          rsvpForm.reset();
+          setTimeout(() => successMsg.classList.remove('show'), 5000);
+        });
+    });
+
+    // === Smooth anchor scroll offset for fixed nav ===
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
