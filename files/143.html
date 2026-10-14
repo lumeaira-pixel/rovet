@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MovieBook — Curated Cinema Experiences</title>
+
+  <!-- Google Fonts: Instrument Serif + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#111214',
+            cream: '#FBF9F6',
+            brass: '#B8873B',
+            stone: '#7A7A7A',
+            mist: '#F3F1ED',
+          },
+          fontFamily: {
+            serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* ===== Design Tokens ===== */
+    :root {
+      --ink: #111214;
+      --cream: #FBF9F6;
+      --brass: #B8873B;
+      --brass-light: #D9B87A;
+      --stone: #7A7A7A;
+      --mist: #F3F1ED;
+      --hairline: rgba(17, 18, 20, 0.08);
+      --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.04);
+      --shadow-lift: 0 12px 40px rgba(0, 0, 0, 0.07);
+      --radius: 20px;
+      --focus-ring: 0 0 0 3px rgba(184, 135, 59, 0.4);
+    }
+
+    /* ===== Base ===== */
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection {
+      background: var(--brass);
+      color: #fff;
+    }
+    :focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 6px;
+    }
+
+    /* ===== Custom Scrollbar ===== */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--mist);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(17, 18, 20, 0.2);
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(17, 18, 20, 0.35);
+    }
+
+    /* ===== Typography Helpers ===== */
+    .font-display {
+      font-family: 'Instrument Serif', Georgia, serif;
+      letter-spacing: -0.02em;
+      font-weight: 400;
+    }
+    .text-balance {
+      text-wrap: balance;
+    }
+
+    /* ===== Grain Overlay ===== */
+    .grain::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ===== Animations ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .float-slow {
+      animation: floatY 6s ease-in-out infinite;
+    }
+
+    /* ===== Card 3D Tilt ===== */
+    .tilt-card {
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      transform-style: preserve-3d;
+    }
+    .tilt-card:hover {
+      transform: translateY(-6px) rotateX(2deg) rotateY(-2deg);
+      box-shadow: var(--shadow-lift);
+    }
+
+    /* ===== Magnetic Button ===== */
+    .btn-primary {
+      background: var(--ink);
+      color: #fff;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary:hover {
+      background: #1e1f22;
+      box-shadow: 0 8px 28px rgba(17, 18, 20, 0.22);
+      transform: translateY(-2px);
+    }
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.15), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .btn-primary:hover::after {
+      opacity: 1;
+    }
+
+    .btn-outline {
+      border: 1.5px solid var(--hairline);
+      color: var(--ink);
+      background: transparent;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn-outline:hover {
+      border-color: var(--ink);
+      background: var(--mist);
+      transform: translateY(-2px);
+    }
+    .btn-outline:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* ===== Nav Blur ===== */
+    .nav-scrolled {
+      background: rgba(251, 249, 246, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    /* ===== Hero Gradient Mesh ===== */
+    .hero-mesh {
+      background:
+        radial-gradient(ellipse 70% 50% at 20% 10%, rgba(184, 135, 59, 0.08), transparent),
+        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(184, 135, 59, 0.05), transparent),
+        radial-gradient(ellipse 50% 60% at 50% 90%, rgba(17, 18, 20, 0.03), transparent);
+    }
+
+    /* ===== Marquee ===== */
+    .marquee-track {
+      display: flex;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ===== Form Inputs ===== */
+    .form-input {
+      background: #fff;
+      border: 1.5px solid var(--hairline);
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+    .form-input:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184, 135, 59, 0.12);
+    }
+    .form-input.error {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+    .form-input.success {
+      border-color: #16a34a;
+    }
+
+    /* ===== Accordion ===== */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .accordion-content.open {
+      max-height: 300px;
+    }
+    .accordion-icon {
+      transition: transform 0.35s ease;
+    }
+    .accordion-icon.rotate {
+      transform: rotate(45deg);
+    }
+
+    /* ===== Reduced Motion ===== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="grain bg-cream text-ink antialiased">
+
+  <!-- ============================================ -->
+  <!-- HEADER / NAV -->
+  <!-- ============================================ -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 h-20 transition-all duration-500" id="navInner">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5 group" aria-label="MovieBook home">
+        <span class="w-9 h-9 rounded-xl bg-ink flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
+          <i data-lucide="film" class="w-5 h-5 text-cream" aria-hidden="true"></i>
+        </span>
+        <span class="font-display text-xl tracking-tight">MovieBook</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <div class="hidden md:flex items-center gap-9">
+        <a href="#experience" class="text-sm font-medium text-stone hover:text-ink transition-colors duration-200">Experience</a>
+        <a href="#collection" class="text-sm font-medium text-stone hover:text-ink transition-colors duration-200">Collection</a>
+        <a href="#pricing" class="text-sm font-medium text-stone hover:text-ink transition-colors duration-200">Pricing</a>
+        <a href="#voices" class="text-sm font-medium text-stone hover:text-ink transition-colors duration-200">Voices</a>
+      </div>
+
+      <!-- CTA + Mobile toggle -->
+      <div class="flex items-center gap-3">
+        <a href="#enquire" class="hidden sm:inline-flex items-center gap-2 btn-primary text-sm font-medium px-5 py-2.5 rounded-full">
+          Book a Screening
+          <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+        </a>
+        <button id="mobileToggle" class="md:hidden w-10 h-10 flex items-center justify-center rounded-full border border-[var(--hairline)] hover:bg-mist transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="md:hidden hidden bg-cream/95 backdrop-blur-xl border-b border-[var(--hairline)] px-6 pb-6 pt-2" role="dialog" aria-label="Mobile navigation">
+      <div class="flex flex-col gap-1">
+        <a href="#experience" class="mobile-link py-3 text-base font-medium text-ink border-b border-[var(--hairline)]">Experience</a>
+        <a href="#collection" class="mobile-link py-3 text-base font-medium text-ink border-b border-[var(--hairline)]">Collection</a>
+        <a href="#pricing" class="mobile-link py-3 text-base font-medium text-ink border-b border-[var(--hairline)]">Pricing</a>
+        <a href="#voices" class="mobile-link py-3 text-base font-medium text-ink border-b border-[var(--hairline)]">Voices</a>
+        <a href="#enquire" class="mobile-link mt-3 inline-flex items-center justify-center gap-2 btn-primary text-sm font-medium px-5 py-3 rounded-full">
+          Book a Screening
+          <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ============================================ -->
+  <!-- HERO -->
+  <!-- ============================================ -->
+  <section class="relative min-h-screen flex items-center hero-mesh pt-28 pb-20 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 w-full">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+
+        <!-- Left content -->
+        <div class="lg:col-span-7 flex flex-col gap-7">
+          <div class="reveal inline-flex items-center gap-2.5 self-start px-4 py-2 rounded-full bg-white border border-[var(--hairline)] shadow-[var(--shadow-soft)]">
+            <span class="w-2 h-2 rounded-full bg-brass animate-pulse" aria-hidden="true"></span>
+            <span class="text-xs font-semibold tracking-wide uppercase text-stone">Now booking — Spring 2026</span>
+          </div>
+
+          <h1 class="reveal font-display text-[clamp(2.8rem,7vw,5.5rem)] leading-[1.02] text-balance">
+            Cinema, <em class="text-brass not-italic">curated</em> for the curious.
+          </h1>
+
+          <p class="reveal text-lg text-stone leading-relaxed max-w-xl">
+            MovieBook turns ordinary evenings into memorable screenings — private theatres, handpicked films, and an atmosphere designed for people who love the art of watching.
+          </p>
+
+          <div class="reveal flex flex-wrap items-center gap-4 pt-2">
+            <a href="#enquire" class="inline-flex items-center gap-2 btn-primary text-sm font-medium px-7 py-3.5 rounded-full">
+              Reserve Your Seat
+              <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#collection" class="inline-flex items-center gap-2 btn-outline text-sm font-medium px-7 py-3.5 rounded-full">
+              <i data-lucide="play" class="w-4 h-4" aria-hidden="true"></i>
+              Explore the Collection
+            </a>
+          </div>
+
+          <!-- Stats inline -->
+          <div class="reveal grid grid-cols-3 gap-6 pt-8 mt-2 border-t border-[var(--hairline)] max-w-lg">
+            <div>
+              <p class="font-display text-3xl text-ink">240+</p>
+              <p class="text-xs text-stone mt-1 tracking-wide uppercase">Films curated</p>
+            </div>
+            <div>
+              <p class="font-display text-3xl text-ink">18</p>
+              <p class="text-xs text-stone mt-1 tracking-wide uppercase">Private screens</p>
+            </div>
+            <div>
+              <p class="font-display text-3xl text-ink">4.9</p>
+              <p class="text-xs text-stone mt-1 tracking-wide uppercase">Guest rating</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right visual -->
+        <div class="lg:col-span-5 relative reveal">
+          <div class="relative float-slow">
+            <!-- Main card -->
+            <div class="relative rounded-[28px] overflow-hidden shadow-[0_24px_80px_rgba(17,18,20,0.12)] bg-ink aspect-[4/5] max-w-[420px] mx-auto lg:ml-auto">
+              <div class="absolute inset-0 bg-gradient-to-br from-[#1a1c20] via-[#111214] to-[#0a0b0c]"></div>
+              <!-- Film strip lines -->
+              <div class="absolute inset-0 opacity-10" aria-hidden="true">
+                <div class="absolute left-0 right-0 top-[15%] h-px bg-cream"></div>
+                <div class="absolute left-0 right-0 top-[35%] h-px bg-cream"></div>
+                <div class="absolute left-0 right-0 top-[55%] h-px bg-cream"></div>
+                <div class="absolute left-0 right-0 top-[75%] h-px bg-cream"></div>
+              </div>
+              <!-- Center content -->
+              <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 p-10 text-center">
+                <div class="w-16 h-16 rounded-full border border-brass/30 flex items-center justify-center">
+                  <i data-lucide="clapperboard" class="w-7 h-7 text-brass" aria-hidden="true"></i>
+                </div>
+                <p class="font-display text-cream text-3xl leading-tight">The Grand<br/>Screening Room</p>
+                <p class="text-cream/50 text-sm">Tonight's feature · 8:30 PM</p>
+                <div class="flex items-center gap-1.5 mt-2">
+                  <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+                  <span class="text-cream/70 text-xs tracking-wide">Curated selection</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating badge -->
+            <div class="absolute -left-4 top-12 lg:-left-10 bg-white rounded-2xl p-4 shadow-[var(--shadow-lift)] border border-[var(--hairline)] max-w-[200px]">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="calendar-check" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-ink">Instant booking</p>
+                  <p class="text-[11px] text-stone">Confirm in seconds</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating badge bottom -->
+            <div class="absolute -right-2 bottom-16 lg:-right-8 bg-white rounded-2xl p-4 shadow-[var(--shadow-lift)] border border-[var(--hairline)]">
+              <div class="flex items-center gap-2">
+                <i data-lucide="users" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+                <p class="text-xs font-semibold text-ink">Private groups up to 40</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2 text-stone">
+      <span class="text-[10px] tracking-[0.2em] uppercase">Scroll</span>
+      <div class="w-px h-10 bg-gradient-to-b from-stone/40 to-transparent"></div>
+    </div>
+  </section>
+
+
+  <!-- ============================================ -->
+  <!-- MARQUEE / SOCIAL PROOF -->
+  <!-- ============================================ -->
+  <section class="py-12 border-y border-[var(--hairline)] bg-white/60 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 mb-8">
+      <p class="text-center text-xs tracking-[0.25em] uppercase text-stone">Trusted by film lovers & creative teams</p>
+    </div>
+    <div class="marquee-track" aria-hidden="true">
+      <div class="flex items-center gap-16 px-8">
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">A24 Circle</span>
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">The Projector</span>
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">Cinephile Society</span>
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">Lumière Club</span>
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">Frame & Form</span>
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">Noir Collective</span>
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">A24 Circle</span>
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">The Projector</span>
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">Cinephile Society</span>
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">Lumière Club</span>
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">Frame & Form</span>
+        <span class="font-display text-2xl text-stone/50 whitespace-nowrap">Noir Collective</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================ -->
+  <!-- EXPERIENCE / FEATURES -->
+  <!-- ============================================ -->
+  <section id="experience" class="py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <!-- Section header -->
+      <div class="max-w-2xl mb-16 lg:mb-20">
+        <p class="reveal text-xs tracking-[0.25em] uppercase text-brass font-semibold mb-4">The Experience</p>
+        <h2 class="reveal font-display text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.08] text-balance">
+          Every detail, designed around the film.
+        </h2>
+        <p class="reveal text-stone text-lg mt-5 leading-relaxed">
+          From the moment you walk in to the final credit roll, MovieBook orchestrates an evening that feels personal — because it is.
+        </p>
+      </div>
+
+      <!-- Feature grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+
+        <!-- Feature 1 -->
+        <div class="reveal tilt-card bg-white rounded-[24px] p-8 border border-[var(--hairline)] shadow-[var(--shadow-soft)] flex flex-col gap-5">
+          <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center">
+            <i data-lucide="armchair" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl">Private screening rooms</h3>
+          <p class="text-stone leading-relaxed text-[15px]">Intimate theatres with plush seating, tuned acoustics, and a screen that fills your entire field of view.</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="reveal tilt-card bg-white rounded-[24px] p-8 border border-[var(--hairline)] shadow-[var(--shadow-soft)] flex flex-col gap-5">
+          <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center">
+            <i data-lucide="sparkles" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl">Handpicked programming</h3>
+          <p class="text-stone leading-relaxed text-[15px]">Our curators blend restored classics, festival standouts, and overlooked gems — never an algorithm.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="reveal tilt-card bg-white rounded-[24px] p-8 border border-[var(--hairline)] shadow-[var(--shadow-soft)] flex flex-col gap-5">
+          <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center">
+            <i data-lucide="wine" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl">Bar & small plates</h3>
+          <p class="text-stone leading-relaxed text-[15px]">A curated drinks list and seasonal bites, served before the lights dim and during intermission.</p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="reveal tilt-card bg-white rounded-[24px] p-8 border border-[var(--hairline)] shadow-[var(--shadow-soft)] flex flex-col gap-5">
+          <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center">
+            <i data-lucide="calendar-days" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl">Flexible scheduling</h3>
+          <p class="text-stone leading-relaxed text-[15px]">Book a single evening or reserve a recurring slot. Change plans up to 24 hours before showtime.</p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="reveal tilt-card bg-white rounded-[24px] p-8 border border-[var(--hairline)] shadow-[var(--shadow-soft)] flex flex-col gap-5">
+          <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center">
+            <i data-lucide="headphones" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl">Personal audio</h3>
+          <p class="text-stone leading-relaxed text-[15px]">Wireless headphones for every guest, so you hear the score exactly as the director intended.</p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="reveal tilt-card bg-white rounded-[24px] p-8 border border-[var(--hairline)] shadow-[var(--shadow-soft)] flex flex-col gap-5">
+          <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center">
+            <i data-lucide="users-round" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl">Members-only events</h3>
+          <p class="text-stone leading-relaxed text-[15px]">Director Q&As, themed nights, and first-look screenings reserved for the MovieBook community.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================ -->
+  <!-- COLLECTION / GALLERY -->
+  <!-- ============================================ -->
+  <section id="collection" class="py-24 lg:py-32 bg-white border-y border-[var(--hairline)]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
+        <div class="max-w-xl">
+          <p class="reveal text-xs tracking-[0.25em] uppercase text-brass font-semibold mb-4">This Season</p>
+          <h2 class="reveal font-display text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.08] text-balance">
+            A collection worth staying in for.
+          </h2>
+        </div>
+        <a href="#enquire" class="reveal inline-flex items-center gap-2 text-sm font-medium text-ink hover:text-brass transition-colors duration-200 group shrink-0">
+          View full calendar
+          <i data-lucide="arrow-right" class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Card 1 -->
+        <article class="reveal tilt-card group bg-cream rounded-[24px] overflow-hidden border border-[var(--hairline)] shadow-[var(--shadow-soft)]">
+          <div class="aspect-[3/4] bg-gradient-to-br from-[#1a1c20] to-[#2a2d33] relative overflow-hidden">
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+              <i data-lucide="moon" class="w-8 h-8 text-brass" aria-hidden="true"></i>
+              <p class="font-display text-cream text-2xl">Noir Nights</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-xs tracking-wide uppercase text-brass font-semibold mb-2">Classic Series</p>
+            <h3 class="font-display text-xl mb-2">Shadows & Smoke</h3>
+            <p class="text-sm text-stone leading-relaxed">Six restored noir masterpieces, introduced by film historian Dr. Elena Voss.</p>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="reveal tilt-card group bg-cream rounded-[24px] overflow-hidden border border-[var(--hairline)] shadow-[var(--shadow-soft)]">
+          <div class="aspect-[3/4] bg-gradient-to-br from-[#2a1f1a] to-[#1a1410] relative overflow-hidden">
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+              <i data-lucide="sun" class="w-8 h-8 text-brass" aria-hidden="true"></i>
+              <p class="font-display text-cream text-2xl">Golden Hour</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-xs tracking-wide uppercase text-brass font-semibold mb-2">New Wave</p>
+            <h3 class="font-display text-xl mb-2">Summer in 16mm</h3>
+            <p class="text-sm text-stone leading-relaxed">A sun-drenched programme of French New Wave essentials, screened on original film.</p>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="reveal tilt-card group bg-cream rounded-[24px] overflow-hidden border border-[var(--hairline)] shadow-[var(--shadow-soft)]">
+          <div class="aspect-[3/4] bg-gradient-to-br from-[#1a2028] to-[#0f1419] relative overflow-hidden">
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+              <i data-lucide="globe" class="w-8 h-8 text-brass" aria-hidden="true"></i>
+              <p class="font-display text-cream text-2xl">World View</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-xs tracking-wide uppercase text-brass font-semibold mb-2">Global Cinema</p>
+            <h3 class="font-display text-xl mb-2">Stories Without Borders</h3>
+            <p class="text-sm text-stone leading-relaxed">Award-winning features from Japan, Senegal, Brazil, and beyond — subtitled and celebrated.</p>
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="reveal tilt-card group bg-cream rounded-[24px] overflow-hidden border border-[var(--hairline)] shadow-[var(--shadow-soft)]">
+          <div class="aspect-[3/4] bg-gradient-to-br from-[#201a28] to-[#140f1a] relative overflow-hidden">
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+              <i data-lucide="zap" class="w-8 h-8 text-brass" aria-hidden="true"></i>
+              <p class="font-display text-cream text-2xl">Midnight</p>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-xs tracking-wide uppercase text-brass font-semibold mb-2">Cult Favourites</p>
+            <h3 class="font-display text-xl mb-2">After Hours</h3>
+            <p class="text-sm text-stone leading-relaxed">Late-night screenings of cult classics, with a bar that stays open until the last reel.</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================ -->
+  <!-- PRICING -->
+  <!-- ============================================ -->
+  <section id="pricing" class="py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="max-w-2xl mx-auto text-center mb-16 lg:mb-20">
+        <p class="reveal text-xs tracking-[0.25em] uppercase text-brass font-semibold mb-4">Membership</p>
+        <h2 class="reveal font-display text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.08] text-balance">
+          Choose how you watch.
+        </h2>
+        <p class="reveal text-stone text-lg mt-5 leading-relaxed">
+          Three tiers, one standard. Every plan includes access to our full collection and private screening rooms.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+
+        <!-- Tier 1 -->
+        <div class="reveal bg-white rounded-[24px] p-8 lg:p-10 border border-[var(--hairline)] shadow-[var(--shadow-soft)] flex flex-col gap-7">
+          <div>
+            <p class="text-xs tracking-[0.2em] uppercase text-stone font-semibold mb-3">Individual</p>
+            <div class="flex items-end gap-2">
+              <span class="font-display text-5xl">$29</span>
+              <span class="text-stone text-sm mb-2">/ month</span>
+            </div>
+          </div>
+          <p class="text-sm text-stone leading-relaxed">For the solo cinephile who wants a quiet, beautiful place to watch.</p>
+          <ul class="flex flex-col gap-3.5">
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span>1 guest per screening</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span>Access to all curated films</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span>Standard screening rooms</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span>Complimentary still water</span>
+            </li>
+          </ul>
+          <a href="#enquire" class="mt-auto btn-outline text-sm font-medium px-6 py-3.5 rounded-full text-center">
+            Start Individual
+          </a>
+        </div>
+
+        <!-- Tier 2 — Featured -->
+        <div class="reveal relative bg-ink rounded-[24px] p-8 lg:p-10 shadow-[0_24px_70px_rgba(17,18,20,0.25)] flex flex-col gap-7 text-cream overflow-hidden">
+          <!-- Glow -->
+          <div class="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-brass/20 blur-3xl" aria-hidden="true"></div>
+
+          <div class="relative">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-xs tracking-[0.2em] uppercase text-brass-light font-semibold">Duo</p>
+              <span class="text-[10px] tracking-wide uppercase bg-brass text-ink font-bold px-3 py-1 rounded-full">Most popular</span>
+            </div>
+            <div class="flex items-end gap-2">
+              <span class="font-display text-5xl">$49</span>
+              <span class="text-cream/50 text-sm mb-2">/ month</span>
+            </div>
+          </div>
+          <p class="relative text-sm text-cream/60 leading-relaxed">For two — designed for shared evenings and long conversations after the credits.</p>
+          <ul class="relative flex flex-col gap-3.5">
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span class="text-cream/90">2 guests per screening</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span class="text-cream/90">Priority booking window</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span class="text-cream/90">Premium screening rooms</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span class="text-cream/90">Welcome drink for two</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span class="text-cream/90">10% off bar & small plates</span>
+            </li>
+          </ul>
+          <a href="#enquire" class="relative mt-auto btn-primary bg-brass text-ink hover:bg-brass-light text-sm font-semibold px-6 py-3.5 rounded-full text-center" style="background: var(--brass); color: var(--ink);">
+            Choose Duo
+          </a>
+        </div>
+
+        <!-- Tier 3 -->
+        <div class="reveal bg-white rounded-[24px] p-8 lg:p-10 border border-[var(--hairline)] shadow-[var(--shadow-soft)] flex flex-col gap-7">
+          <div>
+            <p class="text-xs tracking-[0.2em] uppercase text-stone font-semibold mb-3">Private</p>
+            <div class="flex items-end gap-2">
+              <span class="font-display text-5xl">$120</span>
+              <span class="text-stone text-sm mb-2">/ month</span>
+            </div>
+          </div>
+          <p class="text-sm text-stone leading-relaxed">For groups, teams, and anyone who wants the whole room to themselves.</p>
+          <ul class="flex flex-col gap-3.5">
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span>Up to 8 guests per screening</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span>Full private room buyout</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span>Custom film requests</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span>Dedicated host & bar service</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <i data-lucide="check" class="w-4 h-4 text-brass mt-0.5 shrink-0" aria-hidden="true"></i>
+              <span>20% off bar & small plates</span>
+            </li>
+          </ul>
+          <a href="#enquire" class="mt-auto btn-outline text-sm font-medium px-6 py-3.5 rounded-full text-center">
+            Enquire about Private
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================ -->
+  <!-- TESTIMONIALS -->
+  <!-- ============================================ -->
+  <section id="voices" class="py-24 lg:py-32 bg-mist border-y border-[var(--hairline)]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="max-w-xl mb-16">
+        <p class="reveal text-xs tracking-[0.25em] uppercase text-brass font-semibold mb-4">Voices</p>
+        <h2 class="reveal font-display text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.08] text-balance">
+          What our guests say.
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+
+        <blockquote class="reveal bg-white rounded-[24px] p-8 border border-[var(--hairline)] shadow-[var(--shadow-soft)] flex flex-col gap-6">
+          <div class="flex gap-1" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+          </div>
+          <p class="text-ink leading-relaxed text-[15px]">"MovieBook is the only place I've found that treats film like it matters. The room, the sound, the selection — everything feels considered."</p>
+          <footer class="mt-auto pt-4 border-t border-[var(--hairline)]">
+            <p class="text-sm font-semibold text-ink">Maya Chen</p>
+            <p class="text-xs text-stone mt-0.5">Film editor, Brooklyn</p>
+          </footer>
+        </blockquote>
+
+        <blockquote class="reveal bg-white rounded-[24px] p-8 border border-[var(--hairline)] shadow-[var(--shadow-soft)] flex flex-col gap-6">
+          <div class="flex gap-1" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+          </div>
+          <p class="text-ink leading-relaxed text-[15px]">"We booked the private room for a team offsite and it was the best decision we made all quarter. The host made everything effortless."</p>
+          <footer class="mt-auto pt-4 border-t border-[var(--hairline)]">
+            <p class="text-sm font-semibold text-ink">Daniel Okafor</p>
+            <p class="text-xs text-stone mt-0.5">Creative director, Studio North</p>
+          </footer>
+        </blockquote>
+
+        <blockquote class="reveal bg-white rounded-[24px] p-8 border border-[var(--hairline)] shadow-[var(--shadow-soft)] flex flex-col gap-6">
+          <div class="flex gap-1" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 text-brass fill-brass" aria-hidden="true"></i>
+          </div>
+          <p class="text-ink leading-relaxed text-[15px]">"I've discovered more films in three months here than in five years of streaming. The curation is genuinely world-class."</p>
+          <footer class="mt-auto pt-4 border-t border-[var(--hairline)]">
+            <p class="text-sm font-semibold text-ink">Sofia Lindqvist</p>
+            <p class="text-xs text-stone mt-0.5">Writer, Lisbon</p>
+          </footer>
+        </blockquote>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================ -->
+  <!-- CTA BANNER -->
+  <!-- ============================================ -->
+  <section class="py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="reveal relative bg-ink rounded-[32px] p-10 lg:p-16 overflow-hidden text-cream">
+        <!-- Glow accents -->
+        <div class="absolute -top-32 -left-20 w-80 h-80 rounded-full bg-brass/15 blur-3xl" aria-hidden="true"></div>
+        <div class="absolute -bottom-32 -right-20 w-80 h-80 rounded-full bg-brass/10 blur-3xl" aria-hidden="true"></div>
+
+        <div class="relative grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 class="font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.1] text-balance mb-5">
+              Your next favourite film is waiting.
+            </h2>
+            <p class="text-cream/60 text-lg leading-relaxed max-w-md">
+              Join MovieBook and get access to our full collection, private rooms, and members-only events.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4 lg:justify-end">
+            <a href="#enquire" class="inline-flex items-center justify-center gap-2 text-sm font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:shadow-[0_8px_30px_rgba(184,135,59,0.3)] hover:-translate-y-0.5" style="background: var(--brass); color: var(--ink);">
+              Book Your First Screening
+              <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#pricing" class="inline-flex items-center justify-center gap-2 text-sm font-medium px-8 py-4 rounded-full border border-cream/20 text-cream hover:bg-cream/5 transition-all duration-300">
+              Compare Memberships
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================ -->
+  <!-- FOOTER + CONTACT FORM -->
+  <!-- ============================================ -->
+  <footer id="enquire" class="bg-white border-t border-[var(--hairline)] pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="grid lg:grid-cols-2 gap-16 lg:gap-12 mb-16">
+
+        <!-- Left: Brand + links -->
+        <div class="flex flex-col gap-10">
+          <div>
+            <a href="#" class="flex items-center gap-2.5 mb-5" aria-label="MovieBook home">
+              <span class="w-9 h-9 rounded-xl bg-ink flex items-center justify-center">
+                <i data-lucide="film" class="w-5 h-5 text-cream" aria-hidden="true"></i>
+              </span>
+              <span class="font-display text-xl tracking-tight">MovieBook</span>
+            </a>
+            <p class="text-stone leading-relaxed max-w-sm text-[15px]">
+              Curated cinema experiences for people who love the art of watching. Private rooms, handpicked films, and evenings designed to be remembered.
+            </p>
+          </div>
+
+          <!-- Link columns -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
+            <div>
+              <p class="text-xs tracking-[0.2em] uppercase text-ink font-semibold mb-4">Explore</p>
+              <ul class="flex flex-col gap-3">
+                <li><a href="#experience" class="text-sm text-stone hover:text-ink transition-colors duration-200">Experience</a></li>
+                <li><a href="#collection" class="text-sm text-stone hover:text-ink transition-colors duration-200">Collection</a></li>
+                <li><a href="#pricing" class="text-sm text-stone hover:text-ink transition-colors duration-200">Pricing</a></li>
+                <li><a href="#voices" class="text-sm text-stone hover:text-ink transition-colors duration-200">Voices</a></li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-xs tracking-[0.2em] uppercase text-ink font-semibold mb-4">Company</p>
+              <ul class="flex flex-col gap-3">
+                <li><a href="#" class="text-sm text-stone hover:text-ink transition-colors duration-200">About</a></li>
+                <li><a href="#" class="text-sm text-stone hover:text-ink transition-colors duration-200">Careers</a></li>
+                <li><a href="#" class="text-sm text-stone hover:text-ink transition-colors duration-200">Press</a></li>
+                <li><a href="#" class="text-sm text-stone hover:text-ink transition-colors duration-200">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-xs tracking-[0.2em] uppercase text-ink font-semibold mb-4">Legal</p>
+              <ul class="flex flex-col gap-3">
+                <li><a href="#" class="text-sm text-stone hover:text-ink transition-colors duration-200">Privacy</a></li>
+                <li><a href="#" class="text-sm text-stone hover:text-ink transition-colors duration-200">Terms</a></li>
+                <li><a href="#" class="text-sm text-stone hover:text-ink transition-colors duration-200">Cookies</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Social -->
+          <div class="flex items-center gap-3">
+            <a href="#" class="w-10 h-10 rounded-full border border-[var(--hairline)] flex items-center justify-center text-stone hover:text-ink hover:border-ink/20 transition-all duration-200 hover:-translate-y-0.5" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-[var(--hairline)] flex items-center justify-center text-stone hover:text-ink hover:border-ink/20 transition-all duration-200 hover:-translate-y-0.5" aria-label="X (Twitter)">
+              <i data-lucide="twitter" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-[var(--hairline)] flex items-center justify-center text-stone hover:text-ink hover:border-ink/20 transition-all duration-200 hover:-translate-y-0.5" aria-label="YouTube">
+              <i data-lucide="youtube" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Enquiry form -->
+        <div class="bg-cream rounded-[24px] p-8 lg:p-10 border border-[var(--hairline)]">
+          <h3 class="font-display text-2xl mb-2">Book a screening</h3>
+          <p class="text-sm text-stone mb-7">Tell us about your evening and we'll get back within 24 hours.</p>
+
+          <form id="enquiryForm" class="flex flex-col gap-4" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="name" class="sr-only">Full name</label>
+                <input type="text" id="name" name="name" placeholder="Full name" required
+                  class="form-input w-full px-4 py-3 rounded-xl placeholder:text-stone/50" />
+                <p class="error-msg hidden text-xs text-red-600 mt-1.5" role="alert">Please enter your name.</p>
+              </div>
+              <div>
+                <label for="email" class="sr-only">Email address</label>
+                <input type="email" id="email" name="email" placeholder="Email address" required
+                  class="form-input w-full px-4 py-3 rounded-xl placeholder:text-stone/50" />
+                <p class="error-msg hidden text-xs text-red-600 mt-1.5" role="alert">Please enter a valid email.</p>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="phone" class="sr-only">Phone number</label>
+                <input type="tel" id="phone" name="phone" placeholder="Phone (optional)"
+                  class="form-input w-full px-4 py-3 rounded-xl placeholder:text-stone/50" />
+              </div>
+              <div>
+                <label for="service" class="sr-only">Membership tier</label>
+                <select id="service" name="service" required
+                  class="form-input w-full px-4 py-3 rounded-xl text-stone appearance-none bg-white cursor-pointer">
+                  <option value="" disabled selected>Select membership</option>
+                  <option value="individual">Individual — $29/mo</option>
+                  <option value="duo">Duo — $49/mo</option>
+                  <option value="private">Private — $120/mo</option>
+                  <option value="event">Private event enquiry</option>
+                </select>
+                <p class="error-msg hidden text-xs text-red-600 mt-1.5" role="alert">Please select a membership.</p>
+              </div>
+            </div>
+
+            <div>
+              <label for="message" class="sr-only">Message</label>
+              <textarea id="message" name="message" rows="4" placeholder="Tell us about your evening — film preferences, group size, date..." required
+                class="form-input w-full px-4 py-3 rounded-xl placeholder:text-stone/50 resize-none"></textarea>
+              <p class="error-msg hidden text-xs text-red-600 mt-1.5" role="alert">Please tell us a little about your booking.</p>
+            </div>
+
+            <button type="submit" id="submitBtn"
+              class="mt-1 inline-flex items-center justify-center gap-2 btn-primary text-sm font-medium px-6 py-3.5 rounded-full">
+              <span id="btnText">Send Enquiry</span>
+              <i data-lucide="send" class="w-4 h-4" id="btnIcon" aria-hidden="true"></i>
+            </button>
+
+            <!-- Success message -->
+            <div id="formSuccess" class="hidden items-center gap-3 bg-green-50 border border-green-200 text-green-800 text-sm rounded-xl px-4 py-3.5" role="status">
+              <i data-lucide="check-circle" class="w-5 h-5 text-green-600 shrink-0" aria-hidden="true"></i>
+              <span>Thank you — your enquiry has been received. We'll be in touch shortly.</span>
+            </div>
+
+            <!-- TODO: connect form action to backend endpoint -->
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="border-t border-[var(--hairline)] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-sm text-stone">&copy; 2026 MovieBook. All rights reserved.</p>
+        <p class="text-sm text-stone">Designed for the love of cinema.</p>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ============================================ -->
+  <!-- SCRIPTS -->
+  <!-- ============================================ -->
+  <script>
+    // ===== Lucide Icons =====
+    lucide.createIcons();
+
+    // ===== GSAP Registration =====
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ===== Nav Scroll Effect =====
+    const header = document.getElementById('header');
+    const navInner = document.getElementById('navInner');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        header.classList.add('nav-scrolled');
+        navInner.classList.add('h-16');
+        navInner.classList.remove('h-20');
+      } else {
+        header.classList.remove('nav-scrolled');
+        navInner.classList.remove('h-16');
+        navInner.classList.add('h-20');
+      }
+    }, { passive: true });
+
+    // ===== Mobile Menu =====
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    mobileToggle.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden');
+      mobileToggle.setAttribute('aria-expanded', String(!isOpen));
+      mobileToggle.innerHTML = isOpen
+        ? '<i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>'
+        : '<i data-lucide="x" class="w-5 h-5" aria-hidden="true"></i>';
+      lucide.createIcons();
+    });
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        mobileToggle.innerHTML = '<i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>';
+        lucide.createIcons();
+      });
+    });
+
+    // ===== Scroll Reveal =====
+    const revealElements = document.querySelectorAll('.reveal');
+    revealElements.forEach((el, i) => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 88%',
+        once: true,
+        onEnter: () => {
+          gsap.to(el, {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            delay: (i % 4) * 0.08,
+            ease: 'power3.out',
+            onStart: () => el.classList.add('is-visible'),
+          });
+        },
+      });
+    });
+
+    // ===== Tilt Card 3D =====
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `perspective(900px) rotateY(${x * 4}deg) rotateX(${-y * 4}deg) translateY(-6px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg) translateY(0)';
+      });
+    });
+
+    // ===== Magnetic Button (radial highlight) =====
+    document.querySelectorAll('.btn-primary').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        btn.style.setProperty('--mx', x + '%');
+        btn.style.setProperty('--my', y + '%');
+      });
+    });
+
+    // ===== Accordion (not used — removed for brevity) =====
+
+    // ===== Form Handling =====
+    const form = document.getElementById('enquiryForm');
+    const formSuccess = document.getElementById('formSuccess');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnIcon = document.getElementById('btnIcon');
+
+    function showError(input, message) {
+      input.classList.add('error');
+      input.classList.remove('success');
+      const errorEl = input.parentElement.querySelector('.error-msg');
+      if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.classList.remove('hidden');
+      }
+    }
+
+    function clearError(input) {
+      input.classList.remove('error');
+      input.classList.add('success');
+      const errorEl = input.parentElement.querySelector('.error-msg');
+      if (errorEl) {
+        errorEl.classList.add('hidden');
+      }
+    }
+
+    // Live validation
+    form.querySelectorAll('input, select, textarea').forEach(field => {
+      field.addEventListener('input', () => {
+        if (field.value.trim() !== '') {
+          field.classList.remove('error');
+          const errorEl = field.parentElement.querySelector('.error-msg');
+          if (errorEl) errorEl.classList.add('hidden');
+        }
+      });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Reset success
+      formSuccess.classList.add('hidden');
+      formSuccess.classList.remove('flex');
+
+      // Validate
+      let isValid = true;
+
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const service = document.getElementById('service');
+      const message = document.getElementById('message');
+
+      // Name
+      if (name.value.trim().length < 2) {
+        showError(name, 'Please enter your name.');
+        isValid = false;
+      } else {
+        clearError(name);
+      }
+
+      // Email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.value.trim())) {
+        showError(email, 'Please enter a valid email address.');
+        isValid = false;
+      } else {
+        clearError(email);
+      }
+
+      // Service
+      if (!service.value) {
+        showError(service, 'Please select a membership.');
+        isValid = false;
+      } else {
+        clearError(service);
+      }
+
+      // Message
+      if (message.value.trim().length < 10) {
+        showError(message, 'Please tell us a little about your booking.');
+        isValid = false;
+      } else {
+        clearError(message);
+      }
+
+      if (!isValid) return;
+
+      // Simulate submission
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.7';
+      btnText.textContent = 'Sending...';
+      btnIcon.setAttribute('data-lucide', 'loader-2');
+      btnIcon.classList.add('animate-spin');
+      lucide.createIcons();
+
+      // Build JSON payload
+      const payload = {
+        url: window.location.host,
+        table: 'moviebook_enquiries',
+        data: {
+          name: name.value.trim(),
+          email: email.value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          service: service.value,
+          message: message.value.trim(),
+          submitted_at: new Date().toISOString(),
+        },
+      };
+
+      try {
+        // TODO: Replace with your actual backend endpoint
+        // const response = await fetch('submit', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   cache: 'no-store',
+        //   body: JSON.stringify(payload),
+        // });
+        // if (!response.ok) throw new Error('Submission failed');
+
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 1200));
+
+        // Success
+        formSuccess.classList.remove('hidden');
+        formSuccess.classList.add('flex');
+        form.reset();
+        form.querySelectorAll('.form-input').forEach(f => {
+          f.classList.remove('success', 'error');
+        });
+
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        btnText.textContent = 'Send Enquiry';
+        btnIcon.classList.remove('animate-spin');
+        btnIcon.setAttribute('data-lucide', 'send');
+        lucide.createIcons();
+
+        // Auto-hide success after 6 seconds
+        setTimeout(() => {
+          formSuccess.classList.add('hidden');
+          formSuccess.classList.remove('flex');
+        }, 6000);
+
+      } catch (error) {
+        console.error('Form submission error:', error);
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        btnText.textContent = 'Try Again';
+        btnIcon.classList.remove('animate-spin');
+        btnIcon.setAttribute('data-lucide', 'alert-circle');
+        lucide.createIcons();
+      }
+    });
+
+    // ===== Smooth anchor scrolling (fallback) =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
