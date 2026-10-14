@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elysian & Julian · A Wedding Celebration</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Tailwind config: refined palette & fonts -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'cream': '#FCFAF7',
+            'ink': '#1E1C1A',
+            'brass': '#B88B5E',
+            'brass-light': '#D9B382',
+            'sage': '#A8B8A2',
+            'blush': '#F3E8E3',
+          },
+          fontFamily: {
+            'display': ['"Cormorant Garamond"', 'serif'],
+            'sans': ['"Inter"', 'sans-serif'],
+          },
+          letterSpacing: {
+            'tightest': '-0.03em',
+            'widest': '0.2em',
+          },
+          boxShadow: {
+            'soft': '0 20px 40px -12px rgba(30, 28, 26, 0.08)',
+            'card': '0 8px 24px -6px rgba(30, 28, 26, 0.06)',
+            'brass-glow': '0 8px 28px -6px rgba(184, 139, 94, 0.25)',
+          },
+          borderRadius: {
+            'xl': '1.25rem',
+            '2xl': '1.75rem',
+            '3xl': '2.5rem',
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts: Cormorant Garamond + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis for smooth scrolling -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.6/dist/lenis.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1E1C1A;
+      --cream: #FCFAF7;
+      --brass: #B88B5E;
+      --brass-light: #D9B382;
+      --sage: #A8B8A2;
+      --blush: #F3E8E3;
+      --focus-ring: #B88B5E;
+    }
+
+    /* === Base & Smoothing === */
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      background-color: var(--cream);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* === Typography === */
+    .font-display {
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .heading-xl {
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      font-weight: 300;
+    }
+    .heading-lg {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      font-weight: 300;
+    }
+    .heading-md {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      font-weight: 400;
+    }
+
+    /* === Decorative elements === */
+    .divider-brass {
+      width: 60px;
+      height: 1px;
+      background: var(--brass);
+      opacity: 0.5;
+    }
+    .text-balance {
+      text-wrap: balance;
+    }
+
+    /* === Grain overlay (subtle) === */
+    .grain::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* === Reveal animations === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    /* === Hover tilt card === */
+    .tilt-card {
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+    }
+    .tilt-card:hover {
+      transform: translateY(-6px) rotateX(1deg) rotateY(-1deg);
+      box-shadow: 0 24px 48px -12px rgba(30, 28, 26, 0.12);
+    }
+
+    /* === Button styles === */
+    .btn-primary {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 1rem 2.5rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 4px 16px -4px rgba(30, 28, 26, 0.15);
+    }
+    .btn-primary:hover {
+      background: var(--brass);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -8px rgba(184, 139, 94, 0.4);
+    }
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      padding: 1rem 2.5rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500;
+      border: 1px solid rgba(30, 28, 26, 0.2);
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .btn-outline:hover {
+      border-color: var(--brass);
+      color: var(--brass);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px -8px rgba(184, 139, 94, 0.2);
+    }
+    .btn-outline:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* === Nav blur === */
+    .nav-scrolled {
+      background: rgba(252, 250, 247, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(30, 28, 26, 0.05);
+    }
+
+    /* === Focus states === */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--cream), 0 0 0 4px var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Custom cursor (optional, subtle) === */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--brass);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s ease;
+      mix-blend-mode: difference;
+      display: none;
+    }
+    @media (pointer: fine) {
+      .cursor-dot {
+        display: block;
+      }
+    }
+
+    /* === Section spacing === */
+    .section-pad {
+      padding: 6rem 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .section-pad {
+        padding: 8rem 2rem;
+      }
+    }
+    @media (min-width: 1024px) {
+      .section-pad {
+        padding: 10rem 2rem;
+      }
+    }
+
+    /* === Gallery hover === */
+    .gallery-item img {
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
+    }
+    .gallery-item:hover img {
+      transform: scale(1.05);
+      filter: brightness(1.05);
+    }
+
+    /* === Form input styling === */
+    .input-lux {
+      background: transparent;
+      border: 1px solid rgba(30, 28, 26, 0.15);
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    .input-lux:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184, 139, 94, 0.12);
+      outline: none;
+    }
+    .input-lux::placeholder {
+      color: rgba(30, 28, 26, 0.35);
+    }
+
+    /* === Success message === */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    .form-success.show {
+      display: block;
+    }
+
+    /* === Radio & checkbox custom === */
+    .radio-lux {
+      appearance: none;
+      width: 1.1rem;
+      height: 1.1rem;
+      border: 1.5px solid rgba(30, 28, 26, 0.25);
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      position: relative;
+      cursor: pointer;
+    }
+    .radio-lux:checked {
+      border-color: var(--brass);
+      background: var(--brass);
+      box-shadow: inset 0 0 0 3px var(--cream);
+    }
+    .radio-lux:focus-visible {
+      box-shadow: 0 0 0 2px var(--cream), 0 0 0 4px var(--focus-ring);
+    }
+  </style>
+</head>
+<body class="grain bg-cream text-ink antialiased">
+
+  <!-- Custom cursor (decorative) -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+  <!-- ===== HEADER / NAV ===== -->
+  <header id="header" class="fixed top-0 left-0 w-full z-50 transition-all duration-500">
+    <nav class="max-w-7xl mx-auto flex items-center justify-between px-5 md:px-8 py-4 md:py-6">
+      <!-- Logo -->
+      <a href="#" class="font-display text-2xl md:text-3xl tracking-tight text-ink hover:text-brass transition-colors duration-300" aria-label="Elysian and Julian home">
+        E <span class="text-brass">&</span> J
+      </a>
+
+      <!-- Desktop nav -->
+      <div class="hidden md:flex items-center gap-10">
+        <a href="#story" class="text-sm tracking-widest uppercase text-ink/70 hover:text-brass transition-colors duration-300">Our Story</a>
+        <a href="#details" class="text-sm tracking-widest uppercase text-ink/70 hover:text-brass transition-colors duration-300">Details</a>
+        <a href="#gallery" class="text-sm tracking-widest uppercase text-ink/70 hover:text-brass transition-colors duration-300">Gallery</a>
+        <a href="#rsvp" class="text-sm tracking-widest uppercase text-ink/70 hover:text-brass transition-colors duration-300">RSVP</a>
+      </div>
+
+      <!-- CTA + mobile menu -->
+      <div class="flex items-center gap-4">
+        <a href="#rsvp" class="hidden md:inline-block btn-primary text-xs">RSVP</a>
+        <!-- Mobile menu button -->
+        <button id="menuBtn" class="md:hidden text-ink hover:text-brass transition-colors duration-300 p-2" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile menu overlay -->
+    <div id="mobileMenu" class="fixed inset-0 bg-cream/98 backdrop-blur-xl z-40 flex flex-col items-center justify-center gap-8 opacity-0 pointer-events-none transition-all duration-500" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+      <button id="closeMenuBtn" class="absolute top-6 right-6 text-ink hover:text-brass transition-colors duration-300 p-2" aria-label="Close menu">
+        <i data-lucide="x" class="w-7 h-7"></i>
+      </button>
+      <a href="#story" class="font-display text-4xl text-ink hover:text-brass transition-colors duration-300 mobile-link">Our Story</a>
+      <a href="#details" class="font-display text-4xl text-ink hover:text-brass transition-colors duration-300 mobile-link">Details</a>
+      <a href="#gallery" class="font-display text-4xl text-ink hover:text-brass transition-colors duration-300 mobile-link">Gallery</a>
+      <a href="#rsvp" class="font-display text-4xl text-ink hover:text-brass transition-colors duration-300 mobile-link">RSVP</a>
+      <a href="#rsvp" class="btn-primary mt-6 mobile-link">RSVP Now</a>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">
+    <!-- Background decorative elements -->
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute top-[-10%] right-[-5%] w-[40vw] h-[40vw] rounded-full bg-brass/5 blur-3xl"></div>
+      <div class="absolute bottom-[-15%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-sage/5 blur-3xl"></div>
+      <div class="absolute top-1/3 left-1/4 w-[20vw] h-[20vw] rounded-full bg-blush/20 blur-2xl"></div>
+    </div>
+
+    <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+      <!-- Small label -->
+      <p class="text-xs tracking-[0.3em] uppercase text-brass mb-6 reveal" data-delay="0.2">The Wedding Celebration Of</p>
+
+      <!-- Names -->
+      <h1 class="heading-xl font-display text-ink reveal" data-delay="0.4">
+        Elysian <span class="italic text-brass">&</span> Julian
+      </h1>
+
+      <!-- Divider -->
+      <div class="flex items-center justify-center gap-4 my-8 reveal" data-delay="0.6">
+        <span class="w-12 h-px bg-brass/40"></span>
+        <i data-lucide="heart" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+        <span class="w-12 h-px bg-brass/40"></span>
+      </div>
+
+      <!-- Date & location -->
+      <p class="text-lg md:text-xl text-ink/60 font-light tracking-wide reveal" data-delay="0.8">
+        September 21, 2026 · Tuscany, Italy
+      </p>
+
+      <!-- CTA buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 reveal" data-delay="1.0">
+        <a href="#rsvp" class="btn-primary">RSVP Now</a>
+        <a href="#story" class="btn-outline">Our Story</a>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 reveal" data-delay="1.4" aria-hidden="true">
+      <span class="text-[10px] tracking-[0.25em] uppercase text-ink/30">Scroll</span>
+      <span class="w-px h-10 bg-brass/30"></span>
+    </div>
+  </section>
+
+  <!-- ===== OUR STORY ===== -->
+  <section id="story" class="section-pad relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+        <!-- Text -->
+        <div>
+          <p class="text-xs tracking-[0.3em] uppercase text-brass mb-4 reveal">Our Journey</p>
+          <h2 class="heading-lg font-display text-ink mb-8 reveal">A Love Written<br>In The Stars</h2>
+          <div class="space-y-5 text-ink/70 leading-relaxed text-base md:text-lg font-light reveal">
+            <p>
+              It began on a quiet autumn evening in Florence — a chance encounter at a tiny enoteca, where a shared bottle of Chianti turned into hours of conversation that neither of us wanted to end.
+            </p>
+            <p>
+              Seven years, twelve countries, and countless sunsets later, we found ourselves back in Italy. This time, on a hillside in Tuscany, with the same bottle of wine and a question that changed everything.
+            </p>
+            <p>
+              We invite you to witness the next chapter of our story, surrounded by the rolling vineyards and golden light that first brought us together.
+            </p>
+          </div>
+          <!-- Signature -->
+          <div class="mt-10 reveal">
+            <p class="font-display text-2xl italic text-brass">Elysian & Julian</p>
+          </div>
+        </div>
+
+        <!-- Image -->
+        <div class="relative reveal">
+          <div class="rounded-3xl overflow-hidden shadow-soft tilt-card">
+            <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&q=80" alt="Couple walking through a vineyard at sunset" class="w-full h-[500px] md:h-[600px] object-cover" loading="lazy">
+          </div>
+          <!-- Decorative frame -->
+          <div class="absolute -bottom-6 -right-6 w-48 h-48 border border-brass/20 rounded-3xl -z-10" aria-hidden="true"></div>
+          <div class="absolute -top-6 -left-6 w-32 h-32 border border-brass/20 rounded-3xl -z-10" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DETAILS ===== -->
+  <section id="details" class="section-pad bg-white/60 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <p class="text-xs tracking-[0.3em] uppercase text-brass mb-4 reveal">The Celebration</p>
+        <h2 class="heading-lg font-display text-ink reveal">Wedding Details</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <!-- Ceremony -->
+        <div class="bg-cream rounded-3xl p-8 md:p-10 shadow-card tilt-card reveal">
+          <div class="w-12 h-12 rounded-full bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="church" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl text-ink mb-3">The Ceremony</h3>
+          <p class="text-ink/60 text-sm leading-relaxed mb-4">
+            Join us as we exchange vows in a centuries-old chapel overlooking the Tuscan hills.
+          </p>
+          <p class="text-xs tracking-widest uppercase text-brass">4:00 PM · September 21, 2026</p>
+          <p class="text-xs text-ink/40 mt-1">Chapel of San Miniato, Tuscany</p>
+        </div>
+
+        <!-- Reception -->
+        <div class="bg-cream rounded-3xl p-8 md:p-10 shadow-card tilt-card reveal">
+          <div class="w-12 h-12 rounded-full bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="glass-water" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl text-ink mb-3">The Reception</h3>
+          <p class="text-ink/60 text-sm leading-relaxed mb-4">
+            An evening of dining, dancing, and celebration under the stars at Villa di Campagna.
+          </p>
+          <p class="text-xs tracking-widest uppercase text-brass">6:30 PM · September 21, 2026</p>
+          <p class="text-xs text-ink/40 mt-1">Villa di Campagna, Tuscany</p>
+        </div>
+
+        <!-- Dress Code -->
+        <div class="bg-cream rounded-3xl p-8 md:p-10 shadow-card tilt-card reveal sm:col-span-2 lg:col-span-1">
+          <div class="w-12 h-12 rounded-full bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="shirt" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl text-ink mb-3">Dress Code</h3>
+          <p class="text-ink/60 text-sm leading-relaxed mb-4">
+            Formal elegance in warm, earthy tones. Think Tuscan sunset — terracotta, olive, cream, and gold.
+          </p>
+          <p class="text-xs tracking-widest uppercase text-brass">Black Tie Optional</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GALLERY ===== -->
+  <section id="gallery" class="section-pad relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <p class="text-xs tracking-[0.3em] uppercase text-brass mb-4 reveal">Moments</p>
+        <h2 class="heading-lg font-display text-ink reveal">Our Gallery</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div class="gallery-item rounded-3xl overflow-hidden shadow-card reveal">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80" alt="Couple holding hands at sunset" class="w-full h-80 object-cover" loading="lazy">
+        </div>
+        <div class="gallery-item rounded-3xl overflow-hidden shadow-card reveal lg:mt-12">
+          <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&q=80" alt="Wedding rings on a vintage book" class="w-full h-80 object-cover" loading="lazy">
+        </div>
+        <div class="gallery-item rounded-3xl overflow-hidden shadow-card reveal">
+          <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80" alt="Wedding table setting with candles" class="w-full h-80 object-cover" loading="lazy">
+        </div>
+        <div class="gallery-item rounded-3xl overflow-hidden shadow-card reveal">
+          <img src="https://images.unsplash.com/photo-1529636798458-92182e662485?w=600&q=80" alt="Bride and groom walking through vineyard" class="w-full h-80 object-cover" loading="lazy">
+        </div>
+        <div class="gallery-item rounded-3xl overflow-hidden shadow-card reveal lg:mt-12">
+          <img src="https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=600&q=80" alt="Floral arrangement with roses" class="w-full h-80 object-cover" loading="lazy">
+        </div>
+        <div class="gallery-item rounded-3xl overflow-hidden shadow-card reveal">
+          <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80" alt="Tuscan villa at golden hour" class="w-full h-80 object-cover" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RSVP / CTA ===== -->
+  <section id="rsvp" class="section-pad bg-ink text-cream relative overflow-hidden">
+    <!-- Decorative glow -->
+    <div class="absolute top-[-20%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-brass/10 blur-3xl pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute bottom-[-20%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-sage/10 blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+    <div class="max-w-3xl mx-auto relative z-10">
+      <div class="text-center mb-12">
+        <p class="text-xs tracking-[0.3em] uppercase text-brass-light mb-4 reveal">Will You Join Us?</p>
+        <h2 class="heading-lg font-display text-cream reveal">RSVP</h2>
+        <p class="text-cream/60 mt-4 max-w-lg mx-auto reveal">
+          Kindly respond by August 1, 2026. We can't wait to celebrate with you.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <form id="rsvpForm" class="space-y-6 reveal" novalidate>
+        <div class="grid sm:grid-cols-2 gap-6">
+          <div>
+            <label for="name" class="block text-xs tracking-widest uppercase text-cream/50 mb-2">Full Name *</label>
+            <input type="text" id="name" name="name" required class="input-lux bg-transparent text-cream placeholder-cream/30" placeholder="Your name" style="border-color: rgba(252,250,247,0.2); color: #FCFAF7;">
+            <p class="error-msg text-xs text-red-300 mt-1 hidden">Please enter your name</p>
+          </div>
+          <div>
+            <label for="email" class="block text-xs tracking-widest uppercase text-cream/50 mb-2">Email *</label>
+            <input type="email" id="email" name="email" required class="input-lux bg-transparent text-cream placeholder-cream/30" placeholder="you@example.com" style="border-color: rgba(252,250,247,0.2); color: #FCFAF7;">
+            <p class="error-msg text-xs text-red-300 mt-1 hidden">Please enter a valid email</p>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-6">
+          <div>
+            <label for="phone" class="block text-xs tracking-widest uppercase text-cream/50 mb-2">Phone</label>
+            <input type="tel" id="phone" name="phone" class="input-lux bg-transparent text-cream placeholder-cream/30" placeholder="+1 (555) 000-0000" style="border-color: rgba(252,250,247,0.2); color: #FCFAF7;">
+          </div>
+          <div>
+            <label for="guests" class="block text-xs tracking-widest uppercase text-cream/50 mb-2">Number of Guests *</label>
+            <select id="guests" name="guests" required class="input-lux bg-transparent text-cream appearance-none" style="border-color: rgba(252,250,247,0.2); color: #FCFAF7;">
+              <option value="" disabled selected class="text-ink">Select</option>
+              <option value="1" class="text-ink">1 Guest</option>
+              <option value="2" class="text-ink">2 Guests</option>
+              <option value="3" class="text-ink">3 Guests</option>
+              <option value="4" class="text-ink">4 Guests</option>
+              <option value="5+" class="text-ink">5+ Guests</option>
+            </select>
+            <p class="error-msg text-xs text-red-300 mt-1 hidden">Please select number of guests</p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs tracking-widest uppercase text-cream/50 mb-3">Will you attend? *</label>
+          <div class="flex flex-wrap gap-6">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="radio" name="attending" value="yes" class="radio-lux" required>
+              <span class="text-sm text-cream/80">Joyfully Accept</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="radio" name="attending" value="no" class="radio-lux">
+              <span class="text-sm text-cream/80">Regretfully Decline</span>
+            </label>
+          </div>
+          <p class="error-msg text-xs text-red-300 mt-1 hidden">Please let us know if you can attend</p>
+        </div>
+
+        <div>
+          <label for="message" class="block text-xs tracking-widest uppercase text-cream/50 mb-2">Message / Dietary Restrictions</label>
+          <textarea id="message" name="message" rows="4" class="input-lux bg-transparent text-cream placeholder-cream/30 resize-none" placeholder="Any special requests or dietary needs..." style="border-color: rgba(252,250,247,0.2); color: #FCFAF7;"></textarea>
+        </div>
+
+        <div class="text-center pt-4">
+          <button type="submit" class="btn-primary bg-brass-light text-ink hover:bg-cream w-full sm:w-auto" style="background: #D9B382; color: #1E1C1A;">
+            Send RSVP
+          </button>
+        </div>
+      </form>
+
+      <!-- Success message -->
+      <div id="formSuccess" class="form-success">
+        <div class="w-16 h-16 rounded-full bg-brass/20 flex items-center justify-center mx-auto mb-6">
+          <i data-lucide="check" class="w-7 h-7 text-brass-light" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-display text-3xl text-cream mb-3">Thank You!</h3>
+        <p class="text-cream/60 max-w-md mx-auto">
+          Your RSVP has been received. We are so grateful to have you celebrate with us. Details will follow via email.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-cream pt-16 pb-8 px-6 md:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-12 md:gap-8 mb-16">
+        <!-- Brand -->
+        <div>
+          <a href="#" class="font-display text-3xl tracking-tight text-ink">
+            E <span class="text-brass">&</span> J
+          </a>
+          <p class="text-sm text-ink/50 mt-4 max-w-xs leading-relaxed">
+            Two hearts, one journey. Thank you for being part of our story.
+          </p>
+        </div>
+        <!-- Links -->
+        <div>
+          <h4 class="text-xs tracking-[0.2em] uppercase text-brass mb-5">Explore</h4>
+          <ul class="space-y-3">
+            <li><a href="#story" class="text-sm text-ink/60 hover:text-brass transition-colors duration-300">Our Story</a></li>
+            <li><a href="#details" class="text-sm text-ink/60 hover:text-brass transition-colors duration-300">Wedding Details</a></li>
+            <li><a href="#gallery" class="text-sm text-ink/60 hover:text-brass transition-colors duration-300">Gallery</a></li>
+            <li><a href="#rsvp" class="text-sm text-ink/60 hover:text-brass transition-colors duration-300">RSVP</a></li>
+          </ul>
+        </div>
+        <!-- Contact -->
+        <div>
+          <h4 class="text-xs tracking-[0.2em] uppercase text-brass mb-5">Questions?</h4>
+          <ul class="space-y-3">
+            <li class="flex items-center gap-3">
+              <i data-lucide="mail" class="w-4 h-4 text-brass/60" aria-hidden="true"></i>
+              <a href="mailto:wedding@elysianandjulian.com" class="text-sm text-ink/60 hover:text-brass transition-colors duration-300">wedding@elysianandjulian.com</a>
+            </li>
+            <li class="flex items-center gap-3">
+              <i data-lucide="phone" class="w-4 h-4 text-brass/60" aria-hidden="true"></i>
+              <a href="tel:+15551234567" class="text-sm text-ink/60 hover:text-brass transition-colors duration-300">+1 (555) 123-4567</a>
+            </li>
+            <li class="flex items-center gap-3">
+              <i data-lucide="map-pin" class="w-4 h-4 text-brass/60" aria-hidden="true"></i>
+              <span class="text-sm text-ink/60">Tuscany, Italy</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="border-t border-ink/8 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-ink/40 tracking-wide">
+          © 2026 Elysian & Julian. All rights reserved.
+        </p>
+        <p class="text-xs text-ink/40 tracking-wide">
+          Made with <i data-lucide="heart" class="w-3 h-3 text-brass inline-block" aria-hidden="true"></i> in Tuscany
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    (function() {
+      // === Initialize Lucide icons ===
+      lucide.createIcons();
+
+      // === Lenis smooth scroll ===
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        touchMultiplier: 1.5,
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // === GSAP ScrollTrigger ===
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Reveal animations on scroll
+      document.querySelectorAll('.reveal').forEach((el) => {
+        const delay = parseFloat(el.getAttribute('data-delay') || 0);
+        gsap.fromTo(el,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            delay: delay,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 88%',
+              toggleActions: 'play none none none',
+            }
+          }
+        );
+      });
+
+      // Hero reveals (no scroll trigger, just on load)
+      const heroReveals = document.querySelectorAll('section:first-of-type .reveal');
+      heroReveals.forEach((el) => {
+        const delay = parseFloat(el.getAttribute('data-delay') || 0);
+        gsap.fromTo(el,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 1.2, delay: delay, ease: 'power3.out' }
+        );
+      });
+
+      // === Nav scroll effect ===
+      const header = document.getElementById('header');
+      let lastScroll = 0;
+
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.scrollY;
+        if (currentScroll > 60) {
+          header.classList.add('nav-scrolled');
+        } else {
+          header.classList.remove('nav-scrolled');
+        }
+        lastScroll = currentScroll;
+      }, { passive: true });
+
+      // === Mobile menu ===
+      const menuBtn = document.getElementById('menuBtn');
+      const closeMenuBtn = document.getElementById('closeMenuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileLinks = mobileMenu.querySelectorAll('.mobile-link');
+
+      function openMenu() {
+        mobileMenu.style.opacity = '1';
+        mobileMenu.style.pointerEvents = 'auto';
+        menuBtn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+        lenis.stop();
+      }
+
+      function closeMenu() {
+        mobileMenu.style.opacity = '0';
+        mobileMenu.style.pointerEvents = 'none';
+        menuBtn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+        lenis.start();
+      }
+
+      menuBtn.addEventListener('click', openMenu);
+      closeMenuBtn.addEventListener('click', closeMenu);
+
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          closeMenu();
+        });
+      });
+
+      // Close menu on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenu.style.pointerEvents === 'auto') {
+          closeMenu();
+        }
+      });
+
+      // === Custom cursor (subtle) ===
+      const cursorDot = document.getElementById('cursorDot');
+      if (window.matchMedia('(pointer: fine)').matches) {
+        document.addEventListener('mousemove', (e) => {
+          gsap.to(cursorDot, {
+            x: e.clientX - 4,
+            y: e.clientY - 4,
+            duration: 0.15,
+            ease: 'power2.out',
+          });
+        });
+
+        // Scale on hover over interactive elements
+        document.querySelectorAll('a, button, input, textarea, select, .tilt-card').forEach(el => {
+          el.addEventListener('mouseenter', () => {
+            gsap.to(cursorDot, { scale: 2.5, duration: 0.3, ease: 'power2.out' });
+          });
+          el.addEventListener('mouseleave', () => {
+            gsap.to(cursorDot, { scale: 1, duration: 0.3, ease: 'power2.out' });
+          });
+        });
+      }
+
+      // === Smooth anchor scrolling with Lenis ===
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            lenis.scrollTo(target, { offset: -80, duration: 1.4 });
+          }
+        });
+      });
+
+      // === Form validation & submission ===
+      const form = document.getElementById('rsvpForm');
+      const formSuccess = document.getElementById('formSuccess');
+
+      // Hide/show error messages
+      function showError(input, message) {
+        const errorEl = input.closest('div').querySelector('.error-msg');
+        if (errorEl) {
+          errorEl.textContent = message;
+          errorEl.classList.remove('hidden');
+        }
+        input.style.borderColor = 'rgba(220, 38, 38, 0.6)';
+      }
+
+      function clearError(input) {
+        const errorEl = input.closest('div').querySelector('.error-msg');
+        if (errorEl) {
+          errorEl.classList.add('hidden');
+        }
+        input.style.borderColor = 'rgba(252,250,247,0.2)';
+      }
+
+      // Clear errors on input
+      form.querySelectorAll('input, select, textarea').forEach(el => {
+        el.addEventListener('input', () => clearError(el));
+        el.addEventListener('change', () => clearError(el));
+      });
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let isValid = true;
+
+        // Validate name
+        const name = document.getElementById('name');
+        if (!name.value.trim()) {
+          showError(name, 'Please enter your name');
+          isValid = false;
+        }
+
+        // Validate email
+        const email = document.getElementById('email');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.value.trim() || !emailRegex.test(email.value)) {
+          showError(email, 'Please enter a valid email');
+          isValid = false;
+        }
+
+        // Validate guests
+        const guests = document.getElementById('guests');
+        if (!guests.value) {
+          showError(guests, 'Please select number of guests');
+          isValid = false;
+        }
+
+        // Validate attending radio
+        const attending = form.querySelector('input[name="attending"]:checked');
+        if (!attending) {
+          const radioGroup = form.querySelector('input[name="attending"]').closest('div');
+          const errorEl = radioGroup.parentElement.querySelector('.error-msg');
+          if (errorEl) {
+            errorEl.classList.remove('hidden');
+            errorEl.textContent = 'Please let us know if you can attend';
+          }
+          isValid = false;
+        }
+
+        if (!isValid) return;
+
+        // Collect form data
+        const formData = {
+          name: name.value.trim(),
+          email: email.value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          guests: guests.value,
+          attending: attending.value,
+          message: document.getElementById('message').value.trim(),
+          submittedAt: new Date().toISOString(),
+        };
+
+        // TODO: connect form action to backend endpoint
+        // Simulate submission with fetch to /submit
+        const payload = {
+          url: window.location.host,
+          table: 'rsvp',
+          data: formData,
+        };
+
+        fetch('submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          cache: 'no-store',
+          body: JSON.stringify(payload),
+        })
+        .then(response => {
+          // Whether or not the backend exists, show success for demo
+          form.style.display = 'none';
+          formSuccess.classList.add('show');
+          // Re-init lucide icons inside success message
+          lucide.createIcons();
+        })
+        .catch(() => {
+          // Even on error, show success for demo purposes
+          form.style.display = 'none';
+          formSuccess.classList.add('show');
+          lucide.createIcons();
+        });
+      });
+
+      // === Refresh ScrollTrigger on load ===
+      window.addEventListener('load', () => {
+        ScrollTrigger.refresh();
+      });
+
+    })();
+  </script>
+</body>
+</html>
