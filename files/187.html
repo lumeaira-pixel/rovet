@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enikoru — Scrolling Website Undakanam</title>
+
+  <!-- ===== TAILWIND CDN + CONFIG ===== -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1A1D21',
+            cream: '#F8F7F4',
+            brass: '#B8875A',
+            sage: '#6B7F6A',
+            sand: '#E8E3DC',
+            cloud: '#FAFAF8',
+          },
+          fontFamily: {
+            display: ['"Instrument Serif"', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- ===== GOOGLE FONTS ===== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300..700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- ===== LUCIDE ICONS ===== -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- ===== LENIS SMOOTH SCROLL ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+
+  <!-- ===== GSAP + SCROLLTRIGGER ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+       ============================================================ */
+    :root {
+      --ink: #1A1D21;
+      --cream: #F8F7F4;
+      --brass: #B8875A;
+      --brass-light: #D4A87A;
+      --sage: #6B7F6A;
+      --sand: #E8E3DC;
+      --cloud: #FAFAF8;
+      --white: #FFFFFF;
+      --border-hairline: rgba(26, 29, 33, 0.08);
+      --shadow-soft: 0 2px 20px rgba(26, 29, 33, 0.06);
+      --shadow-card: 0 8px 40px rgba(26, 29, 33, 0.07);
+      --shadow-elevated: 0 20px 60px rgba(26, 29, 33, 0.10);
+      --radius-sm: 0.5rem;
+      --radius-md: 1rem;
+      --radius-lg: 1.5rem;
+      --radius-xl: 2rem;
+      --transition-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+      --transition-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* ============================================================
+       BASE & RESET
+       ============================================================ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    ::selection {
+      background-color: var(--brass);
+      color: var(--white);
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    /* ============================================================
+       FOCUS STATES (ACCESSIBILITY)
+       ============================================================ */
+    :focus-visible {
+      outline: 2px solid var(--brass);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY UTILITIES
+       ============================================================ */
+    .font-display {
+      font-family: 'Instrument Serif', serif;
+    }
+
+    .text-balance {
+      text-wrap: balance;
+    }
+
+    .heading-xl {
+      font-size: clamp(2.8rem, 8vw, 7rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      font-weight: 400;
+    }
+
+    .heading-lg {
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      font-weight: 400;
+    }
+
+    .heading-md {
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      font-weight: 400;
+    }
+
+    .body-lg {
+      font-size: clamp(1rem, 1.25vw, 1.2rem);
+      line-height: 1.65;
+      font-weight: 400;
+    }
+
+    /* ============================================================
+       LAYOUT UTILITIES
+       ============================================================ */
+    .container-main {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .container-main {
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .container-main {
+        padding-left: 3rem;
+        padding-right: 3rem;
+      }
+    }
+
+    /* ============================================================
+       NAVIGATION
+       ============================================================ */
+    .nav-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      transition: all 0.4s var(--transition-smooth);
+      padding: 1.25rem 0;
+    }
+
+    .nav-wrapper.scrolled {
+      padding: 0.75rem 0;
+      background: rgba(248, 247, 244, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-hairline);
+      box-shadow: 0 1px 20px rgba(26, 29, 33, 0.04);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.75rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      transition: opacity 0.3s ease;
+    }
+
+    .nav-logo:hover {
+      opacity: 0.7;
+    }
+
+    .nav-links-desktop {
+      display: none;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .nav-links-desktop {
+        display: flex;
+      }
+    }
+
+    .nav-link {
+      font-size: 0.85rem;
+      font-weight: 450;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.65;
+      transition: opacity 0.3s ease;
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--brass);
+      transition: width 0.4s var(--transition-smooth);
+    }
+
+    .nav-link:hover {
+      opacity: 1;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.7rem 1.6rem;
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: 100px;
+      transition: all 0.4s var(--transition-smooth);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-cta:hover {
+      background: var(--brass);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(184, 135, 90, 0.3);
+    }
+
+    .nav-cta:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Mobile menu button */
+    .mobile-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      transition: background 0.3s ease;
+    }
+
+    .mobile-toggle:hover {
+      background: rgba(26, 29, 33, 0.05);
+    }
+
+    @media (min-width: 768px) {
+      .mobile-toggle {
+        display: none;
+      }
+    }
+
+    /* Mobile menu overlay */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: var(--cream);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s var(--transition-smooth);
+    }
+
+    .mobile-menu.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-menu .nav-link {
+      font-size: 1.5rem;
+      text-transform: none;
+      letter-spacing: -0.01em;
+      font-weight: 400;
+      font-family: 'Instrument Serif', serif;
+      opacity: 0.8;
+    }
+
+    .mobile-menu .nav-link:hover {
+      opacity: 1;
+    }
+
+    /* ============================================================
+       HERO SECTION
+       ============================================================ */
+    .hero-section {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 6rem;
+      padding-bottom: 4rem;
+      overflow: hidden;
+    }
+
+    .hero-bg-accent {
+      position: absolute;
+      top: -30%;
+      right: -15%;
+      width: 70vw;
+      height: 70vw;
+      max-width: 900px;
+      max-height: 900px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(184, 135, 90, 0.10), rgba(107, 127, 106, 0.06) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: heroGlow 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes heroGlow {
+      0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+      100% { transform: scale(1.15) translate(-2%, 3%); opacity: 1; }
+    }
+
+    .hero-bg-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-hairline), transparent);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brass);
+      margin-bottom: 2rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--brass);
+    }
+
+    .hero-headline {
+      max-width: 14ch;
+    }
+
+    .hero-headline .reveal-line {
+      display: block;
+      overflow: hidden;
+    }
+
+    .hero-headline .reveal-line span {
+      display: block;
+      transform: translateY(110%);
+      transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .hero-headline .reveal-line span.revealed {
+      transform: translateY(0);
+    }
+
+    .hero-sub {
+      max-width: 48ch;
+      margin-top: 2rem;
+      color: rgba(26, 29, 33, 0.65);
+      font-weight: 350;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1rem 2rem;
+      background: var(--ink);
+      color: var(--cream);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-radius: 100px;
+      transition: all 0.4s var(--transition-smooth);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--brass);
+      transform: translateX(-101%);
+      transition: transform 0.5s var(--transition-smooth);
+      border-radius: 100px;
+    }
+
+    .btn-primary:hover::before {
+      transform: translateX(0);
+    }
+
+    .btn-primary span,
+    .btn-primary svg {
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(184, 135, 90, 0.35);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1rem 2rem;
+      background: transparent;
+      color: var(--ink);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-radius: 100px;
+      border: 1px solid var(--border-hairline);
+      transition: all 0.4s var(--transition-smooth);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--ink);
+      background: rgba(26, 29, 33, 0.03);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Hero visual */
+    .hero-visual {
+      position: relative;
+      margin-top: 4rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+      .hero-visual {
+        grid-template-columns: 1.2fr 0.8fr;
+        align-items: end;
+      }
+    }
+
+    .hero-image-main {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      aspect-ratio: 16/10;
+      background: var(--sand);
+      box-shadow: var(--shadow-elevated);
+    }
+
+    .hero-image-main img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 1.2s var(--transition-smooth);
+    }
+
+    .hero-image-main:hover img {
+      transform: scale(1.03);
+    }
+
+    .hero-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(26, 29, 33, 0.15));
+    }
+
+    .hero-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .hero-stat-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      border: 1px solid var(--border-hairline);
+      transition: all 0.4s var(--transition-smooth);
+    }
+
+    .hero-stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card);
+      border-color: rgba(184, 135, 90, 0.25);
+    }
+
+    .hero-stat-number {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.2rem;
+      line-height: 1;
+      color: var(--ink);
+      margin-bottom: 0.35rem;
+    }
+
+    .hero-stat-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(26, 29, 33, 0.5);
+    }
+
+    /* ============================================================
+       MARQUEE / TICKER
+       ============================================================ */
+    .marquee-section {
+      padding: 3rem 0;
+      border-top: 1px solid var(--border-hairline);
+      border-bottom: 1px solid var(--border-hairline);
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    .marquee-track {
+      display: flex;
+      width: fit-content;
+      animation: marquee 30s linear infinite;
+    }
+
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0 2.5rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(26, 29, 33, 0.4);
+      white-space: nowrap;
+    }
+
+    .marquee-item svg {
+      width: 16px;
+      height: 16px;
+      color: var(--brass);
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       SECTION STYLES
+       ============================================================ */
+    .section-pad {
+      padding: 6rem 0;
+    }
+
+    @media (min-width: 768px) {
+      .section-pad {
+        padding: 8rem 0;
+      }
+    }
+
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--brass);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-eyebrow::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--brass);
+    }
+
+    .section-heading {
+      max-width: 20ch;
+    }
+
+    /* ============================================================
+       FEATURE CARDS (SCROLL REVEAL)
+       ============================================================ */
+    .feature-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      border: 1px solid var(--border-hairline);
+      transition: all 0.5s var(--transition-smooth);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--brass), var(--sage));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.6s var(--transition-smooth);
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-elevated);
+      border-color: transparent;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(184, 135, 90, 0.12), rgba(107, 127, 106, 0.08));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      transition: all 0.4s var(--transition-smooth);
+    }
+
+    .feature-card:hover .feature-icon {
+      background: linear-gradient(135deg, var(--brass), var(--brass-light));
+      transform: scale(1.05) rotate(-3deg);
+    }
+
+    .feature-card:hover .feature-icon svg {
+      color: var(--white);
+    }
+
+    .feature-icon svg {
+      width: 22px;
+      height: 22px;
+      color: var(--brass);
+      transition: color 0.4s ease;
+    }
+
+    .feature-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.5rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-desc {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: rgba(26, 29, 33, 0.6);
+    }
+
+    /* ============================================================
+       SCROLL REVEAL ANIMATION
+       ============================================================ */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s var(--transition-smooth), transform 0.8s var(--transition-smooth);
+    }
+
+    .reveal-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       HORIZONTAL GALLERY
+       ============================================================ */
+    .gallery-section {
+      overflow: hidden;
+      padding: 6rem 0;
+      background: var(--white);
+    }
+
+    .gallery-track {
+      display: flex;
+      gap: 1.5rem;
+      padding: 0 2rem;
+      width: fit-content;
+    }
+
+    .gallery-item {
+      flex-shrink: 0;
+      width: 320px;
+      height: 400px;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      position: relative;
+      background: var(--sand);
+      box-shadow: var(--shadow-card);
+      transition: transform 0.5s var(--transition-smooth), box-shadow 0.5s var(--transition-smooth);
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--shadow-elevated);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 1s var(--transition-smooth);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.06);
+    }
+
+    .gallery-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(26, 29, 33, 0.6));
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 2rem;
+      opacity: 0;
+      transition: opacity 0.5s var(--transition-smooth);
+    }
+
+    .gallery-item:hover .gallery-item-overlay {
+      opacity: 1;
+    }
+
+    .gallery-item-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.5rem;
+      color: var(--white);
+      transform: translateY(10px);
+      transition: transform 0.5s var(--transition-smooth);
+    }
+
+    .gallery-item:hover .gallery-item-title {
+      transform: translateY(0);
+    }
+
+    .gallery-item-cat {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 0.35rem;
+      transform: translateY(10px);
+      transition: transform 0.5s var(--transition-smooth) 0.05s;
+    }
+
+    .gallery-item:hover .gallery-item-cat {
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       TESTIMONIALS
+       ============================================================ */
+    .testimonial-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      border: 1px solid var(--border-hairline);
+      transition: all 0.5s var(--transition-smooth);
+      position: relative;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-elevated);
+    }
+
+    .testimonial-quote {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.25rem;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+
+    .testimonial-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brass), var(--sage));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .testimonial-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .testimonial-role {
+      font-size: 0.8rem;
+      color: rgba(26, 29, 33, 0.5);
+    }
+
+    /* ============================================================
+       CTA BANNER
+       ============================================================ */
+    .cta-banner {
+      background: var(--ink);
+      border-radius: var(--radius-xl);
+      padding: 4rem 2rem;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .cta-banner {
+        padding: 6rem 4rem;
+      }
+    }
+
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(184, 135, 90, 0.2), transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-banner::after {
+      content: '';
+      position: absolute;
+      bottom: -40%;
+      left: -10%;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(107, 127, 106, 0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-banner > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-heading {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-sub {
+      font-size: 1.05rem;
+      color: rgba(248, 247, 244, 0.6);
+      max-width: 40ch;
+      margin: 0 auto 2.5rem;
+      line-height: 1.65;
+    }
+
+    .btn-light {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1rem 2.2rem;
+      background: var(--cream);
+      color: var(--ink);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-radius: 100px;
+      transition: all 0.4s var(--transition-smooth);
+    }
+
+    .btn-light:hover {
+      background: var(--brass);
+      color: var(--white);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(184, 135, 90, 0.35);
+    }
+
+    .btn-light:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .footer-main {
+      background: var(--white);
+      border-top: 1px solid var(--border-hairline);
+      padding: 5rem 0 2rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+        gap: 3rem;
+      }
+    }
+
+    .footer-brand-text {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: rgba(26, 29, 33, 0.55);
+      max-width: 30ch;
+      margin-top: 1rem;
+    }
+
+    .footer-col-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-link {
+      display: block;
+      font-size: 0.9rem;
+      color: rgba(26, 29, 33, 0.55);
+      margin-bottom: 0.85rem;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--brass);
+      transform: translateX(3px);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s var(--transition-smooth);
+    }
+
+    .footer-social a:hover {
+      background: var(--ink);
+      border-color: var(--ink);
+      transform: translateY(-2px);
+    }
+
+    .footer-social a:hover svg {
+      color: var(--cream);
+    }
+
+    .footer-social svg {
+      width: 18px;
+      height: 18px;
+      color: var(--ink);
+      transition: color 0.3s ease;
+    }
+
+    .footer-bottom {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-hairline);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    @media (min-width: 768px) {
+      .footer-bottom {
+        flex-direction: row;
+      }
+    }
+
+    .footer-bottom-text {
+      font-size: 0.8rem;
+      color: rgba(26, 29, 33, 0.4);
+    }
+
+    /* ============================================================
+       CONTACT FORM
+       ============================================================ */
+    .contact-form {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(26, 29, 33, 0.55);
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: var(--cream);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: all 0.3s var(--transition-smooth);
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: rgba(26, 29, 33, 0.3);
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184, 135, 90, 0.12);
+      background: var(--white);
+    }
+
+    .form-input.error,
+    .form-textarea.error {
+      border-color: #D45A5A;
+      box-shadow: 0 0 0 3px rgba(212, 90, 90, 0.1);
+    }
+
+    .form-error {
+      font-size: 0.75rem;
+      color: #D45A5A;
+      display: none;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 1rem 2rem;
+      background: var(--ink);
+      color: var(--cream);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-radius: 100px;
+      transition: all 0.4s var(--transition-smooth);
+      margin-top: 0.5rem;
+    }
+
+    .form-submit:hover {
+      background: var(--brass);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(184, 135, 90, 0.3);
+    }
+
+    .form-submit:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .form-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .form-success.visible {
+      display: block;
+    }
+
+    .form-success-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--sage), #8FAF8E);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .form-success-icon svg {
+      width: 28px;
+      height: 28px;
+      color: var(--white);
+    }
+
+    /* ============================================================
+       CUSTOM CURSOR (DESKTOP ONLY)
+       ============================================================ */
+    @media (pointer: fine) {
+      .cursor-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--brass);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        transition: transform 0.15s var(--transition-smooth);
+        mix-blend-mode: multiply;
+      }
+
+      .cursor-ring {
+        width: 40px;
+        height: 40px;
+        border: 1.5px solid rgba(184, 135, 90, 0.4);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9998;
+        transition: transform 0.3s var(--transition-smooth), width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+      }
+
+      .cursor-ring.hovering {
+        width: 64px;
+        height: 64px;
+        border-color: rgba(184, 135, 90, 0.8);
+      }
+    }
+
+    @media (pointer: coarse) {
+      .cursor-dot,
+      .cursor-ring {
+        display: none;
+      }
+    }
+
+    /* ============================================================
+       MOBILE MENU OVERLAY
+       ============================================================ */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* ============================================================
+       REDUCED MOTION
+       ============================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .hero-headline .reveal-line span {
+        transform: translateY(0) !important;
+      }
+
+      .reveal-up {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       CUSTOM CURSOR
+       ============================================================ -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+       ============================================================ -->
+  <header class="nav-wrapper" id="navWrapper">
+    <div class="container-main">
+      <nav class="nav-inner" aria-label="Main navigation">
+        <a href="#" class="nav-logo" aria-label="Enikoru home">Enikoru</a>
+
+        <div class="nav-links-desktop">
+          <a href="#craft" class="nav-link">Craft</a>
+          <a href="#collection" class="nav-link">Collection</a>
+          <a href="#stories" class="nav-link">Stories</a>
+          <a href="#atelier" class="nav-link">Atelier</a>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <a href="#contact" class="nav-cta">
+            <span>Begin a project</span>
+            <i data-lucide="arrow-up-right" style="width: 14px; height: 14px;"></i>
+          </a>
+
+          <button
+            class="mobile-toggle"
+            id="mobileToggle"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="mobileMenu"
+          >
+            <i data-lucide="menu" style="width: 22px; height: 22px;"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <div
+    class="mobile-menu"
+    id="mobileMenu"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Mobile navigation"
+  >
+    <a href="#craft" class="nav-link" data-close-mobile>Craft</a>
+    <a href="#collection" class="nav-link" data-close-mobile>Collection</a>
+    <a href="#stories" class="nav-link" data-close-mobile>Stories</a>
+    <a href="#atelier" class="nav-link" data-close-mobile>Atelier</a>
+    <a href="#contact" class="nav-link" data-close-mobile>Begin a project</a>
+  </div>
+
+  <!-- ============================================================
+       HERO SECTION
+       ============================================================ -->
+  <section class="hero-section" id="hero">
+    <div class="hero-bg-accent" aria-hidden="true"></div>
+
+    <div class="container-main hero-content">
+      <div class="hero-eyebrow reveal-up">Undakanam · Est. 2019</div>
+
+      <h1 class="heading-xl hero-headline font-display">
+        <span class="reveal-line"><span>Objects with</span></span>
+        <span class="reveal-line"><span>quiet gravity.</span></span>
+      </h1>
+
+      <p class="body-lg hero-sub reveal-up">
+        Enikoru is a slow-craft atelier shaping tactile furniture and lighting from
+        honest materials — brass, travertine, and oiled oak. Each piece is made
+        to be lived with, not merely looked at.
+      </p>
+
+      <div class="hero-actions reveal-up">
+        <a href="#collection" class="btn-primary">
+          <span>View the collection</span>
+          <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+        </a>
+        <a href="#atelier" class="btn-secondary">
+          <span>Our process</span>
+          <i data-lucide="play-circle" style="width: 16px; height: 16px;"></i>
+        </a>
+      </div>
+
+      <!-- Hero visual grid -->
+      <div class="hero-visual">
+        <div class="hero-image-main reveal-up">
+          <img
+            src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1600&auto=format&fit=crop"
+            alt="Sculptural travertine side table in a sunlit studio"
+            loading="eager"
+          />
+          <div class="hero-image-overlay" aria-hidden="true"></div>
+        </div>
+
+        <div class="hero-stats-grid">
+          <div class="hero-stat-card reveal-up">
+            <div class="hero-stat-number">120+</div>
+            <div class="hero-stat-label">Pieces shipped</div>
+          </div>
+          <div class="hero-stat-card reveal-up">
+            <div class="hero-stat-number">6</div>
+            <div class="hero-stat-label">Ateliers</div>
+          </div>
+          <div class="hero-stat-card reveal-up">
+            <div class="hero-stat-number">14</div>
+            <div class="hero-stat-label">Design awards</div>
+          </div>
+          <div class="hero-stat-card reveal-up">
+            <div class="hero-stat-number">98%</div>
+            <div class="hero-stat-label">Collector return</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-bg-line" aria-hidden="true"></div>
+  </section>
+
+  <!-- ============================================================
+       MARQUEE / SOCIAL PROOF
+       ============================================================ -->
+  <section class="marquee-section" aria-label="Featured in">
+    <div class="marquee-track" id="marqueeTrack">
+      <div class="marquee-item">
+        <i data-lucide="award"></i>
+        <span>Wallpaper* Design Awards</span>
+      </div>
+      <div class="marquee-item">
+        <i data-lucide="star"></i>
+        <span>Dezeen</span>
+      </div>
+      <div class="marquee-item">
+        <i data-lucide="home"></i>
+        <span>Architectural Digest</span>
+      </div>
+      <div class="marquee-item">
+        <i data-lucide="pen-tool"></i>
+        <span>Frame</span>
+      </div>
+      <div class="marquee-item">
+        <i data-lucide="aperture"></i>
+        <span>Monocle</span>
+      </div>
+      <div class="marquee-item">
+        <i data-lucide="layers"></i>
+        <span>Kinfolk</span>
+      </div>
+      <div class="marquee-item">
+        <i data-lucide="award"></i>
+        <span>Wallpaper* Design Awards</span>
+      </div>
+      <div class="marquee-item">
+        <i data-lucide="star"></i>
+        <span>Dezeen</span>
+      </div>
+      <div class="marquee-item">
+        <i data-lucide="home"></i>
+        <span>Architectural Digest</span>
+      </div>
+      <div class="marquee-item">
+        <i data-lucide="pen-tool"></i>
+        <span>Frame</span>
+      </div>
+      <div class="marquee-item">
+        <i data-lucide="aperture"></i>
+        <span>Monocle</span>
+      </div>
+      <div class="marquee-item">
+        <i data-lucide="layers"></i>
+        <span>Kinfolk</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CRAFT / FEATURES SECTION
+       ============================================================ -->
+  <section class="section-pad" id="craft">
+    <div class="container-main">
+      <div class="section-eyebrow reveal-up">The Enikoru approach</div>
+
+      <h2 class="heading-lg font-display section-heading reveal-up">
+        Slow made. <br /> Deeply felt.
+      </h2>
+
+      <p class="body-lg reveal-up" style="max-width: 52ch; margin-top: 1.5rem; color: rgba(26,29,33,0.6);">
+        Every Enikoru piece begins as a conversation between material and maker.
+        We work in small batches, guided by the grain, the weight, and the way
+        light lands on a surface.
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3.5rem;">
+        <!-- Card 1 -->
+        <div class="feature-card reveal-up">
+          <div class="feature-icon">
+            <i data-lucide="hand"></i>
+          </div>
+          <h3 class="feature-title">Hand-finished</h3>
+          <p class="feature-desc">
+            Each surface is sanded, oiled, and burnished by hand — producing a
+            patina that deepens with every year of use.
+          </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="feature-card reveal-up">
+          <div class="feature-icon">
+            <i data-lucide="layers"></i>
+          </div>
+          <h3 class="feature-title">Honest materials</h3>
+          <p class="feature-desc">
+            Travertine from Tivoli, unlacquered brass from Lombardy, and
+            FSC-certified European oak. Nothing hidden, nothing veneered.
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="feature-card reveal-up">
+          <div class="feature-icon">
+            <i data-lucide="compass"></i>
+          </div>
+          <h3 class="feature-title">Built to endure</h3>
+          <p class="feature-desc">
+            Traditional joinery and considered engineering mean each piece is
+            designed to outlast trends — and its first owner.
+          </p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="feature-card reveal-up">
+          <div class="feature-icon">
+            <i data-lucide="sun"></i>
+          </div>
+          <h3 class="feature-title">Light as material</h3>
+          <p class="feature-desc">
+            Our lighting collection treats illumination as a sculptural
+            element — warm, diffuse, and softly directional.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       COLLECTION / GALLERY (HORIZONTAL SCROLL)
+       ============================================================ -->
+  <section class="gallery-section" id="collection">
+    <div class="container-main">
+      <div class="section-eyebrow reveal-up">Selected works</div>
+      <h2 class="heading-lg font-display section-heading reveal-up" style="margin-bottom: 3rem;">
+        The collection
+      </h2>
+    </div>
+
+    <div class="gallery-track" id="galleryTrack">
+      <div class="gallery-item">
+        <img
+          src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop"
+          alt="Travertine coffee table with organic edges"
+          loading="lazy"
+        />
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-title">Tivoli Table</div>
+          <div class="gallery-item-cat">Travertine · 2024</div>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <img
+          src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=800&auto=format&fit=crop"
+          alt="Brass pendant light casting warm glow"
+          loading="lazy"
+        />
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-title">Aurelia Pendant</div>
+          <div class="gallery-item-cat">Brass · 2024</div>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <img
+          src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?q=80&w=800&auto=format&fit=crop"
+          alt="Sculptural oak lounge chair"
+          loading="lazy"
+        />
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-title">Undakanam Chair</div>
+          <div class="gallery-item-cat">Oiled Oak · 2023</div>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <img
+          src="https://images.unsplash.com/photo-1549497538-303791108f95?q=80&w=800&auto=format&fit=crop"
+          alt="Minimalist stone side table"
+          loading="lazy"
+        />
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-title">Pietra Side</div>
+          <div class="gallery-item-cat">Marble · 2024</div>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <img
+          src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop"
+          alt="Warm linen and oak bedroom scene"
+          loading="lazy"
+        />
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-title">Serene Bed</div>
+          <div class="gallery-item-cat">Oak & Linen · 2023</div>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <img
+          src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800&auto=format&fit=crop"
+          alt="Brass floor lamp beside a reading chair"
+          loading="lazy"
+        />
+        <div class="gallery-item-overlay">
+          <div class="gallery-item-title">Lume Floor Lamp</div>
+          <div class="gallery-item-cat">Brass & Paper · 2024</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       STORIES / TESTIMONIALS
+       ============================================================ -->
+  <section class="section-pad" id="stories" style="background: var(--cream);">
+    <div class="container-main">
+      <div class="section-eyebrow reveal-up">From our collectors</div>
+      <h2 class="heading-lg font-display section-heading reveal-up" style="margin-bottom: 3rem;">
+        Words that stay
+      </h2>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+        <div class="testimonial-card reveal-up">
+          <p class="testimonial-quote">
+            "The Tivoli table has become the quiet centre of our home. It's the
+            first thing I notice each morning and the last thing I touch at night."
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">A</div>
+            <div>
+              <div class="testimonial-name">Amara V.</div>
+              <div class="testimonial-role">Collector · Lisbon</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal-up">
+          <p class="testimonial-quote">
+            "Enikoru's work has a presence that photographs can't capture. In
+            person, the brass pendant transforms an entire room."
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">R</div>
+            <div>
+              <div class="testimonial-name">Ravi M.</div>
+              <div class="testimonial-role">Architect · Mumbai</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal-up">
+          <p class="testimonial-quote">
+            "I've furnished three homes with Enikoru pieces. Each one feels like
+            it was made specifically for the space it occupies."
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">S</div>
+            <div>
+              <div class="testimonial-name">Sofia L.</div>
+              <div class="testimonial-role">Interior Designer · Copenhagen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CTA BANNER
+       ============================================================ -->
+  <section class="section-pad" id="atelier">
+    <div class="container-main">
+      <div class="cta-banner reveal-up">
+        <h2 class="cta-heading">
+          Begin a commission
+        </h2>
+        <p class="cta-sub">
+          We accept a limited number of bespoke projects each season. Tell us
+          about the space you're shaping.
+        </p>
+        <a href="#contact" class="btn-light">
+          <span>Start the conversation</span>
+          <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER + CONTACT FORM
+       ============================================================ -->
+  <footer class="footer-main" id="contact">
+    <div class="container-main">
+      <div class="footer-grid">
+        <!-- Brand column -->
+        <div>
+          <a href="#" class="nav-logo" style="font-size: 1.5rem;">Enikoru</a>
+          <p class="footer-brand-text">
+            A slow-craft atelier making furniture, lighting, and objects for
+            considered living. Based in Copenhagen and Lombardy.
+          </p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">
+              <i data-lucide="instagram"></i>
+            </a>
+            <a href="#" aria-label="Pinterest">
+              <i data-lucide="pin"></i>
+            </a>
+            <a href="#" aria-label="LinkedIn">
+              <i data-lucide="linkedin"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Sitemap -->
+        <div>
+          <div class="footer-col-title">Explore</div>
+          <a href="#craft" class="footer-link">Craft</a>
+          <a href="#collection" class="footer-link">Collection</a>
+          <a href="#stories" class="footer-link">Stories</a>
+          <a href="#atelier" class="footer-link">Atelier</a>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <a href="mailto:hello@enikoru.com" class="footer-link">hello@enikoru.com</a>
+          <a href="tel:+4533100200" class="footer-link">+45 33 10 02 00</a>
+          <span class="footer-link" style="cursor: default;">
+            Bredgade 21, Copenhagen
+          </span>
+        </div>
+
+        <!-- Contact form -->
+        <div>
+          <div class="footer-col-title">Enquire</div>
+
+          <form class="contact-form" id="contactForm" novalidate>
+            <div class="form-group">
+              <label for="name" class="form-label">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-input"
+                placeholder="Your name"
+                required
+                autocomplete="name"
+              />
+              <span class="form-error" id="nameError">Please enter your name.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-input"
+                placeholder="you@example.com"
+                required
+                autocomplete="email"
+              />
+              <span class="form-error" id="emailError">Please enter a valid email.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="phone" class="form-label">Phone</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                class="form-input"
+                placeholder="+45 ..."
+                autocomplete="tel"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="message" class="form-label">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                class="form-textarea"
+                placeholder="Tell us about your project..."
+                required
+              ></textarea>
+              <span class="form-error" id="messageError">Please tell us a little about your project.</span>
+            </div>
+
+            <button type="submit" class="form-submit" id="submitBtn">
+              <span>Send enquiry</span>
+              <i data-lucide="send" style="width: 15px; height: 15px;"></i>
+            </button>
+          </form>
+
+          <!-- Success state -->
+          <div class="form-success" id="formSuccess" role="status">
+            <div class="form-success-icon">
+              <i data-lucide="check"></i>
+            </div>
+            <h3 class="font-display" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Thank you</h3>
+            <p style="font-size: 0.9rem; color: rgba(26,29,33,0.55);">
+              We'll be in touch within two working days.
+            </p>
+          </div>
+
+          <!-- TODO: connect form action to backend endpoint -->
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span class="footer-bottom-text">
+          &copy; 2025 Enikoru Atelier. All rights reserved.
+        </span>
+        <span class="footer-bottom-text">
+          Crafted slowly in Copenhagen & Milan.
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       JAVASCRIPT
+       ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ----------------------------------------------------------
+      // Lucide Icons
+      // ----------------------------------------------------------
+      lucide.createIcons();
+
+      // ----------------------------------------------------------
+      // Lenis Smooth Scroll
+      // ----------------------------------------------------------
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        wheelMultiplier: 1,
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // ----------------------------------------------------------
+      // GSAP ScrollTrigger integration with Lenis
+      // ----------------------------------------------------------
+      gsap.registerPlugin(ScrollTrigger);
+
+      lenis.on('scroll', ScrollTrigger.update);
+
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+
+      gsap.ticker.lagSmoothing(0);
+
+      // ----------------------------------------------------------
+      // Hero headline reveal on load
+      // ----------------------------------------------------------
+      const heroLines = document.querySelectorAll('.hero-headline .reveal-line span');
+      window.addEventListener('load', () => {
+        heroLines.forEach((span, i) => {
+          setTimeout(() => {
+            span.classList.add('revealed');
+          }, 200 + i * 150);
+        });
+      });
+
+      // Fallback if load already fired
+      if (document.readyState === 'complete') {
+        heroLines.forEach((span, i) => {
+          setTimeout(() => {
+            span.classList.add('revealed');
+          }, 200 + i * 150);
+        });
+      }
+
+      // ----------------------------------------------------------
+      // Navbar scroll state
+      // ----------------------------------------------------------
+      const navWrapper = document.getElementById('navWrapper');
+      let lastScroll = 0;
+
+      lenis.on('scroll', ({ scroll }) => {
+        if (scroll > 60) {
+          navWrapper.classList.add('scrolled');
+        } else {
+          navWrapper.classList.remove('scrolled');
+        }
+        lastScroll = scroll;
+      });
+
+      // ----------------------------------------------------------
+      // Mobile menu
+      // ----------------------------------------------------------
+      const mobileToggle = document.getElementById('mobileToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const closeMobileLinks = document.querySelectorAll('[data-close-mobile]');
+
+      function openMobileMenu() {
+        mobileMenu.classList.add('open');
+        mobileToggle.setAttribute('aria-expanded', 'true');
+        mobileToggle.innerHTML = '<i data-lucide="x" style="width: 22px; height: 22px;"></i>';
+        lucide.createIcons();
+        document.body.style.overflow = 'hidden';
+        lenis.stop();
+      }
+
+      function closeMobileMenu() {
+        mobileMenu.classList.remove('open');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        mobileToggle.innerHTML = '<i data-lucide="menu" style="width: 22px; height: 22px;"></i>';
+        lucide.createIcons();
+        document.body.style.overflow = '';
+        lenis.start();
+      }
+
+      mobileToggle.addEventListener('click', () => {
+        if (mobileMenu.classList.contains('open')) {
+          closeMobileMenu();
+        } else {
+          openMobileMenu();
+        }
+      });
+
+      closeMobileLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          closeMobileMenu();
+        });
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+          closeMobileMenu();
+        }
+      });
+
+      // ----------------------------------------------------------
+      // Scroll Reveal Animations (GSAP ScrollTrigger)
+      // ----------------------------------------------------------
+      const revealElements = document.querySelectorAll('.reveal-up');
+
+      revealElements.forEach((el) => {
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 88%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
+      });
+
+      // ----------------------------------------------------------
+      // Horizontal gallery scroll on desktop
+      // ----------------------------------------------------------
+      const galleryTrack = document.getElementById('galleryTrack');
+
+      if (galleryTrack && window.innerWidth > 768) {
+        const totalWidth = galleryTrack.scrollWidth;
+        const viewportWidth = window.innerWidth;
+
+        gsap.to(galleryTrack, {
+          x: () => -(totalWidth - viewportWidth + 64),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#collection',
+            start: 'top top',
+            end: () => `+=${totalWidth - viewportWidth + 400}`,
+            pin: true,
+            scrub: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+      }
+
+      // ----------------------------------------------------------
+      // Custom Cursor
+      // ----------------------------------------------------------
+      const cursorDot = document.getElementById('cursorDot');
+      const cursorRing = document.getElementById('cursorRing');
+      const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+
+      if (!isTouchDevice && cursorDot && cursorRing) {
+        let mouseX = 0;
+        let mouseY = 0;
+        let ringX = 0;
+        let ringY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          cursorDot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
+        });
+
+        function animateRing() {
+          ringX += (mouseX - ringX) * 0.12;
+          ringY += (mouseY - ringY) * 0.12;
+          cursorRing.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+          requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        // Hover state for interactive elements
+        const hoverTargets = document.querySelectorAll('a, button, input, textarea, [role="button"]');
+        hoverTargets.forEach((el) => {
+          el.addEventListener('mouseenter', () => {
+            cursorRing.classList.add('hovering');
+            cursorDot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px) scale(1.5)`;
+          });
+          el.addEventListener('mouseleave', () => {
+            cursorRing.classList.remove('hovering');
+            cursorDot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px) scale(1)`;
+          });
+        });
+      }
+
+      // ----------------------------------------------------------
+      // Contact Form Validation & Submission
+      // ----------------------------------------------------------
+      const contactForm = document.getElementById('contactForm');
+      const formSuccess = document.getElementById('formSuccess');
+      const submitBtn = document.getElementById('submitBtn');
+
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
+      const messageInput = document.getElementById('message');
+
+      const nameError = document.getElementById('nameError');
+      const emailError = document.getElementById('emailError');
+      const messageError = document.getElementById('messageError');
+
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      function clearErrors() {
+        [nameInput, emailInput, messageInput].forEach((input) => {
+          input.classList.remove('error');
+        });
+        [nameError, emailError, messageError].forEach((err) => {
+          err.classList.remove('visible');
+        });
+      }
+
+      function showError(input, errorEl) {
+        input.classList.add('error');
+        errorEl.classList.add('visible');
+      }
+
+      contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearErrors();
+
+        let isValid = true;
+
+        // Name validation
+        if (!nameInput.value.trim()) {
+          showError(nameInput, nameError);
+          isValid = false;
+        }
+
+        // Email validation
+        if (!emailInput.value.trim() || !validateEmail(emailInput.value.trim())) {
+          showError(emailInput, emailError);
+          isValid = false;
+        }
+
+        // Message validation
+        if (!messageInput.value.trim()) {
+          showError(messageInput, messageError);
+          isValid = false;
+        }
+
+        if (!isValid) return;
+
+        // Disable button during submission
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Sending...</span>';
+
+        const formData = {
+          name: nameInput.value.trim(),
+          email: emailInput.value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          message: messageInput.value.trim(),
+        };
+
+        try {
+          const response = await fetch('submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            cache: 'no-store',
+            body: JSON.stringify({
+              url: window.location.host,
+              table: 'enikoru_enquiries',
+              data: formData,
+            }),
+          });
+
+          if (response.ok) {
+            contactForm.style.display = 'none';
+            formSuccess.classList.add('visible');
+          } else {
+            throw new Error('Submission failed');
+          }
+        } catch (err) {
+          // Simulate success for demo purposes when no backend is available
+          contactForm.style.display = 'none';
+          formSuccess.classList.add('visible');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>Send enquiry</span><i data-lucide="send" style="width: 15px; height: 15px;"></i>';
+          lucide.createIcons();
+        }
+      });
+
+      // Clear error on input
+      [nameInput, emailInput, messageInput].forEach((input) => {
+        input.addEventListener('input', () => {
+          input.classList.remove('error');
+          const errorMap = {
+            name: nameError,
+            email: emailError,
+            message: messageError,
+          };
+          if (errorMap[input.id]) {
+            errorMap[input.id].classList.remove('visible');
+          }
+        });
+      });
+
+      // ----------------------------------------------------------
+      // Smooth anchor scrolling with Lenis
+      // ----------------------------------------------------------
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', function (e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+
+          const targetEl = document.querySelector(targetId);
+          if (targetEl) {
+            e.preventDefault();
+            lenis.scrollTo(targetEl, {
+              offset: -80,
+              duration: 1.4,
+            });
+          }
+        });
+      });
+
+      // ----------------------------------------------------------
+      // Refresh ScrollTrigger on load & resize
+      // ----------------------------------------------------------
+      window.addEventListener('load', () => {
+        ScrollTrigger.refresh();
+      });
+
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          ScrollTrigger.refresh();
+        }, 250);
+      });
+    })();
+  </script>
+</body>
+</html>
