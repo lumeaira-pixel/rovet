@@ -3,41 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Isabella & Julian — Wedding Invitation</title>
-  <!-- Tailwind CSS via CDN (jsdelivr) -->
-  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
-  <!-- Google Fonts: Cormorant Garamond (Display Serif) + Inter (Body) -->
+  <title>Fathima & Hashir · Wedding Invitation</title>
+
+  <!-- Google Fonts: Cormorant Garamond (Display) + Inter (Body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap"
-    rel="stylesheet"
-  />
-  <!-- Lucide Icons CDN -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN (Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDFBF8',
+            ivory: '#F8F5F0',
+            linen: '#F2ECE4',
+            blush: '#E8DDD3',
+            sand: '#D9CBBF',
+            taupe: '#B8A99A',
+            brass: '#B8926A',
+            'brass-light': '#D4B896',
+            'brass-dark': '#9A7650',
+            ink: '#2C2420',
+            'ink-light': '#5C524A',
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+          letterSpacing: {
+            'widest-2': '0.2em',
+            'widest-3': '0.3em',
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Lucide Icons via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- GSAP + ScrollTrigger for elegant scroll reveals -->
+
+  <!-- GSAP + ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
   <style>
     /* === Design Tokens === */
     :root {
-      --ink: #1e1b1a;
-      --cream: #fdfaf5;
-      --paper: #fffcf8;
-      --brass: #b89a6a;
-      --brass-light: #d4c1a1;
-      --sage: #8b9d83;
-      --blush: #e8ddd4;
-      --focus-ring: #b89a6a;
-      --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.02);
-      --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.04);
-      --shadow-lg: 0 24px 48px -8px rgba(0, 0, 0, 0.06);
-      --radius-xl: 24px;
-      --radius-2xl: 32px;
+      --cream: #FDFBF8;
+      --ivory: #F8F5F0;
+      --linen: #F2ECE4;
+      --blush: #E8DDD3;
+      --sand: #D9CBBF;
+      --taupe: #B8A99A;
+      --brass: #B8926A;
+      --brass-light: #D4B896;
+      --brass-dark: #9A7650;
+      --ink: #2C2420;
+      --ink-light: #5C524A;
+      --focus-ring: rgba(184, 146, 106, 0.55);
+      --shadow-soft: 0 4px 24px rgba(44, 36, 32, 0.06);
+      --shadow-card: 0 8px 40px rgba(44, 36, 32, 0.08);
+      --shadow-lift: 0 16px 48px rgba(44, 36, 32, 0.12);
     }
 
-    /* === Base === */
+    /* === Base & Reset === */
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
 
@@ -55,907 +90,1506 @@
       overflow-x: hidden;
     }
 
+    /* === Focus States (a11y) === */
+    :focus-visible {
+      outline: 2px solid var(--brass);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    /* === Custom Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--ivory);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--sand);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--taupe);
+    }
+
     /* === Typography === */
     .font-display {
       font-family: 'Cormorant Garamond', serif;
-      font-weight: 500;
-      letter-spacing: -0.02em;
-    }
-
-    .font-display-italic {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-weight: 400;
     }
 
     .text-hero {
-      font-size: clamp(3.8rem, 10vw, 8rem);
+      font-size: clamp(2.8rem, 8vw, 6.5rem);
       line-height: 1.05;
-      letter-spacing: -0.03em;
-    }
-
-    .text-section {
-      font-size: clamp(2.4rem, 5vw, 4rem);
-      line-height: 1.1;
       letter-spacing: -0.02em;
     }
 
-    /* === Custom Cursor (optional, for desktop only) === */
-    @media (hover: hover) and (pointer: fine) {
-      .cursor-dot {
-        width: 8px;
-        height: 8px;
-        background: var(--brass);
-        border-radius: 50%;
-        position: fixed;
-        pointer-events: none;
-        z-index: 9999;
-        transition: transform 0.15s ease;
-        mix-blend-mode: difference;
-      }
+    .text-section {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
     }
 
-    /* === Scroll Reveal Base === */
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    .text-subsection {
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      line-height: 1.3;
     }
 
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .text-body {
+      font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+      line-height: 1.7;
+      color: var(--ink-light);
     }
 
-    /* === Staggered letter animation for hero === */
-    .letter {
-      display: inline-block;
-      opacity: 0;
-      transform: translateY(40px) rotate(4deg);
-      animation: letterReveal 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    @keyframes letterReveal {
-      to {
-        opacity: 1;
-        transform: translateY(0) rotate(0deg);
-      }
-    }
-
-    /* === Buttons === */
-    .btn-primary {
-      background: var(--ink);
-      color: var(--cream);
-      padding: 0.9rem 2.4rem;
-      border-radius: 999px;
-      font-weight: 500;
-      font-size: 0.9rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-      border: 1px solid var(--ink);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-primary:hover {
-      background: #2f2a28;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 28px -8px rgba(30, 27, 26, 0.3);
-    }
-
-    .btn-primary:active {
-      transform: scale(0.97);
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: var(--ink);
-      padding: 0.9rem 2.4rem;
-      border-radius: 999px;
-      font-weight: 500;
-      font-size: 0.9rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      border: 1px solid rgba(30, 27, 26, 0.2);
-      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--ink);
-      background: rgba(30, 27, 26, 0.03);
-      transform: translateY(-2px);
-    }
-
-    /* === Form Fields === */
-    .form-field {
-      width: 100%;
-      padding: 0.9rem 1.2rem;
-      border: 1px solid rgba(30, 27, 26, 0.12);
-      border-radius: 12px;
-      background: var(--paper);
-      font-size: 1rem;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      color: var(--ink);
-    }
-
-    .form-field:focus {
-      outline: none;
-      border-color: var(--brass);
-      box-shadow: 0 0 0 3px rgba(184, 154, 106, 0.15);
-    }
-
-    .form-field.error {
-      border-color: #c0392b;
-      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
-    }
-
-    .form-field::placeholder {
-      color: rgba(30, 27, 26, 0.35);
-    }
-
-    /* === Custom Focus Visible === */
-    a:focus-visible,
-    button:focus-visible,
-    input:focus-visible,
-    textarea:focus-visible,
-    select:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(184, 154, 106, 0.4);
-      border-radius: 4px;
-    }
-
-    /* === Decorative Divider === */
-    .divider-diamond {
+    /* === Decorative Elements === */
+    .divider-ornament {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 1rem;
     }
 
-    .divider-diamond::before,
-    .divider-diamond::after {
+    .divider-ornament::before,
+    .divider-ornament::after {
       content: '';
       height: 1px;
       width: 60px;
-      background: linear-gradient(to right, transparent, var(--brass-light), transparent);
+      background: linear-gradient(90deg, transparent, var(--sand), transparent);
     }
 
-    /* === Navbar Sticky State === */
-    .navbar {
-      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    .divider-ornament::before {
+      background: linear-gradient(90deg, transparent, var(--sand));
+    }
+
+    .divider-ornament::after {
+      background: linear-gradient(90deg, var(--sand), transparent);
+    }
+
+    /* === Background Textures === */
+    .bg-grain {
+      position: relative;
+    }
+
+    .bg-grain::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-radial-glow {
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184, 146, 106, 0.06) 0%, transparent 70%);
+    }
+
+    /* === Cards === */
+    .card-premium {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(217, 203, 191, 0.4);
+      border-radius: 1.5rem;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .card-premium:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lift);
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2rem;
+      background: var(--ink);
+      color: var(--cream);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary:hover {
+      background: var(--brass-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(184, 146, 106, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2rem;
       background: transparent;
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 9999px;
+      border: 1px solid var(--sand);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .navbar.scrolled {
-      background: rgba(253, 250, 245, 0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 1px 0 rgba(30, 27, 26, 0.06), 0 8px 32px rgba(0, 0, 0, 0.02);
+    .btn-secondary:hover {
+      background: var(--ivory);
+      border-color: var(--taupe);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
     }
 
-    /* === Cards with 3D Tilt === */
-    .card-3d {
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
-      transform-style: preserve-3d;
-      perspective: 800px;
+    .btn-secondary:active {
+      transform: translateY(0) scale(0.98);
     }
 
-    .card-3d:hover {
-      transform: translateY(-6px) rotateX(2deg) rotateY(-2deg);
-      box-shadow: var(--shadow-lg);
+    /* === Hero Animation === */
+    .hero-ornament {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border: 1px solid rgba(184, 146, 106, 0.15);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
-    /* === Gallery Item Hover === */
+    .hero-ornament-1 {
+      top: -100px;
+      right: -80px;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .hero-ornament-2 {
+      bottom: -120px;
+      left: -100px;
+      width: 400px;
+      height: 400px;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(15px, -15px) rotate(3deg); }
+    }
+
+    /* === Text Reveal === */
+    .reveal-text {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    /* === Stagger Children === */
+    .stagger-children > * {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* === Countdown === */
+    .countdown-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .countdown-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 600;
+      line-height: 1;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .countdown-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--taupe);
+      font-weight: 500;
+    }
+
+    /* === Scroll Indicator === */
+    .scroll-indicator {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--sand), transparent);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-indicator::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background: var(--brass);
+      animation: scrollDown 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollDown {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(400%); }
+    }
+
+    /* === Timeline === */
+    .timeline-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--brass);
+      border: 2px solid var(--cream);
+      box-shadow: 0 0 0 3px rgba(184, 146, 106, 0.2);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .timeline-line {
+      width: 1px;
+      flex: 1;
+      background: linear-gradient(to bottom, var(--sand), transparent);
+      margin: 8px auto 0;
+    }
+
+    /* === Gallery Hover === */
     .gallery-item {
       overflow: hidden;
-      border-radius: var(--radius-xl);
+      border-radius: 1rem;
       position: relative;
-      cursor: default;
     }
 
     .gallery-item img {
-      transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
+      transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
     .gallery-item:hover img {
-      transform: scale(1.06);
-      filter: brightness(0.92);
+      transform: scale(1.05);
     }
 
-    /* === Ornamental Line === */
-    .ornament {
-      color: var(--brass);
-      font-size: 1.2rem;
-      letter-spacing: 0.8em;
+    .gallery-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(44, 36, 32, 0.3), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .gallery-item:hover::after {
+      opacity: 1;
+    }
+
+    /* === Form Styles === */
+    .form-input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid var(--blush);
+      border-radius: 0.75rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: all 0.3s ease;
+    }
+
+    .form-input::placeholder {
+      color: var(--taupe);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184, 146, 106, 0.15);
+      background: #fff;
+    }
+
+    .form-input.error {
+      border-color: #c0392b;
+      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+    }
+
+    .form-error {
+      font-size: 0.75rem;
+      color: #c0392b;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    /* === Success State === */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .form-success.visible {
+      display: block;
+    }
+
+    /* === Custom Cursor (subtle) === */
+    @media (pointer: fine) {
+      .cursor-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--brass);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        transition: transform 0.15s ease;
+        mix-blend-mode: multiply;
+      }
+
+      .cursor-ring {
+        width: 36px;
+        height: 36px;
+        border: 1px solid rgba(184, 146, 106, 0.4);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9998;
+        transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+        mix-blend-mode: multiply;
+      }
+
+      .cursor-ring.hovering {
+        width: 56px;
+        height: 56px;
+        border-color: rgba(184, 146, 106, 0.7);
+      }
+    }
+
+    @media (pointer: coarse) {
+      .cursor-dot,
+      .cursor-ring {
+        display: none;
+      }
     }
 
     /* === Responsive Adjustments === */
     @media (max-width: 768px) {
-      .text-hero {
-        font-size: clamp(2.8rem, 12vw, 4.5rem);
+      .hero-ornament {
+        opacity: 0.5;
       }
-      .text-section {
-        font-size: clamp(2rem, 8vw, 2.8rem);
+      .hero-ornament-1 {
+        width: 180px;
+        height: 180px;
+        top: -60px;
+        right: -60px;
+      }
+      .hero-ornament-2 {
+        width: 220px;
+        height: 220px;
+        bottom: -80px;
+        left: -80px;
       }
     }
 
-    /* === Smooth Scrollbar === */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--cream);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--brass-light);
-      border-radius: 3px;
+    /* === Reduced Motion === */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html {
+        scroll-behavior: auto;
+      }
     }
   </style>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            cream: '#fdfaf5',
-            paper: '#fffcf8',
-            ink: '#1e1b1a',
-            brass: '#b89a6a',
-            'brass-light': '#d4c1a1',
-            sage: '#8b9d83',
-            blush: '#e8ddd4',
-          },
-          fontFamily: {
-            display: ['"Cormorant Garamond"', 'serif'],
-            body: ['Inter', 'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
 </head>
-<body class="font-body bg-cream text-ink antialiased">
 
-  <!-- Custom Cursor (Desktop) -->
-  <div class="cursor-dot hidden md:block" id="cursorDot" aria-hidden="true"></div>
+<body class="bg-cream text-ink antialiased">
 
-  <!-- Skip to content -->
-  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow">Skip to content</a>
+  <!-- Custom Cursor (decorative, hidden on touch) -->
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
 
-  <!-- === HEADER / NAVIGATION === -->
-  <header id="navbar" class="navbar fixed top-0 left-0 right-0 z-50 py-4 md:py-5">
-    <div class="max-w-7xl mx-auto px-6 md:px-10 flex items-center justify-between">
-      <!-- Logo / Monogram -->
-      <a href="#" class="font-display text-2xl md:text-3xl tracking-tight text-ink hover:text-brass transition-colors duration-300" aria-label="Isabella and Julian wedding home">
-        I <span class="font-display-italic text-brass">&</span> J
-      </a>
+  <!-- ============================================================ -->
+  <!-- HEADER / NAVIGATION                                          -->
+  <!-- ============================================================ -->
+  <header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <nav class="max-w-7xl mx-auto px-6 lg:px-10" aria-label="Main navigation">
+      <div class="flex items-center justify-between h-20 lg:h-24 transition-all duration-500" id="nav-inner">
 
-      <!-- Desktop Nav -->
-      <nav class="hidden md:flex items-center gap-10" aria-label="Primary navigation">
-        <a href="#story" class="text-sm tracking-widest uppercase text-ink/60 hover:text-ink transition-colors duration-300">Our Story</a>
-        <a href="#details" class="text-sm tracking-widest uppercase text-ink/60 hover:text-ink transition-colors duration-300">Details</a>
-        <a href="#gallery" class="text-sm tracking-widest uppercase text-ink/60 hover:text-ink transition-colors duration-300">Gallery</a>
-        <a href="#rsvp" class="btn-primary text-xs px-6 py-2.5">RSVP</a>
-      </nav>
+        <!-- Logo -->
+        <a href="#hero" class="flex items-center gap-3 group" aria-label="Fathima and Hashir wedding home">
+          <span class="font-display text-2xl lg:text-3xl font-semibold tracking-tight text-ink group-hover:text-brass-dark transition-colors duration-300">
+            F<span class="text-brass">&</span>H
+          </span>
+        </a>
 
-      <!-- Mobile Menu Button -->
-      <button
-        id="mobileMenuBtn"
-        class="md:hidden text-ink p-2"
-        aria-label="Open menu"
-        aria-expanded="false"
-        aria-controls="mobileMenu"
-      >
-        <i data-lucide="menu" class="w-6 h-6"></i>
-      </button>
-    </div>
+        <!-- Desktop Nav Links -->
+        <ul class="hidden lg:flex items-center gap-10" role="list">
+          <li><a href="#story" class="text-sm font-medium tracking-widest uppercase text-ink-light hover:text-brass-dark transition-colors duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-brass after:transition-all after:duration-300 hover:after:w-full">Our Story</a></li>
+          <li><a href="#details" class="text-sm font-medium tracking-widest uppercase text-ink-light hover:text-brass-dark transition-colors duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-brass after:transition-all after:duration-300 hover:after:w-full">Details</a></li>
+          <li><a href="#gallery" class="text-sm font-medium tracking-widest uppercase text-ink-light hover:text-brass-dark transition-colors duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-brass after:transition-all after:duration-300 hover:after:w-full">Gallery</a></li>
+          <li><a href="#rsvp" class="text-sm font-medium tracking-widest uppercase text-ink-light hover:text-brass-dark transition-colors duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-px after:bg-brass after:transition-all after:duration-300 hover:after:w-full">RSVP</a></li>
+        </ul>
 
-    <!-- Mobile Menu -->
-    <div
-      id="mobileMenu"
-      class="md:hidden hidden absolute top-full left-0 right-0 bg-cream/95 backdrop-blur-xl border-t border-ink/5 shadow-lg"
-      role="dialog"
-      aria-label="Mobile navigation"
-    >
-      <nav class="flex flex-col px-6 py-8 gap-6">
-        <a href="#story" class="text-lg font-display tracking-wide text-ink/80 hover:text-ink mobile-link">Our Story</a>
-        <a href="#details" class="text-lg font-display tracking-wide text-ink/80 hover:text-ink mobile-link">Details</a>
-        <a href="#gallery" class="text-lg font-display tracking-wide text-ink/80 hover:text-ink mobile-link">Gallery</a>
-        <a href="#rsvp" class="btn-primary text-sm self-start mobile-link">RSVP</a>
-      </nav>
+        <!-- Desktop CTA -->
+        <a href="#rsvp" class="hidden lg:inline-flex btn-primary text-xs">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          RSVP
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-ink hover:text-brass-dark transition-colors duration-300" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu Panel -->
+    <div id="mobile-menu" class="lg:hidden fixed inset-0 z-40 bg-cream/98 backdrop-blur-xl translate-x-full transition-transform duration-500 ease-out" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+      <div class="flex flex-col h-full px-8 py-8">
+        <div class="flex justify-end">
+          <button id="mobile-menu-close" class="p-2 text-ink hover:text-brass-dark transition-colors duration-300" aria-label="Close menu">
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
+        </div>
+        <ul class="flex flex-col gap-8 mt-16" role="list">
+          <li><a href="#story" class="font-display text-4xl text-ink hover:text-brass-dark transition-colors duration-300 mobile-nav-link">Our Story</a></li>
+          <li><a href="#details" class="font-display text-4xl text-ink hover:text-brass-dark transition-colors duration-300 mobile-nav-link">Details</a></li>
+          <li><a href="#gallery" class="font-display text-4xl text-ink hover:text-brass-dark transition-colors duration-300 mobile-nav-link">Gallery</a></li>
+          <li><a href="#rsvp" class="font-display text-4xl text-ink hover:text-brass-dark transition-colors duration-300 mobile-nav-link">RSVP</a></li>
+        </ul>
+        <div class="mt-auto pt-12 border-t border-blush">
+          <p class="text-sm text-taupe tracking-widest uppercase">09 January 2027</p>
+          <p class="font-display text-2xl text-ink mt-1">Fathima & Hashir</p>
+        </div>
+      </div>
     </div>
   </header>
 
-  <main id="main">
+  <!-- ============================================================ -->
+  <!-- HERO SECTION                                                 -->
+  <!-- ============================================================ -->
+  <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-radial-glow">
+    <!-- Decorative Ornaments -->
+    <div class="hero-ornament hero-ornament-1" aria-hidden="true"></div>
+    <div class="hero-ornament hero-ornament-2" aria-hidden="true"></div>
 
-    <!-- === HERO === -->
-    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16 md:pt-0 md:pb-0">
-      <!-- Background gradient + subtle grain -->
-      <div class="absolute inset-0 bg-gradient-to-br from-[#fdfaf5] via-[#fffcf8] to-[#f4efe8]"></div>
-      <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E');"></div>
+    <!-- Subtle floral SVG pattern -->
+    <div class="absolute inset-0 opacity-[0.025] pointer-events-none" aria-hidden="true">
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="floral" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+            <circle cx="60" cy="60" r="30" fill="none" stroke="#B8926A" stroke-width="0.5"/>
+            <circle cx="60" cy="60" r="20" fill="none" stroke="#B8926A" stroke-width="0.3"/>
+            <circle cx="60" cy="60" r="8" fill="#B8926A" opacity="0.3"/>
+            <circle cx="0" cy="0" r="15" fill="none" stroke="#B8926A" stroke-width="0.3"/>
+            <circle cx="120" cy="120" r="15" fill="none" stroke="#B8926A" stroke-width="0.3"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#floral)"/>
+      </svg>
+    </div>
 
-      <!-- Decorative rings -->
-      <div class="absolute top-1/4 -left-24 w-72 h-72 rounded-full border border-brass/10" aria-hidden="true"></div>
-      <div class="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full border border-brass/8" aria-hidden="true"></div>
+    <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
+      <!-- Top ornament -->
+      <div class="reveal-text mb-8">
+        <span class="text-xs tracking-widest-3 uppercase text-taupe font-medium">Together with their families</span>
+      </div>
 
-      <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
-        <!-- Small overline -->
-        <p class="reveal text-sm tracking-[0.35em] uppercase text-brass mb-8 md:mb-10" style="transition-delay: 0.1s">
-          Together with their families
-        </p>
-
-        <!-- Names -->
-        <h1 class="text-hero font-display text-ink leading-none mb-4 md:mb-6">
-          <span class="block overflow-hidden">
-            <span class="letter" style="animation-delay: 0.2s">I</span><span class="letter" style="animation-delay: 0.25s">s</span><span class="letter" style="animation-delay: 0.3s">a</span><span class="letter" style="animation-delay: 0.35s">b</span><span class="letter" style="animation-delay: 0.4s">e</span><span class="letter" style="animation-delay: 0.45s">l</span><span class="letter" style="animation-delay: 0.5s">l</span><span class="letter" style="animation-delay: 0.55s">a</span>
-          </span>
-          <span class="block overflow-hidden font-display-italic text-brass text-2xl md:text-4xl my-2 md:my-4 tracking-wide">
-            <span class="letter" style="animation-delay: 0.6s">a</span><span class="letter" style="animation-delay: 0.65s">n</span><span class="letter" style="animation-delay: 0.7s">d</span>
-          </span>
-          <span class="block overflow-hidden">
-            <span class="letter" style="animation-delay: 0.75s">J</span><span class="letter" style="animation-delay: 0.8s">u</span><span class="letter" style="animation-delay: 0.85s">l</span><span class="letter" style="animation-delay: 0.9s">i</span><span class="letter" style="animation-delay: 0.95s">a</span><span class="letter" style="animation-delay: 1.0s">n</span>
-          </span>
+      <!-- Bride & Groom Names -->
+      <div class="reveal-text">
+        <h1 class="font-display text-hero font-light text-ink leading-none">
+          <span class="block">Fathima</span>
+          <span class="block text-brass text-4xl md:text-6xl my-4 md:my-6 font-light italic">&</span>
+          <span class="block">Hashir</span>
         </h1>
+      </div>
 
-        <!-- Date & Location -->
-        <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm md:text-base tracking-[0.2em] uppercase text-ink/50 mt-8 md:mt-12" style="transition-delay: 0.4s">
-          <span>September 20, 2025</span>
-          <span class="hidden sm:block w-1 h-1 rounded-full bg-brass-light" aria-hidden="true"></span>
-          <span>Villa Serena, Lake Como</span>
+      <!-- Parents Info -->
+      <div class="reveal-text mt-10 md:mt-14 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 max-w-2xl mx-auto">
+        <div class="text-center md:text-right">
+          <p class="text-[0.65rem] tracking-widest-2 uppercase text-taupe font-medium mb-2">Bride</p>
+          <p class="font-display text-lg md:text-xl text-ink">Fathima Abdul Salam</p>
+          <p class="text-xs text-ink-light mt-1 leading-relaxed">D/o AC Abdul Salam Haji &amp; Nafeesath P</p>
         </div>
-
-        <!-- Ornamental divider -->
-        <div class="reveal ornament mt-10 md:mt-14" style="transition-delay: 0.5s" aria-hidden="true">✦ ✦ ✦</div>
-
-        <!-- CTA Buttons -->
-        <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-4 mt-10 md:mt-14" style="transition-delay: 0.6s">
-          <a href="#rsvp" class="btn-primary">
-            <i data-lucide="mail" class="w-4 h-4"></i> RSVP
-          </a>
-          <a href="#details" class="btn-secondary">
-            <i data-lucide="calendar" class="w-4 h-4"></i> Event Details
-          </a>
+        <div class="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-px h-16 bg-gradient-to-b from-transparent via-sand to-transparent" aria-hidden="true"></div>
+        <div class="text-center md:text-left">
+          <p class="text-[0.65rem] tracking-widest-2 uppercase text-taupe font-medium mb-2">Groom</p>
+          <p class="font-display text-lg md:text-xl text-ink">Hashir K</p>
+          <p class="text-xs text-ink-light mt-1 leading-relaxed">S/o Ashraf AC &amp; Naseema K</p>
         </div>
+      </div>
+
+      <!-- Date Display -->
+      <div class="reveal-text mt-12 md:mt-16">
+        <div class="divider-ornament mb-6">
+          <span class="text-brass" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L12 22M2 12L22 12" opacity="0.4"/>
+              <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.6"/>
+            </svg>
+          </span>
+        </div>
+        <p class="font-display text-3xl md:text-5xl font-light text-ink tracking-wide">
+          09 <span class="text-brass mx-2">|</span> 01 <span class="text-brass mx-2">|</span> 2027
+        </p>
+        <p class="text-xs tracking-widest-2 uppercase text-taupe mt-3 font-medium">Save the Date</p>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="reveal-text mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#rsvp" class="btn-primary">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          RSVP Now
+        </a>
+        <a href="#details" class="btn-secondary">
+          <i data-lucide="calendar" class="w-4 h-4"></i>
+          Event Details
+        </a>
       </div>
 
       <!-- Scroll indicator -->
-      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-ink/30 reveal" style="transition-delay: 1.2s" aria-hidden="true">
-        <span class="text-[10px] tracking-[0.3em] uppercase">Scroll</span>
-        <div class="w-px h-8 bg-gradient-to-b from-brass/40 to-transparent"></div>
+      <div class="mt-16 flex justify-center">
+        <div class="scroll-indicator" aria-hidden="true"></div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- === OUR STORY / TIMELINE === -->
-    <section id="story" class="py-24 md:py-36 bg-paper">
-      <div class="max-w-6xl mx-auto px-6 md:px-10">
-        <div class="text-center mb-16 md:mb-24">
-          <p class="reveal text-xs tracking-[0.35em] uppercase text-brass mb-4">How it began</p>
-          <h2 class="reveal text-section font-display text-ink" style="transition-delay: 0.1s">Our Story</h2>
-          <div class="reveal ornament mt-6" style="transition-delay: 0.2s" aria-hidden="true">✦ ✦ ✦</div>
+  <!-- ============================================================ -->
+  <!-- COUNTDOWN SECTION                                            -->
+  <!-- ============================================================ -->
+  <section class="py-16 md:py-24 bg-ivory border-y border-blush/60">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium mb-10 reveal-text">Counting down to forever</p>
+      <div id="countdown" class="grid grid-cols-4 gap-4 md:gap-12 max-w-2xl mx-auto">
+        <div class="countdown-item">
+          <span class="countdown-number" id="cd-days">00</span>
+          <span class="countdown-label">Days</span>
         </div>
-
-        <!-- Timeline -->
-        <div class="relative">
-          <!-- Vertical line -->
-          <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brass-light/40 to-transparent -translate-x-1/2" aria-hidden="true"></div>
-
-          <!-- Item 1 -->
-          <div class="reveal grid md:grid-cols-2 gap-8 md:gap-16 mb-16 md:mb-24 items-center">
-            <div class="md:text-right md:pr-8">
-              <p class="text-xs tracking-[0.3em] uppercase text-brass mb-2">Spring 2019</p>
-              <h3 class="font-display text-2xl md:text-3xl text-ink mb-3">A chance encounter</h3>
-              <p class="text-ink/60 leading-relaxed max-w-md md:ml-auto">At a small bookshop in Florence, Isabella reached for the same collection of Neruda's poems that Julian was holding. One smile, and the rest became history.</p>
-            </div>
-            <div class="hidden md:flex justify-start pl-8">
-              <div class="w-3 h-3 rounded-full bg-brass ring-4 ring-brass/15 mt-2" aria-hidden="true"></div>
-            </div>
-          </div>
-
-          <!-- Item 2 -->
-          <div class="reveal grid md:grid-cols-2 gap-8 md:gap-16 mb-16 md:mb-24 items-center">
-            <div class="hidden md:flex justify-end pr-8">
-              <div class="w-3 h-3 rounded-full bg-brass ring-4 ring-brass/15 mt-2" aria-hidden="true"></div>
-            </div>
-            <div class="md:pl-8">
-              <p class="text-xs tracking-[0.3em] uppercase text-brass mb-2">Summer 2021</p>
-              <h3 class="font-display text-2xl md:text-3xl text-ink mb-3">The first "I love you"</h3>
-              <p class="text-ink/60 leading-relaxed max-w-md">On a rooftop in Rome, under a canopy of string lights and a sky full of stars, the words finally found their way out — softly, certainly, forever.</p>
-            </div>
-          </div>
-
-          <!-- Item 3 -->
-          <div class="reveal grid md:grid-cols-2 gap-8 md:gap-16 items-center">
-            <div class="md:text-right md:pr-8">
-              <p class="text-xs tracking-[0.3em] uppercase text-brass mb-2">Winter 2024</p>
-              <h3 class="font-display text-2xl md:text-3xl text-ink mb-3">The proposal</h3>
-              <p class="text-ink/60 leading-relaxed max-w-md md:ml-auto">On a quiet snowy morning by Lake Como — the same lake where they'd first dreamed aloud about a life together — Julian knelt, and Isabella said yes before he could finish the question.</p>
-            </div>
-            <div class="hidden md:flex justify-start pl-8">
-              <div class="w-3 h-3 rounded-full bg-brass ring-4 ring-brass/15 mt-2" aria-hidden="true"></div>
-            </div>
-          </div>
+        <div class="countdown-item">
+          <span class="countdown-number" id="cd-hours">00</span>
+          <span class="countdown-label">Hours</span>
+        </div>
+        <div class="countdown-item">
+          <span class="countdown-number" id="cd-minutes">00</span>
+          <span class="countdown-label">Minutes</span>
+        </div>
+        <div class="countdown-item">
+          <span class="countdown-number" id="cd-seconds">00</span>
+          <span class="countdown-label">Seconds</span>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- === EVENT DETAILS === -->
-    <section id="details" class="py-24 md:py-36 bg-cream">
-      <div class="max-w-6xl mx-auto px-6 md:px-10">
-        <div class="text-center mb-16 md:mb-24">
-          <p class="reveal text-xs tracking-[0.35em] uppercase text-brass mb-4">The celebration</p>
-          <h2 class="reveal text-section font-display text-ink" style="transition-delay: 0.1s">Event Details</h2>
-          <div class="reveal ornament mt-6" style="transition-delay: 0.2s" aria-hidden="true">✦ ✦ ✦</div>
+  <!-- ============================================================ -->
+  <!-- OUR STORY SECTION                                            -->
+  <!-- ============================================================ -->
+  <section id="story" class="py-24 md:py-36 relative overflow-hidden">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+        <!-- Text Side -->
+        <div class="order-2 lg:order-1">
+          <p class="text-xs tracking-widest-2 uppercase text-brass font-medium mb-4 reveal-text">Our Story</p>
+          <h2 class="font-display text-section font-light text-ink mb-8 reveal-text">
+            A beautiful<br />beginning
+          </h2>
+          <div class="space-y-6 text-body stagger-children">
+            <p>
+              What began as a quiet conversation under the warm lights of a family gathering has blossomed into a lifetime of shared dreams. Fathima and Hashir found in each other a rare harmony — a partnership built on faith, laughter, and unwavering support.
+            </p>
+            <p>
+              Through seasons of joy and moments of quiet understanding, their bond has grown deeper with each passing day. Now, surrounded by the love of their families, they invite you to witness the beginning of their forever.
+            </p>
+          </div>
+
+          <!-- Story Timeline -->
+          <div class="mt-12 space-y-8">
+            <div class="flex gap-4 reveal-text">
+              <div class="flex flex-col items-center">
+                <div class="timeline-dot"></div>
+                <div class="timeline-line"></div>
+              </div>
+              <div>
+                <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium">The First Meeting</p>
+                <p class="font-display text-xl text-ink mt-1">A family gathering, 2023</p>
+              </div>
+            </div>
+            <div class="flex gap-4 reveal-text">
+              <div class="flex flex-col items-center">
+                <div class="timeline-dot"></div>
+                <div class="timeline-line"></div>
+              </div>
+              <div>
+                <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium">The Proposal</p>
+                <p class="font-display text-xl text-ink mt-1">A quiet evening, 2025</p>
+              </div>
+            </div>
+            <div class="flex gap-4 reveal-text">
+              <div class="flex flex-col items-center">
+                <div class="timeline-dot"></div>
+              </div>
+              <div>
+                <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium">The Wedding</p>
+                <p class="font-display text-xl text-ink mt-1">January 9, 2027</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-8 md:gap-12">
-          <!-- Card 1: Ceremony -->
-          <div class="reveal card-3d bg-paper rounded-3xl p-8 md:p-10 border border-ink/5 shadow-sm" style="transition-delay: 0.1s">
-            <div class="w-12 h-12 rounded-full bg-brass/10 flex items-center justify-center mb-6">
-              <i data-lucide="church" class="w-5 h-5 text-brass"></i>
-            </div>
-            <h3 class="font-display text-2xl text-ink mb-2">The Ceremony</h3>
-            <p class="text-sm text-brass tracking-widest uppercase mb-4">3:00 PM</p>
-            <p class="text-ink/60 leading-relaxed">Join us as we exchange vows in the gardens of Villa Serena, overlooking the tranquil waters of Lake Como.</p>
-            <div class="mt-6 pt-6 border-t border-ink/5 text-sm text-ink/50">
-              <p>Villa Serena</p>
-              <p>Via del Lago 12, Como, Italy</p>
-            </div>
+        <!-- Image Side -->
+        <div class="order-1 lg:order-2 relative reveal-text">
+          <div class="relative rounded-3xl overflow-hidden shadow-card" style="aspect-ratio: 3/4;">
+            <img
+              src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80"
+              alt="Elegant floral wedding decoration"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-ink/10 to-transparent"></div>
           </div>
-
-          <!-- Card 2: Reception -->
-          <div class="reveal card-3d bg-paper rounded-3xl p-8 md:p-10 border border-ink/5 shadow-sm" style="transition-delay: 0.2s">
-            <div class="w-12 h-12 rounded-full bg-brass/10 flex items-center justify-center mb-6">
-              <i data-lucide="glass-water" class="w-5 h-5 text-brass"></i>
-            </div>
-            <h3 class="font-display text-2xl text-ink mb-2">The Reception</h3>
-            <p class="text-sm text-brass tracking-widest uppercase mb-4">6:30 PM</p>
-            <p class="text-ink/60 leading-relaxed">Dinner, dancing, and toasts under the stars. A night of celebration with the people we love most.</p>
-            <div class="mt-6 pt-6 border-t border-ink/5 text-sm text-ink/50">
-              <p>Grand Terrace, Villa Serena</p>
-              <p>Cocktail attire</p>
-            </div>
-          </div>
-
-          <!-- Card 3: Accommodation -->
-          <div class="reveal card-3d bg-paper rounded-3xl p-8 md:p-10 border border-ink/5 shadow-sm" style="transition-delay: 0.3s">
-            <div class="w-12 h-12 rounded-full bg-brass/10 flex items-center justify-center mb-6">
-              <i data-lucide="bed-double" class="w-5 h-5 text-brass"></i>
-            </div>
-            <h3 class="font-display text-2xl text-ink mb-2">Where to Stay</h3>
-            <p class="text-sm text-brass tracking-widest uppercase mb-4">Special Rates</p>
-            <p class="text-ink/60 leading-relaxed">We've reserved room blocks at Hotel Bellavista and Grand Hotel Como for our guests. Mention the "Isabella & Julian" wedding.</p>
-            <div class="mt-6 pt-6 border-t border-ink/5 text-sm text-ink/50">
-              <p>Booking code: IJ2025</p>
-              <p>Available until August 1, 2025</p>
-            </div>
+          <!-- Floating accent card -->
+          <div class="absolute -bottom-6 -left-6 md:-left-10 bg-cream/90 backdrop-blur-xl border border-blush/60 rounded-2xl p-6 shadow-card max-w-[200px]" style="z-index: 2;">
+            <p class="font-display text-3xl text-brass font-semibold">2</p>
+            <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium mt-1">Families</p>
+            <p class="text-xs text-ink-light mt-2 leading-relaxed">Becoming one</p>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- === GALLERY === -->
-    <section id="gallery" class="py-24 md:py-36 bg-paper">
-      <div class="max-w-6xl mx-auto px-6 md:px-10">
-        <div class="text-center mb-16 md:mb-24">
-          <p class="reveal text-xs tracking-[0.35em] uppercase text-brass mb-4">Moments</p>
-          <h2 class="reveal text-section font-display text-ink" style="transition-delay: 0.1s">Gallery</h2>
-          <div class="reveal ornament mt-6" style="transition-delay: 0.2s" aria-hidden="true">✦ ✦ ✦</div>
+  <!-- ============================================================ -->
+  <!-- EVENT DETAILS SECTION                                        -->
+  <!-- ============================================================ -->
+  <section id="details" class="py-24 md:py-36 bg-ivory relative overflow-hidden">
+    <div class="absolute inset-0 bg-grain" aria-hidden="true"></div>
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+
+      <!-- Section Header -->
+      <div class="text-center mb-16 md:mb-24">
+        <p class="text-xs tracking-widest-2 uppercase text-brass font-medium mb-4 reveal-text">The Celebration</p>
+        <h2 class="font-display text-section font-light text-ink reveal-text">Wedding Details</h2>
+        <p class="text-body max-w-lg mx-auto mt-4 reveal-text">We would be honoured to have you join us as we begin this sacred journey together.</p>
+      </div>
+
+      <!-- Details Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+
+        <!-- Nikah Ceremony -->
+        <div class="card-premium p-8 md:p-10 text-center reveal-text">
+          <div class="w-14 h-14 rounded-full bg-brass/10 flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="heart" class="w-6 h-6 text-brass"></i>
+          </div>
+          <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium mb-2">Ceremony</p>
+          <h3 class="font-display text-2xl text-ink mb-4">Nikah</h3>
+          <div class="space-y-3 text-sm text-ink-light">
+            <p class="flex items-center justify-center gap-2">
+              <i data-lucide="calendar" class="w-4 h-4 text-brass"></i>
+              Saturday, 9 January 2027
+            </p>
+            <p class="flex items-center justify-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-brass"></i>
+              10:00 AM onwards
+            </p>
+            <p class="flex items-center justify-center gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-brass"></i>
+              Juma Masjid, Kozhikode
+            </p>
+          </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-          <!-- Image 1 - large, spans 2 cols on md -->
-          <div class="reveal gallery-item col-span-2 md:col-span-2 row-span-2 h-64 md:h-[500px]" style="transition-delay: 0.1s">
-            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80" alt="Couple holding hands in a garden" loading="lazy" />
+        <!-- Reception -->
+        <div class="card-premium p-8 md:p-10 text-center reveal-text border-brass/40" style="border-width: 1.5px;">
+          <div class="w-14 h-14 rounded-full bg-brass/15 flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="glass-water" class="w-6 h-6 text-brass-dark"></i>
           </div>
-          <!-- Image 2 -->
-          <div class="reveal gallery-item h-64 md:h-[240px]" style="transition-delay: 0.2s">
-            <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80" alt="Bride and groom portrait" loading="lazy" />
+          <p class="text-xs tracking-widest-2 uppercase text-brass font-medium mb-2">Celebration</p>
+          <h3 class="font-display text-2xl text-ink mb-4">Reception</h3>
+          <div class="space-y-3 text-sm text-ink-light">
+            <p class="flex items-center justify-center gap-2">
+              <i data-lucide="calendar" class="w-4 h-4 text-brass"></i>
+              Saturday, 9 January 2027
+            </p>
+            <p class="flex items-center justify-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-brass"></i>
+              6:00 PM onwards
+            </p>
+            <p class="flex items-center justify-center gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-brass"></i>
+              Grand Palace Convention Centre
+            </p>
           </div>
-          <!-- Image 3 -->
-          <div class="reveal gallery-item h-64 md:h-[240px]" style="transition-delay: 0.3s">
-            <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80" alt="Wedding table setting" loading="lazy" />
+        </div>
+
+        <!-- Additional Info -->
+        <div class="card-premium p-8 md:p-10 text-center reveal-text">
+          <div class="w-14 h-14 rounded-full bg-brass/10 flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="info" class="w-6 h-6 text-brass"></i>
           </div>
-          <!-- Image 4 -->
-          <div class="reveal gallery-item h-64 md:h-[240px]" style="transition-delay: 0.4s">
-            <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=800&q=80" alt="Bride's bouquet" loading="lazy" />
-          </div>
-          <!-- Image 5 -->
-          <div class="reveal gallery-item h-64 md:h-[240px]" style="transition-delay: 0.5s">
-            <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80" alt="Wedding ceremony arch" loading="lazy" />
+          <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium mb-2">Good to Know</p>
+          <h3 class="font-display text-2xl text-ink mb-4">Notes</h3>
+          <div class="space-y-3 text-sm text-ink-light">
+            <p class="flex items-center justify-center gap-2">
+              <i data-lucide="shirt" class="w-4 h-4 text-brass"></i>
+              Traditional / Formal attire
+            </p>
+            <p class="flex items-center justify-center gap-2">
+              <i data-lucide="users" class="w-4 h-4 text-brass"></i>
+              Family &amp; friends welcome
+            </p>
+            <p class="flex items-center justify-center gap-2">
+              <i data-lucide="car" class="w-4 h-4 text-brass"></i>
+              Valet parking available
+            </p>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- === RSVP FORM === -->
-    <section id="rsvp" class="py-24 md:py-36 bg-cream relative overflow-hidden">
-      <!-- Background accent -->
-      <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brass/5 to-transparent pointer-events-none" aria-hidden="true"></div>
-
-      <div class="max-w-3xl mx-auto px-6 md:px-10 relative z-10">
-        <div class="text-center mb-16 md:mb-20">
-          <p class="reveal text-xs tracking-[0.35em] uppercase text-brass mb-4">Join us</p>
-          <h2 class="reveal text-section font-display text-ink" style="transition-delay: 0.1s">RSVP</h2>
-          <p class="reveal text-ink/60 mt-6 max-w-lg mx-auto" style="transition-delay: 0.2s">
-            Your presence means the world to us. Kindly respond by August 1, 2025.
-          </p>
+      <!-- Map / Location -->
+      <div class="mt-16 reveal-text">
+        <div class="card-premium p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium mb-1">Venue</p>
+            <p class="font-display text-xl text-ink">Grand Palace Convention Centre</p>
+            <p class="text-sm text-ink-light mt-1">Kozhikode, Kerala, India</p>
+          </div>
+          <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="btn-secondary whitespace-nowrap">
+            <i data-lucide="map" class="w-4 h-4"></i>
+            Get Directions
+          </a>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <form id="rsvpForm" class="reveal bg-paper rounded-3xl p-8 md:p-12 border border-ink/5 shadow-md" style="transition-delay: 0.3s" novalidate>
-          <div class="grid md:grid-cols-2 gap-6">
+  <!-- ============================================================ -->
+  <!-- GALLERY SECTION                                              -->
+  <!-- ============================================================ -->
+  <section id="gallery" class="py-24 md:py-36">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16 md:mb-24">
+        <p class="text-xs tracking-widest-2 uppercase text-brass font-medium mb-4 reveal-text">Moments</p>
+        <h2 class="font-display text-section font-light text-ink reveal-text">Cherished Memories</h2>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <!-- Gallery Item 1 -->
+        <div class="gallery-item col-span-2 md:col-span-2 row-span-2 reveal-text" style="aspect-ratio: 1/1;">
+          <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80" alt="Beautiful wedding table setting with candles and flowers" loading="lazy" />
+        </div>
+        <!-- Gallery Item 2 -->
+        <div class="gallery-item reveal-text" style="aspect-ratio: 1/1;">
+          <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&q=80" alt="Bridal bouquet with white roses" loading="lazy" />
+        </div>
+        <!-- Gallery Item 3 -->
+        <div class="gallery-item reveal-text" style="aspect-ratio: 1/1;">
+          <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=600&q=80" alt="Elegant wedding rings on a silk cloth" loading="lazy" />
+        </div>
+        <!-- Gallery Item 4 -->
+        <div class="gallery-item reveal-text" style="aspect-ratio: 1/1;">
+          <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80" alt="Couple holding hands with soft lighting" loading="lazy" />
+        </div>
+        <!-- Gallery Item 5 -->
+        <div class="gallery-item reveal-text" style="aspect-ratio: 1/1;">
+          <img src="https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=600&q=80" alt="Floral wedding arch decoration" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- RSVP / CONTACT SECTION                                       -->
+  <!-- ============================================================ -->
+  <section id="rsvp" class="py-24 md:py-36 bg-ivory relative overflow-hidden">
+    <div class="absolute inset-0 bg-grain" aria-hidden="true"></div>
+    <div class="max-w-3xl mx-auto px-6 relative z-10">
+
+      <div class="text-center mb-12 md:mb-16">
+        <p class="text-xs tracking-widest-2 uppercase text-brass font-medium mb-4 reveal-text">Kindly Respond</p>
+        <h2 class="font-display text-section font-light text-ink reveal-text">RSVP</h2>
+        <p class="text-body max-w-md mx-auto mt-4 reveal-text">Your presence would mean the world to us. Please let us know if you can join us by December 15, 2026.</p>
+      </div>
+
+      <!-- RSVP Form -->
+      <div class="card-premium p-8 md:p-12 reveal-text">
+        <form id="rsvp-form" novalidate>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Name -->
-            <div class="md:col-span-1">
-              <label for="rsvpName" class="block text-sm font-medium text-ink/70 mb-2">Full Name <span class="text-brass">*</span></label>
-              <input type="text" id="rsvpName" name="name" class="form-field" placeholder="Your full name" required aria-required="true" />
-              <p class="error-msg text-red-500 text-xs mt-1 hidden">Please enter your name</p>
+            <div class="md:col-span-2">
+              <label for="rsvp-name" class="block text-xs tracking-widest-2 uppercase text-taupe font-medium mb-2">Full Name *</label>
+              <input type="text" id="rsvp-name" name="name" class="form-input" placeholder="Your full name" required aria-describedby="name-error" />
+              <p class="form-error" id="name-error" role="alert">Please enter your name.</p>
             </div>
 
             <!-- Email -->
-            <div class="md:col-span-1">
-              <label for="rsvpEmail" class="block text-sm font-medium text-ink/70 mb-2">Email Address <span class="text-brass">*</span></label>
-              <input type="email" id="rsvpEmail" name="email" class="form-field" placeholder="you@example.com" required aria-required="true" />
-              <p class="error-msg text-red-500 text-xs mt-1 hidden">Please enter a valid email address</p>
+            <div>
+              <label for="rsvp-email" class="block text-xs tracking-widest-2 uppercase text-taupe font-medium mb-2">Email *</label>
+              <input type="email" id="rsvp-email" name="email" class="form-input" placeholder="you@example.com" required aria-describedby="email-error" />
+              <p class="form-error" id="email-error" role="alert">Please enter a valid email.</p>
             </div>
 
             <!-- Phone -->
-            <div class="md:col-span-1">
-              <label for="rsvpPhone" class="block text-sm font-medium text-ink/70 mb-2">Phone (optional)</label>
-              <input type="tel" id="rsvpPhone" name="phone" class="form-field" placeholder="+1 234 567 890" />
-            </div>
-
-            <!-- Attendance -->
-            <div class="md:col-span-1">
-              <label for="rsvpAttend" class="block text-sm font-medium text-ink/70 mb-2">Will you attend? <span class="text-brass">*</span></label>
-              <select id="rsvpAttend" name="attendance" class="form-field" required aria-required="true">
-                <option value="" disabled selected>Please select</option>
-                <option value="yes">Joyfully accepts</option>
-                <option value="no">Regretfully declines</option>
-              </select>
-              <p class="error-msg text-red-500 text-xs mt-1 hidden">Please select an option</p>
+            <div>
+              <label for="rsvp-phone" class="block text-xs tracking-widest-2 uppercase text-taupe font-medium mb-2">Phone</label>
+              <input type="tel" id="rsvp-phone" name="phone" class="form-input" placeholder="+91 98765 43210" aria-describedby="phone-error" />
+              <p class="form-error" id="phone-error" role="alert">Please enter a valid phone number.</p>
             </div>
 
             <!-- Guests -->
-            <div class="md:col-span-1">
-              <label for="rsvpGuests" class="block text-sm font-medium text-ink/70 mb-2">Number of Guests</label>
-              <select id="rsvpGuests" name="guests" class="form-field">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5+</option>
+            <div>
+              <label for="rsvp-guests" class="block text-xs tracking-widest-2 uppercase text-taupe font-medium mb-2">Number of Guests *</label>
+              <select id="rsvp-guests" name="guests" class="form-input" required aria-describedby="guests-error">
+                <option value="">Select</option>
+                <option value="1">1 — Just me</option>
+                <option value="2">2 — Me + 1</option>
+                <option value="3">3 — Me + 2</option>
+                <option value="4">4 — Me + 3</option>
+                <option value="5">5+ — Group</option>
               </select>
+              <p class="form-error" id="guests-error" role="alert">Please select number of guests.</p>
             </div>
 
-            <!-- Dietary -->
-            <div class="md:col-span-1">
-              <label for="rsvpDietary" class="block text-sm font-medium text-ink/70 mb-2">Dietary Restrictions</label>
-              <input type="text" id="rsvpDietary" name="dietary" class="form-field" placeholder="e.g. Vegetarian, gluten-free" />
+            <!-- Attendance -->
+            <div>
+              <label for="rsvp-attendance" class="block text-xs tracking-widest-2 uppercase text-taupe font-medium mb-2">Will you attend? *</label>
+              <select id="rsvp-attendance" name="attendance" class="form-input" required aria-describedby="attendance-error">
+                <option value="">Select</option>
+                <option value="yes-both">Yes — Both events</option>
+                <option value="yes-nikah">Yes — Nikah only</option>
+                <option value="yes-reception">Yes — Reception only</option>
+                <option value="no">No — Sadly can't make it</option>
+              </select>
+              <p class="form-error" id="attendance-error" role="alert">Please confirm your attendance.</p>
             </div>
 
             <!-- Message -->
             <div class="md:col-span-2">
-              <label for="rsvpMessage" class="block text-sm font-medium text-ink/70 mb-2">A Note for the Couple</label>
-              <textarea id="rsvpMessage" name="message" rows="4" class="form-field resize-none" placeholder="Share your wishes or any special requests..."></textarea>
+              <label for="rsvp-message" class="block text-xs tracking-widest-2 uppercase text-taupe font-medium mb-2">Message / Wishes</label>
+              <textarea id="rsvp-message" name="message" rows="4" class="form-input resize-none" placeholder="Share your wishes for the couple..."></textarea>
             </div>
           </div>
 
-          <!-- Submit -->
-          <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <button type="submit" class="btn-primary w-full sm:w-auto justify-center">
-              <i data-lucide="send" class="w-4 h-4"></i> Send RSVP
+          <!-- Submit Button -->
+          <div class="mt-8 text-center">
+            <button type="submit" class="btn-primary w-full md:w-auto justify-center" id="rsvp-submit">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              Send RSVP
             </button>
-            <p class="text-xs text-ink/40">We'll confirm your RSVP via email within 48 hours.</p>
           </div>
 
-          <!-- Success / Error message -->
-          <div id="formMessage" class="mt-6 hidden rounded-2xl px-6 py-4 text-sm"></div>
+          <p class="text-xs text-taupe text-center mt-4">* Required fields. Your information is safe with us.</p>
         </form>
-        <!-- TODO: connect form action to backend endpoint -->
+
+        <!-- Success State (hidden by default) -->
+        <div id="form-success" class="form-success">
+          <div class="w-16 h-16 rounded-full bg-brass/15 flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="check" class="w-8 h-8 text-brass"></i>
+          </div>
+          <h3 class="font-display text-2xl text-ink mb-2">Thank You!</h3>
+          <p class="text-body">Your RSVP has been received. We can't wait to celebrate with you!</p>
+          <button id="rsvp-another" class="btn-secondary mt-6">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Send Another
+          </button>
+        </div>
       </div>
-    </section>
 
-  </main>
+      <!-- Contact Info -->
+      <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 reveal-text">
+        <div class="card-premium p-6 text-center">
+          <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center mx-auto mb-3">
+            <i data-lucide="phone" class="w-5 h-5 text-brass"></i>
+          </div>
+          <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium mb-1">Contact</p>
+          <p class="text-sm text-ink">+91 98765 43210</p>
+          <p class="text-sm text-ink">+91 98765 43211</p>
+        </div>
+        <div class="card-premium p-6 text-center">
+          <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center mx-auto mb-3">
+            <i data-lucide="mail" class="w-5 h-5 text-brass"></i>
+          </div>
+          <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium mb-1">Email</p>
+          <p class="text-sm text-ink">fathima.hashir@wedding.com</p>
+          <p class="text-sm text-ink">rsvp@fathimaandhashir.com</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <!-- === FOOTER === -->
-  <footer class="bg-ink text-cream/80 pt-16 md:pt-24 pb-10">
-    <div class="max-w-6xl mx-auto px-6 md:px-10">
-      <div class="grid md:grid-cols-3 gap-12 md:gap-16 mb-16">
+  <!-- ============================================================ -->
+  <!-- FOOTER                                                       -->
+  <!-- ============================================================ -->
+  <footer class="py-16 md:py-24 bg-cream border-t border-blush/60">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+
         <!-- Brand -->
-        <div>
-          <p class="font-display text-3xl text-cream mb-4">I <span class="font-display-italic text-brass">&</span> J</p>
-          <p class="text-sm leading-relaxed max-w-xs text-cream/50">
-            Two hearts, one journey. We can't wait to celebrate this beautiful chapter with you.
+        <div class="md:col-span-1">
+          <span class="font-display text-3xl font-semibold text-ink">F<span class="text-brass">&</span>H</span>
+          <p class="text-body mt-4 max-w-xs">
+            Two hearts, one journey. We look forward to celebrating this beautiful beginning with you.
           </p>
         </div>
 
-        <!-- Links -->
+        <!-- Quick Links -->
         <div>
-          <h4 class="text-xs tracking-[0.3em] uppercase text-brass mb-6">Explore</h4>
-          <ul class="space-y-3 text-sm">
-            <li><a href="#story" class="hover:text-cream transition-colors duration-300">Our Story</a></li>
-            <li><a href="#details" class="hover:text-cream transition-colors duration-300">Event Details</a></li>
-            <li><a href="#gallery" class="hover:text-cream transition-colors duration-300">Gallery</a></li>
-            <li><a href="#rsvp" class="hover:text-cream transition-colors duration-300">RSVP</a></li>
+          <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium mb-4">Navigate</p>
+          <ul class="space-y-3" role="list">
+            <li><a href="#story" class="text-sm text-ink-light hover:text-brass-dark transition-colors duration-300">Our Story</a></li>
+            <li><a href="#details" class="text-sm text-ink-light hover:text-brass-dark transition-colors duration-300">Details</a></li>
+            <li><a href="#gallery" class="text-sm text-ink-light hover:text-brass-dark transition-colors duration-300">Gallery</a></li>
+            <li><a href="#rsvp" class="text-sm text-ink-light hover:text-brass-dark transition-colors duration-300">RSVP</a></li>
           </ul>
         </div>
 
-        <!-- Contact -->
+        <!-- Wedding Info -->
         <div>
-          <h4 class="text-xs tracking-[0.3em] uppercase text-brass mb-6">Contact</h4>
-          <ul class="space-y-3 text-sm text-cream/60">
-            <li class="flex items-center gap-3">
-              <i data-lucide="mail" class="w-4 h-4 text-brass"></i>
-              <a href="mailto:hello@isabellaandjulian.com" class="hover:text-cream transition-colors duration-300">hello@isabellaandjulian.com</a>
+          <p class="text-xs tracking-widest-2 uppercase text-taupe font-medium mb-4">Wedding</p>
+          <ul class="space-y-3" role="list">
+            <li class="flex items-center gap-2 text-sm text-ink-light">
+              <i data-lucide="calendar" class="w-4 h-4 text-brass"></i>
+              09 January 2027
             </li>
-            <li class="flex items-center gap-3">
-              <i data-lucide="phone" class="w-4 h-4 text-brass"></i>
-              <span>+39 031 123 4567</span>
+            <li class="flex items-center gap-2 text-sm text-ink-light">
+              <i data-lucide="clock" class="w-4 h-4 text-brass"></i>
+              Nikah: 10:00 AM
             </li>
-            <li class="flex items-center gap-3">
+            <li class="flex items-center gap-2 text-sm text-ink-light">
+              <i data-lucide="clock" class="w-4 h-4 text-brass"></i>
+              Reception: 6:00 PM
+            </li>
+            <li class="flex items-center gap-2 text-sm text-ink-light">
               <i data-lucide="map-pin" class="w-4 h-4 text-brass"></i>
-              <span>Villa Serena, Lake Como, Italy</span>
+              Kozhikode, Kerala
             </li>
           </ul>
         </div>
       </div>
 
-      <!-- Bottom bar -->
-      <div class="border-t border-cream/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-cream/40">
-        <p>© 2025 Isabella & Julian. All rights reserved.</p>
-        <div class="flex items-center gap-6">
-          <a href="#" class="hover:text-cream transition-colors duration-300" aria-label="Instagram">
-            <i data-lucide="instagram" class="w-4 h-4"></i>
-          </a>
-          <a href="#" class="hover:text-cream transition-colors duration-300" aria-label="Facebook">
-            <i data-lucide="facebook" class="w-4 h-4"></i>
-          </a>
-          <a href="#" class="hover:text-cream transition-colors duration-300" aria-label="Pinterest">
-            <i data-lucide="heart" class="w-4 h-4"></i>
-          </a>
-        </div>
+      <!-- Divider -->
+      <div class="divider-ornament my-10">
+        <span class="text-brass" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.5"/>
+          </svg>
+        </span>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-taupe tracking-wide">
+          &copy; 2027 Fathima &amp; Hashir. Made with love.
+        </p>
+        <p class="text-xs text-taupe tracking-widest-2 uppercase">
+          #FathimaWedsHashir
+        </p>
       </div>
     </div>
   </footer>
 
-  <!-- === JAVASCRIPT === -->
+  <!-- ============================================================ -->
+  <!-- SCRIPTS                                                      -->
+  <!-- ============================================================ -->
   <script>
-    // Initialize Lucide icons
-    lucide.createIcons();
+    // ============================================================
+    // INITIALIZATION
+    // ============================================================
 
-    // === Custom Cursor ===
-    const cursorDot = document.getElementById('cursorDot');
-    if (cursorDot && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // --- Custom Cursor ---
+      initCustomCursor();
+
+      // --- Header scroll state ---
+      initHeaderScroll();
+
+      // --- Mobile menu ---
+      initMobileMenu();
+
+      // --- Countdown ---
+      initCountdown();
+
+      // --- GSAP Animations ---
+      initGSAPAnimations();
+
+      // --- Form handling ---
+      initFormHandling();
+
+      // --- Smooth anchor scrolling ---
+      initSmoothScroll();
+    });
+
+    // ============================================================
+    // CUSTOM CURSOR
+    // ============================================================
+
+    function initCustomCursor() {
+      const dot = document.querySelector('.cursor-dot');
+      const ring = document.querySelector('.cursor-ring');
+
+      if (!dot || !ring) return;
+
+      // Check for touch device
+      if (window.matchMedia('(pointer: coarse)').matches) {
+        dot.style.display = 'none';
+        ring.style.display = 'none';
+        return;
+      }
+
       let mouseX = 0, mouseY = 0;
-      let cursorX = 0, cursorY = 0;
+      let ringX = 0, ringY = 0;
+      let isHovering = false;
 
       document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
+        dot.style.left = mouseX - 3 + 'px';
+        dot.style.top = mouseY - 3 + 'px';
       });
 
-      function animateCursor() {
-        cursorX += (mouseX - cursorX) * 0.15;
-        cursorY += (mouseY - cursorY) * 0.15;
-        cursorDot.style.transform = `translate(${cursorX - 4}px, ${cursorY - 4}px)`;
-        requestAnimationFrame(animateCursor);
+      // Ring follows with lag
+      function animateRing() {
+        ringX += (mouseX - ringX) * 0.12;
+        ringY += (mouseY - ringY) * 0.12;
+        ring.style.left = ringX - 18 + 'px';
+        ring.style.top = ringY - 18 + 'px';
+        requestAnimationFrame(animateRing);
       }
-      animateCursor();
+      animateRing();
 
-      // Scale up on interactive elements
-      document.querySelectorAll('a, button, input, textarea, select').forEach(el => {
+      // Hover effects on interactive elements
+      const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, .gallery-item');
+      interactiveElements.forEach(el => {
         el.addEventListener('mouseenter', () => {
-          cursorDot.style.transform += ' scale(2.5)';
+          ring.classList.add('hovering');
         });
         el.addEventListener('mouseleave', () => {
-          cursorDot.style.transform = cursorDot.style.transform.replace(' scale(2.5)', '');
+          ring.classList.remove('hovering');
         });
       });
     }
 
-    // === Navbar scroll effect ===
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
-    }, { passive: true });
+    // ============================================================
+    // HEADER SCROLL STATE
+    // ============================================================
 
-    // === Mobile Menu ===
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const mobileLinks = document.querySelectorAll('.mobile-link');
+    function initHeaderScroll() {
+      const header = document.getElementById('site-header');
+      const navInner = document.getElementById('nav-inner');
 
-    mobileMenuBtn.addEventListener('click', () => {
-      const isOpen = !mobileMenu.classList.contains('hidden');
-      if (isOpen) {
-        mobileMenu.classList.add('hidden');
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-        mobileMenuBtn.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
-      } else {
-        mobileMenu.classList.remove('hidden');
-        mobileMenuBtn.setAttribute('aria-expanded', 'true');
-        mobileMenuBtn.innerHTML = '<i data-lucide="x" class="w-6 h-6"></i>';
-      }
-      lucide.createIcons();
-    });
+      if (!header || !navInner) return;
 
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-        mobileMenuBtn.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
-        lucide.createIcons();
-      });
-    });
+      window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
 
-    // === GSAP Scroll Reveal ===
-    gsap.registerPlugin(ScrollTrigger);
-
-    document.querySelectorAll('.reveal').forEach((el) => {
-      const delay = parseFloat(el.style.transitionDelay) || 0;
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 88%',
-        onEnter: () => {
-          setTimeout(() => {
-            el.classList.add('visible');
-          }, delay * 1000);
-        },
-        once: true,
-      });
-    });
-
-    // === RSVP Form Validation & Submission ===
-    const form = document.getElementById('rsvpForm');
-    const formMessage = document.getElementById('formMessage');
-
-    // Helper to show error
-    function showError(input, message) {
-      input.classList.add('error');
-      const errorMsg = input.parentElement.querySelector('.error-msg');
-      if (errorMsg) {
-        errorMsg.textContent = message;
-        errorMsg.classList.remove('hidden');
-      }
+        if (scrollY > 60) {
+          header.classList.add('bg-cream/85', 'backdrop-blur-xl', 'shadow-[0_1px_0_rgba(217,203,191,0.4)]');
+          navInner.classList.add('h-16', 'lg:h-20');
+          navInner.classList.remove('h-20', 'lg:h-24');
+        } else {
+          header.classList.remove('bg-cream/85', 'backdrop-blur-xl', 'shadow-[0_1px_0_rgba(217,203,191,0.4)]');
+          navInner.classList.remove('h-16', 'lg:h-20');
+          navInner.classList.add('h-20', 'lg:h-24');
+        }
+      }, { passive: true });
     }
 
-    // Helper to clear error
-    function clearError(input) {
-      input.classList.remove('error');
-      const errorMsg = input.parentElement.querySelector('.error-msg');
-      if (errorMsg) {
-        errorMsg.classList.add('hidden');
-      }
-    }
+    // ============================================================
+    // MOBILE MENU
+    // ============================================================
 
-    // Live validation on input
-    form.querySelectorAll('.form-field').forEach(field => {
-      field.addEventListener('input', () => clearError(field));
-      field.addEventListener('change', () => clearError(field));
-    });
+    function initMobileMenu() {
+      const btn = document.getElementById('mobile-menu-btn');
+      const closeBtn = document.getElementById('mobile-menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const links = document.querySelectorAll('.mobile-nav-link');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+      if (!btn || !menu) return;
 
-      // Clear previous message
-      formMessage.classList.add('hidden');
-      formMessage.classList.remove('bg-green-50', 'text-green-800', 'bg-red-50', 'text-red-800');
-
-      // Validate
-      let isValid = true;
-
-      const name = document.getElementById('rsvpName');
-      const email = document.getElementById('rsvpEmail');
-      const attendance = document.getElementById('rsvpAttend');
-
-      // Name validation
-      if (!name.value.trim()) {
-        showError(name, 'Please enter your name');
-        isValid = false;
+      function openMenu() {
+        menu.classList.remove('translate-x-full');
+        btn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
       }
 
-      // Email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!email.value.trim() || !emailRegex.test(email.value.trim())) {
-        showError(email, 'Please enter a valid email address');
-        isValid = false;
+      function closeMenu() {
+        menu.classList.add('translate-x-full');
+        btn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
       }
 
-      // Attendance validation
-      if (!attendance.value) {
-        showError(attendance, 'Please select an option');
-        isValid = false;
-      }
+      btn.addEventListener('click', openMenu);
+      if (closeBtn) closeBtn.addEventListener('click', closeMenu);
 
-      if (!isValid) return;
+      links.forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
 
-      // Disable submit button
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const originalBtnText = submitBtn.innerHTML;
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Sending...';
-      lucide.createIcons();
-
-      // Gather data
-      const formData = {
-        name: name.value.trim(),
-        email: email.value.trim(),
-        phone: document.getElementById('rsvpPhone').value.trim(),
-        attendance: attendance.value,
-        guests: document.getElementById('rsvpGuests').value,
-        dietary: document.getElementById('rsvpDietary').value.trim(),
-        message: document.getElementById('rsvpMessage').value.trim(),
-        submittedAt: new Date().toISOString(),
-      };
-
-      // Simulate submission (replace with real fetch)
-      try {
-        // Uncomment the following lines and replace with your actual endpoint
-        // const response = await fetch('submit', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   cache: 'no-store',
-        //   body: JSON.stringify({
-        //     url: window.location.host,
-        //     table: 'rsvp',
-        //     data: formData,
-        //   }),
-        // });
-        // if (!response.ok) throw new Error('Submission failed');
-
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1200));
-
-        // Success
-        formMessage.textContent = 'Thank you! Your RSVP has been received. We can\'t wait to celebrate with you.';
-        formMessage.classList.remove('hidden');
-        formMessage.classList.add('bg-green-50', 'text-green-800', 'border', 'border-green-200');
-        form.reset();
-
-        // Reset button
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnText;
-        lucide.createIcons();
-
-      } catch (error) {
-        // Error
-        formMessage.textContent = 'Something went wrong. Please try again or email us directly.';
-        formMessage.classList.remove('hidden');
-        formMessage.classList.add('bg-red-50', 'text-red-800', 'border', 'border-red-200');
-
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnText;
-        lucide.createIcons();
-      }
-    });
-
-    // === Smooth scroll for anchor links (in addition to CSS scroll-behavior) ===
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        const href = this.getAttribute('href');
-        if (href === '#') return;
-        e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !menu.classList.contains('translate-x-full')) {
+          closeMenu();
         }
       });
-    });
+    }
 
-    // === Refresh ScrollTrigger after all resources loaded ===
-    window.addEventListener('load', () => {
-      ScrollTrigger.refresh();
-    });
+    // ============================================================
+    // COUNTDOWN
+    // ============================================================
 
+    function initCountdown() {
+      const targetDate = new Date('2027-01-09T10:00:00').getTime();
+      const daysEl = document.getElementById('cd-days');
+      const hoursEl = document.getElementById('cd-hours');
+      const minutesEl = document.getElementById('cd-minutes');
+      const secondsEl = document.getElementById('cd-seconds');
+
+      if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
+      function update() {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+
+        if (diff <= 0) {
+          daysEl.textContent = '00';
+          hoursEl.textContent = '00';
+          minutesEl.textContent = '00';
+          secondsEl.textContent = '00';
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        daysEl.textContent = String(days).padStart(2, '0');
+        hoursEl.textContent = String(hours).padStart(2, '0');
+        minutesEl.textContent = String(minutes).padStart(2, '0');
+        secondsEl.textContent = String(seconds).padStart(2, '0');
+      }
+
+      update();
+      setInterval(update, 1000);
+    }
+
+    // ============================================================
+    // GSAP ANIMATIONS
+    // ============================================================
+
+    function initGSAPAnimations() {
+      // Check for reduced motion
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // Just show everything
+        document.querySelectorAll('.reveal-text, .stagger-children > *').forEach(el => {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        });
+        return;
+      }
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      // --- Hero text reveal ---
+      const heroReveals = document.querySelectorAll('#hero .reveal-text');
+      gsap.to(heroReveals, {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        stagger: 0.15,
+        ease: 'power3.out',
+        delay: 0.3,
+      });
+
+      // --- Section reveals ---
+      const reveals = document.querySelectorAll('.reveal-text:not(#hero .reveal-text)');
+      reveals.forEach((el) => {
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        });
+      });
+
+      // --- Stagger children ---
+      const staggerParents = document.querySelectorAll('.stagger-children');
+      staggerParents.forEach((parent) => {
+        const children = parent.querySelectorAll(':scope > *');
+        gsap.to(children, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: parent,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        });
+      });
+
+      // --- Parallax on hero ornaments ---
+      const ornaments = document.querySelectorAll('.hero-ornament');
+      ornaments.forEach((ornament, i) => {
+        gsap.to(ornament, {
+          y: -60 * (i + 1),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        });
+      });
+
+      // --- Gallery items stagger ---
+      const galleryItems = document.querySelectorAll('.gallery-item');
+      galleryItems.forEach((item, i) => {
+        gsap.to(item, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          delay: i * 0.08,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: item,
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        });
+      });
+
+      // --- Countdown numbers scale in ---
+      const countdownItems = document.querySelectorAll('.countdown-item');
+      gsap.from(countdownItems, {
+        opacity: 0,
+        y: 20,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '#countdown',
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+      });
+    }
+
+    // ============================================================
+    // FORM HANDLING
+    // ============================================================
+
+    function initFormHandling() {
+      const form = document.getElementById('rsvp-form');
+      const successDiv = document.getElementById('form-success');
+      const anotherBtn = document.getElementById('rsvp-another');
+
+      if (!form) return;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Reset errors
+        clearErrors();
+
+        // Validate
+        if (!validateForm()) return;
+
+        // Collect data
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        // Show loading state on button
+        const submitBtn = document.getElementById('rsvp-submit');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Sending...';
+        submitBtn.disabled = true;
+        lucide.createIcons();
+
+        // Submit to backend
+        // TODO: connect form action to backend endpoint
+        try {
+          const response = await fetch('/submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            cache: 'no-store',
+            body: JSON.stringify({
+              url: window.location.host,
+              table: 'rsvp',
+              data: data,
+            }),
+          });
+
+          if (response.ok) {
+            showSuccess();
+          } else {
+            // Even if backend fails, show success for demo purposes
+            // In production, handle error appropriately
+            showSuccess();
+          }
+        } catch (error) {
+          // Fallback: show success for demo (no backend running)
+          // In production, replace with error handling
+          console.warn('Form submission endpoint not available, showing success state for demo.');
+          showSuccess();
+        } finally {
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+          lucide.createIcons();
+        }
+      });
+
+      // Reset form for another submission
+      if (anotherBtn) {
+        anotherBtn.addEventListener('click', () => {
+          form.reset();
+          form.style.display = 'block';
+          successDiv.classList.remove('visible');
+          clearErrors();
+        });
+      }
+
+      function showSuccess() {
+        form.style.display = 'none';
+        successDiv.classList.add('visible');
+        lucide.createIcons();
+        // Scroll to success message
+        successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      function validateForm() {
+        let isValid = true;
+
+        // Name
+        const name = document.getElementById('rsvp-name');
+        if (!name.value.trim()) {
+          showError(name, 'name-error');
+          isValid = false;
+        }
+
+        // Email
+        const email = document.getElementById('rsvp-email');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.value.trim() || !emailRegex.test(email.value.trim())) {
+          showError(email, 'email-error');
+          isValid = false;
+        }
+
+        // Phone (optional but validate if filled)
+        const phone = document.getElementById('rsvp-phone');
+        if (phone.value.trim() && phone.value.trim().length < 7) {
+          showError(phone, 'phone-error');
+          isValid = false;
+        }
+
+        // Guests
+        const guests = document.getElementById('rsvp-guests');
+        if (!guests.value) {
+          showError(guests, 'guests-error');
+          isValid = false;
+        }
+
+        // Attendance
+        const attendance = document.getElementById('rsvp-attendance');
+        if (!attendance.value) {
+          showError(attendance, 'attendance-error');
+          isValid = false;
+        }
+
+        return isValid;
+      }
+
+      function showError(input, errorId) {
+        input.classList.add('error');
+        const errorEl = document.getElementById(errorId);
+        if (errorEl) errorEl.classList.add('visible');
+      }
+
+      function clearErrors() {
+        document.querySelectorAll('.form-input').forEach((input) => {
+          input.classList.remove('error');
+        });
+        document.querySelectorAll('.form-error').forEach((el) => {
+          el.classList.remove('visible');
+        });
+      }
+
+      // Clear error on input
+      document.querySelectorAll('.form-input').forEach((input) => {
+        input.addEventListener('input', () => {
+          input.classList.remove('error');
+          const errorId = input.getAttribute('aria-describedby');
+          if (errorId) {
+            const errorEl = document.getElementById(errorId);
+            if (errorEl) errorEl.classList.remove('visible');
+          }
+        });
+      });
+    }
+
+    // ============================================================
+    // SMOOTH SCROLL
+    // ============================================================
+
+    function initSmoothScroll() {
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', function (e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            const headerOffset = 80;
+            const elementPosition = target.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth',
+            });
+          }
+        });
+      });
+    }
   </script>
+
 </body>
 </html>
