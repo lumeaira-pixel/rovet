@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Elena Marchetti — Design Portfolio</title>
+<meta name="description" content="Elena Marchetti — independent designer crafting brand identities, editorial systems and digital products for studios and founders worldwide." />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/lib/index.min.js"></script>
+<script src="https://cdn.tailwindcss.com/3.4.4"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#141210',
+          paper: '#FAF7F2',
+          cream: '#F3EDE3',
+          terracotta: '#C2603B',
+          brass: '#B08D57',
+          muted: '#6B655C',
+        },
+        fontFamily: {
+          display: ['"Instrument Serif"', 'serif'],
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<!-- Lucide -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<style>
+  /* === Design Tokens === */
+  :root {
+    --ink: #141210;
+    --paper: #FAF7F2;
+    --cream: #F3EDE3;
+    --terracotta: #C2603B;
+    --brass: #B08D57;
+    --muted: #6B655C;
+    --hairline: rgba(20, 18, 16, 0.10);
+    --shadow-soft: 0 10px 40px -20px rgba(20, 18, 16, 0.18);
+    --shadow-card: 0 30px 80px -40px rgba(20, 18, 16, 0.35);
+    --focus-ring: rgba(194, 96, 59, 0.35);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* === Grain / texture overlay === */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* === Typography === */
+  .font-display { font-family: 'Instrument Serif', serif; font-weight: 400; letter-spacing: -0.02em; }
+  .display-hero {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    font-size: clamp(3rem, 9vw, 8.5rem);
+  }
+  .display-lg {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    font-size: clamp(2.25rem, 5.5vw, 4.75rem);
+  }
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  /* === Nav === */
+  .nav-shell {
+    transition: all 0.4s var(--ease);
+  }
+  .nav-shell.scrolled {
+    background: rgba(250, 247, 242, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .nav-link { position: relative; padding: 6px 0; }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 1px; width: 100%;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s var(--ease);
+  }
+  .nav-link:hover::after { transform: scaleX(1); transform-origin: left; }
+
+  /* === Buttons === */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 26px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: all 0.35s var(--ease);
+    border: 1px solid var(--ink);
+  }
+  .btn-primary:hover {
+    background: var(--terracotta);
+    border-color: var(--terracotta);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px -20px rgba(194, 96, 59, 0.6);
+  }
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 26px;
+    background: transparent;
+    color: var(--ink);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid var(--hairline);
+    transition: all 0.35s var(--ease);
+  }
+  .btn-ghost:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    transform: translateY(-2px);
+  }
+  .btn-ghost:active { transform: translateY(0) scale(0.98); }
+
+  /* === Hero visual === */
+  .hero-visual {
+    position: relative;
+    border-radius: 28px;
+    overflow: hidden;
+    background: linear-gradient(140deg, #E8DDC9 0%, #D4B896 40%, #C2603B 100%);
+    aspect-ratio: 4/5;
+    box-shadow: var(--shadow-card);
+  }
+  .hero-visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 60%);
+    pointer-events: none;
+  }
+  .hero-visual .ring {
+    position: absolute;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 50%;
+  }
+
+  /* === Marquee === */
+  .marquee {
+    display: flex;
+    gap: 4rem;
+    animation: marquee 40s linear infinite;
+    white-space: nowrap;
+    width: max-content;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* === Project cards === */
+  .project-card {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--cream);
+    transition: transform 0.6s var(--ease);
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  .project-card .media {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    position: relative;
+  }
+  .project-card .media > .bg {
+    position: absolute; inset: 0;
+    transition: transform 1s var(--ease);
+  }
+  .project-card:hover .media > .bg { transform: scale(1.06); }
+
+  .bg-1 { background: linear-gradient(135deg, #F0E4CE 0%, #D6B98C 55%, #A67B4A 100%); }
+  .bg-2 { background: linear-gradient(135deg, #E7E2D6 0%, #B7AE9E 55%, #4A4438 100%); }
+  .bg-3 { background: linear-gradient(135deg, #F4D9C2 0%, #D58B65 55%, #8A3F22 100%); }
+  .bg-4 { background: linear-gradient(135deg, #DDE4DC 0%, #9AA89B 55%, #47594B 100%); }
+  .bg-5 { background: linear-gradient(135deg, #EFE7DA 0%, #C4BBA4 55%, #6B655C 100%); }
+  .bg-6 { background: linear-gradient(135deg, #F2E1E1 0%, #C99A9A 55%, #6B3434 100%); }
+
+  /* === Contact form === */
+  .field {
+    width: 100%;
+    padding: 14px 16px;
+    background: transparent;
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    font-size: 0.95rem;
+    color: var(--ink);
+    transition: all 0.3s var(--ease);
+    font-family: inherit;
+  }
+  .field::placeholder { color: rgba(20,18,16,0.35); }
+  .field:focus {
+    outline: none;
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 4px var(--focus-ring);
+  }
+  .field.error { border-color: #B5443E; box-shadow: 0 0 0 4px rgba(181,68,62,0.18); }
+  .err-msg { font-size: 0.78rem; color: #B5443E; margin-top: 6px; display: none; }
+  .err-msg.show { display: block; }
+
+  /* === Reveal === */
+  .reveal { opacity: 0; transform: translateY(28px); }
+  .reveal.in { opacity: 1; transform: translateY(0); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+
+  /* === Custom cursor dot === */
+  .cursor-dot {
+    position: fixed;
+    top: 0; left: 0;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.3s var(--ease), height 0.3s var(--ease), background 0.3s var(--ease);
+    mix-blend-mode: multiply;
+  }
+  .cursor-dot.grow { width: 44px; height: 44px; background: rgba(194, 96, 59, 0.28); }
+  @media (max-width: 1024px) { .cursor-dot { display: none; } }
+
+  /* === Focus visible === */
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--terracotta);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  /* === Stat divider === */
+  .stat-divide { border-left: 1px solid var(--hairline); }
+
+  /* === Mobile menu === */
+  .mobile-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s var(--ease);
+  }
+  .mobile-menu.open { max-height: 500px; }
+
+  /* === Toast === */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 22px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    transform: translateY(120%);
+    transition: transform 0.6s var(--ease);
+    z-index: 10000;
+    box-shadow: var(--shadow-card);
+  }
+  .toast.show { transform: translateY(0); }
+
+  /* === Noise dot pattern for about === */
+  .dot-grid {
+    background-image: radial-gradient(rgba(20,18,16,0.14) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* === sr-only === */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+<!-- ============ NAV ============ -->
+<header id="navShell" class="nav-shell fixed top-0 left-0 right-0 z-50">
+  <nav class="max-w-[1400px] mx-auto px-6 lg:px-10 h-20 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3 group" aria-label="Elena Marchetti home">
+      <span class="w-8 h-8 rounded-full bg-ink flex items-center justify-center transition-transform duration-500 group-hover:rotate-45">
+        <span class="w-2 h-2 rounded-full bg-paper"></span>
+      </span>
+      <span class="font-display text-2xl tracking-tight">Elena Marchetti</span>
+    </a>
+
+    <div class="hidden lg:flex items-center gap-10 text-sm">
+      <a href="#work" class="nav-link">Work</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#testimonials" class="nav-link">Studio Notes</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <a href="#contact" class="hidden md:inline-flex btn-primary text-sm" data-magnetic>
+        Start a project
+        <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+      </a>
+      <button id="menuBtn" class="lg:hidden w-11 h-11 rounded-full border border-[color:var(--hairline)] flex items-center justify-center" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="mobile-menu lg:hidden bg-paper border-t border-[color:var(--hairline)]">
+    <div class="px-6 py-6 flex flex-col gap-4 text-lg font-display">
+      <a href="#work" class="py-2">Work</a>
+      <a href="#about" class="py-2">About</a>
+      <a href="#services" class="py-2">Services</a>
+      <a href="#testimonials" class="py-2">Studio Notes</a>
+      <a href="#contact" class="py-2">Contact</a>
+      <a href="#contact" class="btn-primary mt-2 justify-center">Start a project</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="relative pt-32 md:pt-40 pb-16 md:pb-24">
+    <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-end">
+        <div class="lg:col-span-7">
+          <p class="eyebrow reveal mb-6">Independent designer · Milan → worldwide</p>
+          <h1 class="display-hero reveal">
+            Design that <em class="italic" style="color: var(--terracotta);">lingers</em><br>
+            in memory.
+          </h1>
+          <p class="reveal mt-8 max-w-xl text-[1.05rem] leading-relaxed text-[color:var(--muted)]">
+            I'm Elena — a brand and digital designer building quiet, considered identities for
+            studios, founders and cultural institutions. Twelve years, forty-eight brands, one
+            obsession: the details nobody else notices.
+          </p>
+          <div class="reveal mt-10 flex flex-wrap items-center gap-4">
+            <a href="#work" class="btn-primary" data-magnetic>
+              See selected work
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+            <a href="#contact" class="btn-ghost" data-magnetic>
+              <i data-lucide="mail" class="w-4 h-4"></i>
+              Book an intro call
+            </a>
+          </div>
+
+          <div class="reveal mt-14 grid grid-cols-3 gap-6 max-w-lg">
+            <div>
+              <div class="font-display text-4xl">12<span class="text-[color:var(--terracotta)]">+</span></div>
+              <div class="eyebrow mt-2">Years</div>
+            </div>
+            <div class="stat-divide pl-6">
+              <div class="font-display text-4xl">48</div>
+              <div class="eyebrow mt-2">Brands</div>
+            </div>
+            <div class="stat-divide pl-6">
+              <div class="font-display text-4xl">9</div>
+              <div class="eyebrow mt-2">Awards</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5">
+          <div class="hero-visual reveal" data-tilt>
+            <div class="ring" style="width: 320px; height: 320px; top: -60px; right: -80px;"></div>
+            <div class="ring" style="width: 220px; height: 220px; bottom: 40px; left: -60px;"></div>
+            <div class="ring" style="width: 140px; height: 140px; top: 45%; left: 42%;"></div>
+            <div class="absolute inset-0 flex flex-col justify-end p-8 text-paper">
+              <p class="eyebrow" style="color: rgba(250,247,242,0.75)">Currently</p>
+              <p class="font-display text-3xl mt-2 leading-tight">Designing a<br>cultural identity<br>for Casa Verdi.</p>
+            </div>
+            <div class="absolute top-8 left-8">
+              <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs text-white">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                Available Q3
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <section class="py-10 border-y border-[color:var(--hairline)] overflow-hidden">
+    <div class="marquee font-display text-3xl md:text-4xl text-[color:var(--muted)]">
+      <span>Brand Identity</span><span style="color: var(--terracotta);">◆</span>
+      <span>Editorial Systems</span><span style="color: var(--terracotta);">◆</span>
+      <span>Type Design</span><span style="color: var(--terracotta);">◆</span>
+      <span>Web Experience</span><span style="color: var(--terracotta);">◆</span>
+      <span>Packaging</span><span style="color: var(--terracotta);">◆</span>
+      <span>Art Direction</span><span style="color: var(--terracotta);">◆</span>
+      <span>Brand Identity</span><span style="color: var(--terracotta);">◆</span>
+      <span>Editorial Systems</span><span style="color: var(--terracotta);">◆</span>
+      <span>Type Design</span><span style="color: var(--terracotta);">◆</span>
+      <span>Web Experience</span><span style="color: var(--terracotta);">◆</span>
+      <span>Packaging</span><span style="color: var(--terracotta);">◆</span>
+      <span>Art Direction</span><span style="color: var(--terracotta);">◆</span>
+    </div>
+  </section>
+
+  <!-- ============ WORK ============ -->
+  <section id="work" class="py-24 md:py-32">
+    <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div>
+          <p class="eyebrow reveal mb-4">01 — Selected work</p>
+          <h2 class="display-lg reveal max-w-2xl">A quiet archive of<br>recent commissions.</h2>
+        </div>
+        <p class="reveal max-w-sm text-[color:var(--muted)] text-[0.95rem] leading-relaxed">
+          Each project below is a partnership — usually twelve weeks, always from first pencil
+          sketch to final shipped asset.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 lg:gap-8">
+
+        <!-- Project 1 -->
+        <article class="project-card reveal" data-tilt>
+          <div class="media">
+            <div class="bg bg-1"></div>
+          </div>
+          <div class="p-7 flex items-start justify-between gap-6">
+            <div>
+              <p class="eyebrow mb-3">Brand Identity · 2024</p>
+              <h3 class="font-display text-3xl leading-tight">Casa Verdi</h3>
+              <p class="mt-3 text-[color:var(--muted)] text-sm leading-relaxed max-w-sm">
+                A heritage olive oil house reimagined — custom serif logotype, eleven-label
+                system and tactile packaging for a family estate in Puglia.
+              </p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-6 h-6 shrink-0 mt-2"></i>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article class="project-card reveal" data-tilt>
+          <div class="media">
+            <div class="bg bg-2"></div>
+          </div>
+          <div class="p-7 flex items-start justify-between gap-6">
+            <div>
+              <p class="eyebrow mb-3">Editorial · 2024</p>
+              <h3 class="font-display text-3xl leading-tight">Atlas Quarterly</h3>
+              <p class="mt-3 text-[color:var(--muted)] text-sm leading-relaxed max-w-sm">
+                A print and digital redesign for an independent design journal — modular
+                grid, new type hierarchy, four-issue rollout.
+              </p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-6 h-6 shrink-0 mt-2"></i>
+          </div>
+        </article>
+
+        <!-- Project 3 -->
+        <article class="project-card reveal" data-tilt>
+          <div class="media">
+            <div class="bg bg-3"></div>
+          </div>
+          <div class="p-7 flex items-start justify-between gap-6">
+            <div>
+              <p class="eyebrow mb-3">Digital · 2023</p>
+              <h3 class="font-display text-3xl leading-tight">Muta Studio</h3>
+              <p class="mt-3 text-[color:var(--muted)] text-sm leading-relaxed max-w-sm">
+                Portfolio site for an architecture practice — scroll-driven case studies,
+                custom type pairing and an unusually slow interface.
+              </p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-6 h-6 shrink-0 mt-2"></i>
+          </div>
+        </article>
+
+        <!-- Project 4 -->
+        <article class="project-card reveal" data-tilt>
+          <div class="media">
+            <div class="bg bg-4"></div>
+          </div>
+          <div class="p-7 flex items-start justify-between gap-6">
+            <div>
+              <p class="eyebrow mb-3">Packaging · 2023</p>
+              <h3 class="font-display text-3xl leading-tight">Fjord Botanica</h3>
+              <p class="mt-3 text-[color:var(--muted)] text-sm leading-relaxed max-w-sm">
+                Nordic skincare line — minimal typographic system, tactile uncoated
+                stock, an identity built around a single hairline rule.
+              </p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-6 h-6 shrink-0 mt-2"></i>
+          </div>
+        </article>
+
+        <!-- Project 5 -->
+        <article class="project-card reveal" data-tilt>
+          <div class="media">
+            <div class="bg bg-5"></div>
+          </div>
+          <div class="p-7 flex items-start justify-between gap-6">
+            <div>
+              <p class="eyebrow mb-3">Art Direction · 2023</p>
+              <h3 class="font-display text-3xl leading-tight">Rive Nocturne</h3>
+              <p class="mt-3 text-[color:var(--muted)] text-sm leading-relaxed max-w-sm">
+                Campaign for a Parisian gallery's winter season — photographic direction,
+                poster series, and a limited-run catalogue.
+              </p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-6 h-6 shrink-0 mt-2"></i>
+          </div>
+        </article>
+
+        <!-- Project 6 -->
+        <article class="project-card reveal" data-tilt>
+          <div class="media">
+            <div class="bg bg-6"></div>
+          </div>
+          <div class="p-7 flex items-start justify-between gap-6">
+            <div>
+              <p class="eyebrow mb-3">Brand System · 2022</p>
+              <h3 class="font-display text-3xl leading-tight">Verdi & Co.</h3>
+              <p class="mt-3 text-[color:var(--muted)] text-sm leading-relaxed max-w-sm">
+                Full identity for a boutique legal practice — considered, restrained,
+                quietly confident. Custom monogram and stationery set.
+              </p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-6 h-6 shrink-0 mt-2"></i>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about" class="py-24 md:py-32 bg-[color:var(--cream)] relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.5]" aria-hidden="true"></div>
+    <div class="max-w-[1400px] mx-auto px-6 lg:px-10 relative">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+
+        <div class="lg:col-span-5">
+          <p class="eyebrow reveal mb-4">02 — About</p>
+          <h2 class="display-lg reveal">Designer,<br>editor,<br><em class="italic" style="color: var(--terracotta);">perfectionist.</em></h2>
+          <div class="reveal mt-10 aspect-[4/5] rounded-3xl overflow-hidden relative bg-gradient-to-br from-[#E8DDC9] via-[#D4B896] to-[#B08D57] shadow-[var(--shadow-card)]">
+            <div class="absolute inset-0" style="background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.35), transparent 55%);"></div>
+            <div class="absolute bottom-6 left-6 right-6 flex items-center justify-between text-paper">
+              <div>
+                <p class="eyebrow" style="color: rgba(250,247,242,0.75)">Studio</p>
+                <p class="font-display text-2xl mt-1">Milan, Italy</p>
+              </div>
+              <span class="w-12 h-12 rounded-full border border-white/40 flex items-center justify-center">
+                <i data-lucide="map-pin" class="w-5 h-5 text-white"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 lg:pt-16">
+          <div class="reveal space-y-6 text-[1.02rem] leading-relaxed max-w-2xl">
+            <p>
+              I began my practice in a two-room studio in Milan's Brera district, working
+              exclusively with independent publishers. Twelve years later I still keep the
+              same discipline: to design less, and mean more.
+            </p>
+            <p>
+              My work sits at the intersection of editorial craft and digital experience.
+              I'm interested in the way a hairline can carry an entire brand, how a single
+              letterform can be worth a week of revisions, and why the best projects often
+              end up smaller than they started.
+            </p>
+            <p>
+              I work with a small number of clients each year — usually three to four
+              long engagements — so that every detail gets the time it deserves.
+            </p>
+          </div>
+
+          <div class="reveal grid sm:grid-cols-2 gap-6 mt-14">
+            <div class="p-6 rounded-2xl bg-paper border border-[color:var(--hairline)]">
+              <i data-lucide="award" class="w-5 h-5 mb-4 text-[color:var(--terracotta)]"></i>
+              <h4 class="font-display text-xl mb-2">Recognition</h4>
+              <p class="text-sm text-[color:var(--muted)] leading-relaxed">
+                Type Directors Club, D&AD Wood Pencil, European Design Awards — nine
+                honours to date.
+              </p>
+            </div>
+            <div class="p-6 rounded-2xl bg-paper border border-[color:var(--hairline)]">
+              <i data-lucide="graduation-cap" class="w-5 h-5 mb-4 text-[color:var(--terracotta)]"></i>
+              <h4 class="font-display text-xl mb-2">Teaching</h4>
+              <p class="text-sm text-[color:var(--muted)] leading-relaxed">
+                Visiting critic at ISIA Urbino and Politecnico di Milano — typography &
+                identity systems.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="services" class="py-24 md:py-32">
+    <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+      <div class="grid lg:grid-cols-12 gap-12 items-end mb-16">
+        <div class="lg:col-span-7">
+          <p class="eyebrow reveal mb-4">03 — Services</p>
+          <h2 class="display-lg reveal max-w-2xl">How we might<br>work together.</h2>
+        </div>
+        <p class="lg:col-span-5 reveal text-[color:var(--muted)] leading-relaxed">
+          Each engagement is scoped individually — but these three formats cover most of
+          what I'm asked to do.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="reveal p-8 rounded-3xl bg-[color:var(--cream)] border border-[color:var(--hairline)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-soft)]">
+          <span class="eyebrow">01</span>
+          <h3 class="font-display text-3xl mt-6">Identity</h3>
+          <p class="mt-4 text-[color:var(--muted)] text-sm leading-relaxed">
+            From positioning through to a complete visual system — logotype, colour,
+            typography, motion and a living brand book.
+          </p>
+          <ul class="mt-6 space-y-3 text-sm">
+            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[color:var(--terracotta)]"></i> Positioning & naming</li>
+            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[color:var(--terracotta)]"></i> Custom logotype</li>
+            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[color:var(--terracotta)]"></i> Full guidelines</li>
+          </ul>
+        </div>
+
+        <div class="reveal p-8 rounded-3xl bg-ink text-paper border border-ink transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-card)] relative">
+          <span class="absolute top-6 right-6 px-3 py-1 rounded-full text-[0.7rem] tracking-widest uppercase bg-[color:var(--terracotta)]">Most requested</span>
+          <span class="eyebrow" style="color: rgba(250,247,242,0.6)">02</span>
+          <h3 class="font-display text-3xl mt-6">Editorial & Web</h3>
+          <p class="mt-4 text-sm leading-relaxed" style="color: rgba(250,247,242,0.7)">
+            For publications, studios and founders who need a considered digital presence —
+            designed, art-directed and ready to ship.
+          </p>
+          <ul class="mt-6 space-y-3 text-sm">
+            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[color:var(--terracotta)]"></i> Art direction</li>
+            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[color:var(--terracotta)]"></i> Modular grid systems</li>
+            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[color:var(--terracotta)]"></i> Front-end handoff</li>
+          </ul>
+        </div>
+
+        <div class="reveal p-8 rounded-3xl bg-[color:var(--cream)] border border-[color:var(--hairline)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-soft)]">
+          <span class="eyebrow">03</span>
+          <h3 class="font-display text-3xl mt-6">Advisory</h3>
+          <p class="mt-4 text-[color:var(--muted)] text-sm leading-relaxed">
+            Monthly retainer for in-house teams who need a senior designer's eye on
+            direction, critique and craft.
+          </p>
+          <ul class="mt-6 space-y-3 text-sm">
+            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[color:var(--terracotta)]"></i> Design reviews</li>
+            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[color:var(--terracotta)]"></i> Team critique</li>
+            <li class="flex items-center gap-3"><i data-lucide="check" class="w-4 h-4 text-[color:var(--terracotta)]"></i> On-call craft</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section id="testimonials" class="py-24 md:py-32 bg-[color:var(--cream)]">
+    <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+      <div class="mb-16">
+        <p class="eyebrow reveal mb-4">04 — Studio notes</p>
+        <h2 class="display-lg reveal max-w-2xl">Words from people<br>I've worked with.</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <figure class="reveal p-8 rounded-3xl bg-paper border border-[color:var(--hairline)] flex flex-col justify-between">
+          <div>
+            <i data-lucide="quote" class="w-6 h-6 text-[color:var(--terracotta)]"></i>
+            <blockquote class="mt-6 font-display text-xl leading-snug">
+              "Elena approaches a brand the way a bookbinder approaches a spine — quietly, and
+              with an unreasonable attention to the parts nobody sees."
+            </blockquote>
+          </div>
+          <figcaption class="mt-8 pt-6 border-t border-[color:var(--hairline)]">
+            <p class="font-medium text-sm">Marco Bandini</p>
+            <p class="text-xs text-[color:var(--muted)] mt-1">Founder, Casa Verdi</p>
+          </figcaption>
+        </figure>
+
+        <figure class="reveal p-8 rounded-3xl bg-paper border border-[color:var(--hairline)] flex flex-col justify-between">
+          <div>
+            <i data-lucide="quote" class="w-6 h-6 text-[color:var(--terracotta)]"></i>
+            <blockquote class="mt-6 font-display text-xl leading-snug">
+              "The redesign lifted our subscription rate by 34% in one quarter. But the
+              real win was the type system — it finally feels like <em>us</em>."
+            </blockquote>
+          </div>
+          <figcaption class="mt-8 pt-6 border-t border-[color:var(--hairline)]">
+            <p class="font-medium text-sm">Sofia Reiner</p>
+            <p class="text-xs text-[color:var(--muted)] mt-1">Editor-in-chief, Atlas Quarterly</p>
+          </figcaption>
+        </figure>
+
+        <figure class="reveal p-8 rounded-3xl bg-paper border border-[color:var(--hairline)] flex flex-col justify-between">
+          <div>
+            <i data-lucide="quote" class="w-6 h-6 text-[color:var(--terracotta)]"></i>
+            <blockquote class="mt-6 font-display text-xl leading-snug">
+              "Working with Elena is rare. She says no to the wrong things, and the yeses
+              are always worth it. Our site is now the best thing we own."
+            </blockquote>
+          </div>
+          <figcaption class="mt-8 pt-6 border-t border-[color:var(--hairline)]">
+            <p class="font-medium text-sm">Luca Ferri</p>
+            <p class="text-xs text-[color:var(--muted)] mt-1">Partner, Muta Studio</p>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="py-20 md:py-28">
+    <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+      <div class="reveal rounded-[32px] overflow-hidden bg-ink text-paper p-10 md:p-16 lg:p-20 relative">
+        <div class="absolute -top-32 -right-32 w-96 h-96 rounded-full" style="background: radial-gradient(circle, rgba(194,96,59,0.35), transparent 65%);"></div>
+        <div class="absolute -bottom-40 -left-20 w-96 h-96 rounded-full" style="background: radial-gradient(circle, rgba(176,141,87,0.28), transparent 65%);"></div>
+        <div class="relative grid lg:grid-cols-12 gap-10 items-end">
+          <div class="lg:col-span-8">
+            <p class="eyebrow mb-4" style="color: rgba(250,247,242,0.55)">Now booking · Q3 2025</p>
+            <h2 class="display-lg">
+              Have a project in mind?<br>
+              <em class="italic" style="color: var(--terracotta);">Let's talk about it.</em>
+            </h2>
+          </div>
+          <div class="lg:col-span-4 lg:text-right">
+            <a href="#contact" class="btn-primary bg-[color:var(--terracotta)] border-[color:var(--terracotta)] hover:bg-paper hover:border-paper hover:text-ink" data-magnetic>
+              Start a conversation
+              <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" class="py-24 md:py-32">
+    <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
+
+        <div class="lg:col-span-5">
+          <p class="eyebrow reveal mb-4">05 — Contact</p>
+          <h2 class="display-lg reveal">Say hello.</h2>
+          <p class="reveal mt-6 text-[color:var(--muted)] leading-relaxed max-w-md">
+            Tell me a little about the project — where you are, what you're building,
+            and when you'd like to begin. I reply within two working days.
+          </p>
+
+          <div class="reveal mt-12 space-y-6">
+            <div class="flex items-start gap-4">
+              <span class="w-11 h-11 rounded-full bg-[color:var(--cream)] flex items-center justify-center shrink-0">
+                <i data-lucide="mail" class="w-4 h-4 text-[color:var(--terracotta)]"></i>
+              </span>
+              <div>
+                <p class="eyebrow">Email</p>
+                <a href="mailto:studio@elenamarchetti.com" class="mt-1 block hover:text-[color:var(--terracotta)] transition-colors">studio@elenamarchetti.com</a>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="w-11 h-11 rounded-full bg-[color:var(--cream)] flex items-center justify-center shrink-0">
+                <i data-lucide="map-pin" class="w-4 h-4 text-[color:var(--terracotta)]"></i>
+              </span>
+              <div>
+                <p class="eyebrow">Studio</p>
+                <p class="mt-1">Via Brera 18, Milan, Italy</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="w-11 h-11 rounded-full bg-[color:var(--cream)] flex items-center justify-center shrink-0">
+                <i data-lucide="instagram" class="w-4 h-4 text-[color:var(--terracotta)]"></i>
+              </span>
+              <div>
+                <p class="eyebrow">Elsewhere</p>
+                <div class="mt-1 flex gap-4">
+                  <a href="#" class="hover:text-[color:var(--terracotta)] transition-colors" aria-label="Instagram">Instagram</a>
+                  <a href="#" class="hover:text-[color:var(--terracotta)] transition-colors" aria-label="Dribbble">Dribbble</a>
+                  <a href="#" class="hover:text-[color:var(--terracotta)] transition-colors" aria-label="LinkedIn">LinkedIn</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7">
+          <form id="contactForm" class="reveal p-8 md:p-10 rounded-3xl bg-[color:var(--cream)] border border-[color:var(--hairline)]" novalidate>
+            <!-- TODO: connect form action to backend endpoint -->
+            <div class="grid md:grid-cols-2 gap-5">
+              <div>
+                <label for="name" class="sr-only">Name</label>
+                <input id="name" name="name" type="text" class="field" placeholder="Your name" required />
+                <p class="err-msg" data-for="name">Please tell me your name.</p>
+              </div>
+              <div>
+                <label for="email" class="sr-only">Email</label>
+                <input id="email" name="email" type="email" class="field" placeholder="Email address" required />
+                <p class="err-msg" data-for="email">Please enter a valid email.</p>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-5 mt-5">
+              <div>
+                <label for="phone" class="sr-only">Phone</label>
+                <input id="phone" name="phone" type="tel" class="field" placeholder="Phone (optional)" />
+              </div>
+              <div>
+                <label for="service" class="sr-only">Service</label>
+                <select id="service" name="service" class="field" required>
+                  <option value="">Select a service…</option>
+                  <option value="identity">Brand Identity</option>
+                  <option value="editorial">Editorial & Web</option>
+                  <option value="advisory">Advisory</option>
+                  <option value="other">Something else</option>
+                </select>
+                <p class="err-msg" data-for="service">Please choose a service.</p>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <label for="message" class="sr-only">Message</label>
+              <textarea id="message" name="message" rows="5" class="field resize-none" placeholder="Tell me about the project…" required></textarea>
+              <p class="err-msg" data-for="message">Please write a short note.</p>
+            </div>
+
+            <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <p class="text-xs text-[color:var(--muted)] max-w-xs">
+                By sending this you agree to be contacted about your enquiry.
+              </p>
+              <button type="submit" id="submitBtn" class="btn-primary" data-magnetic>
+                Send message
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-[color:var(--hairline)] pt-16 pb-10">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+    <div class="grid md:grid-cols-12 gap-10 pb-14">
+      <div class="md:col-span-5">
+        <a href="#top" class="flex items-center gap-3 group" aria-label="Elena Marchetti home">
+          <span class="w-8 h-8 rounded-full bg-ink flex items-center justify-center">
+            <span class="w-2 h-2 rounded-full bg-paper"></span>
+          </span>
+          <span class="font-display text-2xl">Elena Marchetti</span>
+        </a>
+        <p class="mt-6 text-[color:var(--muted)] leading-relaxed max-w-sm text-sm">
+          An independent design practice working across brand identity, editorial and
+          digital experience. Based in Milan, working worldwide.
+        </p>
+      </div>
+
+      <div class="md:col-span-2 md:col-start-7">
+        <p class="eyebrow mb-5">Studio</p>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#work" class="hover:text-[color:var(--terracotta)] transition-colors">Work</a></li>
+          <li><a href="#about" class="hover:text-[color:var(--terracotta)] transition-colors">About</a></li>
+          <li><a href="#services" class="hover:text-[color:var(--terracotta)] transition-colors">Services</a></li>
+          <li><a href="#contact" class="hover:text-[color:var(--terracotta)] transition-colors">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="md:col-span-2">
+        <p class="eyebrow mb-5">Elsewhere</p>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#" class="hover:text-[color:var(--terracotta)] transition-colors">Instagram</a></li>
+          <li><a href="#" class="hover:text-[color:var(--terracotta)] transition-colors">Dribbble</a></li>
+          <li><a href="#" class="hover:text-[color:var(--terracotta)] transition-colors">LinkedIn</a></li>
+          <li><a href="#" class="hover:text-[color:var(--terracotta)] transition-colors">Newsletter</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pt-8 border-t border-[color:var(--hairline)] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-[color:var(--muted)]">
+      <p>© <span id="year"></span> Elena Marchetti. All rights reserved.</p>
+      <p>Designed & built in Milan.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <i data-lucide="check-circle" class="w-5 h-5" style="color: var(--terracotta);"></i>
+  <span id="toastMsg">Message sent. Thank you.</span>
+</div>
+
+<script>
+/* ==== Lucide Icons ==== */
+lucide.createIcons();
+
+/* ==== Year ==== */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ==== Nav scroll ==== */
+const navShell = document.getElementById('navShell');
+window.addEventListener('scroll', () => {
+  navShell.classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+/* ==== Mobile menu ==== */
+const menuBtn = document.getElementById('menuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+menuBtn.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded', isOpen);
+  menuBtn.innerHTML = isOpen
+    ? '<i data-lucide="x" class="w-5 h-5"></i>'
+    : '<i data-lucide="menu" class="w-5 h-5"></i>';
+  lucide.createIcons();
+});
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  mobileMenu.classList.remove('open');
+  menuBtn.setAttribute('aria-expanded', 'false');
+  menuBtn.innerHTML = '<i data-lucide="menu" class="w-5 h-5"></i>';
+  lucide.createIcons();
+}));
+
+/* ==== Custom cursor ==== */
+const dot = document.getElementById('cursorDot');
+if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  let mx = 0, my = 0, cx = 0, cy = 0;
+  window.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; });
+  const loop = () => {
+    cx += (mx - cx) * 0.18;
+    cy += (my - cy) * 0.18;
+    dot.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+    requestAnimationFrame(loop);
+  };
+  loop();
+
+  document.querySelectorAll('a, button, [data-tilt], .project-card, input, textarea, select').forEach(el => {
+    el.addEventListener('mouseenter', () => dot.classList.add('grow'));
+    el.addEventListener('mouseleave', () => dot.classList.remove('grow'));
+  });
+}
+
+/* ==== GSAP Reveals ==== */
+if (window.gsap && window.ScrollTrigger) {
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.utils.toArray('.reveal').forEach((el) => {
+    gsap.to(el, {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 88%',
+        once: true,
+      },
+    });
+  });
+
+  // Hero stagger
+  gsap.fromTo('.display-hero', { opacity: 0, y: 40 }, {
+    opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', delay: 0.15
+  });
+
+  // Subtle parallax on hero visual
+  gsap.to('.hero-visual', {
+    yPercent: -8,
+    ease: 'none',
+    scrollTrigger: { trigger: '.hero-visual', start: 'top top', end: 'bottom top', scrub: true }
+  });
+}
+
+/* ==== Tilt on hover ==== */
+document.querySelectorAll('[data-tilt]').forEach(el => {
+  el.style.transformStyle = 'preserve-3d';
+  el.addEventListener('mousemove', (e) => {
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.transform = `perspective(1000px) rotateX(${(-y * 4).toFixed(2)}deg) rotateY(${(x * 4).toFixed(2)}deg) translateY(-4px)`;
+    el.style.transition = 'transform 0.15s ease-out';
+  });
+  el.addEventListener('mouseleave', () => {
+    el.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+    el.style.transition = 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+  });
+});
+
+/* ==== Magnetic buttons ==== */
+document.querySelectorAll('[data-magnetic]').forEach(el => {
+  el.addEventListener('mousemove', (e) => {
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    el.style.transform = `translate(${x * 0.18}px, ${y * 0.18}px)`;
+  });
+  el.addEventListener('mouseleave', () => {
+    el.style.transform = '';
+  });
+});
+
+/* ==== Form Validation & Submit ==== */
+const form = document.getElementById('contactForm');
+const submitBtn = document.getElementById('submitBtn');
+const toast = document.getElementById('toast');
+const toastMsg = document.getElementById('toastMsg');
+
+function setError(name, show) {
+  const input = form.querySelector(`[name="${name}"]`);
+  const msg = form.querySelector(`.err-msg[data-for="${name}"]`);
+  if (input) input.classList.toggle('error', show);
+  if (msg) msg.classList.toggle('show', show);
+}
+
+function showToast(msg) {
+  toastMsg.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4200);
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const data = Object.fromEntries(new FormData(form).entries());
+  let valid = true;
+
+  if (!data.name || data.name.trim().length < 2) { setError('name', true); valid = false; }
+  else setError('name', false);
+
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email || '');
+  if (!emailOk) { setError('email', true); valid = false; }
+  else setError('email', false);
+
+  if (!data.service) { setError('service', true); valid = false; }
+  else setError('service', false);
+
+  if (!data.message || data.message.trim().length < 8) { setError('message', true); valid = false; }
+  else setError('message', false);
+
+  if (!valid) {
+    const firstErr = form.querySelector('.field.error');
+    if (firstErr) firstErr.focus();
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.style.opacity = '0.7';
+  submitBtn.innerHTML = 'Sending… <i data-lucide="loader" class="w-4 h-4 animate-spin"></i>';
+  lucide.createIcons();
+
+  try {
+    const res = await fetch('submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+      body: JSON.stringify({
+        url: window.location.host,
+        table: 'contact_messages',
+        data: data,
+      }),
+    });
+    // Simulated success (static site)
+    showToast('Thank you — your message is on its way.');
+    form.reset();
+  } catch (err) {
+    showToast('Something went wrong. Please email hello@elenamarchetti.com');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = '';
+    submitBtn.innerHTML = 'Send message <i data-lucide="send" class="w-4 h-4"></i>';
+    lucide.createIcons();
+  }
+});
+
+/* ==== Remove errors on input ==== */
+['name','email','service','message'].forEach((n) => {
+  const el = form.querySelector(`[name="${n}"]`);
+  if (el) el.addEventListener('input', () => setError(n, false));
+  if (el) el.addEventListener('change', () => setError(n, false));
+});
+</script>
+</body>
+</html>
