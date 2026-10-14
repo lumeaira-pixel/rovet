@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sailcloth & Co. — Luxury Sailing T‑Shirts</title>
+<meta name="description" content="Heirloom-grade sailing tees woven from organic Supima cotton, cut for the open water. Built to weather salt, sun, and story." />
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.5/dist/tailwind.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:    '#0B1B2B',
+          navy:   '#12293F',
+          cream:  '#F7F4EC',
+          ivory:  '#FBF9F4',
+          brass:  '#B8894A',
+          brassdk:'#9A6F35',
+          foam:   '#EAE6DA',
+          slate:  '#5A6B7A',
+        },
+        fontFamily: {
+          display: ['"Instrument Serif"', 'Georgia', 'serif'],
+          sans:    ['Inter', 'system-ui', 'sans-serif'],
+          mono:    ['"JetBrains Mono"', 'monospace'],
+        },
+        borderRadius: { '4xl':'2rem', '5xl':'2.5rem' },
+        boxShadow: {
+          soft: '0 20px 60px -25px rgba(11,27,43,.18)',
+          lift: '0 30px 80px -30px rgba(11,27,43,.28)',
+        }
+      }
+    }
+  }
+</script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Lucide -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+
+<!-- GSAP -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root{
+  --ink:      #0B1B2B;
+  --navy:     #12293F;
+  --cream:    #F7F4EC;
+  --ivory:    #FBF9F4;
+  --brass:    #B8894A;
+  --brass-dk: #9A6F35;
+  --foam:     #EAE6DA;
+  --slate:    #5A6B7A;
+  --line:     rgba(11,27,43,.10);
+  --line-soft:rgba(11,27,43,.06);
+  --shadow-sm:0 1px 2px rgba(11,27,43,.05), 0 8px 24px -12px rgba(11,27,43,.12);
+  --shadow-md:0 20px 60px -25px rgba(11,27,43,.22);
+  --shadow-lg:0 40px 100px -30px rgba(11,27,43,.30);
+  --focus: 0 0 0 3px rgba(184,137,74,.45);
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+*{ -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+html{ scroll-behavior:smooth; }
+body{
+  font-family:'Inter', system-ui, sans-serif;
+  background: var(--ivory);
+  color: var(--ink);
+  overflow-x:hidden;
+  font-feature-settings:"ss01","cv11";
+}
+::selection{ background: var(--brass); color:#fff; }
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.font-display{ font-family:'Instrument Serif', Georgia, serif; font-weight:400; letter-spacing:-0.02em; }
+.font-mono{ font-family:'JetBrains Mono', monospace; }
+h1,h2,h3,h4{ letter-spacing:-0.025em; }
+.display-hero{ font-size: clamp(2.75rem, 8vw, 7rem); line-height:0.98; letter-spacing:-0.035em; }
+.display-xl{ font-size: clamp(2.25rem, 5.5vw, 4.5rem); line-height:1.02; letter-spacing:-0.03em; }
+.eyebrow{ font-family:'JetBrains Mono', monospace; font-size:.72rem; letter-spacing:.28em; text-transform:uppercase; color:var(--slate); }
+
+/* ============================================================
+   LAYOUT HELPERS
+   ============================================================ */
+.wrap{ max-width:1280px; margin:0 auto; padding:0 1.5rem; }
+.grain::before{
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:.35;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position:fixed; top:0; left:0; right:0; z-index:60;
+  transition: background .4s var(--ease), backdrop-filter .4s var(--ease), border-color .4s var(--ease), padding .4s var(--ease);
+  padding: 1.35rem 0;
+  border-bottom:1px solid transparent;
+}
+.nav.scrolled{
+  padding:.85rem 0;
+  background: rgba(251,249,244,.72);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-bottom-color: var(--line-soft);
+}
+.nav-link{
+  position:relative; font-size:.875rem; font-weight:500; color:var(--ink);
+  padding:.4rem 0; transition: color .25s var(--ease);
+}
+.nav-link::after{
+  content:""; position:absolute; left:0; bottom:0; height:1px; width:0;
+  background: var(--brass); transition: width .35s var(--ease);
+}
+.nav-link:hover{ color: var(--brass-dk); }
+.nav-link:hover::after{ width:100%; }
+
+.logo-mark{
+  width:38px; height:38px; border-radius:50%;
+  display:grid; place-items:center;
+  background: var(--ink); color: var(--cream);
+  font-family:'Instrument Serif', serif; font-size:1.05rem;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:.55rem;
+  padding:.95rem 1.6rem; border-radius:999px; font-weight:500; font-size:.9rem;
+  transition: transform .3s var(--ease), background .3s var(--ease), color .3s var(--ease), box-shadow .3s var(--ease), border-color .3s var(--ease);
+  cursor:pointer; border:1px solid transparent; text-decoration:none; white-space:nowrap;
+}
+.btn:focus-visible{ outline:none; box-shadow: var(--focus); }
+.btn-primary{ background: var(--ink); color: var(--cream); }
+.btn-primary:hover{ background: var(--navy); transform: translateY(-2px); box-shadow: 0 18px 40px -18px rgba(11,27,43,.55); }
+.btn-primary:active{ transform: translateY(0) scale(.98); }
+.btn-ghost{ background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-ghost:hover{ background: var(--cream); border-color: var(--brass); transform: translateY(-2px); }
+.btn-brass{ background: var(--brass); color:#fff; }
+.btn-brass:hover{ background: var(--brass-dk); transform: translateY(-2px); box-shadow: 0 18px 40px -18px rgba(184,137,74,.7); }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{ position:relative; padding: 9rem 0 5rem; overflow:hidden; }
+.hero-bg{
+  position:absolute; inset:0; z-index:-1;
+  background:
+    radial-gradient(60% 50% at 15% 10%, rgba(184,137,74,.10), transparent 60%),
+    radial-gradient(50% 45% at 90% 80%, rgba(18,41,63,.08), transparent 60%),
+    linear-gradient(180deg, #FBF9F4 0%, #F7F4EC 60%, #F2EEE3 100%);
+}
+.hero-horizon{
+  position:absolute; left:0; right:0; bottom:0; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(11,27,43,.18), transparent);
+}
+.hero-card{
+  position:relative; border-radius: 2rem; overflow:hidden;
+  background: linear-gradient(160deg,#12293F 0%, #0B1B2B 100%);
+  aspect-ratio: 4/5;
+  box-shadow: var(--shadow-lg);
+}
+.hero-card .sail{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(120% 80% at 20% 10%, rgba(247,244,236,.14), transparent 55%),
+    radial-gradient(90% 60% at 80% 90%, rgba(184,137,74,.28), transparent 60%);
+}
+.hero-card svg.sail-art{ position:absolute; inset:0; width:100%; height:100%; opacity:.9; }
+
+.float-tag{
+  position:absolute; background: rgba(251,249,244,.85); backdrop-filter: blur(14px);
+  border:1px solid var(--line-soft); border-radius:1rem; padding:.85rem 1.1rem;
+  box-shadow: var(--shadow-sm); display:flex; align-items:center; gap:.75rem;
+  font-size:.8rem; font-weight:500;
+}
+
+/* Letter reveal */
+.reveal-line{ display:block; overflow:hidden; }
+.reveal-line > span{
+  display:inline-block; transform: translateY(110%);
+  animation: rise .9s var(--ease) forwards;
+}
+.reveal-line:nth-child(1) > span{ animation-delay:.15s; }
+.reveal-line:nth-child(2) > span{ animation-delay:.3s; }
+.reveal-line:nth-child(3) > span{ animation-delay:.45s; }
+@keyframes rise{ to { transform: translateY(0); } }
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+.marquee{ overflow:hidden; border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft); background: var(--cream); }
+.marquee-track{ display:flex; gap:4rem; padding:1.4rem 0; white-space:nowrap; animation: slide 38s linear infinite; }
+.marquee:hover .marquee-track{ animation-play-state: paused; }
+@keyframes slide{ from{ transform: translateX(0);} to{ transform: translateX(-50%);} }
+.marquee-item{ font-family:'Instrument Serif', serif; font-size:1.35rem; color:var(--slate); display:flex; align-items:center; gap:4rem; }
+
+/* ============================================================
+   PRODUCT CARDS
+   ============================================================ */
+.product-card{
+  position:relative; background:#fff; border:1px solid var(--line-soft);
+  border-radius:1.75rem; overflow:hidden; transition: transform .5s var(--ease), box-shadow .5s var(--ease), border-color .5s var(--ease);
+  transform-style: preserve-3d;
+}
+.product-card:hover{ transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: rgba(184,137,74,.35); }
+.product-visual{
+  aspect-ratio: 4/5; position:relative; overflow:hidden;
+  background: linear-gradient(160deg, #F0EBDF 0%, #E3DCC9 100%);
+}
+.product-visual .tee{
+  position:absolute; inset:0; display:grid; place-items:center;
+  transition: transform .8s var(--ease);
+}
+.product-card:hover .product-visual .tee{ transform: scale(1.06) rotate(-1deg); }
+.badge{
+  position:absolute; top:1rem; left:1rem; z-index:2;
+  background: var(--ink); color: var(--cream); font-size:.68rem; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; padding:.4rem .7rem; border-radius:999px;
+}
+.badge.brass{ background: var(--brass); color:#fff; }
+
+/* ============================================================
+   STORY SPLIT
+   ============================================================ */
+.story-img{
+  border-radius:2rem; overflow:hidden; aspect-ratio:5/6; position:relative;
+  background: linear-gradient(160deg,#12293F 0%, #0B1B2B 100%);
+}
+.stat-cell{
+  border-top:1px solid var(--line); padding-top:1.25rem;
+}
+.stat-num{ font-family:'Instrument Serif', serif; font-size:2.5rem; line-height:1; color: var(--ink); }
+
+/* ============================================================
+   TESTIMONIAL
+   ============================================================ */
+.quote-card{
+  background: var(--cream); border-radius:1.75rem; padding:2.5rem;
+  border:1px solid var(--line-soft); transition: transform .4s var(--ease), background .4s var(--ease);
+}
+.quote-card:hover{ transform: translateY(-4px); background:#fff; box-shadow: var(--shadow-md); }
+
+/* ============================================================
+   CTA BANNER
+   ============================================================ */
+.cta-band{
+  background: linear-gradient(140deg, #0B1B2B 0%, #12293F 60%, #17324C 100%);
+  color: var(--cream); border-radius: 2.5rem; position:relative; overflow:hidden;
+}
+.cta-band::before{
+  content:""; position:absolute; inset:0;
+  background: radial-gradient(60% 60% at 85% 20%, rgba(184,137,74,.35), transparent 60%);
+}
+
+/* ============================================================
+   FOOTER / FORM
+   ============================================================ */
+footer{ background: var(--ink); color: var(--cream); }
+footer a{ color: rgba(247,244,236,.72); transition: color .25s var(--ease); }
+footer a:hover{ color: var(--brass); }
+
+.field{ position:relative; }
+.field input, .field textarea, .field select{
+  width:100%; background: transparent; border:0; border-bottom:1px solid rgba(247,244,236,.22);
+  padding:.85rem 0; color: var(--cream); font-size:.95rem;
+  transition: border-color .3s var(--ease);
+  font-family:'Inter',sans-serif;
+}
+.field input::placeholder, .field textarea::placeholder{ color: rgba(247,244,236,.35); }
+.field input:focus, .field textarea:focus, .field select:focus{
+  outline:none; border-bottom-color: var(--brass);
+}
+.field select option{ color: var(--ink); }
+.field.error input, .field.error textarea{ border-bottom-color:#E0776B; }
+.field .err-msg{
+  font-size:.72rem; color:#E0776B; margin-top:.35rem; display:none;
+}
+.field.error .err-msg{ display:block; }
+
+.form-success{
+  display:none; align-items:center; gap:.85rem;
+  background: rgba(184,137,74,.14); border:1px solid rgba(184,137,74,.4);
+  border-radius:1rem; padding:1.1rem 1.25rem; margin-top:1.25rem;
+  color: var(--cream); font-size:.9rem;
+}
+.form-success.show{ display:flex; }
+
+/* ============================================================
+   MOBILE MENU
+   ============================================================ */
+.mobile-menu{
+  position:fixed; inset:0; background: var(--ivory); z-index:80;
+  transform: translateY(-100%); transition: transform .6s var(--ease);
+  padding: 6rem 1.5rem 2rem;
+}
+.mobile-menu.open{ transform: translateY(0); }
+.mobile-menu a{ font-family:'Instrument Serif', serif; font-size:2.25rem; display:block; padding:.85rem 0; border-bottom:1px solid var(--line-soft); }
+
+/* ============================================================
+   REVEAL
+   ============================================================ */
+.reveal{ opacity:0; transform: translateY(28px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.reveal.in{ opacity:1; transform:none; }
+.reveal-d1{ transition-delay:.1s } .reveal-d2{ transition-delay:.2s } .reveal-d3{ transition-delay:.3s }
+
+/* ============================================================
+   FOCUS / A11Y
+   ============================================================ */
+a:focus-visible, button:focus-visible{ outline:none; box-shadow: var(--focus); border-radius: 999px; }
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px){
+  .hero{ padding-top: 7rem; }
+  .float-tag{ display:none; }
+}
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+  .reveal{ opacity:1; transform:none; }
+}
+</style>
+</head>
+<body class="grain">
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<header class="nav" id="nav">
+  <div class="wrap flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3" aria-label="Sailcloth & Co. home">
+      <span class="logo-mark" aria-hidden="true">S</span>
+      <span class="font-display text-xl">Sailcloth&nbsp;&amp;&nbsp;Co.</span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-9" aria-label="Primary">
+      <a href="#collection" class="nav-link">Collection</a>
+      <a href="#craft" class="nav-link">Craft</a>
+      <a href="#story" class="nav-link">Story</a>
+      <a href="#reviews" class="nav-link">Reviews</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="#collection" class="btn btn-primary hidden sm:inline-flex">
+        Shop the collection
+        <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+      </a>
+      <button id="menuBtn" class="md:hidden w-11 h-11 rounded-full border border-[var(--line)] grid place-items-center" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="flex justify-between items-center mb-8">
+    <span class="font-display text-xl">Sailcloth&nbsp;&amp;&nbsp;Co.</span>
+    <button id="menuClose" class="w-11 h-11 rounded-full border border-[var(--line)] grid place-items-center" aria-label="Close menu">
+      <i data-lucide="x" class="w-5 h-5" aria-hidden="true"></i>
+    </button>
+  </div>
+  <nav aria-label="Mobile">
+    <a href="#collection" data-close>Collection</a>
+    <a href="#craft" data-close>Craft</a>
+    <a href="#story" data-close>Story</a>
+    <a href="#reviews" data-close>Reviews</a>
+    <a href="#contact" data-close>Contact</a>
+  </nav>
+  <a href="#collection" data-close class="btn btn-brass w-full mt-10">Shop the collection</a>
+</div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
+
+  <div class="wrap grid md:grid-cols-12 gap-10 md:gap-14 items-center">
+    <div class="md:col-span-7">
+      <p class="eyebrow mb-6 reveal">Est. Cape Cod — Since 2014</p>
+      <h1 class="font-display display-hero text-ink">
+        <span class="reveal-line"><span>T‑shirts made</span></span>
+        <span class="reveal-line"><span>for the open</span></span>
+        <span class="reveal-line"><span><em class="italic text-[var(--brass-dk)]">water</em>.</span></span>
+      </h1>
+
+      <p class="mt-8 text-lg text-[var(--slate)] max-w-xl leading-relaxed reveal reveal-d1">
+        Heirloom-grade sailing tees woven from organic Supima cotton, cut for salt spray and long afternoons on the tiller. Built to weather the sun, the wind, and a hundred wash cycles — without losing shape.
+      </p>
+
+      <div class="mt-10 flex flex-wrap items-center gap-4 reveal reveal-d2">
+        <a href="#collection" class="btn btn-primary">
+          Shop the collection
+          <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+        </a>
+        <a href="#craft" class="btn btn-ghost">
+          <i data-lucide="play-circle" class="w-4 h-4" aria-hidden="true"></i>
+          How they're made
+        </a>
+      </div>
+
+      <div class="mt-14 flex items-center gap-8 reveal reveal-d3">
+        <div class="flex -space-x-3">
+          <span class="w-10 h-10 rounded-full border-2 border-[var(--ivory)]" style="background:#12293F"></span>
+          <span class="w-10 h-10 rounded-full border-2 border-[var(--ivory)]" style="background:#B8894A"></span>
+          <span class="w-10 h-10 rounded-full border-2 border-[var(--ivory)]" style="background:#5A6B7A"></span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1 text-[var(--brass)]" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          </div>
+          <p class="text-xs text-[var(--slate)] mt-1">Loved by 12,400+ sailors, riders &amp; weekenders.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="md:col-span-5 relative">
+      <div class="hero-card">
+        <div class="sail" aria-hidden="true"></div>
+        <svg class="sail-art" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#F7F4EC" stop-opacity=".16"/>
+              <stop offset="100%" stop-color="#B8894A" stop-opacity=".12"/>
+            </linearGradient>
+          </defs>
+          <path d="M60 480 L340 480 L340 460 L60 460 Z" fill="url(#g1)"/>
+          <path d="M120 460 L120 180 L260 380 Z" fill="#F7F4EC" opacity=".09"/>
+          <path d="M130 460 L130 200 L250 380 Z" fill="#F7F4EC" opacity=".13"/>
+          <line x1="120" y1="180" x2="120" y2="470" stroke="#F7F4EC" stroke-width="1.2" opacity=".35"/>
+          <line x1="260" y1="380" x2="260" y2="470" stroke="#F7F4EC" stroke-width="1" opacity=".2"/>
+          <circle cx="330" cy="90" r="46" fill="#B8894A" opacity=".35"/>
+          <circle cx="330" cy="90" r="46" fill="none" stroke="#F7F4EC" stroke-width=".6" opacity=".4"/>
+        </svg>
+
+        <div class="absolute top-6 left-6 text-[var(--cream)]">
+          <p class="eyebrow" style="color:rgba(247,244,236,.6)">Signature Line</p>
+          <p class="font-display text-2xl mt-1">The Regatta Tee</p>
+        </div>
+        <div class="absolute bottom-6 right-6 text-right text-[var(--cream)]">
+          <p class="font-mono text-xs opacity-60">No. 001 / 240 gsm</p>
+          <p class="font-display text-xl mt-1">From $68</p>
+        </div>
+      </div>
+
+      <div class="float-tag" style="top:8%; left:-8%;">
+        <i data-lucide="wind" class="w-4 h-4 text-[var(--brass)]" aria-hidden="true"></i>
+        <span>Breathable Supima weave</span>
+      </div>
+      <div class="float-tag" style="bottom:12%; right:-6%;">
+        <i data-lucide="shield-check" class="w-4 h-4 text-[var(--brass)]" aria-hidden="true"></i>
+        <span>Lifetime seam warranty</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-horizon" aria-hidden="true"></div>
+</section>
+
+<!-- ============================================================
+     MARQUEE
+     ============================================================ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <div class="marquee-item">
+      <span>Organic Supima Cotton</span><span>•</span>
+      <span>Made in Portugal</span><span>•</span>
+      <span>Salt‑tested</span><span>•</span>
+      <span>240 GSM</span><span>•</span>
+      <span>Lifetime Seams</span><span>•</span>
+      <span>Plastic‑Free Packaging</span><span>•</span>
+    </div>
+    <div class="marquee-item">
+      <span>Organic Supima Cotton</span><span>•</span>
+      <span>Made in Portugal</span><span>•</span>
+      <span>Salt‑tested</span><span>•</span>
+      <span>240 GSM</span><span>•</span>
+      <span>Lifetime Seams</span><span>•</span>
+      <span>Plastic‑Free Packaging</span><span>•</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     COLLECTION
+     ============================================================ -->
+<section id="collection" class="py-24 md:py-32">
+  <div class="wrap">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16">
+      <div class="max-w-2xl">
+        <p class="eyebrow mb-5 reveal">The Collection</p>
+        <h2 class="font-display display-xl reveal reveal-d1">
+          Four cuts. One <em class="italic text-[var(--brass-dk)]">obsession</em>.
+        </h2>
+      </div>
+      <p class="text-[var(--slate)] max-w-sm leading-relaxed reveal reveal-d2">
+        Each silhouette is drafted around a specific hour on the water — the pre‑dawn launch, the midday trim, the golden hour drift. Pick the one that fits yours.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Card 1 -->
+      <article class="product-card reveal">
+        <span class="badge brass">Best seller</span>
+        <div class="product-visual">
+          <div class="tee">
+            <svg viewBox="0 0 200 220" class="w-3/5 h-auto" aria-hidden="true">
+              <path d="M60 30 L80 22 Q100 32 120 22 L140 30 L165 55 L148 80 L138 72 L138 200 L62 200 L62 72 L52 80 L35 55 Z" fill="#12293F"/>
+              <path d="M80 22 Q100 40 120 22" fill="none" stroke="#F7F4EC" stroke-width="1.5" opacity=".5"/>
+            </svg>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-mono text-[.68rem] tracking-widest text-[var(--slate)]">N°01</span>
+            <span class="font-display text-lg">$68</span>
+          </div>
+          <h3 class="font-display text-2xl">The Regatta</h3>
+          <p class="text-sm text-[var(--slate)] mt-2 leading-relaxed">Classic crew, mid‑weight, side‑vented hem. Our original silhouette.</p>
+          <div class="flex items-center gap-2 mt-5 text-xs text-[var(--slate)]">
+            <i data-lucide="palette" class="w-3.5 h-3.5" aria-hidden="true"></i> 6 colours
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="product-card reveal reveal-d1">
+        <div class="product-visual">
+          <div class="tee">
+            <svg viewBox="0 0 200 220" class="w-3/5 h-auto" aria-hidden="true">
+              <path d="M60 30 L80 22 Q100 32 120 22 L140 30 L165 55 L148 80 L138 72 L138 200 L62 200 L62 72 L52 80 L35 55 Z" fill="#B8894A"/>
+              <path d="M80 22 Q100 40 120 22" fill="none" stroke="#F7F4EC" stroke-width="1.5" opacity=".55"/>
+            </svg>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-mono text-[.68rem] tracking-widest text-[var(--slate)]">N°02</span>
+            <span class="font-display text-lg">$72</span>
+          </div>
+          <h3 class="font-display text-2xl">The Tidewater</h3>
+          <p class="text-sm text-[var(--slate)] mt-2 leading-relaxed">Relaxed fit with a drop shoulder and slightly longer body.</p>
+          <div class="flex items-center gap-2 mt-5 text-xs text-[var(--slate)]">
+            <i data-lucide="palette" class="w-3.5 h-3.5" aria-hidden="true"></i> 4 colours
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="product-card reveal reveal-d2">
+        <div class="product-visual">
+          <div class="tee">
+            <svg viewBox="0 0 200 220" class="w-3/5 h-auto" aria-hidden="true">
+              <path d="M60 30 L80 22 Q100 32 120 22 L140 30 L165 55 L148 80 L138 72 L138 200 L62 200 L62 72 L52 80 L35 55 Z" fill="#F7F4EC" stroke="#0B1B2B" stroke-width="1.5"/>
+              <path d="M80 22 Q100 40 120 22" fill="none" stroke="#0B1B2B" stroke-width="1.2" opacity=".6"/>
+            </svg>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-mono text-[.68rem] tracking-widest text-[var(--slate)]">N°03</span>
+            <span class="font-display text-lg">$78</span>
+          </div>
+          <h3 class="font-display text-2xl">The Horizon</h3>
+          <p class="text-sm text-[var(--slate)] mt-2 leading-relaxed">Long sleeve, ribbed cuff, thumbhole. For cold‑water mornings.</p>
+          <div class="flex items-center gap-2 mt-5 text-xs text-[var(--slate)]">
+            <i data-lucide="palette" class="w-3.5 h-3.5" aria-hidden="true"></i> 3 colours
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="product-card reveal reveal-d3">
+        <span class="badge">New</span>
+        <div class="product-visual">
+          <div class="tee">
+            <svg viewBox="0 0 200 220" class="w-3/5 h-auto" aria-hidden="true">
+              <path d="M60 30 L80 22 Q100 32 120 22 L140 30 L165 55 L148 80 L138 72 L138 200 L62 200 L62 72 L52 80 L35 55 Z" fill="#5A6B7A"/>
+              <path d="M80 22 Q100 40 120 22" fill="none" stroke="#F7F4EC" stroke-width="1.5" opacity=".5"/>
+            </svg>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-mono text-[.68rem] tracking-widest text-[var(--slate)]">N°04</span>
+            <span class="font-display text-lg">$84</span>
+          </div>
+          <h3 class="font-display text-2xl">The Deep</h3>
+          <p class="text-sm text-[var(--slate)] mt-2 leading-relaxed">Heavyweight 320 gsm fleece‑back. Built for the off‑season.</p>
+          <div class="flex items-center gap-2 mt-5 text-xs text-[var(--slate)]">
+            <i data-lucide="palette" class="w-3.5 h-3.5" aria-hidden="true"></i> 3 colours
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="text-center mt-14 reveal">
+      <a href="#contact" class="btn btn-ghost">
+        View full catalogue
+        <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CRAFT
+     ============================================================ -->
+<section id="craft" class="py-24 md:py-32 bg-[var(--cream)] border-y border-[var(--line-soft)]">
+  <div class="wrap">
+    <div class="grid md:grid-cols-12 gap-12 items-start">
+      <div class="md:col-span-5 md:sticky md:top-28">
+        <p class="eyebrow mb-5 reveal">The Craft</p>
+        <h2 class="font-display display-xl reveal reveal-d1">
+          Woven slow.<br/>
+          Worn <em class="italic text-[var(--brass-dk)]">hard</em>.
+        </h2>
+        <p class="mt-6 text-[var(--slate)] leading-relaxed max-w-md reveal reveal-d2">
+          We work with a single family‑run mill in northern Portugal. Every meter of cotton is spun, knit, dyed, and finished under one roof — a process that takes 40% longer than the industry standard, and it shows.
+        </p>
+      </div>
+
+      <div class="md:col-span-7 grid sm:grid-cols-2 gap-6">
+        <div class="reveal">
+          <div class="w-12 h-12 rounded-full bg-[var(--ivory)] border border-[var(--line)] grid place-items-center mb-5">
+            <i data-lucide="leaf" class="w-5 h-5 text-[var(--brass-dk)]" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-2">Organic Supima</h3>
+          <p class="text-sm text-[var(--slate)] leading-relaxed">Grown in California and Texas under organic certification — 35% longer staple length than standard cotton.</p>
+        </div>
+
+        <div class="reveal reveal-d1">
+          <div class="w-12 h-12 rounded-full bg-[var(--ivory)] border border-[var(--line)] grid place-items-center mb-5">
+            <i data-lucide="waves" class="w-5 h-5 text-[var(--brass-dk)]" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-2">Enzyme wash</h3>
+          <p class="text-sm text-[var(--slate)] leading-relaxed">A gentle bio‑wash softens the hand without chemicals, so the tee feels broken‑in from the first wear.</p>
+        </div>
+
+        <div class="reveal reveal-d2">
+          <div class="w-12 h-12 rounded-full bg-[var(--ivory)] border border-[var(--line)] grid place-items-center mb-5">
+            <i data-lucide="ruler" class="w-5 h-5 text-[var(--brass-dk)]" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-2">Flat‑lock seams</h3>
+          <p class="text-sm text-[var(--slate)] leading-relaxed">Reinforced shoulders and side‑seams. Zero twisting, zero ride‑up, zero regrets after 100 washes.</p>
+        </div>
+
+        <div class="reveal reveal-d3">
+          <div class="w-12 h-12 rounded-full bg-[var(--ivory)] border border-[var(--line)] grid place-items-center mb-5">
+            <i data-lucide="package" class="w-5 h-5 text-[var(--brass-dk)]" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-2">Plastic‑free</h3>
+          <p class="text-sm text-[var(--slate)] leading-relaxed">Shipped in recycled kraft mailers with soy‑based inks. The tag doubles as a knot‑tying guide.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STORY
+     ============================================================ -->
+<section id="story" class="py-24 md:py-32">
+  <div class="wrap grid md:grid-cols-12 gap-14 items-center">
+    <div class="md:col-span-6 relative reveal">
+      <div class="story-img">
+        <svg viewBox="0 0 400 480" class="w-full h-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#17324C"/>
+              <stop offset="100%" stop-color="#0B1B2B"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="480" fill="url(#sea)"/>
+          <path d="M0 340 Q100 320 200 340 T400 340 L400 480 L0 480 Z" fill="#F7F4EC" opacity=".05"/>
+          <path d="M0 360 Q100 340 200 360 T400 360" stroke="#F7F4EC" stroke-width=".8" fill="none" opacity=".25"/>
+          <path d="M0 380 Q100 360 200 380 T400 380" stroke="#F7F4EC" stroke-width=".8" fill="none" opacity=".18"/>
+          <circle cx="300" cy="120" r="60" fill="#B8894A" opacity=".28"/>
+          <path d="M180 320 L180 200 L240 280 Z" fill="#F7F4EC" opacity=".14"/>
+          <line x1="180" y1="200" x2="180" y2="330" stroke="#F7F4EC" stroke-width="1.2" opacity=".35"/>
+        </svg>
+      </div>
+      <div class="float-tag" style="bottom:-1rem; left:2rem;">
+        <i data-lucide="map-pin" class="w-4 h-4 text-[var(--brass)]" aria-hidden="true"></i>
+        <span>Porto, Portugal · Mill No. 7</span>
+      </div>
+    </div>
+
+    <div class="md:col-span-6">
+      <p class="eyebrow mb-5 reveal">Our Story</p>
+      <h2 class="font-display display-xl reveal reveal-d1">
+        Started on a<br/>leaky <em class="italic text-[var(--brass-dk)]">dinghy</em>.
+      </h2>
+      <p class="mt-7 text-[var(--slate)] leading-relaxed reveal reveal-d2">
+        In 2014, two friends bought a 1972 Wayfarer with a cracked hull and a set of sails older than both of them. They spent a summer patching it on the hard, sailing it at dusk, and ruining every t‑shirt they owned. This is the shirt they wished they'd had.
+      </p>
+      <p class="mt-4 text-[var(--slate)] leading-relaxed reveal reveal-d3">
+        A decade later, Sailcloth &amp; Co. makes four tees a year, in small numbered runs. We don't do seasons. We don't do sales. We make the same shirt better, and we make it for the people who'll actually wear it out on the water.
+      </p>
+
+      <div class="grid grid-cols-3 gap-6 mt-12">
+        <div class="stat-cell reveal">
+          <div class="stat-num">12.4k</div>
+          <p class="text-xs text-[var(--slate)] mt-2 leading-snug">Sailors outfitted</p>
+        </div>
+        <div class="stat-cell reveal reveal-d1">
+          <div class="stat-num">240g</div>
+          <p class="text-xs text-[var(--slate)] mt-2 leading-snug">Heavyweight GSM</p>
+        </div>
+        <div class="stat-cell reveal reveal-d2">
+          <div class="stat-num">10yr</div>
+          <p class="text-xs text-[var(--slate)] mt-2 leading-snug">Seam warranty</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section id="reviews" class="py-24 md:py-32 bg-[var(--cream)] border-y border-[var(--line-soft)]">
+  <div class="wrap">
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <p class="eyebrow mb-5 reveal">Reviews</p>
+      <h2 class="font-display display-xl reveal reveal-d1">
+        Worn by people who <em class="italic text-[var(--brass-dk)]">know</em>.
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <figure class="quote-card reveal">
+        <div class="flex items-center gap-1 text-[var(--brass)] mb-5" aria-label="5 out of 5 stars">
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+        </div>
+        <blockquote class="font-display text-xl leading-snug text-ink">
+          "I've raced in it, slept in it, and it still looks better than the day I bought it. The only shirt I pack now."
+        </blockquote>
+        <figcaption class="mt-6 pt-5 border-t border-[var(--line-soft)]">
+          <p class="font-medium text-sm">Marguerite O.</p>
+          <p class="text-xs text-[var(--slate)] mt-1">J/70 Class sailor · Annapolis</p>
+        </figcaption>
+      </figure>
+
+      <figure class="quote-card reveal reveal-d1">
+        <div class="flex items-center gap-1 text-[var(--brass)] mb-5" aria-label="5 out of 5 stars">
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+        </div>
+        <blockquote class="font-display text-xl leading-snug text-ink">
+          "The cut is right. Not flashy, not baggy — it just fits the way a sailing shirt should. Ordered three more the next day."
+        </blockquote>
+        <figcaption class="mt-6 pt-5 border-t border-[var(--line-soft)]">
+          <p class="font-medium text-sm">Daniel R.</p>
+          <p class="text-xs text-[var(--slate)] mt-1">Offshore delivery skipper · Cowes</p>
+        </figcaption>
+      </figure>
+
+      <figure class="quote-card reveal reveal-d2">
+        <div class="flex items-center gap-1 text-[var(--brass)] mb-5" aria-label="5 out of 5 stars">
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+          <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+        </div>
+        <blockquote class="font-display text-xl leading-snug text-ink">
+          "I've bought a lot of 'premium' basics. This is the first one that actually feels like the price tag. The cotton is exceptional."
+        </blockquote>
+        <figcaption class="mt-6 pt-5 border-t border-[var(--line-soft)]">
+          <p class="font-medium text-sm">Priya N.</p>
+          <p class="text-xs text-[var(--slate)] mt-1">Editor, Coastal Living Quarterly</p>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CTA BAND
+     ============================================================ -->
+<section class="py-20">
+  <div class="wrap">
+    <div class="cta-band px-8 md:px-16 py-16 md:py-20 relative reveal">
+      <div class="relative max-w-2xl">
+        <p class="eyebrow mb-5" style="color:rgba(247,244,236,.55)">Spring Drop · Limited run</p>
+        <h2 class="font-display display-xl">
+          Set sail in a shirt built to last the <em class="italic text-[var(--brass)]">voyage</em>.
+        </h2>
+        <p class="mt-6 text-[rgba(247,244,236,.7)] leading-relaxed max-w-lg">
+          240 pieces per colourway. Once they're gone, they're gone until next season. Free shipping over $100, and a 60‑day returns window that extends to 120 if you buy between now and the solstice.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center gap-4">
+          <a href="#collection" class="btn btn-brass">
+            Shop the collection
+            <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+          <a href="#contact" class="btn" style="border:1px solid rgba(247,244,236,.25); color:var(--cream);">
+            Talk to us
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER / CONTACT
+     ============================================================ -->
+<footer id="contact" class="pt-20 pb-10">
+  <div class="wrap">
+    <div class="grid md:grid-cols-12 gap-14">
+      <!-- Brand -->
+      <div class="md:col-span-4">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="logo-mark" aria-hidden="true">S</span>
+          <span class="font-display text-xl text-[var(--cream)]">Sailcloth&nbsp;&amp;&nbsp;Co.</span>
+        </div>
+        <p class="text-sm text-[rgba(247,244,236,.65)] leading-relaxed max-w-xs">
+          Heirloom sailing tees, woven slow and worn hard. Made in Portugal, shipped from Cape Cod.
+        </p>
+
+        <div class="flex items-center gap-3 mt-8">
+          <a href="#" class="w-10 h-10 rounded-full border border-[rgba(247,244,236,.2)] grid place-items-center" aria-label="Instagram">
+            <i data-lucide="instagram" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full border border-[rgba(247,244,236,.2)] grid place-items-center" aria-label="YouTube">
+            <i data-lucide="youtube" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full border border-[rgba(247,244,236,.2)] grid place-items-center" aria-label="Pinterest">
+            <i data-lucide="image" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="md:col-span-3 grid grid-cols-2 gap-8">
+        <div>
+          <p class="font-mono text-[.68rem] tracking-widest text-[rgba(247,244,236,.45)] mb-5">Shop</p>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#collection">Collection</a></li>
+            <li><a href="#collection">Gift cards</a></li>
+            <li><a href="#collection">Size guide</a></li>
+            <li><a href="#collection">Shipping &amp; returns</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="font-mono text-[.68rem] tracking-widest text-[rgba(247,244,236,.45)] mb-5">Company</p>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#story">Our story</a></li>
+            <li><a href="#craft">The mill</a></li>
+            <li><a href="#">Journal</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Contact form -->
+      <div class="md:col-span-5">
+        <p class="font-mono text-[.68rem] tracking-widest text-[rgba(247,244,236,.45)] mb-5">Enquiries</p>
+        <form id="enquiryForm" novalidate>
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div class="field" id="f-name">
+              <label for="name" class="sr-only">Your name</label>
+              <input type="text" id="name" name="name" placeholder="Your name" required />
+              <p class="err-msg">Please enter your name.</p>
+            </div>
+            <div class="field" id="f-email">
+              <label for="email" class="sr-only">Email address</label>
+              <input type="email" id="email" name="email" placeholder="Email address" required />
+              <p class="err-msg">Please enter a valid email.</p>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-6 mt-6">
+            <div class="field" id="f-phone">
+              <label for="phone" class="sr-only">Phone</label>
+              <input type="tel" id="phone" name="phone" placeholder="Phone (optional)" />
+              <p class="err-msg">Please enter a valid phone number.</p>
+            </div>
+            <div class="field" id="f-topic">
+              <label for="topic" class="sr-only">Topic</label>
+              <select id="topic" name="topic">
+                <option value="">Topic…</option>
+                <option value="order">Order help</option>
+                <option value="wholesale">Wholesale</option>
+                <option value="press">Press</option>
+                <option value="general">General</option>
+              </select>
+            </div>
+          </div>
+          <div class="field mt-6" id="f-message">
+            <label for="message" class="sr-only">Message</label>
+            <textarea id="message" name="message" rows="3" placeholder="Tell us what you're looking for…" required></textarea>
+            <p class="err-msg">Please write a short message.</p>
+          </div>
+          <div class="form-success" id="formSuccess" role="status">
+            <i data-lucide="check-circle" class="w-5 h-5" aria-hidden="true"></i>
+            <span>Thank you — we'll be in touch within one working day.</span>
+          </div>
+          <button type="submit" class="btn btn-brass w-full mt-8" id="submitBtn">
+            Send enquiry
+            <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="mt-16 pt-8 border-t border-[rgba(247,244,236,.12)] flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[rgba(247,244,236,.5)]">
+      <p>© 2025 Sailcloth &amp; Co. All rights reserved.</p>
+      <p class="font-mono">Made on the water · Cape Cod</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Icons
+  if (window.lucide) lucide.createIcons();
+
+  // ---- Nav scroll state
+  const nav = document.getElementById('nav');
+  const onScroll = () => {
+    if (window.scrollY > 24) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ---- Mobile menu
+  const menu = document.getElementById('mobileMenu');
+  const menuBtn = document.getElementById('menuBtn');
+  const menuClose = document.getElementById('menuClose');
+
+  function openMenu() {
+    menu.classList.add('open');
+    menuBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    menuClose.focus();
+  }
+  function closeMenu() {
+    menu.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    menuBtn.focus();
+  }
+
+  menuBtn.addEventListener('click', openMenu);
+  menuClose.addEventListener('click', closeMenu);
+  menu.querySelectorAll('[data-close]').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu.classList.contains('open')) closeMenu();
+  });
+
+  // ---- Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ---- GSAP (optional enhancement)
+  if (window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero card subtle parallax
+    gsap.to('.hero-card', {
+      yPercent: -8,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.6
+      }
+    });
+
+    // Product cards stagger
+    gsap.from('.product-card', {
+      y: 40,
+      opacity: 0,
+      duration: 0.9,
+      stagger: 0.08,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '#collection',
+        start: 'top 75%'
+      }
+    });
+  }
+
+  // ---- Form
+  const form = document.getElementById('enquiryForm');
+  const success = document.getElementById('formSuccess');
+  const submitBtn = document.getElementById('submitBtn');
+
+  const setError = (id, on) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('error', on);
+  };
+
+  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRe = /^[\d\s+().-]{6,}$/;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    let valid = true;
+
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const phone = form.phone.value.trim();
+    const message = form.message.value.trim();
+    const topic = form.topic.value;
+
+    setError('f-name', false); setError('f-email', false);
+    setError('f-phone', false); setError('f-message', false);
+
+    if (!name) { setError('f-name', true); valid = false; }
+    if (!emailRe.test(email)) { setError('f-email', true); valid = false; }
+    if (phone && !phoneRe.test(phone)) { setError('f-phone', true); valid = false; }
+    if (!message) { setError('f-message', true); valid = false; }
+
+    if (!valid) return;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Sending…';
+
+    const payload = {
+      url: window.location.host,
+      table: 'enquiries',
+      data: { name, email, phone, topic, message }
+    };
+
+    try {
+      // TODO: connect form action to backend endpoint
+      await fetch('submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        cache: 'no-store'
+      });
+    } catch (err) {
+      // Fail silently — static demo fallback
+    }
+
+    success.classList.add('show');
+    form.reset();
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Send enquiry <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>';
+    if (window.lucide) lucide.createIcons();
+
+    setTimeout(() => success.classList.remove('show'), 6000);
+  });
+});
+</script>
+</body>
+</html>
