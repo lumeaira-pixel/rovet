@@ -1,2236 +1,1734 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enikoru — Scrolling Website Undakanam</title>
-
-  <!-- ===== TAILWIND CDN + CONFIG ===== -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ink: '#1A1D21',
-            cream: '#F8F7F4',
-            brass: '#B8875A',
-            sage: '#6B7F6A',
-            sand: '#E8E3DC',
-            cloud: '#FAFAF8',
-          },
-          fontFamily: {
-            display: ['"Instrument Serif"', 'serif'],
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
-
-  <!-- ===== GOOGLE FONTS ===== -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300..700&display=swap"
-    rel="stylesheet"
-  />
-
-  <!-- ===== LUCIDE ICONS ===== -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- ===== LENIS SMOOTH SCROLL ===== -->
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-
-  <!-- ===== GSAP + SCROLLTRIGGER ===== -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-
-  <style>
-    /* ============================================================
-       DESIGN TOKENS
-       ============================================================ */
-    :root {
-      --ink: #1A1D21;
-      --cream: #F8F7F4;
-      --brass: #B8875A;
-      --brass-light: #D4A87A;
-      --sage: #6B7F6A;
-      --sand: #E8E3DC;
-      --cloud: #FAFAF8;
-      --white: #FFFFFF;
-      --border-hairline: rgba(26, 29, 33, 0.08);
-      --shadow-soft: 0 2px 20px rgba(26, 29, 33, 0.06);
-      --shadow-card: 0 8px 40px rgba(26, 29, 33, 0.07);
-      --shadow-elevated: 0 20px 60px rgba(26, 29, 33, 0.10);
-      --radius-sm: 0.5rem;
-      --radius-md: 1rem;
-      --radius-lg: 1.5rem;
-      --radius-xl: 2rem;
-      --transition-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
-      --transition-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    /* ============================================================
-       BASE & RESET
-       ============================================================ */
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background-color: var(--cream);
-      color: var(--ink);
-      line-height: 1.6;
-      overflow-x: hidden;
-      cursor: default;
-    }
-
-    ::selection {
-      background-color: var(--brass);
-      color: var(--white);
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button {
-      font-family: inherit;
-      cursor: pointer;
-      border: none;
-      background: none;
-    }
-
-    /* ============================================================
-       FOCUS STATES (ACCESSIBILITY)
-       ============================================================ */
-    :focus-visible {
-      outline: 2px solid var(--brass);
-      outline-offset: 3px;
-      border-radius: 4px;
-    }
-
-    /* ============================================================
-       TYPOGRAPHY UTILITIES
-       ============================================================ */
-    .font-display {
-      font-family: 'Instrument Serif', serif;
-    }
-
-    .text-balance {
-      text-wrap: balance;
-    }
-
-    .heading-xl {
-      font-size: clamp(2.8rem, 8vw, 7rem);
-      line-height: 0.95;
-      letter-spacing: -0.03em;
-      font-weight: 400;
-    }
-
-    .heading-lg {
-      font-size: clamp(2rem, 5vw, 4rem);
-      line-height: 1.05;
-      letter-spacing: -0.025em;
-      font-weight: 400;
-    }
-
-    .heading-md {
-      font-size: clamp(1.5rem, 3vw, 2.5rem);
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-      font-weight: 400;
-    }
-
-    .body-lg {
-      font-size: clamp(1rem, 1.25vw, 1.2rem);
-      line-height: 1.65;
-      font-weight: 400;
-    }
-
-    /* ============================================================
-       LAYOUT UTILITIES
-       ============================================================ */
-    .container-main {
-      width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-
-    @media (min-width: 768px) {
-      .container-main {
-        padding-left: 2.5rem;
-        padding-right: 2.5rem;
-      }
-    }
-
-    @media (min-width: 1280px) {
-      .container-main {
-        padding-left: 3rem;
-        padding-right: 3rem;
-      }
-    }
-
-    /* ============================================================
-       NAVIGATION
-       ============================================================ */
-    .nav-wrapper {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      transition: all 0.4s var(--transition-smooth);
-      padding: 1.25rem 0;
-    }
-
-    .nav-wrapper.scrolled {
-      padding: 0.75rem 0;
-      background: rgba(248, 247, 244, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border-hairline);
-      box-shadow: 0 1px 20px rgba(26, 29, 33, 0.04);
-    }
-
-    .nav-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .nav-logo {
-      font-family: 'Instrument Serif', serif;
-      font-size: 1.75rem;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-      transition: opacity 0.3s ease;
-    }
-
-    .nav-logo:hover {
-      opacity: 0.7;
-    }
-
-    .nav-links-desktop {
-      display: none;
-      align-items: center;
-      gap: 2.5rem;
-    }
-
-    @media (min-width: 768px) {
-      .nav-links-desktop {
-        display: flex;
-      }
-    }
-
-    .nav-link {
-      font-size: 0.85rem;
-      font-weight: 450;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--ink);
-      opacity: 0.65;
-      transition: opacity 0.3s ease;
-      position: relative;
-    }
-
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 1px;
-      background: var(--brass);
-      transition: width 0.4s var(--transition-smooth);
-    }
-
-    .nav-link:hover {
-      opacity: 1;
-    }
-
-    .nav-link:hover::after {
-      width: 100%;
-    }
-
-    .nav-cta {
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 0.7rem 1.6rem;
-      background: var(--ink);
-      color: var(--cream);
-      border-radius: 100px;
-      transition: all 0.4s var(--transition-smooth);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .nav-cta:hover {
-      background: var(--brass);
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(184, 135, 90, 0.3);
-    }
-
-    .nav-cta:active {
-      transform: translateY(0) scale(0.98);
-    }
-
-    /* Mobile menu button */
-    .mobile-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      transition: background 0.3s ease;
-    }
-
-    .mobile-toggle:hover {
-      background: rgba(26, 29, 33, 0.05);
-    }
-
-    @media (min-width: 768px) {
-      .mobile-toggle {
-        display: none;
-      }
-    }
-
-    /* Mobile menu overlay */
-    .mobile-menu {
-      position: fixed;
-      inset: 0;
-      z-index: 99;
-      background: var(--cream);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 2.5rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s var(--transition-smooth);
-    }
-
-    .mobile-menu.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .mobile-menu .nav-link {
-      font-size: 1.5rem;
-      text-transform: none;
-      letter-spacing: -0.01em;
-      font-weight: 400;
-      font-family: 'Instrument Serif', serif;
-      opacity: 0.8;
-    }
-
-    .mobile-menu .nav-link:hover {
-      opacity: 1;
-    }
-
-    /* ============================================================
-       HERO SECTION
-       ============================================================ */
-    .hero-section {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding-top: 6rem;
-      padding-bottom: 4rem;
-      overflow: hidden;
-    }
-
-    .hero-bg-accent {
-      position: absolute;
-      top: -30%;
-      right: -15%;
-      width: 70vw;
-      height: 70vw;
-      max-width: 900px;
-      max-height: 900px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(184, 135, 90, 0.10), rgba(107, 127, 106, 0.06) 40%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-      animation: heroGlow 12s ease-in-out infinite alternate;
-    }
-
-    @keyframes heroGlow {
-      0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
-      100% { transform: scale(1.15) translate(-2%, 3%); opacity: 1; }
-    }
-
-    .hero-bg-line {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border-hairline), transparent);
-      z-index: 1;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--brass);
-      margin-bottom: 2rem;
-    }
-
-    .hero-eyebrow::before {
-      content: '';
-      width: 32px;
-      height: 1px;
-      background: var(--brass);
-    }
-
-    .hero-headline {
-      max-width: 14ch;
-    }
-
-    .hero-headline .reveal-line {
-      display: block;
-      overflow: hidden;
-    }
-
-    .hero-headline .reveal-line span {
-      display: block;
-      transform: translateY(110%);
-      transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .hero-headline .reveal-line span.revealed {
-      transform: translateY(0);
-    }
-
-    .hero-sub {
-      max-width: 48ch;
-      margin-top: 2rem;
-      color: rgba(26, 29, 33, 0.65);
-      font-weight: 350;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 2.5rem;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 1rem 2rem;
-      background: var(--ink);
-      color: var(--cream);
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      border-radius: 100px;
-      transition: all 0.4s var(--transition-smooth);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-primary::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--brass);
-      transform: translateX(-101%);
-      transition: transform 0.5s var(--transition-smooth);
-      border-radius: 100px;
-    }
-
-    .btn-primary:hover::before {
-      transform: translateX(0);
-    }
-
-    .btn-primary span,
-    .btn-primary svg {
-      position: relative;
-      z-index: 1;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(184, 135, 90, 0.35);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0) scale(0.98);
-    }
-
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 1rem 2rem;
-      background: transparent;
-      color: var(--ink);
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      border-radius: 100px;
-      border: 1px solid var(--border-hairline);
-      transition: all 0.4s var(--transition-smooth);
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--ink);
-      background: rgba(26, 29, 33, 0.03);
-      transform: translateY(-2px);
-    }
-
-    .btn-secondary:active {
-      transform: translateY(0) scale(0.98);
-    }
-
-    /* Hero visual */
-    .hero-visual {
-      position: relative;
-      margin-top: 4rem;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    @media (min-width: 1024px) {
-      .hero-visual {
-        grid-template-columns: 1.2fr 0.8fr;
-        align-items: end;
-      }
-    }
-
-    .hero-image-main {
-      position: relative;
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      aspect-ratio: 16/10;
-      background: var(--sand);
-      box-shadow: var(--shadow-elevated);
-    }
-
-    .hero-image-main img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 1.2s var(--transition-smooth);
-    }
-
-    .hero-image-main:hover img {
-      transform: scale(1.03);
-    }
-
-    .hero-image-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(26, 29, 33, 0.15));
-    }
-
-    .hero-stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .hero-stat-card {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      border: 1px solid var(--border-hairline);
-      transition: all 0.4s var(--transition-smooth);
-    }
-
-    .hero-stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-card);
-      border-color: rgba(184, 135, 90, 0.25);
-    }
-
-    .hero-stat-number {
-      font-family: 'Instrument Serif', serif;
-      font-size: 2.2rem;
-      line-height: 1;
-      color: var(--ink);
-      margin-bottom: 0.35rem;
-    }
-
-    .hero-stat-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: rgba(26, 29, 33, 0.5);
-    }
-
-    /* ============================================================
-       MARQUEE / TICKER
-       ============================================================ */
-    .marquee-section {
-      padding: 3rem 0;
-      border-top: 1px solid var(--border-hairline);
-      border-bottom: 1px solid var(--border-hairline);
-      overflow: hidden;
-      background: var(--white);
-    }
-
-    .marquee-track {
-      display: flex;
-      width: fit-content;
-      animation: marquee 30s linear infinite;
-    }
-
-    .marquee-track:hover {
-      animation-play-state: paused;
-    }
-
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    .marquee-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0 2.5rem;
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(26, 29, 33, 0.4);
-      white-space: nowrap;
-    }
-
-    .marquee-item svg {
-      width: 16px;
-      height: 16px;
-      color: var(--brass);
-      flex-shrink: 0;
-    }
-
-    /* ============================================================
-       SECTION STYLES
-       ============================================================ */
-    .section-pad {
-      padding: 6rem 0;
-    }
-
-    @media (min-width: 768px) {
-      .section-pad {
-        padding: 8rem 0;
-      }
-    }
-
-    .section-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 0.7rem;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--brass);
-      margin-bottom: 1.5rem;
-    }
-
-    .section-eyebrow::before {
-      content: '';
-      width: 24px;
-      height: 1px;
-      background: var(--brass);
-    }
-
-    .section-heading {
-      max-width: 20ch;
-    }
-
-    /* ============================================================
-       FEATURE CARDS (SCROLL REVEAL)
-       ============================================================ */
-    .feature-card {
-      background: var(--white);
-      border-radius: var(--radius-xl);
-      padding: 2.5rem;
-      border: 1px solid var(--border-hairline);
-      transition: all 0.5s var(--transition-smooth);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--brass), var(--sage));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.6s var(--transition-smooth);
-    }
-
-    .feature-card:hover::before {
-      transform: scaleX(1);
-    }
-
-    .feature-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-elevated);
-      border-color: transparent;
-    }
-
-    .feature-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, rgba(184, 135, 90, 0.12), rgba(107, 127, 106, 0.08));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.5rem;
-      transition: all 0.4s var(--transition-smooth);
-    }
-
-    .feature-card:hover .feature-icon {
-      background: linear-gradient(135deg, var(--brass), var(--brass-light));
-      transform: scale(1.05) rotate(-3deg);
-    }
-
-    .feature-card:hover .feature-icon svg {
-      color: var(--white);
-    }
-
-    .feature-icon svg {
-      width: 22px;
-      height: 22px;
-      color: var(--brass);
-      transition: color 0.4s ease;
-    }
-
-    .feature-title {
-      font-family: 'Instrument Serif', serif;
-      font-size: 1.5rem;
-      letter-spacing: -0.01em;
-      margin-bottom: 0.75rem;
-    }
-
-    .feature-desc {
-      font-size: 0.95rem;
-      line-height: 1.7;
-      color: rgba(26, 29, 33, 0.6);
-    }
-
-    /* ============================================================
-       SCROLL REVEAL ANIMATION
-       ============================================================ */
-    .reveal-up {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.8s var(--transition-smooth), transform 0.8s var(--transition-smooth);
-    }
-
-    .reveal-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ============================================================
-       HORIZONTAL GALLERY
-       ============================================================ */
-    .gallery-section {
-      overflow: hidden;
-      padding: 6rem 0;
-      background: var(--white);
-    }
-
-    .gallery-track {
-      display: flex;
-      gap: 1.5rem;
-      padding: 0 2rem;
-      width: fit-content;
-    }
-
-    .gallery-item {
-      flex-shrink: 0;
-      width: 320px;
-      height: 400px;
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      position: relative;
-      background: var(--sand);
-      box-shadow: var(--shadow-card);
-      transition: transform 0.5s var(--transition-smooth), box-shadow 0.5s var(--transition-smooth);
-    }
-
-    .gallery-item:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: var(--shadow-elevated);
-    }
-
-    .gallery-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 1s var(--transition-smooth);
-    }
-
-    .gallery-item:hover img {
-      transform: scale(1.06);
-    }
-
-    .gallery-item-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 40%, rgba(26, 29, 33, 0.6));
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 2rem;
-      opacity: 0;
-      transition: opacity 0.5s var(--transition-smooth);
-    }
-
-    .gallery-item:hover .gallery-item-overlay {
-      opacity: 1;
-    }
-
-    .gallery-item-title {
-      font-family: 'Instrument Serif', serif;
-      font-size: 1.5rem;
-      color: var(--white);
-      transform: translateY(10px);
-      transition: transform 0.5s var(--transition-smooth);
-    }
-
-    .gallery-item:hover .gallery-item-title {
-      transform: translateY(0);
-    }
-
-    .gallery-item-cat {
-      font-size: 0.7rem;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.6);
-      margin-top: 0.35rem;
-      transform: translateY(10px);
-      transition: transform 0.5s var(--transition-smooth) 0.05s;
-    }
-
-    .gallery-item:hover .gallery-item-cat {
-      transform: translateY(0);
-    }
-
-    /* ============================================================
-       TESTIMONIALS
-       ============================================================ */
-    .testimonial-card {
-      background: var(--white);
-      border-radius: var(--radius-xl);
-      padding: 2.5rem;
-      border: 1px solid var(--border-hairline);
-      transition: all 0.5s var(--transition-smooth);
-      position: relative;
-    }
-
-    .testimonial-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-elevated);
-    }
-
-    .testimonial-quote {
-      font-family: 'Instrument Serif', serif;
-      font-size: 1.25rem;
-      line-height: 1.5;
-      letter-spacing: -0.01em;
-      color: var(--ink);
-      margin-bottom: 1.5rem;
-    }
-
-    .testimonial-author {
-      display: flex;
-      align-items: center;
-      gap: 0.875rem;
-    }
-
-    .testimonial-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--brass), var(--sage));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--white);
-      font-family: 'Instrument Serif', serif;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-
-    .testimonial-name {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--ink);
-    }
-
-    .testimonial-role {
-      font-size: 0.8rem;
-      color: rgba(26, 29, 33, 0.5);
-    }
-
-    /* ============================================================
-       CTA BANNER
-       ============================================================ */
-    .cta-banner {
-      background: var(--ink);
-      border-radius: var(--radius-xl);
-      padding: 4rem 2rem;
-      position: relative;
-      overflow: hidden;
-      text-align: center;
-    }
-
-    @media (min-width: 768px) {
-      .cta-banner {
-        padding: 6rem 4rem;
-      }
-    }
-
-    .cta-banner::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 500px;
-      height: 500px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(184, 135, 90, 0.2), transparent 70%);
-      pointer-events: none;
-    }
-
-    .cta-banner::after {
-      content: '';
-      position: absolute;
-      bottom: -40%;
-      left: -10%;
-      width: 400px;
-      height: 400px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(107, 127, 106, 0.15), transparent 70%);
-      pointer-events: none;
-    }
-
-    .cta-banner > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .cta-heading {
-      font-family: 'Instrument Serif', serif;
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      line-height: 1.05;
-      letter-spacing: -0.025em;
-      color: var(--cream);
-      margin-bottom: 1.5rem;
-    }
-
-    .cta-sub {
-      font-size: 1.05rem;
-      color: rgba(248, 247, 244, 0.6);
-      max-width: 40ch;
-      margin: 0 auto 2.5rem;
-      line-height: 1.65;
-    }
-
-    .btn-light {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 1rem 2.2rem;
-      background: var(--cream);
-      color: var(--ink);
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      border-radius: 100px;
-      transition: all 0.4s var(--transition-smooth);
-    }
-
-    .btn-light:hover {
-      background: var(--brass);
-      color: var(--white);
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(184, 135, 90, 0.35);
-    }
-
-    .btn-light:active {
-      transform: translateY(0) scale(0.98);
-    }
-
-    /* ============================================================
-       FOOTER
-       ============================================================ */
-    .footer-main {
-      background: var(--white);
-      border-top: 1px solid var(--border-hairline);
-      padding: 5rem 0 2rem;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 3rem;
-    }
-
-    @media (min-width: 768px) {
-      .footer-grid {
-        grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
-        gap: 3rem;
-      }
-    }
-
-    .footer-brand-text {
-      font-size: 0.95rem;
-      line-height: 1.7;
-      color: rgba(26, 29, 33, 0.55);
-      max-width: 30ch;
-      margin-top: 1rem;
-    }
-
-    .footer-col-title {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--ink);
-      margin-bottom: 1.5rem;
-    }
-
-    .footer-link {
-      display: block;
-      font-size: 0.9rem;
-      color: rgba(26, 29, 33, 0.55);
-      margin-bottom: 0.85rem;
-      transition: color 0.3s ease, transform 0.3s ease;
-    }
-
-    .footer-link:hover {
-      color: var(--brass);
-      transform: translateX(3px);
-    }
-
-    .footer-social {
-      display: flex;
-      gap: 0.75rem;
-      margin-top: 1.5rem;
-    }
-
-    .footer-social a {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid var(--border-hairline);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s var(--transition-smooth);
-    }
-
-    .footer-social a:hover {
-      background: var(--ink);
-      border-color: var(--ink);
-      transform: translateY(-2px);
-    }
-
-    .footer-social a:hover svg {
-      color: var(--cream);
-    }
-
-    .footer-social svg {
-      width: 18px;
-      height: 18px;
-      color: var(--ink);
-      transition: color 0.3s ease;
-    }
-
-    .footer-bottom {
-      margin-top: 4rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border-hairline);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    @media (min-width: 768px) {
-      .footer-bottom {
-        flex-direction: row;
-      }
-    }
-
-    .footer-bottom-text {
-      font-size: 0.8rem;
-      color: rgba(26, 29, 33, 0.4);
-    }
-
-    /* ============================================================
-       CONTACT FORM
-       ============================================================ */
-    .contact-form {
-      display: grid;
-      gap: 1rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .form-label {
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: rgba(26, 29, 33, 0.55);
-    }
-
-    .form-input,
-    .form-textarea {
-      width: 100%;
-      padding: 0.85rem 1rem;
-      background: var(--cream);
-      border: 1px solid var(--border-hairline);
-      border-radius: var(--radius-md);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
-      color: var(--ink);
-      transition: all 0.3s var(--transition-smooth);
-    }
-
-    .form-input::placeholder,
-    .form-textarea::placeholder {
-      color: rgba(26, 29, 33, 0.3);
-    }
-
-    .form-input:focus,
-    .form-textarea:focus {
-      outline: none;
-      border-color: var(--brass);
-      box-shadow: 0 0 0 3px rgba(184, 135, 90, 0.12);
-      background: var(--white);
-    }
-
-    .form-input.error,
-    .form-textarea.error {
-      border-color: #D45A5A;
-      box-shadow: 0 0 0 3px rgba(212, 90, 90, 0.1);
-    }
-
-    .form-error {
-      font-size: 0.75rem;
-      color: #D45A5A;
-      display: none;
-    }
-
-    .form-error.visible {
-      display: block;
-    }
-
-    .form-textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    .form-submit {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      padding: 1rem 2rem;
-      background: var(--ink);
-      color: var(--cream);
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      border-radius: 100px;
-      transition: all 0.4s var(--transition-smooth);
-      margin-top: 0.5rem;
-    }
-
-    .form-submit:hover {
-      background: var(--brass);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(184, 135, 90, 0.3);
-    }
-
-    .form-submit:active {
-      transform: translateY(0) scale(0.98);
-    }
-
-    .form-submit:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .form-success {
-      display: none;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .form-success.visible {
-      display: block;
-    }
-
-    .form-success-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--sage), #8FAF8E);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.5rem;
-    }
-
-    .form-success-icon svg {
-      width: 28px;
-      height: 28px;
-      color: var(--white);
-    }
-
-    /* ============================================================
-       CUSTOM CURSOR (DESKTOP ONLY)
-       ============================================================ */
-    @media (pointer: fine) {
-      .cursor-dot {
-        width: 8px;
-        height: 8px;
-        background: var(--brass);
-        border-radius: 50%;
-        position: fixed;
-        pointer-events: none;
-        z-index: 9999;
-        transition: transform 0.15s var(--transition-smooth);
-        mix-blend-mode: multiply;
-      }
-
-      .cursor-ring {
-        width: 40px;
-        height: 40px;
-        border: 1.5px solid rgba(184, 135, 90, 0.4);
-        border-radius: 50%;
-        position: fixed;
-        pointer-events: none;
-        z-index: 9998;
-        transition: transform 0.3s var(--transition-smooth), width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
-      }
-
-      .cursor-ring.hovering {
-        width: 64px;
-        height: 64px;
-        border-color: rgba(184, 135, 90, 0.8);
-      }
-    }
-
-    @media (pointer: coarse) {
-      .cursor-dot,
-      .cursor-ring {
-        display: none;
-      }
-    }
-
-    /* ============================================================
-       MOBILE MENU OVERLAY
-       ============================================================ */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border-width: 0;
-    }
-
-    /* ============================================================
-       REDUCED MOTION
-       ============================================================ */
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-
-      .hero-headline .reveal-line span {
-        transform: translateY(0) !important;
-      }
-
-      .reveal-up {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meridian & Co. — Bespoke Luxury Travel</title>
+    <!-- Google Fonts: Bricolage Grotesque + Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        /* === Design Tokens === */
+        :root {
+            --ink: #1a1a1a;
+            --ink-soft: #3d3d3d;
+            --cream: #fcfaf7;
+            --sand: #f5f0ea;
+            --stone: #e8e2da;
+            --brass: #b8936d;
+            --brass-light: #d4b99a;
+            --brass-dark: #9a7a58;
+            --white: #ffffff;
+            --border-hairline: rgba(26, 26, 26, 0.08);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.02), 0 2px 8px rgba(0,0,0,0.02);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.03), 0 12px 32px rgba(0,0,0,0.04);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.04), 0 24px 64px rgba(0,0,0,0.06);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --font-display: 'Bricolage Grotesque', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --focus-ring: 0 0 0 3px rgba(184, 147, 109, 0.4);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* === Reset & Base === */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--cream);
+            color: var(--ink);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        img { max-width: 100%; display: block; }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; }
+        input, textarea, select { font-family: inherit; font-size: inherit; }
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); border: 0;
+        }
+
+        /* === Typography === */
+        .display-xl {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6.5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+        }
+        .display-lg {
+            font-family: var(--font-display);
+            font-size: clamp(2.25rem, 5vw, 3.75rem);
+            font-weight: 600;
+            line-height: 1.1;
+            letter-spacing: -0.025em;
+        }
+        .display-md {
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+        }
+        .body-lg { font-size: 1.125rem; line-height: 1.7; color: var(--ink-soft); }
+        .body-md { font-size: 1rem; line-height: 1.65; color: var(--ink-soft); }
+        .body-sm { font-size: 0.875rem; line-height: 1.6; color: var(--ink-soft); }
+        .overline {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--brass);
+        }
+
+        /* === Layout === */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .section-pad { padding: 120px 0; }
+        .section-pad-sm { padding: 80px 0; }
+
+        /* === Focus States === */
+        :focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+            border-radius: 4px;
+        }
+
+        /* === Header / Nav === */
+        .site-header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 20px 0;
+            transition: all 0.4s var(--ease-out-expo);
+        }
+        .site-header.scrolled {
+            background: rgba(252, 250, 247, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-hairline);
+        }
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-mark {
+            width: 28px; height: 28px;
+            background: var(--brass);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+            list-style: none;
+        }
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--ink-soft);
+            transition: color 0.2s ease;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 1.5px;
+            background: var(--brass);
+            transition: width 0.3s var(--ease-out-expo);
+        }
+        .nav-links a:hover { color: var(--ink); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            background: var(--ink);
+            color: white;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s var(--ease-out-expo);
+            border: 1px solid transparent;
+        }
+        .nav-cta:hover {
+            background: var(--brass);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(184, 147, 109, 0.3);
+        }
+        .nav-cta:active { transform: translateY(0) scale(0.98); }
+
+        .mobile-menu-btn {
+            display: none;
+            width: 44px; height: 44px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--ink);
+            transition: background 0.2s;
+        }
+        .mobile-menu-btn:hover { background: var(--stone); }
+
+        /* === Mobile Nav === */
+        .mobile-nav {
+            position: fixed;
+            inset: 0;
+            background: var(--cream);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s var(--ease-out-expo);
+        }
+        .mobile-nav.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .mobile-nav a {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--ink);
+            transition: color 0.2s;
+        }
+        .mobile-nav a:hover { color: var(--brass); }
+        .mobile-nav-close {
+            position: absolute;
+            top: 28px; right: 28px;
+            width: 44px; height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--ink);
+        }
+
+        /* === Hero === */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 100px;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.25;
+            transform: scale(1.05);
+        }
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(252, 250, 247, 0.97) 0%,
+                rgba(252, 250, 247, 0.85) 40%,
+                rgba(245, 240, 234, 0.7) 100%
+            );
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .hero-text { max-width: 600px; }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(184, 147, 109, 0.1);
+            border: 1px solid rgba(184, 147, 109, 0.2);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--brass-dark);
+            margin-bottom: 24px;
+        }
+        .hero-badge i { width: 14px; height: 14px; }
+        .hero h1 { margin-bottom: 24px; }
+        .hero h1 .accent {
+            color: var(--brass);
+            font-style: italic;
+            font-weight: 400;
+        }
+        .hero-sub {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: var(--ink-soft);
+            margin-bottom: 40px;
+            max-width: 480px;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: var(--ink);
+            color: white;
+            border-radius: 100px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s var(--ease-out-expo);
+            border: 1px solid transparent;
+        }
+        .btn-primary:hover {
+            background: var(--brass);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(184, 147, 109, 0.35);
+        }
+        .btn-primary:active { transform: translateY(0) scale(0.98); }
+        .btn-primary i { width: 18px; height: 18px; transition: transform 0.3s; }
+        .btn-primary:hover i { transform: translateX(4px); }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: transparent;
+            color: var(--ink);
+            border-radius: 100px;
+            font-size: 1rem;
+            font-weight: 500;
+            border: 1px solid var(--stone);
+            transition: all 0.3s var(--ease-out-expo);
+        }
+        .btn-secondary:hover {
+            border-color: var(--brass);
+            color: var(--brass-dark);
+            background: rgba(184, 147, 109, 0.05);
+            transform: translateY(-2px);
+        }
+        .btn-secondary:active { transform: translateY(0) scale(0.98); }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-image-wrapper {
+            position: relative;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transform: perspective(1000px) rotateY(-4deg) rotateX(2deg);
+            transition: transform 0.6s var(--ease-out-expo);
+        }
+        .hero-image-wrapper:hover {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+        }
+        .hero-image-wrapper img {
+            width: 100%;
+            height: 520px;
+            object-fit: cover;
+            display: block;
+        }
+        .hero-float-card {
+            position: absolute;
+            bottom: 32px;
+            left: -32px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 20px 24px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255,255,255,0.6);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .hero-float-card .icon-circle {
+            width: 44px; height: 44px;
+            background: var(--brass);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+        .hero-float-card .icon-circle i { width: 20px; height: 20px; }
+        .hero-float-card .stat-number {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+        .hero-float-card .stat-label {
+            font-size: 0.75rem;
+            color: var(--ink-soft);
+            font-weight: 500;
+        }
+
+        /* === Trust Bar === */
+        .trust-bar {
+            padding: 40px 0;
+            border-top: 1px solid var(--border-hairline);
+            border-bottom: 1px solid var(--border-hairline);
+        }
+        .trust-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .trust-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            white-space: nowrap;
+        }
+        .trust-logos {
+            display: flex;
+            align-items: center;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+        .trust-logos span {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--stone);
+            letter-spacing: -0.01em;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+        .trust-logos span:hover { color: var(--brass); }
+
+        /* === Section Header === */
+        .section-header {
+            max-width: 640px;
+            margin-bottom: 64px;
+        }
+        .section-header.center {
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+        .section-header .overline { margin-bottom: 16px; display: block; }
+        .section-header h2 { margin-bottom: 20px; }
+        .section-header p { max-width: 520px; }
+        .section-header.center p { margin-left: auto; margin-right: auto; }
+
+        /* === Services / Experiences Grid === */
+        .experiences-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        .experience-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-hairline);
+            transition: all 0.5s var(--ease-out-expo);
+            position: relative;
+        }
+        .experience-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(184, 147, 109, 0.2);
+        }
+        .experience-card-image {
+            height: 240px;
+            overflow: hidden;
+            position: relative;
+        }
+        .experience-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s var(--ease-out-expo);
+        }
+        .experience-card:hover .experience-card-image img {
+            transform: scale(1.06);
+        }
+        .experience-card-image .tag {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: 0.02em;
+        }
+        .experience-card-body {
+            padding: 28px;
+        }
+        .experience-card-body h3 {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 10px;
+            color: var(--ink);
+        }
+        .experience-card-body p {
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            line-height: 1.65;
+            margin-bottom: 20px;
+        }
+        .experience-card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-hairline);
+        }
+        .experience-card-meta .price {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .experience-card-meta .price span {
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--ink-soft);
+        }
+        .experience-card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--brass-dark);
+            transition: gap 0.3s var(--ease-out-expo);
+        }
+        .experience-card-link:hover { gap: 12px; }
+        .experience-card-link i { width: 16px; height: 16px; }
+
+        /* === Feature Split === */
+        .feature-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+        .feature-split.reverse { direction: rtl; }
+        .feature-split.reverse > * { direction: ltr; }
+        .feature-content .overline { margin-bottom: 16px; display: block; }
+        .feature-content h2 { margin-bottom: 24px; }
+        .feature-content > p { margin-bottom: 32px; }
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .feature-list li {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        .feature-list .check-icon {
+            width: 24px; height: 24px;
+            background: rgba(184, 147, 109, 0.12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .feature-list .check-icon i {
+            width: 14px; height: 14px;
+            color: var(--brass-dark);
+        }
+        .feature-list h4 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--ink);
+        }
+        .feature-list p {
+            font-size: 0.875rem;
+            color: var(--ink-soft);
+            line-height: 1.6;
+        }
+        .feature-image {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+        .feature-image img {
+            width: 100%;
+            height: 480px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* === Stats Band === */
+        .stats-band {
+            background: var(--ink);
+            border-radius: var(--radius-xl);
+            padding: 64px 48px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            margin: 0 24px;
+        }
+        .stat-item { text-align: center; }
+        .stat-item .stat-value {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+        .stat-item .stat-value .accent { color: var(--brass-light); }
+        .stat-item .stat-name {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        /* === Testimonials === */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+        .testimonial-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            border: 1px solid var(--border-hairline);
+            transition: all 0.4s var(--ease-out-expo);
+            position: relative;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        .testimonial-card .quote-mark {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            color: var(--brass);
+            line-height: 1;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+        .testimonial-card blockquote {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--ink-soft);
+            margin-bottom: 28px;
+            font-style: italic;
+        }
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .testimonial-author .avatar {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: var(--stone);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--brass-dark);
+            font-size: 1rem;
+        }
+        .testimonial-author .name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        .testimonial-author .role {
+            font-size: 0.8rem;
+            color: var(--ink-soft);
+        }
+
+        /* === CTA Banner === */
+        .cta-banner {
+            background: linear-gradient(135deg, var(--ink) 0%, #2a2520 100%);
+            border-radius: var(--radius-xl);
+            padding: 80px 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 48px;
+            position: relative;
+            overflow: hidden;
+            margin: 0 24px;
+        }
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(184,147,109,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .cta-banner-content {
+            position: relative;
+            z-index: 1;
+            max-width: 560px;
+        }
+        .cta-banner h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+            font-weight: 600;
+            color: var(--white);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+        .cta-banner p {
+            color: rgba(255,255,255,0.65);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+        .btn-light {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: var(--white);
+            color: var(--ink);
+            border-radius: 100px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s var(--ease-out-expo);
+            position: relative;
+            z-index: 1;
+        }
+        .btn-light:hover {
+            background: var(--brass-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(184, 147, 109, 0.25);
+        }
+        .btn-light:active { transform: translateY(0) scale(0.98); }
+        .btn-light i { width: 18px; height: 18px; transition: transform 0.3s; }
+        .btn-light:hover i { transform: translateX(4px); }
+
+        /* === Footer === */
+        .site-footer {
+            background: var(--sand);
+            border-top: 1px solid var(--border-hairline);
+            padding: 80px 0 0;
+            margin-top: 120px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 48px;
+            padding-bottom: 64px;
+            border-bottom: 1px solid var(--border-hairline);
+        }
+        .footer-brand .logo { margin-bottom: 20px; }
+        .footer-brand p {
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            line-height: 1.7;
+            margin-bottom: 24px;
+            max-width: 280px;
+        }
+        .footer-social {
+            display: flex;
+            gap: 12px;
+        }
+        .footer-social a {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--stone);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-soft);
+            transition: all 0.3s var(--ease-out-expo);
+        }
+        .footer-social a:hover {
+            background: var(--brass);
+            border-color: var(--brass);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .footer-social a i { width: 18px; height: 18px; }
+        .footer-col h4 {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--ink);
+            margin-bottom: 20px;
+        }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .footer-col ul a {
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            transition: color 0.2s;
+        }
+        .footer-col ul a:hover { color: var(--brass-dark); }
+
+        /* === Contact Form === */
+        .contact-section {
+            padding: 80px 0;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: start;
+        }
+        .contact-info h3 {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            color: var(--ink);
+        }
+        .contact-info p {
+            font-size: 0.95rem;
+            color: var(--ink-soft);
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .contact-detail .icon-wrap {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            background: rgba(184, 147, 109, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brass-dark);
+            flex-shrink: 0;
+        }
+        .contact-detail .icon-wrap i { width: 20px; height: 20px; }
+        .contact-detail .label {
+            font-size: 0.8rem;
+            color: var(--ink-soft);
+            font-weight: 500;
+        }
+        .contact-detail .value {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .contact-form {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            border: 1px solid var(--border-hairline);
+            box-shadow: var(--shadow-sm);
+        }
+        .form-group { margin-bottom: 24px; }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+        .form-group label .required { color: var(--brass); margin-left: 2px; }
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid var(--stone);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            color: var(--ink);
+            background: var(--cream);
+            transition: all 0.3s var(--ease-out-expo);
+            outline: none;
+        }
+        .form-input:hover { border-color: #d0c8bc; }
+        .form-input:focus {
+            border-color: var(--brass);
+            box-shadow: 0 0 0 3px rgba(184, 147, 109, 0.12);
+            background: var(--white);
+        }
+        .form-input.error {
+            border-color: #c0392b;
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.08);
+        }
+        .form-input::placeholder { color: #b0a89c; }
+        textarea.form-input { resize: vertical; min-height: 120px; }
+        .form-error {
+            font-size: 0.8rem;
+            color: #c0392b;
+            margin-top: 6px;
+            display: none;
+        }
+        .form-error.visible { display: block; }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--ink);
+            color: white;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s var(--ease-out-expo);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .form-submit:hover {
+            background: var(--brass);
+            box-shadow: 0 8px 24px rgba(184, 147, 109, 0.3);
+            transform: translateY(-1px);
+        }
+        .form-submit:active { transform: translateY(0) scale(0.99); }
+        .form-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .form-submit i { width: 18px; height: 18px; }
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .form-success.visible { display: block; }
+        .form-success .success-icon {
+            width: 64px; height: 64px;
+            background: rgba(184, 147, 109, 0.12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .form-success .success-icon i {
+            width: 32px; height: 32px;
+            color: var(--brass-dark);
+        }
+        .form-success h4 {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+        .form-success p {
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+        }
+
+        /* === Footer Bottom === */
+        .footer-bottom {
+            padding: 32px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-bottom p {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+        }
+        .footer-bottom-links {
+            display: flex;
+            gap: 24px;
+        }
+        .footer-bottom-links a {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            transition: color 0.2s;
+        }
+        .footer-bottom-links a:hover { color: var(--brass-dark); }
+
+        /* === Animations === */
+        .reveal {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* === Responsive === */
+        @media (max-width: 1024px) {
+            .experiences-grid { grid-template-columns: repeat(2, 1fr); }
+            .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-band { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .section-pad { padding: 80px 0; }
+            .nav-links, .nav-cta { display: none; }
+            .mobile-menu-btn { display: flex; }
+            .hero-content { grid-template-columns: 1fr; gap: 48px; }
+            .hero-image-wrapper img { height: 360px; }
+            .hero-image-wrapper { transform: none; }
+            .hero-float-card { left: 0; bottom: 16px; }
+            .experiences-grid { grid-template-columns: 1fr; }
+            .feature-split { grid-template-columns: 1fr; gap: 48px; }
+            .feature-split.reverse { direction: ltr; }
+            .feature-image img { height: 320px; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+            .stats-band { grid-template-columns: 1fr 1fr; padding: 40px 24px; gap: 24px; }
+            .cta-banner { flex-direction: column; padding: 48px 32px; text-align: center; }
+            .cta-banner-content { max-width: 100%; }
+            .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+            .contact-form { padding: 28px; }
+            .form-row { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+            .trust-inner { flex-direction: column; align-items: flex-start; }
+            .trust-logos { gap: 28px; }
+            .trust-logos span { font-size: 0.95rem; }
+        }
+        @media (max-width: 480px) {
+            .hero { padding-top: 80px; }
+            .hero-actions { flex-direction: column; }
+            .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+            .stats-band { grid-template-columns: 1fr; }
+            .cta-banner { margin: 0 12px; }
+            .stats-band { margin: 0 12px; }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- ============================================================
-       CUSTOM CURSOR
-       ============================================================ -->
-  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
-  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
-
-  <!-- ============================================================
-       NAVIGATION
-       ============================================================ -->
-  <header class="nav-wrapper" id="navWrapper">
-    <div class="container-main">
-      <nav class="nav-inner" aria-label="Main navigation">
-        <a href="#" class="nav-logo" aria-label="Enikoru home">Enikoru</a>
-
-        <div class="nav-links-desktop">
-          <a href="#craft" class="nav-link">Craft</a>
-          <a href="#collection" class="nav-link">Collection</a>
-          <a href="#stories" class="nav-link">Stories</a>
-          <a href="#atelier" class="nav-link">Atelier</a>
-        </div>
-
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <a href="#contact" class="nav-cta">
-            <span>Begin a project</span>
-            <i data-lucide="arrow-up-right" style="width: 14px; height: 14px;"></i>
-          </a>
-
-          <button
-            class="mobile-toggle"
-            id="mobileToggle"
-            aria-label="Open menu"
-            aria-expanded="false"
-            aria-controls="mobileMenu"
-          >
-            <i data-lucide="menu" style="width: 22px; height: 22px;"></i>
-          </button>
-        </div>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Mobile menu -->
-  <div
-    class="mobile-menu"
-    id="mobileMenu"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Mobile navigation"
-  >
-    <a href="#craft" class="nav-link" data-close-mobile>Craft</a>
-    <a href="#collection" class="nav-link" data-close-mobile>Collection</a>
-    <a href="#stories" class="nav-link" data-close-mobile>Stories</a>
-    <a href="#atelier" class="nav-link" data-close-mobile>Atelier</a>
-    <a href="#contact" class="nav-link" data-close-mobile>Begin a project</a>
-  </div>
-
-  <!-- ============================================================
-       HERO SECTION
-       ============================================================ -->
-  <section class="hero-section" id="hero">
-    <div class="hero-bg-accent" aria-hidden="true"></div>
-
-    <div class="container-main hero-content">
-      <div class="hero-eyebrow reveal-up">Undakanam · Est. 2019</div>
-
-      <h1 class="heading-xl hero-headline font-display">
-        <span class="reveal-line"><span>Objects with</span></span>
-        <span class="reveal-line"><span>quiet gravity.</span></span>
-      </h1>
-
-      <p class="body-lg hero-sub reveal-up">
-        Enikoru is a slow-craft atelier shaping tactile furniture and lighting from
-        honest materials — brass, travertine, and oiled oak. Each piece is made
-        to be lived with, not merely looked at.
-      </p>
-
-      <div class="hero-actions reveal-up">
-        <a href="#collection" class="btn-primary">
-          <span>View the collection</span>
-          <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
-        </a>
-        <a href="#atelier" class="btn-secondary">
-          <span>Our process</span>
-          <i data-lucide="play-circle" style="width: 16px; height: 16px;"></i>
-        </a>
-      </div>
-
-      <!-- Hero visual grid -->
-      <div class="hero-visual">
-        <div class="hero-image-main reveal-up">
-          <img
-            src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1600&auto=format&fit=crop"
-            alt="Sculptural travertine side table in a sunlit studio"
-            loading="eager"
-          />
-          <div class="hero-image-overlay" aria-hidden="true"></div>
-        </div>
-
-        <div class="hero-stats-grid">
-          <div class="hero-stat-card reveal-up">
-            <div class="hero-stat-number">120+</div>
-            <div class="hero-stat-label">Pieces shipped</div>
-          </div>
-          <div class="hero-stat-card reveal-up">
-            <div class="hero-stat-number">6</div>
-            <div class="hero-stat-label">Ateliers</div>
-          </div>
-          <div class="hero-stat-card reveal-up">
-            <div class="hero-stat-number">14</div>
-            <div class="hero-stat-label">Design awards</div>
-          </div>
-          <div class="hero-stat-card reveal-up">
-            <div class="hero-stat-number">98%</div>
-            <div class="hero-stat-label">Collector return</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="hero-bg-line" aria-hidden="true"></div>
-  </section>
-
-  <!-- ============================================================
-       MARQUEE / SOCIAL PROOF
-       ============================================================ -->
-  <section class="marquee-section" aria-label="Featured in">
-    <div class="marquee-track" id="marqueeTrack">
-      <div class="marquee-item">
-        <i data-lucide="award"></i>
-        <span>Wallpaper* Design Awards</span>
-      </div>
-      <div class="marquee-item">
-        <i data-lucide="star"></i>
-        <span>Dezeen</span>
-      </div>
-      <div class="marquee-item">
-        <i data-lucide="home"></i>
-        <span>Architectural Digest</span>
-      </div>
-      <div class="marquee-item">
-        <i data-lucide="pen-tool"></i>
-        <span>Frame</span>
-      </div>
-      <div class="marquee-item">
-        <i data-lucide="aperture"></i>
-        <span>Monocle</span>
-      </div>
-      <div class="marquee-item">
-        <i data-lucide="layers"></i>
-        <span>Kinfolk</span>
-      </div>
-      <div class="marquee-item">
-        <i data-lucide="award"></i>
-        <span>Wallpaper* Design Awards</span>
-      </div>
-      <div class="marquee-item">
-        <i data-lucide="star"></i>
-        <span>Dezeen</span>
-      </div>
-      <div class="marquee-item">
-        <i data-lucide="home"></i>
-        <span>Architectural Digest</span>
-      </div>
-      <div class="marquee-item">
-        <i data-lucide="pen-tool"></i>
-        <span>Frame</span>
-      </div>
-      <div class="marquee-item">
-        <i data-lucide="aperture"></i>
-        <span>Monocle</span>
-      </div>
-      <div class="marquee-item">
-        <i data-lucide="layers"></i>
-        <span>Kinfolk</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       CRAFT / FEATURES SECTION
-       ============================================================ -->
-  <section class="section-pad" id="craft">
-    <div class="container-main">
-      <div class="section-eyebrow reveal-up">The Enikoru approach</div>
-
-      <h2 class="heading-lg font-display section-heading reveal-up">
-        Slow made. <br /> Deeply felt.
-      </h2>
-
-      <p class="body-lg reveal-up" style="max-width: 52ch; margin-top: 1.5rem; color: rgba(26,29,33,0.6);">
-        Every Enikoru piece begins as a conversation between material and maker.
-        We work in small batches, guided by the grain, the weight, and the way
-        light lands on a surface.
-      </p>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3.5rem;">
-        <!-- Card 1 -->
-        <div class="feature-card reveal-up">
-          <div class="feature-icon">
-            <i data-lucide="hand"></i>
-          </div>
-          <h3 class="feature-title">Hand-finished</h3>
-          <p class="feature-desc">
-            Each surface is sanded, oiled, and burnished by hand — producing a
-            patina that deepens with every year of use.
-          </p>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="feature-card reveal-up">
-          <div class="feature-icon">
-            <i data-lucide="layers"></i>
-          </div>
-          <h3 class="feature-title">Honest materials</h3>
-          <p class="feature-desc">
-            Travertine from Tivoli, unlacquered brass from Lombardy, and
-            FSC-certified European oak. Nothing hidden, nothing veneered.
-          </p>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="feature-card reveal-up">
-          <div class="feature-icon">
-            <i data-lucide="compass"></i>
-          </div>
-          <h3 class="feature-title">Built to endure</h3>
-          <p class="feature-desc">
-            Traditional joinery and considered engineering mean each piece is
-            designed to outlast trends — and its first owner.
-          </p>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="feature-card reveal-up">
-          <div class="feature-icon">
-            <i data-lucide="sun"></i>
-          </div>
-          <h3 class="feature-title">Light as material</h3>
-          <p class="feature-desc">
-            Our lighting collection treats illumination as a sculptural
-            element — warm, diffuse, and softly directional.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       COLLECTION / GALLERY (HORIZONTAL SCROLL)
-       ============================================================ -->
-  <section class="gallery-section" id="collection">
-    <div class="container-main">
-      <div class="section-eyebrow reveal-up">Selected works</div>
-      <h2 class="heading-lg font-display section-heading reveal-up" style="margin-bottom: 3rem;">
-        The collection
-      </h2>
-    </div>
-
-    <div class="gallery-track" id="galleryTrack">
-      <div class="gallery-item">
-        <img
-          src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop"
-          alt="Travertine coffee table with organic edges"
-          loading="lazy"
-        />
-        <div class="gallery-item-overlay">
-          <div class="gallery-item-title">Tivoli Table</div>
-          <div class="gallery-item-cat">Travertine · 2024</div>
-        </div>
-      </div>
-
-      <div class="gallery-item">
-        <img
-          src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?q=80&w=800&auto=format&fit=crop"
-          alt="Brass pendant light casting warm glow"
-          loading="lazy"
-        />
-        <div class="gallery-item-overlay">
-          <div class="gallery-item-title">Aurelia Pendant</div>
-          <div class="gallery-item-cat">Brass · 2024</div>
-        </div>
-      </div>
-
-      <div class="gallery-item">
-        <img
-          src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?q=80&w=800&auto=format&fit=crop"
-          alt="Sculptural oak lounge chair"
-          loading="lazy"
-        />
-        <div class="gallery-item-overlay">
-          <div class="gallery-item-title">Undakanam Chair</div>
-          <div class="gallery-item-cat">Oiled Oak · 2023</div>
-        </div>
-      </div>
-
-      <div class="gallery-item">
-        <img
-          src="https://images.unsplash.com/photo-1549497538-303791108f95?q=80&w=800&auto=format&fit=crop"
-          alt="Minimalist stone side table"
-          loading="lazy"
-        />
-        <div class="gallery-item-overlay">
-          <div class="gallery-item-title">Pietra Side</div>
-          <div class="gallery-item-cat">Marble · 2024</div>
-        </div>
-      </div>
-
-      <div class="gallery-item">
-        <img
-          src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop"
-          alt="Warm linen and oak bedroom scene"
-          loading="lazy"
-        />
-        <div class="gallery-item-overlay">
-          <div class="gallery-item-title">Serene Bed</div>
-          <div class="gallery-item-cat">Oak & Linen · 2023</div>
-        </div>
-      </div>
-
-      <div class="gallery-item">
-        <img
-          src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800&auto=format&fit=crop"
-          alt="Brass floor lamp beside a reading chair"
-          loading="lazy"
-        />
-        <div class="gallery-item-overlay">
-          <div class="gallery-item-title">Lume Floor Lamp</div>
-          <div class="gallery-item-cat">Brass & Paper · 2024</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       STORIES / TESTIMONIALS
-       ============================================================ -->
-  <section class="section-pad" id="stories" style="background: var(--cream);">
-    <div class="container-main">
-      <div class="section-eyebrow reveal-up">From our collectors</div>
-      <h2 class="heading-lg font-display section-heading reveal-up" style="margin-bottom: 3rem;">
-        Words that stay
-      </h2>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-        <div class="testimonial-card reveal-up">
-          <p class="testimonial-quote">
-            "The Tivoli table has become the quiet centre of our home. It's the
-            first thing I notice each morning and the last thing I touch at night."
-          </p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">A</div>
-            <div>
-              <div class="testimonial-name">Amara V.</div>
-              <div class="testimonial-role">Collector · Lisbon</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card reveal-up">
-          <p class="testimonial-quote">
-            "Enikoru's work has a presence that photographs can't capture. In
-            person, the brass pendant transforms an entire room."
-          </p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">R</div>
-            <div>
-              <div class="testimonial-name">Ravi M.</div>
-              <div class="testimonial-role">Architect · Mumbai</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card reveal-up">
-          <p class="testimonial-quote">
-            "I've furnished three homes with Enikoru pieces. Each one feels like
-            it was made specifically for the space it occupies."
-          </p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar">S</div>
-            <div>
-              <div class="testimonial-name">Sofia L.</div>
-              <div class="testimonial-role">Interior Designer · Copenhagen</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       CTA BANNER
-       ============================================================ -->
-  <section class="section-pad" id="atelier">
-    <div class="container-main">
-      <div class="cta-banner reveal-up">
-        <h2 class="cta-heading">
-          Begin a commission
-        </h2>
-        <p class="cta-sub">
-          We accept a limited number of bespoke projects each season. Tell us
-          about the space you're shaping.
-        </p>
-        <a href="#contact" class="btn-light">
-          <span>Start the conversation</span>
-          <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       FOOTER + CONTACT FORM
-       ============================================================ -->
-  <footer class="footer-main" id="contact">
-    <div class="container-main">
-      <div class="footer-grid">
-        <!-- Brand column -->
-        <div>
-          <a href="#" class="nav-logo" style="font-size: 1.5rem;">Enikoru</a>
-          <p class="footer-brand-text">
-            A slow-craft atelier making furniture, lighting, and objects for
-            considered living. Based in Copenhagen and Lombardy.
-          </p>
-          <div class="footer-social">
-            <a href="#" aria-label="Instagram">
-              <i data-lucide="instagram"></i>
+    <!-- === Header === -->
+    <header class="site-header" id="siteHeader">
+        <div class="container nav-inner">
+            <a href="#" class="logo" aria-label="Meridian & Co. home">
+                <span class="logo-mark">M</span>
+                Meridian & Co.
             </a>
-            <a href="#" aria-label="Pinterest">
-              <i data-lucide="pin"></i>
-            </a>
-            <a href="#" aria-label="LinkedIn">
-              <i data-lucide="linkedin"></i>
-            </a>
-          </div>
+            <nav aria-label="Main navigation">
+                <ul class="nav-links">
+                    <li><a href="#experiences">Experiences</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#testimonials">Reviews</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <a href="#contact" class="nav-cta">
+                    Plan Your Journey
+                    <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+                </a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+                    <i data-lucide="menu" style="width:24px;height:24px;"></i>
+                </button>
+            </div>
         </div>
+    </header>
 
-        <!-- Sitemap -->
-        <div>
-          <div class="footer-col-title">Explore</div>
-          <a href="#craft" class="footer-link">Craft</a>
-          <a href="#collection" class="footer-link">Collection</a>
-          <a href="#stories" class="footer-link">Stories</a>
-          <a href="#atelier" class="footer-link">Atelier</a>
-        </div>
-
-        <!-- Contact -->
-        <div>
-          <div class="footer-col-title">Contact</div>
-          <a href="mailto:hello@enikoru.com" class="footer-link">hello@enikoru.com</a>
-          <a href="tel:+4533100200" class="footer-link">+45 33 10 02 00</a>
-          <span class="footer-link" style="cursor: default;">
-            Bredgade 21, Copenhagen
-          </span>
-        </div>
-
-        <!-- Contact form -->
-        <div>
-          <div class="footer-col-title">Enquire</div>
-
-          <form class="contact-form" id="contactForm" novalidate>
-            <div class="form-group">
-              <label for="name" class="form-label">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                class="form-input"
-                placeholder="Your name"
-                required
-                autocomplete="name"
-              />
-              <span class="form-error" id="nameError">Please enter your name.</span>
-            </div>
-
-            <div class="form-group">
-              <label for="email" class="form-label">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                class="form-input"
-                placeholder="you@example.com"
-                required
-                autocomplete="email"
-              />
-              <span class="form-error" id="emailError">Please enter a valid email.</span>
-            </div>
-
-            <div class="form-group">
-              <label for="phone" class="form-label">Phone</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                class="form-input"
-                placeholder="+45 ..."
-                autocomplete="tel"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="message" class="form-label">Message</label>
-              <textarea
-                id="message"
-                name="message"
-                class="form-textarea"
-                placeholder="Tell us about your project..."
-                required
-              ></textarea>
-              <span class="form-error" id="messageError">Please tell us a little about your project.</span>
-            </div>
-
-            <button type="submit" class="form-submit" id="submitBtn">
-              <span>Send enquiry</span>
-              <i data-lucide="send" style="width: 15px; height: 15px;"></i>
-            </button>
-          </form>
-
-          <!-- Success state -->
-          <div class="form-success" id="formSuccess" role="status">
-            <div class="form-success-icon">
-              <i data-lucide="check"></i>
-            </div>
-            <h3 class="font-display" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Thank you</h3>
-            <p style="font-size: 0.9rem; color: rgba(26,29,33,0.55);">
-              We'll be in touch within two working days.
-            </p>
-          </div>
-
-          <!-- TODO: connect form action to backend endpoint -->
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <span class="footer-bottom-text">
-          &copy; 2025 Enikoru Atelier. All rights reserved.
-        </span>
-        <span class="footer-bottom-text">
-          Crafted slowly in Copenhagen & Milan.
-        </span>
-      </div>
+    <!-- === Mobile Nav === -->
+    <div class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+        <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">
+            <i data-lucide="x" style="width:28px;height:28px;"></i>
+        </button>
+        <a href="#experiences" class="mobile-link">Experiences</a>
+        <a href="#about" class="mobile-link">About</a>
+        <a href="#testimonials" class="mobile-link">Reviews</a>
+        <a href="#contact" class="mobile-link">Contact</a>
+        <a href="#contact" class="btn-primary mobile-link" style="margin-top:16px;">
+            Plan Your Journey
+            <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+        </a>
     </div>
-  </footer>
 
-  <!-- ============================================================
-       JAVASCRIPT
-       ============================================================ -->
-  <script>
-    (function () {
-      'use strict';
+    <!-- === Hero === -->
+    <section class="hero" id="hero">
+        <div class="hero-bg">
+            <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2000&auto=format&fit=crop" alt="" aria-hidden="true">
+        </div>
+        <div class="container hero-content">
+            <div class="hero-text">
+                <div class="hero-badge">
+                    <i data-lucide="sparkles"></i>
+                    Bespoke journeys, since 2009
+                </div>
+                <h1 class="display-xl">
+                    Travel beyond<br>
+                    the <span class="accent">ordinary</span>
+                </h1>
+                <p class="hero-sub">
+                    We craft private, tailor-made journeys to the world's most extraordinary places — 
+                    where every detail is considered, and every moment is yours alone.
+                </p>
+                <div class="hero-actions">
+                    <a href="#contact" class="btn-primary">
+                        Begin Your Journey
+                        <i data-lucide="arrow-right"></i>
+                    </a>
+                    <a href="#experiences" class="btn-secondary">
+                        Explore Experiences
+                        <i data-lucide="compass" style="width:18px;height:18px;"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1200&auto=format&fit=crop" alt="Luxury overwater villa in the Maldives at sunset">
+                </div>
+                <div class="hero-float-card">
+                    <div class="icon-circle">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number">2,400+</div>
+                        <div class="stat-label">Journeys crafted</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      // ----------------------------------------------------------
-      // Lucide Icons
-      // ----------------------------------------------------------
-      lucide.createIcons();
+    <!-- === Trust Bar === -->
+    <div class="trust-bar">
+        <div class="container trust-inner">
+            <span class="trust-label">Trusted by discerning travellers</span>
+            <div class="trust-logos">
+                <span>Forbes</span>
+                <span>Condé Nast</span>
+                <span>Travel + Leisure</span>
+                <span>Robb Report</span>
+                <span>Monocle</span>
+            </div>
+        </div>
+    </div>
 
-      // ----------------------------------------------------------
-      // Lenis Smooth Scroll
-      // ----------------------------------------------------------
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-        wheelMultiplier: 1,
-      });
+    <!-- === Experiences === -->
+    <section class="section-pad" id="experiences">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="overline">Curated Experiences</span>
+                <h2 class="display-lg">Journeys designed around you</h2>
+                <p class="body-lg">
+                    From private island retreats to cultural deep-dives, every itinerary is 
+                    built from scratch — no templates, no crowds, just pure discovery.
+                </p>
+            </div>
+            <div class="experiences-grid">
+                <article class="experience-card reveal">
+                    <div class="experience-card-image">
+                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=800&auto=format&fit=crop" alt="Private island beach with crystal clear water">
+                        <span class="tag">Island</span>
+                    </div>
+                    <div class="experience-card-body">
+                        <h3>Private Island Escape</h3>
+                        <p>
+                            Complete seclusion on a private atoll in the Maldives. Your own villa, 
+                            chef, and yacht — with nothing but ocean in every direction.
+                        </p>
+                        <div class="experience-card-meta">
+                            <span class="price">$12,500 <span>/ person</span></span>
+                            <a href="#contact" class="experience-card-link">
+                                Enquire
+                                <i data-lucide="arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
 
-      function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-      }
-      requestAnimationFrame(raf);
+                <article class="experience-card reveal reveal-delay-1">
+                    <div class="experience-card-image">
+                        <img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=800&auto=format&fit=crop" alt="Mountain landscape in Patagonia">
+                        <span class="tag">Adventure</span>
+                    </div>
+                    <div class="experience-card-body">
+                        <h3>Patagonian Wilderness</h3>
+                        <p>
+                            Trek through untouched landscapes with private guides, 
+                            luxury lodges, and the silence of the end of the world.
+                        </p>
+                        <div class="experience-card-meta">
+                            <span class="price">$9,800 <span>/ person</span></span>
+                            <a href="#contact" class="experience-card-link">
+                                Enquire
+                                <i data-lucide="arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
 
-      // ----------------------------------------------------------
-      // GSAP ScrollTrigger integration with Lenis
-      // ----------------------------------------------------------
-      gsap.registerPlugin(ScrollTrigger);
+                <article class="experience-card reveal reveal-delay-2">
+                    <div class="experience-card-image">
+                        <img src="https://images.unsplash.com/photo-1522547902298-51566e4fb383?q=80&w=800&auto=format&fit=crop" alt="Traditional Japanese garden with temple">
+                        <span class="tag">Cultural</span>
+                    </div>
+                    <div class="experience-card-body">
+                        <h3>Japan: Private Access</h3>
+                        <p>
+                            Behind-the-scenes access to temples, tea masters, and 
+                            artisans — a side of Japan few travellers ever see.
+                        </p>
+                        <div class="experience-card-meta">
+                            <span class="price">$14,200 <span>/ person</span></span>
+                            <a href="#contact" class="experience-card-link">
+                                Enquire
+                                <i data-lucide="arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
 
-      lenis.on('scroll', ScrollTrigger.update);
+    <!-- === Feature Split: About === -->
+    <section class="section-pad" id="about">
+        <div class="container">
+            <div class="feature-split">
+                <div class="feature-content reveal">
+                    <span class="overline">The Meridian Difference</span>
+                    <h2 class="display-lg">Travel that feels like it was made for you</h2>
+                    <p class="body-lg">
+                        We don't sell trips. We design journeys — each one shaped by your 
+                        interests, your pace, and your idea of perfect.
+                    </p>
+                    <ul class="feature-list">
+                        <li>
+                            <div class="check-icon"><i data-lucide="check"></i></div>
+                            <div>
+                                <h4>Dedicated travel designer</h4>
+                                <p>One expert from first call to final landing, available 24/7 throughout your journey.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="check-icon"><i data-lucide="check"></i></div>
+                            <div>
+                                <h4>Private access &amp; privileges</h4>
+                                <p>Doors opened, tables reserved, experiences curated exclusively for you.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="check-icon"><i data-lucide="check"></i></div>
+                            <div>
+                                <h4>Seamless from start to finish</h4>
+                                <p>Flights, transfers, stays, and surprises — all handled with quiet precision.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-image reveal reveal-delay-1">
+                    <img src="https://images.unsplash.com/photo-1602002418082-a4443e081dd1?q=80&w=1000&auto=format&fit=crop" alt="Elegant travel planning scene with maps and a glass of wine">
+                </div>
+            </div>
+        </div>
+    </section>
 
-      gsap.ticker.add((time) => {
-        lenis.raf(time * 1000);
-      });
+    <!-- === Stats Band === -->
+    <div class="section-pad-sm" style="padding-bottom: 0;">
+        <div class="stats-band reveal">
+            <div class="stat-item">
+                <div class="stat-value">98<span class="accent">%</span></div>
+                <div class="stat-name">Would travel again</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">60<span class="accent">+</span></div>
+                <div class="stat-name">Countries covered</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">15<span class="accent">+</span></div>
+                <div class="stat-name">Years of expertise</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">24<span class="accent">/7</span></div>
+                <div class="stat-name">Concierge support</div>
+            </div>
+        </div>
+    </div>
 
-      gsap.ticker.lagSmoothing(0);
+    <!-- === Testimonials === -->
+    <section class="section-pad" id="testimonials">
+        <div class="container">
+            <div class="section-header center reveal">
+                <span class="overline">Guest Stories</span>
+                <h2 class="display-lg">What our travellers say</h2>
+                <p class="body-lg">
+                    Every journey is personal. Here's what a few of our guests have shared.
+                </p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card reveal">
+                    <div class="quote-mark">"</div>
+                    <blockquote>
+                        Meridian turned what we thought would be a standard holiday into the most 
+                        meaningful travel experience of our lives. Every detail was perfect.
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <div class="avatar">EC</div>
+                        <div>
+                            <div class="name">Eleanor &amp; Charles</div>
+                            <div class="role">Private Island Escape, Maldives</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal reveal-delay-1">
+                    <div class="quote-mark">"</div>
+                    <blockquote>
+                        I've travelled with many companies. None have come close to the level of 
+                        care, access, and genuine surprise that Meridian delivered.
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <div class="avatar">JM</div>
+                        <div>
+                            <div class="name">James Morrison</div>
+                            <div class="role">Patagonian Wilderness, Chile</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal reveal-delay-2">
+                    <div class="quote-mark">"</div>
+                    <blockquote>
+                        They understood exactly what we wanted before we did. The private access 
+                        experiences in Japan were simply unforgettable.
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <div class="avatar">SK</div>
+                        <div>
+                            <div class="name">Sophia Kim</div>
+                            <div class="role">Japan: Private Access</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      // ----------------------------------------------------------
-      // Hero headline reveal on load
-      // ----------------------------------------------------------
-      const heroLines = document.querySelectorAll('.hero-headline .reveal-line span');
-      window.addEventListener('load', () => {
-        heroLines.forEach((span, i) => {
-          setTimeout(() => {
-            span.classList.add('revealed');
-          }, 200 + i * 150);
-        });
-      });
+    <!-- === CTA Banner === -->
+    <section class="section-pad-sm" style="padding-bottom: 0;">
+        <div class="cta-banner reveal">
+            <div class="cta-banner-content">
+                <h2>Your next great journey starts with a conversation</h2>
+                <p>
+                    Tell us where you've dreamed of going. We'll handle everything else — 
+                    from first idea to final memory.
+                </p>
+                <a href="#contact" class="btn-light">
+                    Start Planning
+                    <i data-lucide="arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
 
-      // Fallback if load already fired
-      if (document.readyState === 'complete') {
-        heroLines.forEach((span, i) => {
-          setTimeout(() => {
-            span.classList.add('revealed');
-          }, 200 + i * 150);
-        });
-      }
+    <!-- === Contact === -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info reveal">
+                    <h3>Let's design your journey</h3>
+                    <p>
+                        Share a few details and one of our travel designers will be in touch 
+                        within 24 hours to begin crafting your itinerary.
+                    </p>
+                    <div class="contact-detail">
+                        <div class="icon-wrap"><i data-lucide="phone"></i></div>
+                        <div>
+                            <div class="label">Call us</div>
+                            <div class="value">+1 (888) 555-0192</div>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <div class="icon-wrap"><i data-lucide="mail"></i></div>
+                        <div>
+                            <div class="label">Email us</div>
+                            <div class="value">journeys@meridianandco.com</div>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <div class="icon-wrap"><i data-lucide="map-pin"></i></div>
+                        <div>
+                            <div class="label">Visit us</div>
+                            <div class="value">12 Savile Row, London W1S 3PQ</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal reveal-delay-1">
+                    <form class="contact-form" id="contactForm" novalidate>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fullName">Full name <span class="required">*</span></label>
+                                <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Your name" required aria-required="true">
+                                <div class="form-error" id="fullNameError">Please enter your full name.</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email address <span class="required">*</span></label>
+                                <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required aria-required="true">
+                                <div class="form-error" id="emailError">Please enter a valid email address.</div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Phone number</label>
+                                <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 (555) 000-0000">
+                                <div class="form-error" id="phoneError">Please enter a valid phone number.</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="destination">Dream destination</label>
+                                <input type="text" id="destination" name="destination" class="form-input" placeholder="e.g. Japan, Patagonia...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Tell us about your ideal journey <span class="required">*</span></label>
+                            <textarea id="message" name="message" class="form-input" placeholder="Travel dates, interests, party size, any special occasions..." required aria-required="true"></textarea>
+                            <div class="form-error" id="messageError">Please tell us a little about your journey.</div>
+                        </div>
+                        <button type="submit" class="form-submit" id="submitBtn">
+                            Send Enquiry
+                            <i data-lucide="send"></i>
+                        </button>
+                    </form>
+                    <div class="form-success" id="formSuccess">
+                        <div class="success-icon">
+                            <i data-lucide="check-circle"></i>
+                        </div>
+                        <h4>Thank you</h4>
+                        <p>Your enquiry has been received. A travel designer will be in touch within 24 hours.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      // ----------------------------------------------------------
-      // Navbar scroll state
-      // ----------------------------------------------------------
-      const navWrapper = document.getElementById('navWrapper');
-      let lastScroll = 0;
+    <!-- === Footer === -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <span class="logo-mark">M</span>
+                        Meridian & Co.
+                    </a>
+                    <p>
+                        Bespoke luxury travel, crafted with care since 2009. 
+                        Private journeys to the world's most extraordinary places.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+                        <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="#experiences">Experiences</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#testimonials">Guest Stories</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Destinations</h4>
+                    <ul>
+                        <li><a href="#">Maldives</a></li>
+                        <li><a href="#">Patagonia</a></li>
+                        <li><a href="#">Japan</a></li>
+                        <li><a href="#">African Safaris</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Booking Conditions</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Meridian &amp; Co. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Accessibility</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-      lenis.on('scroll', ({ scroll }) => {
-        if (scroll > 60) {
-          navWrapper.classList.add('scrolled');
-        } else {
-          navWrapper.classList.remove('scrolled');
-        }
-        lastScroll = scroll;
-      });
-
-      // ----------------------------------------------------------
-      // Mobile menu
-      // ----------------------------------------------------------
-      const mobileToggle = document.getElementById('mobileToggle');
-      const mobileMenu = document.getElementById('mobileMenu');
-      const closeMobileLinks = document.querySelectorAll('[data-close-mobile]');
-
-      function openMobileMenu() {
-        mobileMenu.classList.add('open');
-        mobileToggle.setAttribute('aria-expanded', 'true');
-        mobileToggle.innerHTML = '<i data-lucide="x" style="width: 22px; height: 22px;"></i>';
+    <script>
+        // === Lucide Icons ===
         lucide.createIcons();
-        document.body.style.overflow = 'hidden';
-        lenis.stop();
-      }
 
-      function closeMobileMenu() {
-        mobileMenu.classList.remove('open');
-        mobileToggle.setAttribute('aria-expanded', 'false');
-        mobileToggle.innerHTML = '<i data-lucide="menu" style="width: 22px; height: 22px;"></i>';
-        lucide.createIcons();
-        document.body.style.overflow = '';
-        lenis.start();
-      }
+        // === Header Scroll ===
+        const header = document.getElementById('siteHeader');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 40);
+        }, { passive: true });
 
-      mobileToggle.addEventListener('click', () => {
-        if (mobileMenu.classList.contains('open')) {
-          closeMobileMenu();
-        } else {
-          openMobileMenu();
+        // === Mobile Nav ===
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        const mobileNavClose = document.getElementById('mobileNavClose');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function openMobileNav() {
+            mobileNav.classList.add('open');
+            mobileMenuBtn.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
         }
-      });
-
-      closeMobileLinks.forEach((link) => {
-        link.addEventListener('click', () => {
-          closeMobileMenu();
-        });
-      });
-
-      // Close on Escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
-          closeMobileMenu();
+        function closeMobileNav() {
+            mobileNav.classList.remove('open');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
         }
-      });
+        mobileMenuBtn.addEventListener('click', openMobileNav);
+        mobileNavClose.addEventListener('click', closeMobileNav);
+        mobileLinks.forEach(link => link.addEventListener('click', closeMobileNav));
 
-      // ----------------------------------------------------------
-      // Scroll Reveal Animations (GSAP ScrollTrigger)
-      // ----------------------------------------------------------
-      const revealElements = document.querySelectorAll('.reveal-up');
-
-      revealElements.forEach((el) => {
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.9,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 88%',
-              toggleActions: 'play none none none',
-            },
-          }
-        );
-      });
-
-      // ----------------------------------------------------------
-      // Horizontal gallery scroll on desktop
-      // ----------------------------------------------------------
-      const galleryTrack = document.getElementById('galleryTrack');
-
-      if (galleryTrack && window.innerWidth > 768) {
-        const totalWidth = galleryTrack.scrollWidth;
-        const viewportWidth = window.innerWidth;
-
-        gsap.to(galleryTrack, {
-          x: () => -(totalWidth - viewportWidth + 64),
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '#collection',
-            start: 'top top',
-            end: () => `+=${totalWidth - viewportWidth + 400}`,
-            pin: true,
-            scrub: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-      }
-
-      // ----------------------------------------------------------
-      // Custom Cursor
-      // ----------------------------------------------------------
-      const cursorDot = document.getElementById('cursorDot');
-      const cursorRing = document.getElementById('cursorRing');
-      const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-
-      if (!isTouchDevice && cursorDot && cursorRing) {
-        let mouseX = 0;
-        let mouseY = 0;
-        let ringX = 0;
-        let ringY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-          mouseX = e.clientX;
-          mouseY = e.clientY;
-          cursorDot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
-        });
-
-        function animateRing() {
-          ringX += (mouseX - ringX) * 0.12;
-          ringY += (mouseY - ringY) * 0.12;
-          cursorRing.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
-          requestAnimationFrame(animateRing);
-        }
-        animateRing();
-
-        // Hover state for interactive elements
-        const hoverTargets = document.querySelectorAll('a, button, input, textarea, [role="button"]');
-        hoverTargets.forEach((el) => {
-          el.addEventListener('mouseenter', () => {
-            cursorRing.classList.add('hovering');
-            cursorDot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px) scale(1.5)`;
-          });
-          el.addEventListener('mouseleave', () => {
-            cursorRing.classList.remove('hovering');
-            cursorDot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px) scale(1)`;
-          });
-        });
-      }
-
-      // ----------------------------------------------------------
-      // Contact Form Validation & Submission
-      // ----------------------------------------------------------
-      const contactForm = document.getElementById('contactForm');
-      const formSuccess = document.getElementById('formSuccess');
-      const submitBtn = document.getElementById('submitBtn');
-
-      const nameInput = document.getElementById('name');
-      const emailInput = document.getElementById('email');
-      const messageInput = document.getElementById('message');
-
-      const nameError = document.getElementById('nameError');
-      const emailError = document.getElementById('emailError');
-      const messageError = document.getElementById('messageError');
-
-      function validateEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      }
-
-      function clearErrors() {
-        [nameInput, emailInput, messageInput].forEach((input) => {
-          input.classList.remove('error');
-        });
-        [nameError, emailError, messageError].forEach((err) => {
-          err.classList.remove('visible');
-        });
-      }
-
-      function showError(input, errorEl) {
-        input.classList.add('error');
-        errorEl.classList.add('visible');
-      }
-
-      contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        clearErrors();
-
-        let isValid = true;
-
-        // Name validation
-        if (!nameInput.value.trim()) {
-          showError(nameInput, nameError);
-          isValid = false;
-        }
-
-        // Email validation
-        if (!emailInput.value.trim() || !validateEmail(emailInput.value.trim())) {
-          showError(emailInput, emailError);
-          isValid = false;
-        }
-
-        // Message validation
-        if (!messageInput.value.trim()) {
-          showError(messageInput, messageError);
-          isValid = false;
-        }
-
-        if (!isValid) return;
-
-        // Disable button during submission
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>Sending...</span>';
-
-        const formData = {
-          name: nameInput.value.trim(),
-          email: emailInput.value.trim(),
-          phone: document.getElementById('phone').value.trim(),
-          message: messageInput.value.trim(),
-        };
-
-        try {
-          const response = await fetch('submit', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            cache: 'no-store',
-            body: JSON.stringify({
-              url: window.location.host,
-              table: 'enikoru_enquiries',
-              data: formData,
-            }),
-          });
-
-          if (response.ok) {
-            contactForm.style.display = 'none';
-            formSuccess.classList.add('visible');
-          } else {
-            throw new Error('Submission failed');
-          }
-        } catch (err) {
-          // Simulate success for demo purposes when no backend is available
-          contactForm.style.display = 'none';
-          formSuccess.classList.add('visible');
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = '<span>Send enquiry</span><i data-lucide="send" style="width: 15px; height: 15px;"></i>';
-          lucide.createIcons();
-        }
-      });
-
-      // Clear error on input
-      [nameInput, emailInput, messageInput].forEach((input) => {
-        input.addEventListener('input', () => {
-          input.classList.remove('error');
-          const errorMap = {
-            name: nameError,
-            email: emailError,
-            message: messageError,
-          };
-          if (errorMap[input.id]) {
-            errorMap[input.id].classList.remove('visible');
-          }
-        });
-      });
-
-      // ----------------------------------------------------------
-      // Smooth anchor scrolling with Lenis
-      // ----------------------------------------------------------
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener('click', function (e) {
-          const targetId = this.getAttribute('href');
-          if (targetId === '#') return;
-
-          const targetEl = document.querySelector(targetId);
-          if (targetEl) {
-            e.preventDefault();
-            lenis.scrollTo(targetEl, {
-              offset: -80,
-              duration: 1.4,
+        // === Reveal Animations ===
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
             });
-          }
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // === Hero Parallax (subtle) ===
+        const heroImage = document.querySelector('.hero-image-wrapper');
+        if (heroImage && window.innerWidth > 768) {
+            window.addEventListener('scroll', () => {
+                const scrolled = window.scrollY;
+                if (scrolled < window.innerHeight) {
+                    heroImage.style.transform = `perspective(1000px) rotateY(-4deg) rotateX(2deg) translateY(${scrolled * 0.06}px)`;
+                }
+            }, { passive: true });
+        }
+
+        // === Form Validation & Submission ===
+        const form = document.getElementById('contactForm');
+        const formSuccess = document.getElementById('formSuccess');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function validatePhone(phone) {
+            if (!phone) return true; // optional field
+            return /^[\d\s\+\-\(\)]{7,20}$/.test(phone);
+        }
+
+        function showError(id, show) {
+            const errorEl = document.getElementById(id);
+            if (errorEl) errorEl.classList.toggle('visible', show);
+        }
+
+        function clearErrors() {
+            ['fullNameError', 'emailError', 'phoneError', 'messageError'].forEach(id => showError(id, false));
+            document.querySelectorAll('.form-input').forEach(input => input.classList.remove('error'));
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearErrors();
+
+            const fullName = document.getElementById('fullName');
+            const email = document.getElementById('email');
+            const phone = document.getElementById('phone');
+            const message = document.getElementById('message');
+
+            let valid = true;
+
+            if (!fullName.value.trim()) {
+                showError('fullNameError', true);
+                fullName.classList.add('error');
+                valid = false;
+            }
+
+            if (!email.value.trim() || !validateEmail(email.value.trim())) {
+                showError('emailError', true);
+                email.classList.add('error');
+                valid = false;
+            }
+
+            if (phone.value.trim() && !validatePhone(phone.value.trim())) {
+                showError('phoneError', true);
+                phone.classList.add('error');
+                valid = false;
+            }
+
+            if (!message.value.trim()) {
+                showError('messageError', true);
+                message.classList.add('error');
+                valid = false;
+            }
+
+            if (!valid) {
+                // Focus first error field
+                const firstError = form.querySelector('.form-input.error');
+                if (firstError) firstError.focus();
+                return;
+            }
+
+            // Simulate submission
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Sending... <i data-lucide="loader" style="width:18px;height:18px;animation:spin 1s linear infinite;"></i>';
+            lucide.createIcons();
+
+            // Add spin animation dynamically
+            const style = document.createElement('style');
+            style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+            document.head.appendChild(style);
+
+            // Simulate network delay
+            setTimeout(() => {
+                form.style.display = 'none';
+                formSuccess.classList.add('visible');
+                lucide.createIcons();
+
+                // TODO: connect form action to backend endpoint
+                // Example:
+                // fetch('submit', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     cache: 'no-store',
+                //     body: JSON.stringify({
+                //         url: window.location.host,
+                //         table: 'enquiries',
+                //         data: {
+                //             fullName: fullName.value.trim(),
+                //             email: email.value.trim(),
+                //             phone: phone.value.trim(),
+                //             destination: document.getElementById('destination').value.trim(),
+                //             message: message.value.trim()
+                //         }
+                //     })
+                // })
+                // .then(res => res.json())
+                // .then(data => console.log('Success:', data))
+                // .catch(err => console.error('Error:', err));
+            }, 1200);
         });
-      });
 
-      // ----------------------------------------------------------
-      // Refresh ScrollTrigger on load & resize
-      // ----------------------------------------------------------
-      window.addEventListener('load', () => {
-        ScrollTrigger.refresh();
-      });
+        // Real-time input clearing of error state
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('error');
+                const errorId = this.id + 'Error';
+                showError(errorId, false);
+            });
+        });
 
-      let resizeTimer;
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-          ScrollTrigger.refresh();
-        }, 250);
-      });
-    })();
-  </script>
+        // === Smooth anchor scrolling with offset ===
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const target = document.querySelector(targetId);
+                if (target) {
+                    e.preventDefault();
+                    const offset = 80;
+                    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+                    window.scrollTo({ top, behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
