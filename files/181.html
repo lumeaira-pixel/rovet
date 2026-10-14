@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ever After — Bespoke Wedding Design</title>
+  <!-- Google Fonts: Cormorant Garamond (display) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS via CDN (lightweight utility layer) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDFBF8',
+            linen: '#F7F3EE',
+            sand: '#EAE2D8',
+            taupe: '#B8A99A',
+            umber: '#5C4B3A',
+            noir: '#1E1B18',
+            brass: '#C6A87C',
+            sage: '#A8B5A0',
+            blush: '#E8D9D0',
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+          borderRadius: {
+            'soft': '2rem',
+            'xl': '1.25rem',
+          },
+          boxShadow: {
+            'lux': '0 30px 60px -20px rgba(30, 27, 24, 0.15)',
+            'soft': '0 8px 30px rgba(0,0,0,0.04)',
+            'inner-glow': 'inset 0 1px 0 rgba(255,255,255,0.8)',
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --cream: #FDFBF8;
+      --linen: #F7F3EE;
+      --sand: #EAE2D8;
+      --taupe: #B8A99A;
+      --umber: #5C4B3A;
+      --noir: #1E1B18;
+      --brass: #C6A87C;
+      --sage: #A8B5A0;
+      --blush: #E8D9D0;
+      --shadow-lux: 0 30px 60px -20px rgba(30, 27, 24, 0.15);
+      --shadow-soft: 0 8px 30px rgba(0,0,0,0.04);
+      --radius-card: 2rem;
+      --radius-pill: 100px;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    /* === Global Reset & Base === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--cream);
+      color: var(--noir);
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* === Typography === */
+    h1, h2, h3, h4, h5 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    h2 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 500;
+    }
+
+    h3 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+    }
+
+    p {
+      font-size: 1.0625rem;
+      color: var(--umber);
+      max-width: 65ch;
+    }
+
+    .text-balance {
+      text-wrap: balance;
+    }
+
+    /* === Custom Cursor (optional subtle) === */
+    @media (pointer: fine) {
+      .cursor-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--brass);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        transition: transform 0.2s ease;
+        mix-blend-mode: difference;
+      }
+    }
+
+    /* === Glassmorphism === */
+    .glass {
+      background: rgba(253, 251, 248, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--noir);
+      color: var(--cream);
+      padding: 0.9rem 2.2rem;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      border: 1px solid transparent;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--brass);
+      color: var(--noir);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px -8px rgba(198, 168, 124, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--noir);
+      padding: 0.9rem 2.2rem;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      border: 1.5px solid var(--noir);
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-outline:hover {
+      background: var(--noir);
+      color: var(--cream);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline:active {
+      transform: scale(0.98);
+    }
+
+    /* === Section Spacing === */
+    .section-pad {
+      padding: clamp(5rem, 12vh, 9rem) clamp(1.5rem, 6vw, 4rem);
+    }
+
+    /* === Marquee / Ticker === */
+    .marquee {
+      display: flex;
+      overflow: hidden;
+      user-select: none;
+      gap: 2rem;
+      mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+
+    .marquee-content {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      animation: marquee 30s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Card Tilt === */
+    .card-tilt {
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+    }
+
+    .card-tilt:hover {
+      transform: translateY(-6px) rotateX(2deg) rotateY(-1deg);
+      box-shadow: 0 40px 70px -30px rgba(30, 27, 24, 0.25);
+    }
+
+    /* === Split Text Animation (GSAP enhanced) === */
+    .char {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    /* === Form Styling === */
+    .form-input {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border: 1.5px solid var(--sand);
+      border-radius: 1rem;
+      background: var(--cream);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--noir);
+      transition: all 0.25s ease;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(198, 168, 124, 0.15);
+    }
+
+    .form-input.error {
+      border-color: #c0392b;
+      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+    }
+
+    .form-error {
+      color: #c0392b;
+      font-size: 0.8rem;
+      margin-top: 0.35rem;
+      display: none;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    /* === Focus visible === */
+    :focus-visible {
+      outline: 2px solid var(--brass);
+      outline-offset: 3px;
+    }
+
+    /* === Reduced Motion === */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* === Utility === */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+
+    /* === Header shrink === */
+    .header-scrolled {
+      padding-top: 0.6rem !important;
+      padding-bottom: 0.6rem !important;
+      background: rgba(253, 251, 248, 0.85) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    }
+
+    /* === Image treatments === */
+    .img-lux {
+      filter: sepia(0.1) contrast(1.02) brightness(1.02);
+      transition: filter 0.5s ease, transform 0.6s ease;
+    }
+
+    .img-lux:hover {
+      filter: sepia(0) contrast(1.05) brightness(1.05);
+      transform: scale(1.02);
+    }
+
+    /* === Noise overlay === */
+    .noise::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor (subtle) -->
+  <div class="cursor-dot hidden md:block" id="cursorDot" aria-hidden="true"></div>
+
+  <!-- ========== HEADER ========== -->
+  <header id="header" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 py-5" style="background: transparent;">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2" aria-label="Ever After home">
+        <span class="font-display text-2xl font-semibold tracking-tight text-noir">Ever After</span>
+        <span class="w-2 h-2 rounded-full bg-brass inline-block"></span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#story" class="text-sm font-medium text-umber hover:text-noir transition-colors duration-200 relative group">
+          Our Story
+          <span class="absolute -bottom-1 left-0 w-0 h-px bg-brass transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#services" class="text-sm font-medium text-umber hover:text-noir transition-colors duration-200 relative group">
+          Services
+          <span class="absolute -bottom-1 left-0 w-0 h-px bg-brass transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#gallery" class="text-sm font-medium text-umber hover:text-noir transition-colors duration-200 relative group">
+          Gallery
+          <span class="absolute -bottom-1 left-0 w-0 h-px bg-brass transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#testimonials" class="text-sm font-medium text-umber hover:text-noir transition-colors duration-200 relative group">
+          Love Notes
+          <span class="absolute -bottom-1 left-0 w-0 h-px bg-brass transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#contact" class="text-sm font-medium text-umber hover:text-noir transition-colors duration-200 relative group">
+          Contact
+          <span class="absolute -bottom-1 left-0 w-0 h-px bg-brass transition-all duration-300 group-hover:w-full"></span>
+        </a>
+      </nav>
+
+      <!-- CTA + Mobile toggle -->
+      <div class="flex items-center gap-4">
+        <a href="#contact" class="hidden sm:inline-flex btn-primary text-sm py-2.5 px-6">
+          Plan Your Day
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+        <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-full hover:bg-linen transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-6 h-6 text-noir"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobileMenu" class="fixed inset-0 z-40 bg-cream/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 transition-all duration-500 opacity-0 pointer-events-none" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button id="mobileMenuClose" class="absolute top-6 right-6 p-2 rounded-full hover:bg-linen transition-colors" aria-label="Close menu">
+      <i data-lucide="x" class="w-7 h-7 text-noir"></i>
+    </button>
+    <a href="#story" class="font-display text-4xl text-noir hover:text-brass transition-colors mobile-link">Our Story</a>
+    <a href="#services" class="font-display text-4xl text-noir hover:text-brass transition-colors mobile-link">Services</a>
+    <a href="#gallery" class="font-display text-4xl text-noir hover:text-brass transition-colors mobile-link">Gallery</a>
+    <a href="#testimonials" class="font-display text-4xl text-noir hover:text-brass transition-colors mobile-link">Love Notes</a>
+    <a href="#contact" class="font-display text-4xl text-noir hover:text-brass transition-colors mobile-link">Contact</a>
+    <a href="#contact" class="btn-primary mt-4 mobile-link">Plan Your Day</a>
+  </div>
+
+  <!-- ========== HERO ========== -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden noise" id="hero">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-linen via-cream to-cream" aria-hidden="true"></div>
+    <!-- Radial glow accents -->
+    <div class="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-brass/5 blur-3xl" aria-hidden="true"></div>
+    <div class="absolute bottom-[-30%] right-[-10%] w-[700px] h-[700px] rounded-full bg-blush/20 blur-3xl" aria-hidden="true"></div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center pt-28 pb-20">
+      <!-- Text -->
+      <div class="text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/60 border border-sand/60 backdrop-blur-sm mb-8 hero-fade">
+          <span class="w-1.5 h-1.5 rounded-full bg-brass animate-pulse"></span>
+          <span class="text-xs font-medium tracking-widest uppercase text-umber">Bespoke Wedding Design</span>
+        </div>
+        <h1 class="hero-title text-balance mb-6">
+          Your love story,<br>
+          <span class="italic text-brass">beautifully</span> told.
+        </h1>
+        <p class="hero-sub text-lg text-umber max-w-lg mx-auto lg:mx-0 mb-10">
+          We craft intimate, intentional weddings that feel unmistakably you — from the first sketch to the final dance.
+        </p>
+        <div class="hero-cta flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+          <a href="#contact" class="btn-primary">
+            Begin Your Journey
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <a href="#gallery" class="btn-outline">
+            View Our Work
+          </a>
+        </div>
+        <!-- Small stats -->
+        <div class="hero-stats flex items-center gap-8 mt-14 justify-center lg:justify-start">
+          <div>
+            <span class="font-display text-3xl font-semibold text-noir">180+</span>
+            <p class="text-xs tracking-wider uppercase text-taupe mt-1">Weddings</p>
+          </div>
+          <div class="w-px h-10 bg-sand"></div>
+          <div>
+            <span class="font-display text-3xl font-semibold text-noir">12</span>
+            <p class="text-xs tracking-wider uppercase text-taupe mt-1">Years</p>
+          </div>
+          <div class="w-px h-10 bg-sand"></div>
+          <div>
+            <span class="font-display text-3xl font-semibold text-noir">98%</span>
+            <p class="text-xs tracking-wider uppercase text-taupe mt-1">Referral</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero visual -->
+      <div class="relative hero-visual">
+        <div class="relative rounded-soft overflow-hidden shadow-lux card-tilt" style="aspect-ratio: 4/5; max-width: 480px; margin: 0 auto;">
+          <img
+            src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop"
+            alt="Elegant outdoor wedding table setting with floral arrangements"
+            class="w-full h-full object-cover img-lux"
+            loading="eager"
+          >
+          <!-- Overlay card -->
+          <div class="absolute bottom-6 left-6 right-6 glass rounded-2xl p-5">
+            <p class="font-display text-xl italic text-noir">"A celebration of you — every detail, every moment."</p>
+            <div class="flex items-center gap-3 mt-3">
+              <div class="w-8 h-8 rounded-full bg-brass/20 flex items-center justify-center">
+                <i data-lucide="heart" class="w-4 h-4 text-brass"></i>
+              </div>
+              <span class="text-xs font-medium tracking-wider uppercase text-umber">Ever After Signature</span>
+            </div>
+          </div>
+        </div>
+        <!-- Floating accent -->
+        <div class="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-brass/10 blur-2xl" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 scroll-indicator" aria-hidden="true">
+      <span class="text-[10px] tracking-[0.3em] uppercase text-taupe">Scroll</span>
+      <div class="w-px h-10 bg-gradient-to-b from-taupe to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- ========== SOCIAL PROOF / MARQUEE ========== -->
+  <section class="py-16 bg-linen border-y border-sand/60 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+      <p class="text-center text-xs tracking-[0.3em] uppercase text-taupe mb-10">As featured in</p>
+    </div>
+    <div class="marquee">
+      <div class="marquee-content">
+        <span class="font-display text-2xl text-taupe/70 whitespace-nowrap">Vogue Weddings</span>
+        <span class="font-display text-2xl text-taupe/70 whitespace-nowrap">Harper's Bazaar</span>
+        <span class="font-display text-2xl text-taupe/70 whitespace-nowrap">Brides</span>
+        <span class="font-display text-2xl text-taupe/70 whitespace-nowrap">The Knot</span>
+        <span class="font-display text-2xl text-taupe/70 whitespace-nowrap">Martha Stewart</span>
+        <span class="font-display text-2xl text-taupe/70 whitespace-nowrap">Vogue Weddings</span>
+        <span class="font-display text-2xl text-taupe/70 whitespace-nowrap">Harper's Bazaar</span>
+        <span class="font-display text-2xl text-taupe/70 whitespace-nowrap">Brides</span>
+        <span class="font-display text-2xl text-taupe/70 whitespace-nowrap">The Knot</span>
+        <span class="font-display text-2xl text-taupe/70 whitespace-nowrap">Martha Stewart</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== OUR STORY ========== -->
+  <section id="story" class="section-pad bg-cream relative">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+      <!-- Image left -->
+      <div class="relative reveal-up">
+        <div class="rounded-soft overflow-hidden shadow-lux" style="aspect-ratio: 3/4; max-width: 460px;">
+          <img
+            src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1200&auto=format&fit=crop"
+            alt="Wedding couple holding hands in golden hour light"
+            class="w-full h-full object-cover img-lux"
+            loading="lazy"
+          >
+        </div>
+        <!-- Accent square -->
+        <div class="absolute -bottom-8 -right-8 w-40 h-40 rounded-3xl bg-brass/10 -z-10" aria-hidden="true"></div>
+        <div class="absolute -top-6 -left-6 w-20 h-20 rounded-full bg-blush/30 blur-2xl" aria-hidden="true"></div>
+      </div>
+
+      <!-- Text right -->
+      <div class="reveal-up">
+        <span class="text-xs tracking-[0.3em] uppercase text-brass font-medium">Our Philosophy</span>
+        <h2 class="mt-4 mb-6 text-balance">Intimate. Intentional. Unforgettable.</h2>
+        <p class="mb-6">
+          We believe a wedding should feel like the most honest version of you — not a performance, but a gathering.
+          For over a decade, we've designed celebrations that honour heritage, personality, and the quiet magic of two people choosing each other.
+        </p>
+        <p class="mb-8">
+          From handwritten vows to heirloom table linens, every element is considered. We work with a small circle of
+          artisans — calligraphers, florists, chefs — who share our obsession with detail.
+        </p>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="map-pin" class="w-5 h-5 text-brass"></i>
+            </div>
+            <div>
+              <h4 class="font-body font-semibold text-sm text-noir">Worldwide</h4>
+              <p class="text-sm text-taupe">Destination weddings</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="users" class="w-5 h-5 text-brass"></i>
+            </div>
+            <div>
+              <h4 class="font-body font-semibold text-sm text-noir">Small by design</h4>
+              <p class="text-sm text-taupe">Max 80 guests</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SERVICES ========== -->
+  <section id="services" class="section-pad bg-linen">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-16 reveal-up">
+        <span class="text-xs tracking-[0.3em] uppercase text-brass font-medium">What We Do</span>
+        <h2 class="mt-4 mb-6">Curated services for the modern romantic</h2>
+        <p class="mx-auto">Whether you're eloping in the hills or hosting a black-tie dinner, we shape the day around you.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Card 1 -->
+        <div class="bg-cream rounded-soft p-8 shadow-soft card-tilt reveal-up border border-sand/40">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="pen-tool" class="w-7 h-7 text-brass"></i>
+          </div>
+          <h3 class="text-2xl mb-3">Full Planning</h3>
+          <p class="text-sm mb-6">End-to-end design and logistics — venue scouting, vendor curation, timeline, and on-the-day coordination.</p>
+          <ul class="space-y-2 mb-8">
+            <li class="flex items-center gap-2 text-sm text-umber"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Venue & vendor sourcing</li>
+            <li class="flex items-center gap-2 text-sm text-umber"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Design & styling</li>
+            <li class="flex items-center gap-2 text-sm text-umber"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Budget management</li>
+          </ul>
+          <a href="#contact" class="text-sm font-medium text-noir flex items-center gap-2 hover:text-brass transition-colors group">
+            Enquire <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+          </a>
+        </div>
+
+        <!-- Card 2 (featured) -->
+        <div class="bg-noir text-cream rounded-soft p-8 shadow-lux card-tilt reveal-up relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-40 h-40 bg-brass/20 rounded-full blur-3xl" aria-hidden="true"></div>
+          <div class="relative z-10">
+            <div class="w-14 h-14 rounded-2xl bg-brass/20 flex items-center justify-center mb-6">
+              <i data-lucide="sparkles" class="w-7 h-7 text-brass"></i>
+            </div>
+            <div class="flex items-center gap-2 mb-3">
+              <h3 class="text-2xl text-cream">Signature Design</h3>
+              <span class="text-[10px] tracking-widest uppercase bg-brass text-noir px-2 py-0.5 rounded-full font-semibold">Popular</span>
+            </div>
+            <p class="text-sm text-cream/70 mb-6">Our most-loved package — full creative direction with a dedicated designer and stylist from start to finish.</p>
+            <ul class="space-y-2 mb-8">
+              <li class="flex items-center gap-2 text-sm text-cream/80"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Mood boards & 3D renders</li>
+              <li class="flex items-center gap-2 text-sm text-cream/80"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Floral & tablescape design</li>
+              <li class="flex items-center gap-2 text-sm text-cream/80"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Guest experience curation</li>
+            </ul>
+            <a href="#contact" class="text-sm font-medium text-brass flex items-center gap-2 hover:text-cream transition-colors group">
+              Enquire <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-cream rounded-soft p-8 shadow-soft card-tilt reveal-up border border-sand/40">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="calendar-heart" class="w-7 h-7 text-brass"></i>
+          </div>
+          <h3 class="text-2xl mb-3">Day-of Coordination</h3>
+          <p class="text-sm mb-6">You've planned the details — we'll make sure the day runs seamlessly so you can be fully present.</p>
+          <ul class="space-y-2 mb-8">
+            <li class="flex items-center gap-2 text-sm text-umber"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Vendor liaison</li>
+            <li class="flex items-center gap-2 text-sm text-umber"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Timeline management</li>
+            <li class="flex items-center gap-2 text-sm text-umber"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Setup & pack-down</li>
+          </ul>
+          <a href="#contact" class="text-sm font-medium text-noir flex items-center gap-2 hover:text-brass transition-colors group">
+            Enquire <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== GALLERY (horizontal scroll on desktop, stack on mobile) ========== -->
+  <section id="gallery" class="py-24 bg-cream overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 mb-14 reveal-up">
+      <span class="text-xs tracking-[0.3em] uppercase text-brass font-medium">Real Weddings</span>
+      <h2 class="mt-4">Moments we've had the honour to design</h2>
+    </div>
+    <!-- Horizontal scroll container -->
+    <div class="gallery-track flex gap-6 px-6 overflow-x-auto pb-8 snap-x snap-mandatory" style="scrollbar-width: none; -ms-overflow-style: none;">
+      <!-- Gallery item 1 -->
+      <div class="snap-start flex-shrink-0 w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[28vw] rounded-soft overflow-hidden shadow-lux card-tilt">
+        <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop" alt="Outdoor wedding ceremony aisle with white flowers" class="w-full h-[420px] object-cover img-lux" loading="lazy">
+      </div>
+      <div class="snap-start flex-shrink-0 w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[28vw] rounded-soft overflow-hidden shadow-lux card-tilt">
+        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200&auto=format&fit=crop" alt="Bride and groom kissing under a floral arch" class="w-full h-[420px] object-cover img-lux" loading="lazy">
+      </div>
+      <div class="snap-start flex-shrink-0 w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[28vw] rounded-soft overflow-hidden shadow-lux card-tilt">
+        <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?q=80&w=1200&auto=format&fit=crop" alt="Elegant wedding table with candles and greenery" class="w-full h-[420px] object-cover img-lux" loading="lazy">
+      </div>
+      <div class="snap-start flex-shrink-0 w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[28vw] rounded-soft overflow-hidden shadow-lux card-tilt">
+        <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1200&auto=format&fit=crop" alt="Couple dancing at their wedding reception" class="w-full h-[420px] object-cover img-lux" loading="lazy">
+      </div>
+      <div class="snap-start flex-shrink-0 w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[28vw] rounded-soft overflow-hidden shadow-lux card-tilt">
+        <img src="https://images.unsplash.com/photo-1550005809-91ad75fb315f?q=80&w=1200&auto=format&fit=crop" alt="Wedding invitation suite with calligraphy" class="w-full h-[420px] object-cover img-lux" loading="lazy">
+      </div>
+    </div>
+    <!-- Scroll hint -->
+    <div class="max-w-7xl mx-auto px-6 mt-6 flex items-center gap-2 text-taupe text-xs tracking-widest uppercase">
+      <i data-lucide="move-horizontal" class="w-4 h-4"></i> Drag to explore
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS ========== -->
+  <section id="testimonials" class="section-pad bg-linen">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-16 reveal-up">
+        <span class="text-xs tracking-[0.3em] uppercase text-brass font-medium">Love Notes</span>
+        <h2 class="mt-4 mb-6">Words from our couples</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Testimonial 1 -->
+        <div class="bg-cream rounded-soft p-8 shadow-soft reveal-up border border-sand/30">
+          <div class="flex items-center gap-1 mb-5" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="font-display text-xl italic text-noir mb-6">"They understood us better than we understood ourselves. Every detail felt like home."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-blush flex items-center justify-center font-display text-lg text-umber">M</div>
+            <div>
+              <p class="text-sm font-semibold text-noir">Maya & James</p>
+              <p class="text-xs text-taupe">Tuscany, Italy</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="bg-cream rounded-soft p-8 shadow-soft reveal-up border border-sand/30">
+          <div class="flex items-center gap-1 mb-5" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="font-display text-xl italic text-noir mb-6">"Our wedding felt like a dream — but more importantly, it felt like us. Pure magic."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-sage/30 flex items-center justify-center font-display text-lg text-umber">E</div>
+            <div>
+              <p class="text-sm font-semibold text-noir">Elena & Priya</p>
+              <p class="text-xs text-taupe">Kent, England</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="bg-cream rounded-soft p-8 shadow-soft reveal-up border border-sand/30">
+          <div class="flex items-center gap-1 mb-5" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="font-display text-xl italic text-noir mb-6">"We're still receiving compliments months later. The attention to detail was extraordinary."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/20 flex items-center justify-center font-display text-lg text-umber">C</div>
+            <div>
+              <p class="text-sm font-semibold text-noir">Clara & Theo</p>
+              <p class="text-xs text-taupe">Provence, France</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA BANNER ========== -->
+  <section class="section-pad bg-noir text-cream relative overflow-hidden">
+    <div class="absolute top-[-40%] right-[-10%] w-[600px] h-[600px] rounded-full bg-brass/10 blur-3xl" aria-hidden="true"></div>
+    <div class="absolute bottom-[-30%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blush/10 blur-3xl" aria-hidden="true"></div>
+    <div class="relative z-10 max-w-3xl mx-auto text-center">
+      <span class="text-xs tracking-[0.3em] uppercase text-brass font-medium">Let's Begin</span>
+      <h2 class="mt-6 mb-6 text-cream text-balance">Your day deserves to feel like a love letter.</h2>
+      <p class="text-cream/70 mx-auto mb-10 max-w-xl">Tell us your story. We'll take care of the rest.</p>
+      <a href="#contact" class="btn-primary bg-brass text-noir hover:bg-cream hover:text-noir">
+        Start Planning
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER + CONTACT FORM ========== -->
+  <footer id="contact" class="bg-cream pt-24 pb-12">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-16 mb-20">
+        <!-- Left: info -->
+        <div>
+          <a href="#" class="flex items-center gap-2 mb-6">
+            <span class="font-display text-3xl font-semibold tracking-tight text-noir">Ever After</span>
+            <span class="w-2 h-2 rounded-full bg-brass inline-block"></span>
+          </a>
+          <p class="text-umber mb-10 max-w-md">
+            Bespoke wedding design studio creating intimate, intentional celebrations worldwide.
+            Based in London, working wherever love takes us.
+          </p>
+
+          <div class="space-y-4 mb-10">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-brass/10 flex items-center justify-center">
+                <i data-lucide="mail" class="w-4 h-4 text-brass"></i>
+              </div>
+              <a href="mailto:hello@everafter.studio" class="text-sm text-umber hover:text-noir transition-colors">hello@everafter.studio</a>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-brass/10 flex items-center justify-center">
+                <i data-lucide="phone" class="w-4 h-4 text-brass"></i>
+              </div>
+              <a href="tel:+442079460958" class="text-sm text-umber hover:text-noir transition-colors">+44 20 7946 0958</a>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-brass/10 flex items-center justify-center">
+                <i data-lucide="map-pin" class="w-4 h-4 text-brass"></i>
+              </div>
+              <span class="text-sm text-umber">12 Marylebone Lane, London W1U 2NF</span>
+            </div>
+          </div>
+
+          <!-- Social -->
+          <div class="flex items-center gap-4">
+            <a href="#" class="w-10 h-10 rounded-full bg-linen flex items-center justify-center hover:bg-brass transition-colors group" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4 text-umber group-hover:text-noir transition-colors"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-linen flex items-center justify-center hover:bg-brass transition-colors group" aria-label="Pinterest">
+              <i data-lucide="heart" class="w-4 h-4 text-umber group-hover:text-noir transition-colors"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-linen flex items-center justify-center hover:bg-brass transition-colors group" aria-label="Facebook">
+              <i data-lucide="facebook" class="w-4 h-4 text-umber group-hover:text-noir transition-colors"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: enquiry form -->
+        <div class="bg-linen rounded-soft p-8 md:p-10 shadow-soft border border-sand/40">
+          <h3 class="text-2xl mb-2">Begin your enquiry</h3>
+          <p class="text-sm text-taupe mb-8">We reply within two working days.</p>
+
+          <form id="enquiryForm" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="name" class="sr-only">Full name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Full name" required>
+                <p class="form-error" data-for="name">Please enter your name</p>
+              </div>
+              <div>
+                <label for="email" class="sr-only">Email address</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="Email address" required>
+                <p class="form-error" data-for="email">Please enter a valid email</p>
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="phone" class="sr-only">Phone number</label>
+                <input type="tel" id="phone" name="phone" class="form-input" placeholder="Phone (optional)">
+                <p class="form-error" data-for="phone">Please enter a valid phone number</p>
+              </div>
+              <div>
+                <label for="date" class="sr-only">Wedding date</label>
+                <input type="date" id="date" name="date" class="form-input" placeholder="Wedding date (optional)">
+                <p class="form-error" data-for="date"></p>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label for="service" class="sr-only">Service interest</label>
+              <select id="service" name="service" class="form-input" required>
+                <option value="">Select a service</option>
+                <option value="full-planning">Full Planning</option>
+                <option value="signature-design">Signature Design</option>
+                <option value="day-of">Day-of Coordination</option>
+                <option value="other">Something else</option>
+              </select>
+              <p class="form-error" data-for="service">Please select a service</p>
+            </div>
+            <div class="mb-6">
+              <label for="message" class="sr-only">Message</label>
+              <textarea id="message" name="message" rows="4" class="form-input resize-none" placeholder="Tell us about your day..." required></textarea>
+              <p class="form-error" data-for="message">Please share a little about your plans</p>
+            </div>
+            <button type="submit" class="btn-primary w-full justify-center" id="submitBtn">
+              Send Enquiry
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+            <!-- Success message -->
+            <p id="formSuccess" class="hidden text-center text-sm text-sage mt-4 font-medium">
+              Thank you — your enquiry has been received. We'll be in touch shortly.
+            </p>
+          </form>
+          <!-- TODO: connect form action to backend endpoint -->
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="border-t border-sand pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-taupe">&copy; 2025 Ever After Studio. All rights reserved.</p>
+        <div class="flex items-center gap-6">
+          <a href="#" class="text-xs text-taupe hover:text-noir transition-colors">Privacy Policy</a>
+          <a href="#" class="text-xs text-taupe hover:text-noir transition-colors">Terms</a>
+          <a href="#" class="text-xs text-taupe hover:text-noir transition-colors">Careers</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    // Register GSAP plugin
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Lenis smooth scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // Custom cursor
+    const cursorDot = document.getElementById('cursorDot');
+    if (cursorDot) {
+      document.addEventListener('mousemove', (e) => {
+        gsap.to(cursorDot, {
+          x: e.clientX - 4,
+          y: e.clientY - 4,
+          duration: 0.15,
+          ease: 'power2.out'
+        });
+      });
+      // Hide cursor on touch devices
+      if ('ontouchstart' in window) {
+        cursorDot.style.display = 'none';
+      }
+    }
+
+    // Header scroll effect
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        header.classList.add('header-scrolled');
+      } else {
+        header.classList.remove('header-scrolled');
+      }
+    });
+
+    // Mobile menu
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    function openMenu() {
+      mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+      mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+      mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    mobileMenuBtn.addEventListener('click', openMenu);
+    mobileMenuClose.addEventListener('click', closeMenu);
+    mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+    // Close menu on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('opacity-100')) {
+        closeMenu();
+      }
+    });
+
+    // Hero animations
+    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    heroTl
+      .from('.hero-title', { opacity: 0, y: 40, duration: 1.2, delay: 0.2 })
+      .from('.hero-sub', { opacity: 0, y: 30, duration: 1 }, '-=0.8')
+      .from('.hero-cta', { opacity: 0, y: 20, duration: 0.8 }, '-=0.6')
+      .from('.hero-stats', { opacity: 0, y: 20, duration: 0.8 }, '-=0.5')
+      .from('.hero-visual', { opacity: 0, scale: 0.95, duration: 1.2 }, '-=1.2')
+      .from('.hero-fade', { opacity: 0, y: -10, duration: 0.8 }, '-=1.0');
+
+    // Scroll reveal animations
+    const revealElements = document.querySelectorAll('.reveal-up');
+    revealElements.forEach((el) => {
+      gsap.from(el, {
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        ease: 'power3.out',
+      });
+    });
+
+    // Horizontal gallery drag to scroll (native overflow works, add cursor grab)
+    const galleryTrack = document.querySelector('.gallery-track');
+    if (galleryTrack) {
+      let isDown = false, startX, scrollLeft;
+      galleryTrack.addEventListener('mousedown', (e) => {
+        isDown = true;
+        galleryTrack.style.cursor = 'grabbing';
+        startX = e.pageX - galleryTrack.offsetLeft;
+        scrollLeft = galleryTrack.scrollLeft;
+      });
+      galleryTrack.addEventListener('mouseleave', () => {
+        isDown = false;
+        galleryTrack.style.cursor = 'grab';
+      });
+      galleryTrack.addEventListener('mouseup', () => {
+        isDown = false;
+        galleryTrack.style.cursor = 'grab';
+      });
+      galleryTrack.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - galleryTrack.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        galleryTrack.scrollLeft = scrollLeft - walk;
+      });
+      galleryTrack.style.cursor = 'grab';
+    }
+
+    // Form validation & submission
+    const form = document.getElementById('enquiryForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formSuccess = document.getElementById('formSuccess');
+
+    function showError(fieldName, show) {
+      const errorEl = document.querySelector(`.form-error[data-for="${fieldName}"]`);
+      const inputEl = document.getElementById(fieldName);
+      if (errorEl) {
+        errorEl.classList.toggle('visible', show);
+      }
+      if (inputEl) {
+        inputEl.classList.toggle('error', show);
+      }
+    }
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const date = document.getElementById('date').value;
+      const service = document.getElementById('service').value;
+      const message = document.getElementById('message').value.trim();
+
+      let valid = true;
+
+      // Name
+      if (!name) { showError('name', true); valid = false; } else { showError('name', false); }
+      // Email
+      if (!email || !validateEmail(email)) { showError('email', true); valid = false; } else { showError('email', false); }
+      // Phone (optional, but if filled must be valid-ish)
+      if (phone && !/^[\d\s+\-()]{7,}$/.test(phone)) { showError('phone', true); valid = false; } else { showError('phone', false); }
+      // Service
+      if (!service) { showError('service', true); valid = false; } else { showError('service', false); }
+      // Message
+      if (!message) { showError('message', true); valid = false; } else { showError('message', false); }
+
+      if (!valid) return;
+
+      // Simulate submission
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending... <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
+      lucide.createIcons();
+
+      // Build JSON payload
+      const payload = {
+        url: window.location.host,
+        table: 'wedding_enquiries',
+        data: {
+          name,
+          email,
+          phone: phone || null,
+          date: date || null,
+          service,
+          message,
+          submittedAt: new Date().toISOString()
+        }
+      };
+
+      // TODO: connect form action to backend endpoint
+      // Replace the simulated fetch with your real endpoint:
+      try {
+        // For now, simulate a successful submission
+        // In production, uncomment the fetch below and point to your server:
+        /*
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) throw new Error('Network response was not ok');
+        */
+
+        // Simulate delay
+        await new Promise(resolve => setTimeout(resolve, 1200));
+
+        // Show success
+        formSuccess.classList.remove('hidden');
+        submitBtn.innerHTML = 'Sent <i data-lucide="check" class="w-4 h-4"></i>';
+        lucide.createIcons();
+
+        // Reset form after 2 seconds
+        setTimeout(() => {
+          form.reset();
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Send Enquiry <i data-lucide="send" class="w-4 h-4"></i>';
+          lucide.createIcons();
+          formSuccess.classList.add('hidden');
+          // Clear any errors
+          document.querySelectorAll('.form-error').forEach(el => el.classList.remove('visible'));
+          document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+        }, 2500);
+
+      } catch (error) {
+        console.error('Submission error:', error);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Try again <i data-lucide="alert-circle" class="w-4 h-4"></i>';
+        lucide.createIcons();
+      }
+    });
+
+    // Remove error state on input
+    document.querySelectorAll('.form-input').forEach(input => {
+      input.addEventListener('input', () => {
+        const name = input.id;
+        if (name) showError(name, false);
+      });
+    });
+
+    // Smooth anchor scrolling with Lenis (native anchors also work)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          lenis.scrollTo(targetEl, { offset: -80, duration: 1.5 });
+        }
+      });
+    });
+
+    // Scroll indicator fade on scroll
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+    if (scrollIndicator) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 200) {
+          scrollIndicator.style.opacity = '0';
+          scrollIndicator.style.transition = 'opacity 0.4s ease';
+        } else {
+          scrollIndicator.style.opacity = '1';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
