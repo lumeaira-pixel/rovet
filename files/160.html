@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aarav & Ananya · Wedding Invitation</title>
+  <!-- Google Fonts: Instrument Serif (display) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FCF9F5',
+            ink: '#1E1B1A',
+            sage: '#7A8B7F',
+            brass: '#C7A87A',
+            blush: '#E8D9D1',
+          },
+          fontFamily: {
+            serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          borderRadius: {
+            '4xl': '2.5rem',
+          },
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --cream: #FCF9F5;
+      --ink: #1E1B1A;
+      --sage: #7A8B7F;
+      --brass: #C7A87A;
+      --blush: #E8D9D1;
+      --paper: #FFFFFF;
+      --shadow-soft: 0 20px 40px -20px rgba(30, 27, 26, 0.12);
+      --shadow-card: 0 30px 60px -25px rgba(30, 27, 26, 0.15);
+      --radius-large: 2rem;
+      --radius-xl: 3rem;
+      --focus-ring: #C7A87A;
+    }
+
+    /* === Base & Reset === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--cream);
+      color: var(--ink);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* === Typography === */
+    .font-serif-display {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .headline-xl {
+      font-size: clamp(3.5rem, 12vw, 7rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+
+    .headline-lg {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .headline-md {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    .body-large {
+      font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+      line-height: 1.7;
+      color: #3D3A38;
+    }
+
+    /* === Custom Components === */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .card-soft {
+      background: var(--paper);
+      border-radius: var(--radius-large);
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-soft:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card);
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 1rem 2.25rem;
+      border-radius: 60px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: #2E2A28;
+      transform: scale(1.02);
+      box-shadow: 0 10px 30px -10px rgba(30, 27, 26, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid rgba(30, 27, 26, 0.2);
+      padding: 1rem 2.25rem;
+      border-radius: 60px;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--ink);
+      background: rgba(30, 27, 26, 0.03);
+      transform: scale(1.02);
+    }
+
+    /* === Focus States === */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cream), 0 0 0 6px var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Animations === */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .fade-up.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .letter-stagger span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: letterReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes letterReveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .divider-ornament {
+      width: 60px;
+      height: 1px;
+      background: var(--brass);
+      margin: 2rem auto;
+    }
+
+    .hero-bg-gradient {
+      background: radial-gradient(ellipse at 30% 20%, rgba(199, 168, 122, 0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 70%, rgba(122, 139, 127, 0.06) 0%, transparent 50%),
+                  var(--cream);
+    }
+
+    /* === Parallax layers === */
+    .parallax-leaf {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.12;
+      will-change: transform;
+    }
+
+    /* === Countdown === */
+    .countdown-number {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    /* === Custom Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--cream);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D9D0C6;
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--brass);
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* === Form === */
+    .form-input {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border-radius: 16px;
+      border: 1px solid rgba(30, 27, 26, 0.12);
+      background: #FFFFFF;
+      font-size: 1rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      color: var(--ink);
+    }
+    .form-input::placeholder {
+      color: #B0A8A0;
+    }
+    .form-input:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(199, 168, 122, 0.15);
+      outline: none;
+    }
+    .form-input.error {
+      border-color: #D35F5F;
+      box-shadow: 0 0 0 3px rgba(211, 95, 95, 0.12);
+    }
+
+    /* === Subtle noise texture === */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.025;
+      z-index: 9999;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    @media (max-width: 768px) {
+      .headline-xl {
+        font-size: clamp(2.8rem, 14vw, 4.5rem);
+      }
+      .hero-bg-gradient {
+        background: radial-gradient(ellipse at 50% 20%, rgba(199, 168, 122, 0.06) 0%, transparent 60%),
+                    var(--cream);
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      .letter-stagger span {
+        opacity: 1;
+        transform: none;
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body class="hero-bg-gradient">
+
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <!-- ====== HEADER ====== -->
+  <header id="header" class="fixed top-0 left-0 w-full z-50 transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex items-center justify-between">
+      <a href="#" class="font-serif-display text-2xl tracking-tight text-ink" aria-label="Aarav & Ananya wedding home">
+        A <span class="text-brass">&</span> A
+      </a>
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#story" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-200">Our Story</a>
+        <a href="#events" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-200">Events</a>
+        <a href="#venue" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-200">Venue</a>
+        <a href="#rsvp" class="btn-primary text-sm">RSVP</a>
+      </nav>
+      <!-- Mobile menu button -->
+      <button id="menuToggle" class="md:hidden p-2 text-ink" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile menu overlay -->
+  <div id="mobileMenu" class="mobile-menu fixed inset-0 z-40 bg-cream/95 backdrop-blur-xl md:hidden" role="dialog" aria-modal="true" aria-label="Mobile menu">
+    <div class="flex flex-col items-center justify-center h-full gap-8">
+      <button id="menuClose" class="absolute top-6 right-6 p-2 text-ink" aria-label="Close menu">
+        <i data-lucide="x" class="w-7 h-7"></i>
+      </button>
+      <a href="#story" class="font-serif-display text-3xl text-ink hover:text-brass transition-colors">Our Story</a>
+      <a href="#events" class="font-serif-display text-3xl text-ink hover:text-brass transition-colors">Events</a>
+      <a href="#venue" class="font-serif-display text-3xl text-ink hover:text-brass transition-colors">Venue</a>
+      <a href="#rsvp" class="btn-primary text-lg mt-4">RSVP</a>
+    </div>
+  </div>
+
+  <!-- ====== HERO ====== -->
+  <main>
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden px-6">
+      <!-- Decorative parallax leaf shapes -->
+      <div class="parallax-leaf top-[15%] left-[5%] w-64 h-64 rounded-full bg-sage/10 blur-3xl" data-speed="0.15" aria-hidden="true"></div>
+      <div class="parallax-leaf bottom-[10%] right-[8%] w-80 h-80 rounded-full bg-brass/8 blur-3xl" data-speed="0.25" aria-hidden="true"></div>
+      <div class="parallax-leaf top-[40%] right-[15%] w-40 h-40 rounded-full bg-blush/30 blur-2xl" data-speed="0.1" aria-hidden="true"></div>
+
+      <div class="max-w-5xl mx-auto text-center relative z-10 pt-24 pb-16">
+        <p class="fade-up text-sm tracking-[0.3em] uppercase text-brass mb-6 font-medium">Together with their families</p>
+        
+        <h1 class="headline-xl font-serif-display text-ink mb-4 letter-stagger" id="heroTitle">
+          Aarav <span class="text-brass italic">&</span> Ananya
+        </h1>
+
+        <div class="divider-ornament fade-up" style="transition-delay: 0.2s;"></div>
+
+        <p class="body-large max-w-2xl mx-auto mb-10 fade-up" style="transition-delay: 0.35s;">
+          request the honour of your presence as they exchange vows and begin their forever.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 fade-up" style="transition-delay: 0.5s;">
+          <a href="#rsvp" class="btn-primary">
+            <i data-lucide="heart" class="w-4 h-4"></i>
+            Reserve Your Seat
+          </a>
+          <a href="#story" class="btn-outline">
+            Our Story
+            <i data-lucide="arrow-down" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <!-- Countdown -->
+        <div class="mt-20 fade-up" style="transition-delay: 0.65s;">
+          <p class="text-xs tracking-[0.25em] uppercase text-ink/40 mb-6">Counting down to forever</p>
+          <div class="flex items-center justify-center gap-8 sm:gap-14" id="countdown" aria-live="polite">
+            <div class="text-center">
+              <div class="countdown-number text-ink" id="days">00</div>
+              <div class="text-xs tracking-[0.15em] uppercase text-ink/40 mt-1">Days</div>
+            </div>
+            <div class="text-center">
+              <div class="countdown-number text-ink" id="hours">00</div>
+              <div class="text-xs tracking-[0.15em] uppercase text-ink/40 mt-1">Hours</div>
+            </div>
+            <div class="text-center">
+              <div class="countdown-number text-ink" id="minutes">00</div>
+              <div class="text-xs tracking-[0.15em] uppercase text-ink/40 mt-1">Minutes</div>
+            </div>
+            <div class="text-center">
+              <div class="countdown-number text-ink" id="seconds">00</div>
+              <div class="text-xs tracking-[0.15em] uppercase text-ink/40 mt-1">Seconds</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== OUR STORY ====== -->
+    <section id="story" class="py-28 md:py-36 px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+          <p class="fade-up text-sm tracking-[0.3em] uppercase text-brass mb-4">The Beginning</p>
+          <h2 class="headline-lg font-serif-display text-ink fade-up">Our Story</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div class="fade-up">
+            <div class="card-soft p-8 md:p-12">
+              <i data-lucide="coffee" class="w-8 h-8 text-brass mb-6"></i>
+              <p class="text-sm tracking-[0.2em] uppercase text-ink/40 mb-4">Autumn 2019</p>
+              <h3 class="headline-md font-serif-display text-ink mb-4">A serendipitous meeting</h3>
+              <p class="body-large">In a quiet bookshop café in Bandra, Aarav reached for the same copy of Rumi's poems as Ananya. What began as a polite exchange became a three-hour conversation about love, poetry, and the meaning of home.</p>
+            </div>
+          </div>
+
+          <div class="fade-up" style="transition-delay: 0.15s;">
+            <div class="card-soft p-8 md:p-12">
+              <i data-lucide="map-pin" class="w-8 h-8 text-sage mb-6"></i>
+              <p class="text-sm tracking-[0.2em] uppercase text-ink/40 mb-4">Spring 2023</p>
+              <h3 class="headline-md font-serif-display text-ink mb-4">A promise under the stars</h3>
+              <p class="body-large">On a rooftop terrace in Udaipur, surrounded by marigolds and the soft glow of lanterns, Aarav knelt and asked Ananya to spend forever with him. She said yes before he could finish the question.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-16 text-center fade-up">
+          <div class="divider-ornament"></div>
+          <p class="font-serif-display text-2xl md:text-3xl text-ink/80 italic max-w-3xl mx-auto leading-relaxed">
+            "Two souls, one journey — and a lifetime of shared chapters yet to be written."
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== EVENTS ====== -->
+    <section id="events" class="py-28 md:py-36 px-6 bg-white/60 backdrop-blur-sm">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+          <p class="fade-up text-sm tracking-[0.3em] uppercase text-brass mb-4">Celebrations</p>
+          <h2 class="headline-lg font-serif-display text-ink fade-up">Wedding Events</h2>
+          <p class="body-large max-w-xl mx-auto mt-4 fade-up">Join us for three days of love, laughter, and cherished traditions.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <!-- Event 1 -->
+          <div class="card-soft p-8 fade-up">
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center">
+                <i data-lucide="flame" class="w-6 h-6 text-brass"></i>
+              </div>
+              <span class="text-xs tracking-[0.15em] uppercase text-ink/40 font-medium">Day 1</span>
+            </div>
+            <h3 class="headline-md font-serif-display text-ink mb-2">Mehndi</h3>
+            <p class="text-sm text-ink/50 mb-4">Friday, 14 February 2026 · 4:00 PM</p>
+            <p class="text-ink/70 leading-relaxed">An afternoon of henna, music, and festive colours. Come dressed in vibrant hues and celebrate the beginning of the festivities.</p>
+          </div>
+
+          <!-- Event 2 -->
+          <div class="card-soft p-8 fade-up" style="transition-delay: 0.1s;">
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-12 h-12 rounded-2xl bg-sage/10 flex items-center justify-center">
+                <i data-lucide="music" class="w-6 h-6 text-sage"></i>
+              </div>
+              <span class="text-xs tracking-[0.15em] uppercase text-ink/40 font-medium">Day 2</span>
+            </div>
+            <h3 class="headline-md font-serif-display text-ink mb-2">Sangeet</h3>
+            <p class="text-sm text-ink/50 mb-4">Saturday, 15 February 2026 · 7:00 PM</p>
+            <p class="text-ink/70 leading-relaxed">A night of song and dance as both families come together. Dinner and cocktails to follow under the open sky.</p>
+          </div>
+
+          <!-- Event 3 -->
+          <div class="card-soft p-8 fade-up" style="transition-delay: 0.2s;">
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-12 h-12 rounded-2xl bg-blush/40 flex items-center justify-center">
+                <i data-lucide="heart" class="w-6 h-6 text-ink/60"></i>
+              </div>
+              <span class="text-xs tracking-[0.15em] uppercase text-ink/40 font-medium">Day 3</span>
+            </div>
+            <h3 class="headline-md font-serif-display text-ink mb-2">Wedding Ceremony</h3>
+            <p class="text-sm text-ink/50 mb-4">Sunday, 16 February 2026 · 11:00 AM</p>
+            <p class="text-ink/70 leading-relaxed">The sacred vows, followed by a celebratory lunch. Your presence is the greatest blessing we could ask for.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== VENUE ====== -->
+    <section id="venue" class="py-28 md:py-36 px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div class="fade-up order-2 md:order-1">
+            <p class="text-sm tracking-[0.3em] uppercase text-brass mb-4">The Place</p>
+            <h2 class="headline-lg font-serif-display text-ink mb-6">Where it all happens</h2>
+            <p class="body-large mb-8">
+              The Oberoi Udaivilas, set on the banks of Lake Pichola, offers a serene backdrop of marble courtyards, lily ponds, and peacocks. A venue that feels like a dream — and one we cannot wait to share with you.
+            </p>
+            <div class="space-y-4 mb-8">
+              <div class="flex items-start gap-3">
+                <i data-lucide="map-pin" class="w-5 h-5 text-brass mt-0.5 shrink-0"></i>
+                <span class="text-ink/70">The Oberoi Udaivilas, Udaipur, Rajasthan 313001, India</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <i data-lucide="calendar" class="w-5 h-5 text-brass mt-0.5 shrink-0"></i>
+                <span class="text-ink/70">February 14–16, 2026</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <i data-lucide="phone" class="w-5 h-5 text-brass mt-0.5 shrink-0"></i>
+                <span class="text-ink/70">+91 98765 43210 (Aarav) · +91 98765 43211 (Ananya)</span>
+              </div>
+            </div>
+            <a href="https://maps.google.com/?q=The+Oberoi+Udaivilas+Udaipur" target="_blank" rel="noopener" class="btn-outline">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+              Open in Maps
+            </a>
+          </div>
+
+          <div class="fade-up order-1 md:order-2" style="transition-delay: 0.15s;">
+            <div class="card-soft overflow-hidden rounded-4xl">
+              <div class="aspect-[4/3] bg-gradient-to-br from-brass/20 via-blush/30 to-sage/20 flex items-center justify-center">
+                <div class="text-center p-8">
+                  <i data-lucide="landmark" class="w-16 h-16 text-brass/60 mx-auto mb-4"></i>
+                  <p class="font-serif-display text-2xl text-ink/60">Udaipur</p>
+                  <p class="text-sm text-ink/40 tracking-[0.15em] uppercase mt-1">The City of Lakes</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== RSVP ====== -->
+    <section id="rsvp" class="py-28 md:py-36 px-6 bg-white/60 backdrop-blur-sm">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-14">
+          <p class="fade-up text-sm tracking-[0.3em] uppercase text-brass mb-4">Be Our Guest</p>
+          <h2 class="headline-lg font-serif-display text-ink fade-up">RSVP</h2>
+          <p class="body-large mt-4 fade-up">Kindly respond by 15 January 2026 so we can save a seat just for you.</p>
+        </div>
+
+        <form id="rsvpForm" class="card-soft p-8 md:p-12 space-y-6 fade-up" novalidate>
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div>
+              <label for="name" class="block text-sm font-medium text-ink/70 mb-2">Full Name *</label>
+              <input type="text" id="name" name="name" class="form-input" placeholder="Your full name" required>
+            </div>
+            <div>
+              <label for="email" class="block text-sm font-medium text-ink/70 mb-2">Email Address *</label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div>
+              <label for="phone" class="block text-sm font-medium text-ink/70 mb-2">Phone Number</label>
+              <input type="tel" id="phone" name="phone" class="form-input" placeholder="+91 98765 43210">
+            </div>
+            <div>
+              <label for="guests" class="block text-sm font-medium text-ink/70 mb-2">Number of Guests *</label>
+              <select id="guests" name="guests" class="form-input" required>
+                <option value="" disabled selected>Select</option>
+                <option value="1">1 guest</option>
+                <option value="2">2 guests</option>
+                <option value="3">3 guests</option>
+                <option value="4">4 guests</option>
+                <option value="5+">5+ guests</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="events" class="block text-sm font-medium text-ink/70 mb-2">Events you'll attend *</label>
+            <select id="events" name="events" class="form-input" required>
+              <option value="" disabled selected>Select events</option>
+              <option value="all">All three days</option>
+              <option value="mehndi">Mehndi only</option>
+              <option value="sangeet">Sangeet only</option>
+              <option value="wedding">Wedding Ceremony only</option>
+              <option value="mehndi-sangeet">Mehndi & Sangeet</option>
+              <option value="sangeet-wedding">Sangeet & Wedding</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="message" class="block text-sm font-medium text-ink/70 mb-2">Message for the couple</label>
+            <textarea id="message" name="message" rows="4" class="form-input" placeholder="Share your wishes, dietary preferences, or any special requests..."></textarea>
+          </div>
+
+          <div id="formError" class="hidden text-sm text-red-600 bg-red-50 px-4 py-3 rounded-xl" role="alert"></div>
+          <div id="formSuccess" class="hidden text-sm text-green-700 bg-green-50 px-4 py-3 rounded-xl" role="status">
+            <i data-lucide="check-circle" class="w-4 h-4 inline mr-2"></i>
+            Thank you! Your RSVP has been received. We can't wait to celebrate with you.
+          </div>
+
+          <!-- TODO: connect form action to backend endpoint -->
+          <button type="submit" class="btn-primary w-full justify-center text-lg py-4">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            Send RSVP
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ====== CTA BANNER ====== -->
+    <section class="py-24 px-6">
+      <div class="max-w-4xl mx-auto text-center fade-up">
+        <i data-lucide="sparkles" class="w-8 h-8 text-brass mx-auto mb-6"></i>
+        <h2 class="headline-lg font-serif-display text-ink mb-6">We can't wait to celebrate with you</h2>
+        <p class="body-large max-w-xl mx-auto mb-8">
+          Your presence will make our day complete. For any questions, please reach out to us directly.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="mailto:hello@aaravandananya.com" class="btn-primary">
+            <i data-lucide="mail" class="w-4 h-4"></i>
+            Email Us
+          </a>
+          <a href="#rsvp" class="btn-outline">
+            RSVP Now
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="bg-ink text-cream/80 py-16 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-12 mb-12">
+        <div>
+          <p class="font-serif-display text-3xl text-cream mb-4">A <span class="text-brass">&</span> A</p>
+          <p class="text-sm leading-relaxed text-cream/50 max-w-xs">
+            Aarav & Ananya · 14–16 February 2026 · The Oberoi Udaivilas, Udaipur. A celebration of love, family, and forever.
+          </p>
+        </div>
+        <div>
+          <p class="text-sm tracking-[0.2em] uppercase text-cream/40 mb-4 font-medium">Navigate</p>
+          <ul class="space-y-3">
+            <li><a href="#story" class="text-sm text-cream/60 hover:text-cream transition-colors">Our Story</a></li>
+            <li><a href="#events" class="text-sm text-cream/60 hover:text-cream transition-colors">Events</a></li>
+            <li><a href="#venue" class="text-sm text-cream/60 hover:text-cream transition-colors">Venue</a></li>
+            <li><a href="#rsvp" class="text-sm text-cream/60 hover:text-cream transition-colors">RSVP</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-sm tracking-[0.2em] uppercase text-cream/40 mb-4 font-medium">Get in touch</p>
+          <ul class="space-y-3">
+            <li class="flex items-center gap-2 text-sm text-cream/60">
+              <i data-lucide="mail" class="w-4 h-4 shrink-0"></i>
+              hello@aaravandananya.com
+            </li>
+            <li class="flex items-center gap-2 text-sm text-cream/60">
+              <i data-lucide="phone" class="w-4 h-4 shrink-0"></i>
+              +91 98765 43210
+            </li>
+            <li class="flex items-center gap-2 text-sm text-cream/60">
+              <i data-lucide="instagram" class="w-4 h-4 shrink-0"></i>
+              @aarav.ananya.wedding
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-cream/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-cream/40">© 2026 Aarav & Ananya. Made with love.</p>
+        <p class="text-xs text-cream/40 flex items-center gap-1.5">
+          <i data-lucide="heart" class="w-3.5 h-3.5 text-brass"></i>
+          #AaravWedsAnanya
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // === Initialize Lucide icons ===
+    lucide.createIcons();
+
+    // === Hero letter stagger ===
+    (function() {
+      const heroTitle = document.getElementById('heroTitle');
+      if (!heroTitle) return;
+      const text = heroTitle.textContent.trim();
+      heroTitle.innerHTML = '';
+      const wrapper = document.createElement('span');
+      wrapper.className = 'letter-stagger';
+      let index = 0;
+      // Preserve the ampersand styling
+      const parts = text.split(' ');
+      parts.forEach((word, wi) => {
+        const wordSpan = document.createElement('span');
+        wordSpan.style.display = 'inline-block';
+        wordSpan.style.whiteSpace = 'nowrap';
+        word.split('').forEach((char) => {
+          const charSpan = document.createElement('span');
+          charSpan.textContent = char;
+          charSpan.style.animationDelay = (0.03 * index) + 's';
+          wordSpan.appendChild(charSpan);
+          index++;
+        });
+        wrapper.appendChild(wordSpan);
+        if (wi < parts.length - 1) {
+          const space = document.createElement('span');
+          space.textContent = ' ';
+          space.style.display = 'inline-block';
+          space.style.width = '0.3em';
+          wrapper.appendChild(space);
+        }
+      });
+      heroTitle.appendChild(wrapper);
+    })();
+
+    // === Scroll fade-up reveals with GSAP ScrollTrigger ===
+    gsap.registerPlugin(ScrollTrigger);
+    document.querySelectorAll('.fade-up').forEach((el) => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 88%',
+        once: true,
+        onEnter: () => el.classList.add('revealed'),
+      });
+    });
+
+    // === Parallax on decorative leaves ===
+    document.querySelectorAll('.parallax-leaf').forEach((el) => {
+      const speed = parseFloat(el.dataset.speed) || 0.15;
+      gsap.to(el, {
+        y: () => window.innerHeight * speed * 2,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        }
+      });
+    });
+
+    // === Header scroll effect ===
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        header.classList.add('bg-cream/80', 'backdrop-blur-xl', 'shadow-sm');
+      } else {
+        header.classList.remove('bg-cream/80', 'backdrop-blur-xl', 'shadow-sm');
+      }
+    }, { passive: true });
+
+    // === Mobile menu ===
+    const menuToggle = document.getElementById('menuToggle');
+    const menuClose = document.getElementById('menuClose');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.add('open');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    });
+
+    menuClose.addEventListener('click', closeMenu);
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    // Close menu on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        closeMenu();
+      }
+    });
+
+    // === Countdown Timer ===
+    const targetDate = new Date('2026-02-14T16:00:00').getTime();
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+      if (distance < 0) {
+        document.getElementById('days').textContent = '00';
+        document.getElementById('hours').textContent = '00';
+        document.getElementById('minutes').textContent = '00';
+        document.getElementById('seconds').textContent = '00';
+        return;
+      }
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      document.getElementById('days').textContent = String(days).padStart(2, '0');
+      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // === Form submission with validation ===
+    const rsvpForm = document.getElementById('rsvpForm');
+    const formError = document.getElementById('formError');
+    const formSuccess = document.getElementById('formSuccess');
+
+    rsvpForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      formSuccess.classList.add('hidden');
+
+      // Clear previous error states
+      rsvpForm.querySelectorAll('.form-input.error').forEach(el => el.classList.remove('error'));
+
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const guests = document.getElementById('guests');
+      const events = document.getElementById('events');
+
+      let hasError = false;
+
+      // Validate name
+      if (!name.value.trim()) {
+        name.classList.add('error');
+        hasError = true;
+      }
+
+      // Validate email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email.value.trim() || !emailRegex.test(email.value.trim())) {
+        email.classList.add('error');
+        hasError = true;
+      }
+
+      // Validate guests
+      if (!guests.value) {
+        guests.classList.add('error');
+        hasError = true;
+      }
+
+      // Validate events
+      if (!events.value) {
+        events.classList.add('error');
+        hasError = true;
+      }
+
+      if (hasError) {
+        formError.textContent = 'Please fill in all required fields correctly.';
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      // Prepare data
+      const formData = {
+        name: name.value.trim(),
+        email: email.value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        guests: guests.value,
+        events: events.value,
+        message: document.getElementById('message').value.trim(),
+      };
+
+      // Submit
+      const submitBtn = rsvpForm.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Sending...';
+      submitBtn.disabled = true;
+      lucide.createIcons();
+
+      try {
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'wedding_rsvp',
+            data: formData,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Submission failed');
+        }
+
+        formSuccess.classList.remove('hidden');
+        rsvpForm.reset();
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+        lucide.createIcons();
+
+        // Scroll success into view
+        formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      } catch (err) {
+        formError.textContent = 'Something went wrong. Please try again or email us directly at hello@aaravandananya.com.';
+        formError.classList.remove('hidden');
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+        lucide.createIcons();
+      }
+    });
+
+    // Clear error styling on input
+    document.querySelectorAll('.form-input').forEach(input => {
+      input.addEventListener('input', () => {
+        input.classList.remove('error');
+      });
+      input.addEventListener('change', () => {
+        input.classList.remove('error');
+      });
+    });
+  </script>
+</body>
+</html>
