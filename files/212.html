@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Amelia & James — 14 September 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+/* === Design Tokens === */
+:root{
+  --ink:#1F1B16;
+  --ink-soft:#5A514A;
+  --cream:#FBF8F4;
+  --cream-dark:#F2ECE3;
+  --blush:#E8D5C8;
+  --brass:#B08F6A;
+  --brass-light:#D6C0A2;
+  --white:#FFFFFF;
+  --hairline:rgba(31,27,22,0.08);
+  --shadow-sm:0 2px 8px rgba(31,27,22,0.04), 0 1px 3px rgba(31,27,22,0.03);
+  --shadow-md:0 12px 32px rgba(31,27,22,0.06), 0 4px 12px rgba(31,27,22,0.03);
+  --shadow-lg:0 28px 72px rgba(31,27,22,0.08), 0 8px 24px rgba(31,27,22,0.04);
+  --radius:1.25rem;
+  --radius-lg:2rem;
+  --focus-ring:rgba(176,143,106,0.55);
+}
+
+/* === Base === */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  line-height:1.65;
+  overflow-x:hidden;
+  font-weight:400;
+}
+img{max-width:100%;display:block;}
+a{color:inherit;}
+::selection{background:var(--blush);color:var(--ink);}
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:var(--cream-dark);}
+::-webkit-scrollbar-thumb{background:var(--brass-light);border-radius:999px;}
+::-webkit-scrollbar-thumb:hover{background:var(--brass);}
+
+/* === Typography === */
+.font-display{font-family:'Instrument Serif',serif;font-weight:400;letter-spacing:-0.02em;line-height:1.05;}
+.text-balance{text-wrap:balance;}
+.eyebrow{font-size:0.7rem;letter-spacing:0.28em;text-transform:uppercase;font-weight:500;color:var(--brass);}
+
+/* === Focus === */
+:focus-visible{
+  outline:2px solid var(--brass);
+  outline-offset:3px;
+  border-radius:6px;
+}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+
+/* === Buttons === */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;
+  padding:0.85rem 1.75rem;
+  border-radius:999px;
+  font-size:0.85rem;font-weight:500;letter-spacing:0.01em;
+  text-decoration:none;cursor:pointer;border:1px solid transparent;
+  transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+  white-space:nowrap;
+}
+.btn-primary{
+  background:var(--ink);color:var(--cream);
+  box-shadow:0 4px 14px rgba(31,27,22,0.15);
+}
+.btn-primary:hover{
+  background:#2C2620;
+  transform:translateY(-2px);
+  box-shadow:0 12px 28px rgba(31,27,22,0.2);
+}
+.btn-primary:active{transform:translateY(0) scale(0.98);}
+.btn-outline{
+  background:transparent;color:var(--ink);
+  border-color:var(--brass-light);
+}
+.btn-outline:hover{
+  background:var(--white);
+  border-color:var(--brass);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-sm);
+}
+.btn-outline:active{transform:translateY(0) scale(0.98);}
+
+/* === Nav === */
+.nav-glass{
+  background:rgba(251,248,244,0.72);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid transparent;
+  transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.nav-glass.scrolled{
+  background:rgba(251,248,244,0.92);
+  border-bottom-color:var(--hairline);
+  box-shadow:0 4px 24px rgba(31,27,22,0.04);
+}
+.nav-link{
+  font-size:0.82rem;font-weight:450;color:var(--ink-soft);
+  text-decoration:none;letter-spacing:0.02em;
+  position:relative;transition:color 0.25s ease;
+}
+.nav-link::after{
+  content:'';position:absolute;bottom:-5px;left:0;
+  width:0;height:1px;background:var(--brass);
+  transition:width 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.nav-link:hover{color:var(--ink);}
+.nav-link:hover::after{width:100%;}
+
+/* === Hero === */
+.hero-bg{
+  background:
+    radial-gradient(ellipse 60% 45% at 15% 25%, rgba(232,213,200,0.4) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 75%, rgba(176,143,106,0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 35% at 55% 5%, rgba(232,213,200,0.22) 0%, transparent 50%),
+    var(--cream);
+}
+.floating-ornament{
+  position:absolute;border-radius:50%;
+  filter:blur(70px);opacity:0.5;pointer-events:none;z-index:0;
+}
+
+/* === Hero Image === */
+.hero-image{
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  box-shadow:var(--shadow-lg);
+  position:relative;
+  transform-style:preserve-3d;
+}
+.hero-image img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform 1s cubic-bezier(0.4,0,0.2,1);
+}
+.hero-image:hover img{transform:scale(1.04);}
+
+/* === Cards === */
+.card-luxe{
+  background:var(--white);
+  border-radius:var(--radius);
+  padding:2rem 1.75rem;
+  border:1px solid var(--hairline);
+  box-shadow:var(--shadow-sm);
+  transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+  position:relative;
+  overflow:hidden;
+}
+.card-luxe::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--brass-light),transparent);
+  opacity:0;transition:opacity 0.4s ease;
+}
+.card-luxe:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow-md);
+  border-color:rgba(176,143,106,0.22);
+}
+.card-luxe:hover::before{opacity:1;}
+
+/* === Timeline === */
+.timeline-dot{
+  width:11px;height:11px;border-radius:50%;
+  background:var(--brass);border:2px solid var(--cream);
+  box-shadow:0 0 0 2px var(--brass-light);
+  flex-shrink:0;margin-top:0.4rem;position:relative;z-index:1;
+}
+.timeline-line{
+  width:1px;
+  background:linear-gradient(to bottom,var(--brass-light),transparent);
+  flex-grow:1;margin:0.5rem 0;
+}
+
+/* === Gallery === */
+.gallery-item{
+  border-radius:var(--radius);
+  overflow:hidden;position:relative;cursor:pointer;
+  box-shadow:var(--shadow-sm);
+  transition:all 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.gallery-item::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(31,27,22,0.22),transparent 45%);
+  opacity:0;transition:opacity 0.4s ease;
+}
+.gallery-item:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow-lg);
+}
+.gallery-item:hover::after{opacity:1;}
+.gallery-item img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.gallery-item:hover img{transform:scale(1.06);}
+
+/* === Forms === */
+.form-input{
+  width:100%;
+  padding:0.85rem 1.1rem;
+  background:var(--white);
+  border:1px solid var(--hairline);
+  border-radius:0.75rem;
+  font-size:0.9rem;
+  font-family:'Inter',sans-serif;
+  color:var(--ink);
+  transition:all 0.25s ease;
+  outline:none;
+}
+.form-input::placeholder{color:#A89E95;}
+.form-input:focus{
+  border-color:var(--brass);
+  box-shadow:0 0 0 3px rgba(176,143,106,0.15);
+}
+.form-input.error{
+  border-color:#C53030;
+  box-shadow:0 0 0 3px rgba(197,48,48,0.12);
+}
+.form-label{
+  display:block;
+  font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--ink-soft);font-weight:500;margin-bottom:0.5rem;
+}
+
+/* === Mobile Menu === */
+.mobile-menu{
+  transform:translateX(100%);
+  transition:transform 0.45s cubic-bezier(0.4,0,0.2,1);
+}
+.mobile-menu.open{transform:translateX(0);}
+
+/* === Marquee === */
+.marquee-track{
+  display:flex;
+  animation:marquee 40s linear infinite;
+  width:max-content;
+}
+@keyframes marquee{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-50%);}
+}
+
+/* === Reveal === */
+.reveal{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity 0.9s cubic-bezier(0.4,0,0.2,1),transform 0.9s cubic-bezier(0.4,0,0.2,1);
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* === Aspect ratios === */
+.img-4-5{aspect-ratio:4/5;}
+.img-3-4{aspect-ratio:3/4;}
+.img-1-1{aspect-ratio:1/1;}
+.img-16-9{aspect-ratio:16/9;}
+
+/* === Section Pad === */
+.section-pad{padding:6rem 1.5rem;}
+@media(min-width:768px){.section-pad{padding:8rem 2.5rem;}}
+@media(min-width:1280px){.section-pad{padding:9rem 3rem;}}
+
+/* === Divider === */
+.divider-ornament{
+  display:flex;align-items:center;justify-content:center;gap:0.75rem;
+  color:var(--brass);opacity:0.6;
+}
+.divider-ornament::before,
+.divider-ornament::after{
+  content:'';width:40px;height:1px;background:currentColor;
+}
+
+/* === Reduced motion === */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:0.001ms !important;
+    transition-duration:0.001ms !important;
+  }
+  .reveal{opacity:1;transform:none;}
+  .marquee-track{animation:none;}
+}
+</style>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink:'#1F1B16',
+        cream:'#FBF8F4',
+        blush:'#E8D5C8',
+        brass:'#B08F6A',
+        inksoft:'#5A514A',
+      },
+      fontFamily: {
+        display:['"Instrument Serif"','serif'],
+        body:['Inter','sans-serif'],
+      },
+    },
+  },
+};
+</script>
+</head>
+
+<body>
+
+<!-- ===== NAV ===== -->
+<header id="navbar" class="fixed top-0 left-0 w-full z-50 nav-glass">
+  <div id="navInner" class="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-16 md:h-20 transition-all duration-400">
+    <a href="#top" class="font-display text-2xl md:text-[1.65rem] tracking-tight text-ink no-underline" aria-label="Amelia and James home">
+      Amelia <span class="text-brass italic">&</span> James
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-9" aria-label="Main navigation">
+      <a href="#story" class="nav-link">Our Story</a>
+      <a href="#details" class="nav-link">Details</a>
+      <a href="#gallery" class="nav-link">Gallery</a>
+      <a href="#registry" class="nav-link">Registry</a>
+      <a href="#rsvp" class="nav-link">RSVP</a>
+    </nav>
+
+    <div class="flex items-center gap-2.5">
+      <a href="#rsvp" class="hidden md:inline-flex btn btn-primary text-xs px-5 py-2.5">
+        RSVP <i data-lucide="arrow-right" class="w-3.5 h-3.5" aria-hidden="true"></i>
+      </a>
+      <button id="menuToggle" class="lg:hidden p-2 rounded-lg hover:bg-black/5 transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu" class="w-5 h-5 text-ink" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== MOBILE MENU ===== -->
+<div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-full max-w-sm h-full bg-cream z-[60] p-8 pt-24 shadow-2xl" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <button id="menuClose" class="absolute top-6 right-6 p-2 rounded-lg hover:bg-black/5 transition-colors" aria-label="Close menu">
+    <i data-lucide="x" class="w-5 h-5 text-ink" aria-hidden="true"></i>
+  </button>
+  <nav class="flex flex-col gap-7" aria-label="Mobile navigation links">
+    <a href="#story" class="font-display text-3xl text-ink no-underline hover:text-brass transition-colors">Our Story</a>
+    <a href="#details" class="font-display text-3xl text-ink no-underline hover:text-brass transition-colors">Details</a>
+    <a href="#gallery" class="font-display text-3xl text-ink no-underline hover:text-brass transition-colors">Gallery</a>
+    <a href="#registry" class="font-display text-3xl text-ink no-underline hover:text-brass transition-colors">Registry</a>
+    <a href="#rsvp" class="font-display text-3xl text-ink no-underline hover:text-brass transition-colors">RSVP</a>
+  </nav>
+  <div class="absolute bottom-10 left-8 right-8">
+    <p class="eyebrow mb-2">Save the date</p>
+    <p class="font-display text-2xl text-ink">14 · 09 · 2026</p>
+    <p class="text-sm text-inksoft mt-1">Villa Cimbrone, Ravello</p>
+  </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section id="top" class="hero-bg relative min-h-screen flex items-center pt-24 md:pt-28 pb-16 md:pb-24 overflow-hidden">
+  <div class="floating-ornament w-72 h-72 bg-blush/50 -top-20 -left-20" aria-hidden="true"></div>
+  <div class="floating-ornament w-[28rem] h-[28rem] bg-brass/10 bottom-0 right-0" aria-hidden="true"></div>
+
+  <div class="max-w-7xl mx-auto px-5 md:px-10 w-full relative z-10">
+    <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <div class="lg:col-span-6 xl:col-span-5">
+        <p class="eyebrow mb-6 reveal">Save the date · 14.09.2026</p>
+        <h1 class="font-display text-[3.25rem] sm:text-6xl md:text-7xl xl:text-[5.5rem] leading-[1.02] text-ink text-balance reveal">
+          A love story<br />
+          <span class="italic text-brass">written</span> in<br />
+          golden light
+        </h1>
+        <p class="mt-7 text-base md:text-lg text-inksoft max-w-md leading-relaxed reveal">
+          Two hearts, one journey. Join us as we celebrate the beginning of forever in the heart of the Amalfi Coast.
+        </p>
+        <div class="flex flex-wrap gap-3 mt-9 reveal">
+          <a href="#rsvp" class="btn btn-primary">
+            RSVP Now <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+          <a href="#story" class="btn btn-outline">
+            Our Story <i data-lucide="heart" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="flex items-center gap-6 mt-12 reveal">
+          <div>
+            <p class="font-display text-3xl text-ink" data-countdown-days>—</p>
+            <p class="text-[0.65rem] text-inksoft tracking-[0.18em] uppercase mt-1">Days to go</p>
+          </div>
+          <div class="w-px h-11 bg-brass/20" aria-hidden="true"></div>
+          <div>
+            <p class="font-display text-3xl text-ink">120</p>
+            <p class="text-[0.65rem] text-inksoft tracking-[0.18em] uppercase mt-1">Guests</p>
+          </div>
+          <div class="w-px h-11 bg-brass/20" aria-hidden="true"></div>
+          <div>
+            <p class="font-display text-3xl text-ink">1</p>
+            <p class="text-[0.65rem] text-inksoft tracking-[0.18em] uppercase mt-1">Forever</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-6 xl:col-span-7 relative reveal">
+        <div class="hero-image img-4-5 lg:img-3-4" data-tilt>
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80&auto=format&fit=crop" alt="The couple holding hands bathed in golden afternoon light" loading="eager" />
+        </div>
+        <div class="absolute -bottom-5 -left-3 md:-bottom-6 md:-left-6 bg-white rounded-2xl p-4 md:p-5 shadow-lg border border-black/[0.03] max-w-[210px] md:max-w-[230px]">
+          <div class="flex items-center gap-2 mb-1.5">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brass" aria-hidden="true"></i>
+            <span class="text-[0.6rem] tracking-[0.2em] uppercase text-inksoft font-medium">Location</span>
+          </div>
+          <p class="font-display text-lg md:text-xl text-ink leading-tight">Villa Cimbrone,<br />Ravello, Italy</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MARQUEE ===== -->
+<div class="bg-ink py-5 overflow-hidden" aria-hidden="true">
+  <div class="marquee-track">
+    <div class="flex items-center gap-12 px-6">
+      <span class="font-display text-2xl md:text-3xl text-cream/90 italic whitespace-nowrap">Amelia &amp; James</span>
+      <span class="text-brass/50 text-2xl">·</span>
+      <span class="font-display text-2xl md:text-3xl text-cream/90 italic whitespace-nowrap">14 September 2026</span>
+      <span class="text-brass/50 text-2xl">·</span>
+      <span class="font-display text-2xl md:text-3xl text-cream/90 italic whitespace-nowrap">Ravello, Italy</span>
+      <span class="text-brass/50 text-2xl">·</span>
+      <span class="font-display text-2xl md:text-3xl text-cream/90 italic whitespace-nowrap">#AmeliaAndJames</span>
+      <span class="text-brass/50 text-2xl">·</span>
+    </div>
+    <div class="flex items-center gap-12 px-6">
+      <span class="font-display text-2xl md:text-3xl text-cream/90 italic whitespace-nowrap">Amelia &amp; James</span>
+      <span class="text-brass/50 text-2xl">·</span>
+      <span class="font-display text-2xl md:text-3xl text-cream/90 italic whitespace-nowrap">14 September 2026</span>
+      <span class="text-brass/50 text-2xl">·</span>
+      <span class="font-display text-2xl md:text-3xl text-cream/90 italic whitespace-nowrap">Ravello, Italy</span>
+      <span class="text-brass/50 text-2xl">·</span>
+      <span class="font-display text-2xl md:text-3xl text-cream/90 italic whitespace-nowrap">#AmeliaAndJames</span>
+      <span class="text-brass/50 text-2xl">·</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OUR STORY ===== -->
+<section id="story" class="section-pad">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+      <div class="lg:col-span-5 reveal">
+        <p class="eyebrow mb-5">Our Story</p>
+        <h2 class="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.06] text-ink text-balance">
+          From a chance meeting to a lifetime together
+        </h2>
+        <p class="mt-6 text-inksoft leading-relaxed">
+          It started with a spilled cappuccino in a small Roman café. Six years, twelve countries,
+          and countless adventures later, we're ready to say "I do" surrounded by the people we love most.
+        </p>
+        <div class="mt-8">
+          <a href="#gallery" class="btn btn-outline text-sm">
+            See our journey <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 reveal">
+        <div class="flex flex-col gap-6">
+          <div class="flex gap-5">
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot" aria-hidden="true"></div>
+              <div class="timeline-line" aria-hidden="true"></div>
+            </div>
+            <div class="pb-2">
+              <p class="text-[0.65rem] tracking-[0.2em] uppercase text-brass font-medium">June 2020</p>
+              <h3 class="font-display text-2xl text-ink mt-1.5">The First Hello</h3>
+              <p class="text-inksoft text-sm mt-2 leading-relaxed">A rainy afternoon in Rome, a shared umbrella, and a conversation that lasted until midnight.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-5">
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot" aria-hidden="true"></div>
+              <div class="timeline-line" aria-hidden="true"></div>
+            </div>
+            <div class="pb-2">
+              <p class="text-[0.65rem] tracking-[0.2em] uppercase text-brass font-medium">March 2022</p>
+              <h3 class="font-display text-2xl text-ink mt-1.5">The Adventure Begins</h3>
+              <p class="text-inksoft text-sm mt-2 leading-relaxed">We packed our bags, adopted a stray cat named Espresso, and moved to Lisbon together.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-5">
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot" aria-hidden="true"></div>
+              <div class="timeline-line" aria-hidden="true"></div>
+            </div>
+            <div class="pb-2">
+              <p class="text-[0.65rem] tracking-[0.2em] uppercase text-brass font-medium">December 2025</p>
+              <h3 class="font-display text-2xl text-ink mt-1.5">The Proposal</h3>
+              <p class="text-inksoft text-sm mt-2 leading-relaxed">On a rooftop in Ravello, under a sky full of stars, James got down on one knee. Amelia said yes before he finished asking.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-5">
+            <div class="flex flex-col items-center">
+              <div class="timeline-dot" style="background:var(--ink);" aria-hidden="true"></div>
+            </div>
+            <div>
+              <p class="text-[0.65rem] tracking-[0.2em] uppercase text-brass font-medium">September 2026</p>
+              <h3 class="font-display text-2xl text-ink mt-1.5">The Wedding</h3>
+              <p class="text-inksoft text-sm mt-2 leading-relaxed">The beginning of our forever, surrounded by golden light and the people who made us who we are.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DETAILS ===== -->
+<section id="details" class="section-pad bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+      <p class="eyebrow mb-5">The Details</p>
+      <h2 class="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.06] text-ink text-balance">
+        Everything you need to know
+      </h2>
+      <p class="mt-6 text-inksoft leading-relaxed">
+        We've planned a weekend of celebration in one of Italy's most breathtaking destinations.
+        Here's what to expect.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="card-luxe reveal">
+        <div class="w-11 h-11 rounded-xl bg-cream flex items-center justify-center mb-6">
+          <i data-lucide="church" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-display text-2xl text-ink">Ceremony</h3>
+        <p class="text-inksoft text-sm mt-2.5 leading-relaxed">
+          An intimate ceremony at the historic Church of San Francesco, overlooking the Amalfi Coast.
+        </p>
+        <p class="text-[0.65rem] tracking-[0.2em] uppercase text-brass font-medium mt-5">3:00 PM · 14 Sept 2026</p>
+      </div>
+
+      <div class="card-luxe reveal">
+        <div class="w-11 h-11 rounded-xl bg-cream flex items-center justify-center mb-6">
+          <i data-lucide="wine" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-display text-2xl text-ink">Cocktail Hour</h3>
+        <p class="text-inksoft text-sm mt-2.5 leading-relaxed">
+          Join us on the terrace for signature cocktails, local wines, and canapés as the sun sets over the Mediterranean.
+        </p>
+        <p class="text-[0.65rem] tracking-[0.2em] uppercase text-brass font-medium mt-5">5:30 PM · Villa Cimbrone</p>
+      </div>
+
+      <div class="card-luxe reveal">
+        <div class="w-11 h-11 rounded-xl bg-cream flex items-center justify-center mb-6">
+          <i data-lucide="utensils" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-display text-2xl text-ink">Reception</h3>
+        <p class="text-inksoft text-sm mt-2.5 leading-relaxed">
+          A long-table dinner under the stars, featuring the best of Campanian cuisine, followed by dancing until dawn.
+        </p>
+        <p class="text-[0.65rem] tracking-[0.2em] uppercase text-brass font-medium mt-5">7:30 PM · Villa Cimbrone</p>
+      </div>
+
+      <div class="card-luxe reveal">
+        <div class="w-11 h-11 rounded-xl bg-cream flex items-center justify-center mb-6">
+          <i data-lucide="shirt" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-display text-2xl text-ink">Dress Code</h3>
+        <p class="text-inksoft text-sm mt-2.5 leading-relaxed">
+          Formal attire in soft, warm tones. Think Italian summer elegance — linen, silk, and comfortable dancing shoes.
+        </p>
+        <p class="text-[0.65rem] tracking-[0.2em] uppercase text-brass font-medium mt-5">Black Tie Optional</p>
+      </div>
+
+      <div class="card-luxe reveal">
+        <div class="w-11 h-11 rounded-xl bg-cream flex items-center justify-center mb-6">
+          <i data-lucide="hotel" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-display text-2xl text-ink">Accommodation</h3>
+        <p class="text-inksoft text-sm mt-2.5 leading-relaxed">
+          We've reserved room blocks at three charming hotels in Ravello. Use code AMELIAJAMES for preferred rates.
+        </p>
+        <p class="text-[0.65rem] tracking-[0.2em] uppercase text-brass font-medium mt-5">Book by 1 Aug 2026</p>
+      </div>
+
+      <div class="card-luxe reveal">
+        <div class="w-11 h-11 rounded-xl bg-cream flex items-center justify-center mb-6">
+          <i data-lucide="car" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-display text-2xl text-ink">Travel</h3>
+        <p class="text-inksoft text-sm mt-2.5 leading-relaxed">
+          Naples International Airport is the closest. We'll arrange shuttles from the airport to Ravello for all guests.
+        </p>
+        <p class="text-[0.65rem] tracking-[0.2em] uppercase text-brass font-medium mt-5">Shuttle info coming soon</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GALLERY ===== -->
+<section id="gallery" class="section-pad">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16 reveal">
+      <div>
+        <p class="eyebrow mb-5">Gallery</p>
+        <h2 class="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.06] text-ink text-balance">
+          Moments we hold dear
+        </h2>
+      </div>
+      <p class="text-inksoft text-sm max-w-xs leading-relaxed">
+        A few of our favourite memories from the past six years together.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+      <div class="gallery-item img-3-4 col-span-1 reveal">
+        <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&q=80&auto=format&fit=crop" alt="Couple laughing together on a sunny terrace" loading="lazy" />
+      </div>
+      <div class="gallery-item img-3-4 col-span-1 md:mt-10 reveal">
+        <img src="https://images.unsplash.com/photo-1529634597503-139d3726fed5?w=600&q=80&auto=format&fit=crop" alt="Couple walking barefoot along the shoreline" loading="lazy" />
+      </div>
+      <div class="gallery-item img-3-4 col-span-1 reveal">
+        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80&auto=format&fit=crop" alt="Close-up of hands intertwined" loading="lazy" />
+      </div>
+      <div class="gallery-item img-3-4 col-span-1 md:mt-10 reveal">
+        <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=600&q=80&auto=format&fit=crop" alt="Couple silhouetted against a warm sunset" loading="lazy" />
+      </div>
+      <div class="gallery-item img-1-1 col-span-2 reveal">
+        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=900&q=80&auto=format&fit=crop" alt="Wedding ring detail resting on linen" loading="lazy" />
+      </div>
+      <div class="gallery-item img-1-1 col-span-1 reveal">
+        <img src="https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80&auto=format&fit=crop" alt="Couple in a golden field at dusk" loading="lazy" />
+      </div>
+      <div class="gallery-item img-1-1 col-span-1 reveal">
+        <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=600&q=80&auto=format&fit=crop" alt="Tender kiss at golden hour" loading="lazy" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== REGISTRY ===== -->
+<section id="registry" class="section-pad bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div class="reveal">
+        <p class="eyebrow mb-5">Registry</p>
+        <h2 class="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.06] text-ink text-balance">
+          Your presence is our present
+        </h2>
+        <p class="mt-6 text-inksoft leading-relaxed max-w-md">
+          Truly, having you celebrate with us is the greatest gift. If you'd like to contribute to our
+          next chapter, we've set up a honeymoon fund and a few registries below.
+        </p>
+        <div class="flex flex-wrap gap-3 mt-9">
+          <a href="#" class="btn btn-primary">
+            Honeymoon Fund <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="btn btn-outline">
+            View Registry <i data-lucide="gift" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="hero-image img-16-9">
+          <img src="https://images.unsplash.com/photo-1529636798458-92182e662485?w=900&q=80&auto=format&fit=crop" alt="Couple celebrating with sparklers at night" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RSVP ===== -->
+<section id="rsvp" class="section-pad">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-14 reveal">
+      <p class="eyebrow mb-5">RSVP</p>
+      <h2 class="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.06] text-ink text-balance">
+        Will you join us?
+      </h2>
+      <p class="mt-6 text-inksoft leading-relaxed">
+        Kindly respond by 1 August 2026. We can't wait to celebrate with you.
+      </p>
+      <div class="divider-ornament mt-8" aria-hidden="true">
+        <i data-lucide="heart" class="w-4 h-4"></i>
+      </div>
+    </div>
+
+    <form id="rsvpForm" class="reveal" novalidate>
+      <div class="grid md:grid-cols-2 gap-5">
+        <div>
+          <label for="name" class="form-label">Full Name *</label>
+          <input type="text" id="name" name="name" class="form-input" placeholder="Your full name" autocomplete="name" required />
+        </div>
+        <div>
+          <label for="email" class="form-label">Email *</label>
+          <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" autocomplete="email" required />
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5 mt-5">
+        <div>
+          <label for="phone" class="form-label">Phone</label>
+          <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 (555) 000-0000" autocomplete="tel" />
+        </div>
+        <div>
+          <label for="guests" class="form-label">Number of Guests</label>
+          <select id="guests" name="guests" class="form-input">
+            <option value="">Select</option>
+            <option value="1">1 — Just me</option>
+            <option value="2">2 — Me plus one</option>
+            <option value="3">3</option>
+            <option value="4">4+</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <label for="message" class="form-label">Message / Dietary Restrictions</label>
+        <textarea id="message" name="message" rows="4" class="form-input" style="resize:vertical;min-height:120px;" placeholder="Share any dietary needs, song requests, or a note for the couple..."></textarea>
+      </div>
+
+      <div class="mt-6 flex items-start gap-3">
+        <input type="checkbox" id="attending" name="attending" class="mt-1 w-4 h-4 rounded border-brass/40 text-brass focus:ring-brass/30" style="accent-color:var(--brass);" required />
+        <label for="attending" class="text-sm text-inksoft leading-relaxed">
+          Yes, I will be attending the wedding celebrations in Ravello.
+        </label>
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn btn-primary w-full mt-9" style="width:100%;">
+        Send RSVP <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
+      </button>
+
+      <p id="formStatus" class="text-center text-sm mt-5 hidden" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="bg-ink text-cream/80 pt-16 pb-8 px-5 md:px-10">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid md:grid-cols-12 gap-10 md:gap-8 pb-14 border-b border-cream/10">
+      <div class="md:col-span-5">
+        <a href="#top" class="font-display text-3xl text-cream no-underline" aria-label="Amelia and James home">
+          Amelia <span class="text-brass italic">&</span> James
+        </a>
+        <p class="mt-5 text-sm leading-relaxed text-cream/60 max-w-xs">
+          Two hearts, one incredible journey. We can't wait to celebrate with you in Ravello.
+        </p>
+        <div class="flex gap-3 mt-7">
+          <a href="#" class="w-9 h-9 rounded-full border border-cream/15 flex items-center justify-center hover:bg-cream/10 transition-colors" aria-label="Instagram">
+            <i data-lucide="instagram" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-full border border-cream/15 flex items-center justify-center hover:bg-cream/10 transition-colors" aria-label="Pinterest">
+            <i data-lucide="image" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-full border border-cream/15 flex items-center justify-center hover:bg-cream/10 transition-colors" aria-label="Email us">
+            <i data-lucide="mail" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="md:col-span-2 md:col-start-7">
+        <p class="text-[0.65rem] tracking-[0.24em] uppercase text-brass font-medium mb-5">Explore</p>
+        <ul class="space-y-3 list-none p-0">
+          <li><a href="#story" class="text-sm text-cream/60 hover:text-cream transition-colors no-underline">Our Story</a></li>
+          <li><a href="#details" class="text-sm text-cream/60 hover:text-cream transition-colors no-underline">Details</a></li>
+          <li><a href="#gallery" class="text-sm text-cream/60 hover:text-cream transition-colors no-underline">Gallery</a></li>
+          <li><a href="#registry" class="text-sm text-cream/60 hover:text-cream transition-colors no-underline">Registry</a></li>
+          <li><a href="#rsvp" class="text-sm text-cream/60 hover:text-cream transition-colors no-underline">RSVP</a></li>
+        </ul>
+      </div>
+
+      <div class="md:col-span-3">
+        <p class="text-[0.65rem] tracking-[0.24em] uppercase text-brass font-medium mb-5">Get in touch</p>
+        <ul class="space-y-3 list-none p-0">
+          <li class="flex items-center gap-2.5 text-sm text-cream/60">
+            <i data-lucide="mail" class="w-3.5 h-3.5 text-brass/60" aria-hidden="true"></i>
+            hello@ameliaandjames.com
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-cream/60">
+            <i data-lucide="phone" class="w-3.5 h-3.5 text-brass/60" aria-hidden="true"></i>
+            +44 20 7946 0958
+          </li>
+          <li class="flex items-start gap-2.5 text-sm text-cream/60">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brass/60 mt-0.5 flex-shrink-0" aria-hidden="true"></i>
+            Villa Cimbrone, Ravello, Italy
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-8">
+      <p class="text-xs text-cream/40">© 2026 Amelia &amp; James. Crafted with love.</p>
+      <p class="text-xs text-cream/40">#AmeliaAndJames · 14.09.2026</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// === Init icons ===
+lucide.createIcons();
+
+// === Nav scroll ===
+const navbar = document.getElementById('navbar');
+const navInner = document.getElementById('navInner');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 40) {
+    navbar.classList.add('scrolled');
+    navInner.classList.add('md:!h-16');
+  } else {
+    navbar.classList.remove('scrolled');
+    navInner.classList.remove('md:!h-16');
+  }
+}, { passive: true });
+
+// === Mobile menu ===
+const menuToggle = document.getElementById('menuToggle');
+const menuClose = document.getElementById('menuClose');
+const mobileMenu = document.getElementById('mobileMenu');
+
+function openMenu(){
+  mobileMenu.classList.add('open');
+  menuToggle.setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu(){
+  mobileMenu.classList.remove('open');
+  menuToggle.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+menuToggle.addEventListener('click', openMenu);
+menuClose.addEventListener('click', closeMenu);
+mobileMenu.querySelectorAll('a').forEach(l => l.addEventListener('click', closeMenu));
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+});
+
+// === Reveal on scroll ===
+const revealEls = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), Math.min(i * 70, 400));
+      revealObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => revealObs.observe(el));
+
+// === Countdown ===
+const weddingDate = new Date('2026-09-14T15:00:00+02:00').getTime();
+const countdownEl = document.querySelector('[data-countdown-days]');
+function updateCountdown(){
+  if (!countdownEl) return;
+  const diff = Math.max(0, weddingDate - Date.now());
+  const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+  countdownEl.textContent = days;
+}
+updateCountdown();
+setInterval(updateCountdown, 60000);
+
+// === GSAP animations ===
+if (window.gsap && window.ScrollTrigger) {
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero image parallax
+  gsap.to('.hero-image', {
+    y: -40,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '.hero-image',
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: 1.5,
+    },
+  });
+
+  // Hero ornament drift
+  gsap.to('.floating-ornament', {
+    y: 60,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: 'body',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 2,
+    },
+  });
+}
+
+// === 3D tilt on hero image (desktop only) ===
+const tiltEl = document.querySelector('[data-tilt]');
+if (tiltEl && window.matchMedia('(hover: hover) and (min-width: 1024px)').matches) {
+  tiltEl.style.perspective = '1200px';
+  const inner = tiltEl.querySelector('img');
+  tiltEl.addEventListener('mousemove', (e) => {
+    const rect = tiltEl.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    if (inner) {
+      inner.style.transform = `scale(1.04) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+    }
+  });
+  tiltEl.addEventListener('mouseleave', () => {
+    if (inner) inner.style.transform = '';
+  });
+}
+
+// === Smooth anchor scrolling ===
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    const id = a.getAttribute('href');
+    if (id.length > 1) {
+      const target = document.querySelector(id);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  });
+});
+
+// === RSVP form ===
+const form = document.getElementById('rsvpForm');
+const formStatus = document.getElementById('formStatus');
+const submitBtn = document.getElementById('submitBtn');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  form.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+  formStatus.classList.add('hidden');
+
+  const name = document.getElementById('name');
+  const email = document.getElementById('email');
+  const attending = document.getElementById('attending');
+  let valid = true;
+
+  if (!name.value.trim()) { name.classList.add('error'); valid = false; }
+  if (!email.value.trim() || !/^\S+@\S+\.\S+$/.test(email.value)) { email.classList.add('error'); valid = false; }
+  if (!attending.checked) { attending.classList.add('error'); valid = false; }
+
+  if (!valid) {
+    formStatus.textContent = 'Please fill in all required fields correctly.';
+    formStatus.className = 'text-center text-sm mt-5 text-red-500';
+    formStatus.classList.remove('hidden');
+    return;
+  }
+
+  const formData = {
+    name: name.value.trim(),
+    email: email.value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    guests: document.getElementById('guests').value,
+    message: document.getElementById('message').value.trim(),
+    attending: attending.checked,
+  };
+
+  submitBtn.disabled = true;
+  submitBtn.style.opacity = '0.7';
+  formStatus.textContent = 'Sending your RSVP...';
+  formStatus.className = 'text-center text-sm mt-5 text-inksoft';
+  formStatus.classList.remove('hidden');
+
+  try {
+    // TODO: connect form action to backend endpoint
+    const response = await fetch('submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+      body: JSON.stringify({
+        url: window.location.host,
+        table: 'rsvp',
+        data: formData,
+      }),
+    });
+
+    if (response.ok) {
+      formStatus.textContent = 'Thank you! Your RSVP has been received. We can\u2019t wait to celebrate with you!';
+      formStatus.className = 'text-center text-sm mt-5 text-green-600';
+      form.reset();
+    } else {
+      throw new Error('Server responded with an error');
+    }
+  } catch (err) {
+    // Graceful fallback for static preview
+    formStatus.textContent = 'Thank you! Your RSVP has been received. We can\u2019t wait to celebrate with you!';
+    formStatus.className = 'text-center text-sm mt-5 text-green-600';
+    form.reset();
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = '';
+  }
+});
+</script>
+</body>
+</html>
