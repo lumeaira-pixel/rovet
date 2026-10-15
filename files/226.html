@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>DIECAST DISPLAY — Premium Diecast Cars</title>
+  <!-- Google Fonts + Tailwind CDN + Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Bricolage+Grotesque:opsz,wght@12..96,300..800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0A0A0A;
+      --ink-soft: #1A1A1A;
+      --silver: #C0C0C0;
+      --silver-light: #E8E8E8;
+      --platinum: #F5F5F7;
+      --paper: #FFFFFF;
+      --accent: #B0B0B0;
+      --glass: rgba(255, 255, 255, 0.06);
+      --glass-strong: rgba(255, 255, 255, 0.1);
+      --border-light: rgba(255, 255, 255, 0.12);
+      --border-dark: rgba(0, 0, 0, 0.08);
+      --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.06);
+      --radius-xl: 1.25rem;
+      --radius-2xl: 1.5rem;
+      --radius-3xl: 2rem;
+      --font-display: 'Bricolage Grotesque', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --focus-ring: 0 0 0 3px rgba(255, 255, 255, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* === Typography === */
+    h1, h2, h3, h4, h5, h6, .display-font {
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .text-hero {
+      font-size: clamp(3.5rem, 12vw, 8rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .text-section {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    /* === Layout & Spacing === */
+    .container-lux {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .container-lux {
+        padding: 0 2.5rem;
+      }
+    }
+
+    .section-pad {
+      padding: 6rem 0;
+    }
+
+    @media (min-width: 768px) {
+      .section-pad {
+        padding: 8rem 0;
+      }
+    }
+
+    /* === Glass & Surfaces === */
+    .glass-panel {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-2xl);
+    }
+
+    .glass-panel-dark {
+      background: rgba(10, 10, 10, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-2xl);
+    }
+
+    .premium-card {
+      background: var(--paper);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+
+    .premium-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-premium);
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+      padding: 1rem 2.25rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      font-family: var(--font-body);
+    }
+
+    .btn-primary:hover {
+      background: var(--ink-soft);
+      transform: scale(1.03);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring), 0 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 1rem 2.25rem;
+      border-radius: 100px;
+      border: 1.5px solid var(--ink);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      font-family: var(--font-body);
+    }
+
+    .btn-outline:hover {
+      background: var(--ink);
+      color: var(--paper);
+      transform: scale(1.03);
+    }
+
+    .btn-outline:active {
+      transform: scale(0.97);
+    }
+
+    .btn-outline:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring), 0 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* === Navigation === */
+    .nav-sticky {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      padding: 1.25rem 0;
+      background: transparent;
+    }
+
+    .nav-sticky.scrolled {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .nav-link {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: opacity 0.2s ease;
+      position: relative;
+      padding: 0.25rem 0;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--ink);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-link:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Hero === */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(160deg, #FAFAFB 0%, #FFFFFF 40%, #F5F5F7 100%);
+      position: relative;
+      overflow: hidden;
+      padding-top: 6rem;
+    }
+
+    .hero-grain {
+      position: absolute;
+      inset: 0;
+      opacity: 0.4;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .hero-visual {
+      position: relative;
+      perspective: 1200px;
+    }
+
+    .hero-car-image {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 40px 60px rgba(0, 0, 0, 0.15));
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .hero-car-image:hover {
+      transform: scale(1.02) rotateY(-3deg) rotateX(2deg);
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      gap: 2rem;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Product Cards === */
+    .product-card {
+      background: var(--paper);
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      border: 1px solid var(--border-dark);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: var(--shadow-premium);
+    }
+
+    .product-card:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring), var(--shadow-premium);
+    }
+
+    .product-image-wrap {
+      aspect-ratio: 1/1;
+      background: linear-gradient(145deg, #F8F9FC, #E8E8EC);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow: hidden;
+    }
+
+    .product-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-image-wrap img {
+      transform: scale(1.08);
+    }
+
+    /* === Category Pills === */
+    .category-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 100px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1.5px solid var(--border-dark);
+      background: var(--paper);
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: var(--font-body);
+      text-decoration: none;
+    }
+
+    .category-pill:hover,
+    .category-pill.active {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    .category-pill:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    /* === Modal / Cart Drawer === */
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 440px;
+      background: var(--paper);
+      box-shadow: -20px 0 60px rgba(0, 0, 0, 0.15);
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--border-dark);
+    }
+
+    .cart-drawer.open {
+      transform: translateX(0);
+    }
+
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1999;
+    }
+
+    .cart-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* === Checkout Modal === */
+    .checkout-modal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 1rem;
+    }
+
+    .checkout-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .checkout-modal .modal-content {
+      background: var(--paper);
+      border-radius: var(--radius-3xl);
+      max-width: 560px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2.5rem;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+
+    .checkout-modal.open .modal-content {
+      transform: scale(1);
+    }
+
+    /* === Form Elements === */
+    .form-input {
+      width: 100%;
+      padding: 0.9rem 1.25rem;
+      border-radius: var(--radius-xl);
+      border: 1.5px solid var(--border-dark);
+      background: var(--paper);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--ink);
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06);
+    }
+
+    .form-input::placeholder {
+      color: #999;
+    }
+
+    .form-input.error {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.08);
+    }
+
+    /* === Animations === */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .reveal-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s; opacity: 1; transform: translateY(0); }
+    .reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.1s; opacity: 1; transform: translateY(0); }
+    .reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.2s; opacity: 1; transform: translateY(0); }
+    .reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
+    .reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
+    .reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.5s; opacity: 1; transform: translateY(0); }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(30px);
+      z-index: 1500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .mobile-menu.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-menu a {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: var(--font-display);
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.03em;
+      transition: opacity 0.2s ease;
+    }
+
+    .mobile-menu a:hover {
+      opacity: 0.5;
+    }
+
+    /* === Stats === */
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    /* === Footer === */
+    .footer-link {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: #fff;
+    }
+
+    .footer-link:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+      border-radius: 2px;
+    }
+
+    /* === Utility === */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    .no-scroll {
+      overflow: hidden;
+    }
+
+    /* === Responsive Adjustments === */
+    @media (max-width: 640px) {
+      .section-pad {
+        padding: 4rem 0;
+      }
+      .cart-drawer {
+        max-width: 100%;
+      }
+      .checkout-modal .modal-content {
+        padding: 1.75rem;
+      }
+    }
+
+    /* === Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--silver);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HEADER / NAV ========== -->
+  <header class="nav-sticky" id="mainNav">
+    <div class="container-lux flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5" style="text-decoration: none;" aria-label="DIECAST DISPLAY home">
+        <div style="width: 36px; height: 36px; background: var(--ink); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+          </svg>
+        </div>
+        <span style="font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -0.03em; color: var(--ink);">DIECAST DISPLAY</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#collection" class="nav-link">Collection</a>
+        <a href="#categories" class="nav-link">Categories</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-3">
+        <!-- Search toggle -->
+        <button id="searchToggle" class="flex items-center justify-center" style="width: 40px; height: 40px; border-radius: 50%; border: none; background: transparent; cursor: pointer; transition: background 0.2s ease;" aria-label="Search">
+          <i data-lucide="search" style="width: 18px; height: 18px; color: var(--ink);" aria-hidden="true"></i>
+        </button>
+        <!-- Cart button -->
+        <button id="cartToggle" class="relative flex items-center justify-center" style="width: 40px; height: 40px; border-radius: 50%; border: none; background: transparent; cursor: pointer; transition: background 0.2s ease;" aria-label="Shopping cart">
+          <i data-lucide="shopping-bag" style="width: 18px; height: 18px; color: var(--ink);" aria-hidden="true"></i>
+          <span id="cartBadge" style="position: absolute; top: -2px; right: -2px; background: var(--ink); color: var(--paper); font-size: 0.6rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: none; align-items: center; justify-content: center;">0</span>
+        </button>
+        <!-- Mobile menu toggle -->
+        <button id="mobileToggle" class="md:hidden flex items-center justify-center" style="width: 40px; height: 40px; border-radius: 50%; border: none; background: transparent; cursor: pointer;" aria-label="Menu" aria-expanded="false">
+          <i data-lucide="menu" style="width: 20px; height: 20px; color: var(--ink);" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Bar (expandable) -->
+    <div id="searchBar" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-dark);">
+      <div class="container-lux" style="padding-top: 1rem; padding-bottom: 1rem;">
+        <div style="position: relative;">
+          <i data-lucide="search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: #999;" aria-hidden="true"></i>
+          <input type="text" id="searchInput" class="form-input" placeholder="Search diecast cars, brands, scales..." style="padding-left: 48px;" aria-label="Search products">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button id="mobileClose" style="position: absolute; top: 1.5rem; right: 1.5rem; width: 44px; height: 44px; border-radius: 50%; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;" aria-label="Close menu">
+      <i data-lucide="x" style="width: 24px; height: 24px;" aria-hidden="true"></i>
+    </button>
+    <a href="#collection" class="mobile-nav-link">Collection</a>
+    <a href="#categories" class="mobile-nav-link">Categories</a>
+    <a href="#about" class="mobile-nav-link">About</a>
+    <a href="#contact" class="mobile-nav-link">Contact</a>
+  </div>
+
+  <!-- ========== CART DRAWER ========== -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
+    <div style="padding: 1.5rem 1.5rem 1rem; border-bottom: 1px solid var(--border-dark); display: flex; align-items: center; justify-content: space-between;">
+      <h2 style="font-size: 1.25rem; font-weight: 700;">Your Cart</h2>
+      <button id="cartClose" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;" aria-label="Close cart">
+        <i data-lucide="x" style="width: 18px; height: 18px;" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div id="cartItems" style="flex: 1; overflow-y: auto; padding: 1.5rem;">
+      <p style="color: #999; text-align: center; padding: 3rem 0;">Your cart is empty</p>
+    </div>
+    <div id="cartFooter" style="padding: 1.5rem; border-top: 1px solid var(--border-dark); display: none;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-weight: 600;">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">$0.00</span>
+      </div>
+      <button class="btn-primary" id="checkoutBtn" style="width: 100%;">
+        Proceed to Checkout
+        <i data-lucide="arrow-right" style="width: 16px; height: 16px;" aria-hidden="true"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ========== CHECKOUT MODAL ========== -->
+  <div class="checkout-modal" id="checkoutModal" role="dialog" aria-modal="true" aria-label="Checkout">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 700;">Checkout</h2>
+        <button id="checkoutClose" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;" aria-label="Close checkout">
+          <i data-lucide="x" style="width: 18px; height: 18px;" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <form id="checkoutForm" novalidate>
+        <div style="margin-bottom: 1.25rem;">
+          <label for="coName" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">Full Name</label>
+          <input type="text" id="coName" class="form-input" placeholder="John Doe" required>
+        </div>
+        <div style="margin-bottom: 1.25rem;">
+          <label for="coEmail" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">Email</label>
+          <input type="email" id="coEmail" class="form-input" placeholder="john@example.com" required>
+        </div>
+        <div style="margin-bottom: 1.25rem;">
+          <label for="coAddress" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">Shipping Address</label>
+          <input type="text" id="coAddress" class="form-input" placeholder="123 Main St, City, Country" required>
+        </div>
+        <div style="margin-bottom: 1.75rem;">
+          <label for="coCard" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">Card Number</label>
+          <input type="text" id="coCard" class="form-input" placeholder="4242 4242 4242 4242" required>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-weight: 600; font-size: 1.1rem;">
+          <span>Total</span>
+          <span id="checkoutTotal">$0.00</span>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%;">
+          Place Order
+          <i data-lucide="check" style="width: 16px; height: 16px;" aria-hidden="true"></i>
+        </button>
+      </form>
+
+      <div id="checkoutSuccess" style="display: none; text-align: center; padding: 2rem 0;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: #f0fdf4; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+          <i data-lucide="check" style="width: 32px; height: 32px; color: #16a34a;" aria-hidden="true"></i>
+        </div>
+        <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Order Confirmed</h3>
+        <p style="color: #666; font-size: 0.95rem;">Thank you for your purchase. A confirmation email has been sent.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MAIN ========== -->
+  <main>
+
+    <!-- HERO -->
+    <section class="hero-section" id="home">
+      <div class="hero-grain" aria-hidden="true"></div>
+      <div class="container-lux" style="position: relative; z-index: 2;">
+        <div style="display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center;">
+          <div style="max-width: 700px;">
+            <div class="reveal-up" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 100px; border: 1px solid var(--border-dark); background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); margin-bottom: 1.5rem;">
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: #22c55e;"></span>
+              <span style="font-size: 0.8rem; font-weight: 500; letter-spacing: 0.02em;">New 2025 Collection Available</span>
+            </div>
+            <h1 class="text-hero reveal-up" style="margin-bottom: 1.5rem;">
+              Precision<br>
+              <span style="color: var(--silver);">in Miniature.</span>
+            </h1>
+            <p class="reveal-up" style="font-size: 1.15rem; color: #555; max-width: 520px; line-height: 1.7; margin-bottom: 2.5rem;">
+              Museum-grade diecast cars, curated for the discerning collector. Every model is a testament to engineering artistry — from legendary marques to modern hypercars.
+            </p>
+            <div class="reveal-up" style="display: flex; flex-wrap: wrap; gap: 1rem;">
+              <a href="#collection" class="btn-primary">
+                Explore Collection
+                <i data-lucide="arrow-right" style="width: 16px; height: 16px;" aria-hidden="true"></i>
+              </a>
+              <a href="#about" class="btn-outline">Our Story</a>
+            </div>
+          </div>
+          <div class="hero-visual reveal-up" style="display: flex; justify-content: center; align-items: center;">
+            <img src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80" alt="Premium diecast car model" class="hero-car-image" style="max-width: 100%; border-radius: 1.5rem;" loading="eager">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS BAR -->
+    <section style="border-top: 1px solid var(--border-dark); border-bottom: 1px solid var(--border-dark); background: var(--platinum);">
+      <div class="container-lux" style="padding: 3rem 0;">
+        <div class="reveal-stagger" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; text-align: center;">
+          <div>
+            <div class="stat-number">500+</div>
+            <div style="font-size: 0.85rem; color: #666; margin-top: 0.35rem;">Models in Stock</div>
+          </div>
+          <div>
+            <div class="stat-number">1:18</div>
+            <div style="font-size: 0.85rem; color: #666; margin-top: 0.35rem;">Precision Scale</div>
+          </div>
+          <div>
+            <div class="stat-number">50+</div>
+            <div style="font-size: 0.85rem; color: #666; margin-top: 0.35rem;">Global Brands</div>
+          </div>
+          <div>
+            <div class="stat-number">10K+</div>
+            <div style="font-size: 0.85rem; color: #666; margin-top: 0.35rem;">Collectors Served</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="section-pad" id="categories">
+      <div class="container-lux">
+        <div class="reveal-up" style="margin-bottom: 3rem;">
+          <span style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #999;">Browse by Category</span>
+          <h2 class="text-section" style="margin-top: 0.75rem;">Find Your Era.</h2>
+        </div>
+        <div class="reveal-stagger" style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 3rem;" id="categoryFilters">
+          <button class="category-pill active" data-category="all" aria-pressed="true">All Models</button>
+          <button class="category-pill" data-category="supercar" aria-pressed="false">Supercars</button>
+          <button class="category-pill" data-category="classic" aria-pressed="false">Classics</button>
+          <button class="category-pill" data-category="jdm" aria-pressed="false">JDM Legends</button>
+          <button class="category-pill" data-category="race" aria-pressed="false">Racing</button>
+          <button class="category-pill" data-category="muscle" aria-pressed="false">Muscle</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCT GALLERY -->
+    <section class="section-pad" id="collection" style="padding-top: 0;">
+      <div class="container-lux">
+        <div class="reveal-up" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem; margin-bottom: 3rem;">
+          <div>
+            <span style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #999;">The Collection</span>
+            <h2 class="text-section" style="margin-top: 0.75rem;">Curated Diecast.</h2>
+          </div>
+          <p style="color: #666; max-width: 360px; font-size: 0.95rem; line-height: 1.6;">Each model is hand-selected for accuracy, finish, and collectibility. Limited runs available.</p>
+        </div>
+
+        <div id="productGrid" class="reveal-stagger" style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1.5rem;">
+          <!-- Products injected by JS -->
+        </div>
+
+        <div id="noResults" style="display: none; text-align: center; padding: 4rem 0;">
+          <i data-lucide="search-x" style="width: 48px; height: 48px; color: #ccc; margin: 0 auto 1rem;" aria-hidden="true"></i>
+          <p style="color: #999; font-size: 1.1rem;">No models found matching your search.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section-pad" id="about" style="background: var(--ink); color: var(--paper);">
+      <div class="container-lux">
+        <div style="display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center;">
+          <div class="reveal-up">
+            <span style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4);">Our Story</span>
+            <h2 class="text-section" style="margin-top: 0.75rem; color: var(--paper); margin-bottom: 1.5rem;">Driven by Detail.</h2>
+            <p style="color: rgba(255,255,255,0.65); line-height: 1.8; font-size: 1.05rem; margin-bottom: 1.5rem;">
+              DIECAST DISPLAY was founded by collectors, for collectors. We understand that a diecast model is more than a toy — it's a piece of automotive history, frozen in perfect scale.
+            </p>
+            <p style="color: rgba(255,255,255,0.65); line-height: 1.8; font-size: 1.05rem; margin-bottom: 2rem;">
+              Every model in our catalogue is inspected for paint quality, panel gaps, wheel accuracy, and interior detail. If it doesn't meet our standard, it doesn't make the shelf.
+            </p>
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+              <div>
+                <div style="font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--paper);">100%</div>
+                <div style="font-size: 0.85rem; color: rgba(255,255,255,0.5);">Authenticity Guaranteed</div>
+              </div>
+              <div>
+                <div style="font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--paper);">1:18</div>
+                <div style="font-size: 0.85rem; color: rgba(255,255,255,0.5);">Premium Scale Focus</div>
+              </div>
+            </div>
+          </div>
+          <div class="reveal-up" style="display: flex; justify-content: center;">
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80" alt="Diecast car detail" style="width: 100%; max-width: 500px; border-radius: var(--radius-2xl); object-fit: cover; box-shadow: 0 30px 60px rgba(0,0,0,0.4);" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="section-pad" style="background: var(--platinum);">
+      <div class="container-lux" style="text-align: center;">
+        <div class="reveal-up">
+          <h2 class="text-section" style="margin-bottom: 1.5rem;">Join the Inner Circle.</h2>
+          <p style="color: #666; max-width: 500px; margin: 0 auto 2.5rem; font-size: 1.05rem; line-height: 1.7;">
+            Get early access to limited drops, exclusive model reveals, and collector insights — straight to your inbox.
+          </p>
+          <form id="newsletterForm" style="display: flex; flex-wrap: wrap; gap: 0.75rem; max-width: 480px; margin: 0 auto; justify-content: center;" novalidate>
+            <input type="email" id="newsletterEmail" class="form-input" placeholder="your@email.com" style="flex: 1; min-width: 220px; border-radius: 100px;" aria-label="Email address" required>
+            <button type="submit" class="btn-primary" style="white-space: nowrap;">
+              Subscribe
+              <i data-lucide="send" style="width: 15px; height: 15px;" aria-hidden="true"></i>
+            </button>
+          </form>
+          <p id="newsletterMsg" style="margin-top: 1rem; font-size: 0.9rem; display: none;"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section-pad" id="contact">
+      <div class="container-lux">
+        <div style="display: grid; grid-template-columns: 1fr; gap: 3rem;">
+          <div class="reveal-up">
+            <span style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #999;">Get in Touch</span>
+            <h2 class="text-section" style="margin-top: 0.75rem; margin-bottom: 1rem;">Questions?</h2>
+            <p style="color: #666; line-height: 1.7; margin-bottom: 2rem; max-width: 480px;">
+              Whether you're looking for a specific model, need help with an order, or want to discuss a bulk collection — we're here.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <i data-lucide="mail" style="width: 18px; height: 18px; color: var(--ink);" aria-hidden="true"></i>
+                <span style="font-size: 0.95rem; color: #555;">hello@diecastdisplay.com</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <i data-lucide="phone" style="width: 18px; height: 18px; color: var(--ink);" aria-hidden="true"></i>
+                <span style="font-size: 0.95rem; color: #555;">+1 (555) 123-4567</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <i data-lucide="map-pin" style="width: 18px; height: 18px; color: var(--ink);" aria-hidden="true"></i>
+                <span style="font-size: 0.95rem; color: #555;">Los Angeles, CA</span>
+              </div>
+            </div>
+          </div>
+          <div class="reveal-up">
+            <form id="contactForm" style="display: flex; flex-direction: column; gap: 1.25rem;" novalidate>
+              <div>
+                <label for="ctName" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">Name</label>
+                <input type="text" id="ctName" class="form-input" placeholder="Your name" required>
+              </div>
+              <div>
+                <label for="ctEmail" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">Email</label>
+                <input type="email" id="ctEmail" class="form-input" placeholder="you@example.com" required>
+              </div>
+              <div>
+                <label for="ctMessage" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">Message</label>
+                <textarea id="ctMessage" class="form-input" rows="4" placeholder="Tell us what you're looking for..." required style="resize: vertical; min-height: 120px;"></textarea>
+              </div>
+              <button type="submit" class="btn-primary" style="align-self: flex-start;">
+                Send Message
+                <i data-lucide="arrow-right" style="width: 16px; height: 16px;" aria-hidden="true"></i>
+              </button>
+              <p id="contactMsg" style="font-size: 0.9rem; display: none;"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer style="background: var(--ink); color: var(--paper); padding: 4rem 0 2rem;">
+    <div class="container-lux">
+      <div style="display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 3rem;">
+        <!-- Brand -->
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div style="width: 32px; height: 32px; background: var(--paper); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+              </svg>
+            </div>
+            <span style="font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;">DIECAST DISPLAY</span>
+          </div>
+          <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem; line-height: 1.7; max-width: 300px;">
+            Premium diecast cars for the discerning collector. Precision, passion, and automotive history in every model.
+          </p>
+        </div>
+        <!-- Links -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+          <div>
+            <h4 style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 1rem;">Shop</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+              <a href="#collection" class="footer-link">All Models</a>
+              <a href="#categories" class="footer-link">Supercars</a>
+              <a href="#categories" class="footer-link">Classics</a>
+              <a href="#categories" class="footer-link">JDM</a>
+            </div>
+          </div>
+          <div>
+            <h4 style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 1rem;">Company</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+              <a href="#about" class="footer-link">About</a>
+              <a href="#contact" class="footer-link">Contact</a>
+              <a href="#" class="footer-link">Shipping</a>
+              <a href="#" class="footer-link">Returns</a>
+            </div>
+          </div>
+          <div>
+            <h4 style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 1rem;">Connect</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+              <a href="#" class="footer-link">Instagram</a>
+              <a href="#" class="footer-link">YouTube</a>
+              <a href="#" class="footer-link">Twitter</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;">
+        <p style="color: rgba(255,255,255,0.3); font-size: 0.85rem;">&copy; 2025 DIECAST DISPLAY. All rights reserved.</p>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="#" class="footer-link" style="font-size: 0.85rem;">Privacy</a>
+          <a href="#" class="footer-link" style="font-size: 0.85rem;">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== JAVASCRIPT ========== -->
+  <script>
+    // === Product Data ===
+    const products = [
+      { id: 1, name: "Ferrari F40 Competizione", brand: "Kyosho", scale: "1:18", price: 189.00, category: "supercar", image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&q=80", badge: "Limited" },
+      { id: 2, name: "Porsche 911 GT3 RS", brand: "Minichamps", scale: "1:18", price: 159.00, category: "supercar", image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80", badge: "" },
+      { id: 3, name: "Lamborghini Countach LP400", brand: "Autoart", scale: "1:18", price: 210.00, category: "classic", image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=600&q=80", badge: "Rare" },
+      { id: 4, name: "Nissan Skyline GT-R R34", brand: "Kyosho", scale: "1:18", price: 175.00, category: "jdm", image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&q=80", badge: "Icon" },
+      { id: 5, name: "Ford Mustang Shelby GT500", brand: "Auto World", scale: "1:18", price: 145.00, category: "muscle", image: "https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?w=600&q=80", badge: "" },
+      { id: 6, name: "McLaren P1 GTR", brand: "Almost Real", scale: "1:18", price: 235.00, category: "supercar", image: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?w=600&q=80", badge: "New" },
+      { id: 7, name: "Toyota Supra A80", brand: "Ignition Model", scale: "1:18", price: 195.00, category: "jdm", image: "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=600&q=80", badge: "" },
+      { id: 8, name: "Mercedes 300SL Gullwing", brand: "CMC", scale: "1:18", price: 320.00, category: "classic", image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600&q=80", badge: "Premium" },
+      { id: 9, name: "Red Bull RB16B F1", brand: "Minichamps", scale: "1:18", price: 179.00, category: "race", image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&q=80", badge: "" },
+      { id: 10, name: "Dodge Charger R/T 1969", brand: "Greenlight", scale: "1:18", price: 135.00, category: "muscle", image: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=600&q=80", badge: "" },
+      { id: 11, name: "Aston Martin DB5", brand: "Autoart", scale: "1:18", price: 225.00, category: "classic", image: "https://images.unsplash.com/photo-1600712242805-5f78671b24da?w=600&q=80", badge: "" },
+      { id: 12, name: "Honda NSX NA1", brand: "Kyosho", scale: "1:18", price: 165.00, category: "jdm", image: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=600&q=80", badge: "" }
+    ];
+
+    // === State ===
+    let cart = [];
+    let activeCategory = 'all';
+    let searchQuery = '';
+    let filteredProducts = [...products];
+
+    // === DOM Refs ===
+    const productGrid = document.getElementById('productGrid');
+    const noResults = document.getElementById('noResults');
+    const cartBadge = document.getElementById('cartBadge');
+    const cartItems = document.getElementById('cartItems');
+    const cartFooter = document.getElementById('cartFooter');
+    const cartSubtotal = document.getElementById('cartSubtotal');
+    const cartDrawer = document.getElementById('cartDrawer');
+    const cartOverlay = document.getElementById('cartOverlay');
+    const checkoutModal = document.getElementById('checkoutModal');
+    const checkoutTotal = document.getElementById('checkoutTotal');
+    const searchBar = document.getElementById('searchBar');
+    const searchInput = document.getElementById('searchInput');
+
+    // === Render Products ===
+    function renderProducts() {
+      const filtered = products.filter(p => {
+        const matchCategory = activeCategory === 'all' || p.category === activeCategory;
+        const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           p.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           p.scale.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchCategory && matchSearch;
+      });
+
+      filteredProducts = filtered;
+
+      if (filtered.length === 0) {
+        productGrid.style.display = 'none';
+        noResults.style.display = 'block';
+        return;
+      }
+
+      noResults.style.display = 'none';
+      productGrid.style.display = 'grid';
+      productGrid.innerHTML = filtered.map(p => `
+        <article class="product-card reveal-up" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.name}">
+          <div class="product-image-wrap">
+            <img src="${p.image}" alt="${p.name}" loading="lazy">
+          </div>
+          <div style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #999;">${p.brand}</span>
+              ${p.badge ? `<span style="font-size: 0.65rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 100px; background: var(--ink); color: var(--paper);">${p.badge}</span>` : ''}
+            </div>
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.35rem; letter-spacing: -0.02em;">${p.name}</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem;">
+              <span style="font-size: 0.85rem; color: #999;">${p.scale}</span>
+              <span style="font-family: var(--font-display); font-weight: 700; font-size: 1.15rem;">$${p.price.toFixed(2)}</span>
+            </div>
+            <button class="add-to-cart-btn" data-id="${p.id}" style="margin-top: 1rem; width: 100%; padding: 0.7rem; border-radius: 100px; border: 1.5px solid var(--border-dark); background: transparent; font-family: var(--font-body); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease;" aria-label="Add ${p.name} to cart">
+              Add to Cart
+            </button>
+          </div>
+        </article>
+      `).join('');
+
+      // Attach add-to-cart listeners
+      document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          addToCart(parseInt(btn.dataset.id));
+        });
+      });
+
+      // Attach product click listeners
+      document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const id = parseInt(card.dataset.id);
+          const product = products.find(p => p.id === id);
+          if (product) {
+            openCart();
+            addToCart(id);
+          }
+        });
+      });
+
+      // Re-init reveal animations for new elements
+      observeReveals();
+      lucide.createIcons();
+    }
+
+    // === Cart Logic ===
+    function addToCart(id) {
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        const product = products.find(p => p.id === id);
+        if (product) cart.push({ ...product, qty: 1 });
+      }
+      updateCartUI();
+      openCart();
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(item => item.id !== id);
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      if (totalItems > 0) {
+        cartBadge.style.display = 'flex';
+        cartBadge.textContent = totalItems;
+        cartFooter.style.display = 'block';
+      } else {
+        cartBadge.style.display = 'none';
+        cartFooter.style.display = 'none';
+      }
+
+      cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+      checkoutTotal.textContent = `$${subtotal.toFixed(2)}`;
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = '<p style="color: #999; text-align: center; padding: 3rem 0;">Your cart is empty</p>';
+      } else {
+        cartItems.innerHTML = cart.map(item => `
+          <div style="display: flex; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-dark);">
+            <div style="width: 70px; height: 70px; border-radius: 12px; overflow: hidden; background: #F5F5F7; flex-shrink: 0;">
+              <img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</h4>
+              <p style="font-size: 0.8rem; color: #999;">${item.brand} · ${item.scale}</p>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                <span style="font-weight: 700; font-size: 0.95rem;">$${(item.price * item.qty).toFixed(2)}</span>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="font-size: 0.8rem; color: #999;">Qty: ${item.qty}</span>
+                  <button class="remove-item-btn" data-id="${item.id}" style="width: 24px; height: 24px; border-radius: 50%; border: none; background: #fee2e2; color: #dc2626; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;" aria-label="Remove ${item.name} from cart">
+                    <i data-lucide="x" style="width: 12px; height: 12px;"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        document.querySelectorAll('.remove-item-btn').forEach(btn => {
+          btn.addEventListener('click', () => removeFromCart(parseInt(btn.dataset.id)));
+        });
+      }
+
+      lucide.createIcons();
+    }
+
+    function openCart() {
+      cartDrawer.classList.add('open');
+      cartOverlay.classList.add('open');
+      document.body.classList.add('no-scroll');
+    }
+
+    function closeCart() {
+      cartDrawer.classList.remove('open');
+      cartOverlay.classList.remove('open');
+      document.body.classList.remove('no-scroll');
+    }
+
+    // === Checkout ===
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      closeCart();
+      checkoutModal.classList.add('open');
+      document.body.classList.add('no-scroll');
+    });
+
+    document.getElementById('checkoutClose').addEventListener('click', () => {
+      checkoutModal.classList.remove('open');
+      document.body.classList.remove('no-scroll');
+      document.getElementById('checkoutForm').style.display = 'block';
+      document.getElementById('checkoutSuccess').style.display = 'none';
+    });
+
+    document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('coName');
+      const email = document.getElementById('coEmail');
+      const address = document.getElementById('coAddress');
+      const card = document.getElementById('coCard');
+      let valid = true;
+
+      [name, email, address, card].forEach(field => {
+        field.classList.remove('error');
+        if (!field.value.trim()) {
+          field.classList.add('error');
+          valid = false;
+        }
+      });
+
+      if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        email.classList.add('error');
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Simulate order
+      document.getElementById('checkoutForm').style.display = 'none';
+      document.getElementById('checkoutSuccess').style.display = 'block';
+      cart = [];
+      updateCartUI();
+
+      setTimeout(() => {
+        checkoutModal.classList.remove('open');
+        document.body.classList.remove('no-scroll');
+        document.getElementById('checkoutForm').style.display = 'block';
+        document.getElementById('checkoutSuccess').style.display = 'none';
+        document.getElementById('checkoutForm').reset();
+      }, 3500);
+    });
+
+    // === Category Filter ===
+    document.querySelectorAll('.category-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.category-pill').forEach(p => {
+          p.classList.remove('active');
+          p.setAttribute('aria-pressed', 'false');
+        });
+        pill.classList.add('active');
+        pill.setAttribute('aria-pressed', 'true');
+        activeCategory = pill.dataset.category;
+        renderProducts();
+      });
+    });
+
+    // === Search ===
+    document.getElementById('searchToggle').addEventListener('click', () => {
+      const isOpen = searchBar.style.maxHeight && searchBar.style.maxHeight !== '0px';
+      searchBar.style.maxHeight = isOpen ? '0px' : '120px';
+      if (!isOpen) setTimeout(() => searchInput.focus(), 350);
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderProducts();
+    });
+
+    // === Cart Drawer Events ===
+    document.getElementById('cartToggle').addEventListener('click', openCart);
+    document.getElementById('cartClose').addEventListener('click', closeCart);
+    cartOverlay.addEventListener('click', closeCart);
+
+    // === Mobile Menu ===
+    const mobileMenu = document.getElementById('mobileMenu');
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+      mobileMenu.classList.add('open');
+      document.body.classList.add('no-scroll');
+    });
+    document.getElementById('mobileClose').addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      document.body.classList.remove('no-scroll');
+    });
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        document.body.classList.remove('no-scroll');
+      });
+    });
+
+    // === Nav Scroll Effect ===
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    // === Newsletter ===
+    document.getElementById('newsletterForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('newsletterEmail');
+      const msg = document.getElementById('newsletterMsg');
+      if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        msg.style.display = 'block';
+        msg.style.color = '#dc2626';
+        msg.textContent = 'Please enter a valid email address.';
+        email.classList.add('error');
+        return;
+      }
+      email.classList.remove('error');
+      msg.style.display = 'block';
+      msg.style.color = '#16a34a';
+      msg.textContent = 'Welcome to the inner circle. Check your inbox.';
+      email.value = '';
+    });
+
+    // === Contact Form ===
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('ctName');
+      const email = document.getElementById('ctEmail');
+      const message = document.getElementById('ctMessage');
+      const msg = document.getElementById('contactMsg');
+      let valid = true;
+
+      [name, email, message].forEach(f => { f.classList.remove('error'); if (!f.value.trim()) { f.classList.add('error'); valid = false; } });
+      if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { email.classList.add('error'); valid = false; }
+
+      if (!valid) { msg.style.display = 'block'; msg.style.color = '#dc2626'; msg.textContent = 'Please fill in all fields correctly.'; return; }
+
+      // TODO: connect form action to backend endpoint
+      msg.style.display = 'block';
+      msg.style.color = '#16a34a';
+      msg.textContent = 'Thank you. We will get back to you within 24 hours.';
+      name.value = ''; email.value = ''; message.value = '';
+    });
+
+    // === Reveal on Scroll ===
+    function observeReveals() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal-up, .reveal-stagger').forEach(el => {
+        if (!el.classList.contains('visible')) observer.observe(el);
+      });
+    }
+
+    // === Init ===
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+      observeReveals();
+      lucide.createIcons();
+      updateCartUI();
+    });
+
+    // Re-run lucide after any dynamic content
+    window.addEventListener('load', () => {
+      lucide.createIcons();
+    });
+
+  </script>
+</body>
+</html>
