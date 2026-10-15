@@ -1,1378 +1,1169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Flowline — AI Workflows That Ship Themselves</title>
-  <meta name="description" content="Flowline connects your tools, automates busywork, and turns scattered tasks into intelligent workflows that run without you." />
-
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUMIÈRE — Modern French Dining</title>
+  <!-- Google Fonts: Bricolage Grotesque + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS via CDN (Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
   <!-- GSAP + ScrollTrigger -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Tailwind config with custom colors & fonts -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FAF8F5',
+            ivory: '#FEFCF9',
+            stone: '#E8E2D9',
+            taupe: '#B8A99A',
+            espresso: '#2E2A27',
+            charcoal: '#1F1D1B',
+            brass: '#B89B7A',
+            gold: '#C9A96E',
+            'brass-light': '#D4C0A8',
+            'brass-dark': '#9E8262',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
   <style>
     /* === Design Tokens === */
     :root {
-      --ink: #0f0e15;
-      --ink-soft: #3a3742;
-      --ink-muted: #6b6779;
-      --cream: #faf9f7;
-      --cream-2: #f3f1ed;
-      --white: #ffffff;
-      --line: rgba(15, 14, 21, 0.08);
-      --line-strong: rgba(15, 14, 21, 0.14);
-      --violet: #6d4aff;
-      --violet-deep: #4a2ee6;
-      --violet-glow: rgba(109, 74, 255, 0.28);
-      --mint: #b8f2d8;
-      --coral: #ff8a65;
-      --focus: #6d4aff;
-      --radius: 20px;
-      --radius-lg: 28px;
-      --shadow-sm: 0 1px 2px rgba(15,14,21,0.04), 0 1px 3px rgba(15,14,21,0.03);
-      --shadow-md: 0 4px 16px rgba(15,14,21,0.06), 0 2px 6px rgba(15,14,21,0.04);
-      --shadow-lg: 0 24px 60px -20px rgba(15,14,21,0.18), 0 8px 24px -12px rgba(15,14,21,0.08);
-      --shadow-violet: 0 20px 50px -20px rgba(109,74,255,0.45);
+      --ink: #1F1D1B;
+      --cream: #FAF8F5;
+      --ivory: #FEFCF9;
+      --stone: #E8E2D9;
+      --taupe: #B8A99A;
+      --brass: #B89B7A;
+      --gold: #C9A96E;
+      --shadow-soft: 0 20px 40px -12px rgba(0,0,0,0.06), 0 8px 24px -8px rgba(0,0,0,0.04);
+      --shadow-card: 0 4px 16px rgba(0,0,0,0.02), 0 8px 32px -8px rgba(0,0,0,0.04);
+      --shadow-hover: 0 24px 48px -12px rgba(184, 155, 122, 0.18), 0 12px 24px -8px rgba(0,0,0,0.04);
     }
 
-    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     html { scroll-behavior: smooth; }
+
     body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--cream);
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cream);
       color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
-      font-feature-settings: 'ss01', 'cv01';
     }
 
-    .font-display { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; }
-    .serif-italic { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; }
+    /* === Typography === */
+    .font-display { font-family: 'Bricolage Grotesque', serif; }
+    h1, h2, h3, h4 { font-family: 'Bricolage Grotesque', serif; font-weight: 700; letter-spacing: -0.02em; }
 
-    /* === Focus states === */
+    /* === Focus States (a11y) === */
     a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px var(--cream), 0 0 0 4px var(--focus);
-      border-radius: 10px;
+      box-shadow: 0 0 0 2px var(--cream), 0 0 0 4px var(--brass);
+      border-radius: 4px;
     }
 
-    /* === Grain overlay === */
-    .grain::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0.035;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    /* === Custom Cursor (desktop) === */
+    .cursor-dot {
+      width: 6px; height: 6px; background: var(--brass); border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999;
+      transition: transform 0.1s ease;
     }
+    .cursor-ring {
+      width: 36px; height: 36px; border: 1px solid var(--brass); border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9998;
+      transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1), width 0.3s, height 0.3s, border-color 0.3s;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring.hovering { width: 60px; height: 60px; border-color: var(--gold); background: rgba(184, 155, 122, 0.06); }
+    @media (max-width: 1024px) { .cursor-dot, .cursor-ring { display: none; } }
 
-    /* === Nav === */
-    .nav-shell {
-      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    /* === Glass Nav === */
+    .glass-nav {
+      background: rgba(250, 248, 245, 0.82);
+      backdrop-filter: blur(20px) saturate(1.2);
+      -webkit-backdrop-filter: blur(20px) saturate(1.2);
+      border-bottom: 1px solid rgba(184, 155, 122, 0.12);
+      transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
-    .nav-shell.scrolled {
-      background: rgba(250, 249, 247, 0.78);
-      backdrop-filter: blur(20px) saturate(1.4);
-      -webkit-backdrop-filter: blur(20px) saturate(1.4);
-      border-bottom: 1px solid var(--line);
-    }
-    .nav-link {
-      position: relative;
-      transition: color 0.2s ease;
-    }
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      left: 0; right: 0; bottom: -4px;
-      height: 1.5px;
-      background: var(--violet);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .nav-link:hover::after { transform: scaleX(1); }
-    .nav-link:hover { color: var(--violet); }
+    .glass-nav.scrolled { background: rgba(250, 248, 245, 0.95); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+
+    /* === Hero Text Reveal === */
+    .reveal-line { display: block; overflow: hidden; }
+    .reveal-line span { display: block; transform: translateY(100%); animation: revealUp 0.9s cubic-bezier(0.25, 1, 0.3, 1) forwards; }
+    .reveal-line:nth-child(1) span { animation-delay: 0.1s; }
+    .reveal-line:nth-child(2) span { animation-delay: 0.25s; }
+    .reveal-line:nth-child(3) span { animation-delay: 0.4s; }
+    @keyframes revealUp { to { transform: translateY(0); } }
+
+    /* === Fade In Up === */
+    .fade-up { opacity: 0; transform: translateY(32px); transition: opacity 0.8s cubic-bezier(0.25,0.1,0.25,1), transform 0.8s cubic-bezier(0.25,0.1,0.25,1); }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
 
     /* === Buttons === */
     .btn-primary {
-      background: var(--ink);
-      color: var(--cream);
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
-      box-shadow: var(--shadow-md);
+      background: var(--ink); color: var(--cream); padding: 14px 32px; border-radius: 100px;
+      font-weight: 500; font-size: 0.9rem; letter-spacing: 0.02em;
+      transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+      position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid var(--ink);
     }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 16px 32px -12px rgba(15,14,21,0.35);
-    }
-    .btn-primary:active { transform: translateY(0) scale(0.98); }
-    .btn-primary::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%);
-      transform: translateX(-100%);
-      transition: transform 0.8s ease;
-    }
-    .btn-primary:hover::before { transform: translateX(100%); }
+    .btn-primary:hover { background: transparent; color: var(--ink); box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .btn-primary:active { transform: scale(0.97) translateY(0); }
 
-    .btn-violet {
-      background: var(--violet);
-      color: white;
-      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, background 0.2s ease;
-      box-shadow: var(--shadow-violet);
+    .btn-secondary {
+      background: transparent; color: var(--ink); padding: 14px 32px; border-radius: 100px;
+      font-weight: 500; font-size: 0.9rem; letter-spacing: 0.02em;
+      border: 1px solid rgba(184, 155, 122, 0.4);
+      transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+      display: inline-flex; align-items: center; gap: 8px;
     }
-    .btn-violet:hover {
-      background: var(--violet-deep);
-      transform: translateY(-2px);
-      box-shadow: 0 24px 56px -18px rgba(109,74,255,0.55);
-    }
-    .btn-violet:active { transform: translateY(0) scale(0.98); }
+    .btn-secondary:hover { border-color: var(--brass); background: rgba(184, 155, 122, 0.06); transform: translateY(-2px); }
+    .btn-secondary:active { transform: scale(0.97) translateY(0); }
 
-    .btn-ghost {
-      background: transparent;
-      color: var(--ink);
-      border: 1px solid var(--line-strong);
-      transition: all 0.25s ease;
-    }
-    .btn-ghost:hover {
-      background: var(--white);
-      border-color: var(--ink);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
+    /* === Cards 3D Tilt === */
+    .tilt-card { perspective: 1200px; }
+    .tilt-card-inner { transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); transform-style: preserve-3d; }
 
-    /* === Hero gradient orbs === */
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.55;
-      pointer-events: none;
-    }
-    .orb-1 { width: 520px; height: 520px; background: radial-gradient(circle, rgba(109,74,255,0.5), transparent 70%); top: -120px; right: -80px; }
-    .orb-2 { width: 420px; height: 420px; background: radial-gradient(circle, rgba(184,242,216,0.7), transparent 70%); bottom: -100px; left: -120px; }
-    .orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,138,101,0.35), transparent 70%); top: 40%; left: 45%; }
+    /* === Menu Item Hover === */
+    .menu-item { transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1); border-bottom: 1px solid rgba(184, 155, 122, 0.12); }
+    .menu-item:hover { padding-left: 12px; border-bottom-color: var(--brass); background: rgba(184, 155, 122, 0.03); }
 
-    /* === Hero visual card stack === */
-    .hero-visual {
-      perspective: 1600px;
+    /* === Gallery === */
+    .gallery-item { overflow: hidden; border-radius: 16px; position: relative; cursor: pointer; }
+    .gallery-item img { transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1); width: 100%; height: 100%; object-fit: cover; }
+    .gallery-item:hover img { transform: scale(1.06); }
+    .gallery-item::after {
+      content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(31,29,27,0.3), transparent 60%);
+      opacity: 0; transition: opacity 0.4s ease;
     }
-    .visual-card {
-      transform-style: preserve-3d;
-      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
-      box-shadow: var(--shadow-lg);
-    }
+    .gallery-item:hover::after { opacity: 1; }
 
-    /* === Word reveal === */
-    .reveal-line { overflow: hidden; display: block; }
-    .reveal-word {
-      display: inline-block;
-      transform: translateY(105%);
-      opacity: 0;
-    }
-
-    /* === Section reveal base === */
-    .fade-up { opacity: 0; transform: translateY(32px); }
+    /* === Review Card === */
+    .review-card { transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); }
+    .review-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
 
     /* === Marquee === */
-    .marquee-track {
-      display: flex;
-      gap: 72px;
-      animation: marquee 38s linear infinite;
-      width: max-content;
-    }
-    @keyframes marquee {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
-    .marquee-mask {
-      mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
-      -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
-    }
+    .marquee { display: flex; overflow: hidden; user-select: none; gap: 0; }
+    .marquee-content { display: flex; flex-shrink: 0; gap: 3rem; padding-right: 3rem; animation: scrollX 30s linear infinite; }
+    @keyframes scrollX { to { transform: translateX(-100%); } }
 
-    /* === Feature cards === */
-    .feature-card {
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease, border-color 0.3s ease;
-    }
-    .feature-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg);
-      border-color: rgba(109,74,255,0.25);
-    }
-    .feature-icon {
-      width: 52px; height: 52px;
-      border-radius: 16px;
-      display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, #f0ecff, #e6e0ff);
-      color: var(--violet);
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .feature-card:hover .feature-icon { transform: rotate(-6deg) scale(1.06); }
-
-    /* === Pricing === */
-    .price-card {
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
-    }
-    .price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-    .price-featured {
-      background: var(--ink);
-      color: var(--cream);
-      border-color: var(--ink);
-      position: relative;
-      overflow: hidden;
-    }
-    .price-featured::before {
-      content: '';
-      position: absolute;
-      top: -60%; right: -30%;
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(109,74,255,0.45), transparent 65%);
-      pointer-events: none;
-    }
-    .billing-toggle {
-      position: relative;
-      display: inline-flex;
-      background: var(--cream-2);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 4px;
-    }
-    .billing-toggle button {
-      position: relative;
-      z-index: 2;
-      padding: 9px 22px;
-      border-radius: 999px;
-      font-size: 13.5px;
-      font-weight: 600;
-      color: var(--ink-muted);
-      transition: color 0.3s ease;
-    }
-    .billing-toggle button.active { color: var(--ink); }
-    .toggle-pill {
-      position: absolute;
-      top: 4px; bottom: 4px;
-      background: var(--white);
-      border-radius: 999px;
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-      z-index: 1;
-    }
-
-    /* === Testimonials === */
-    .test-card {
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      transition: transform 0.35s ease, box-shadow 0.35s ease;
-    }
-    .test-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    /* === Section Divider === */
+    .divider { width: 60px; height: 1px; background: var(--brass); opacity: 0.5; }
 
     /* === Form === */
-    .form-field {
-      background: var(--white);
-      border: 1px solid var(--line-strong);
-      border-radius: 14px;
-      transition: border-color 0.25s ease, box-shadow 0.25s ease;
-      color: var(--ink);
+    .form-input {
+      width: 100%; padding: 16px 20px; background: rgba(255,255,255,0.6); border: 1px solid rgba(184, 155, 122, 0.25);
+      border-radius: 12px; font-size: 0.95rem; color: var(--ink); transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
     }
-    .form-field::placeholder { color: var(--ink-muted); opacity: 0.7; }
-    .form-field:focus {
-      border-color: var(--violet);
-      box-shadow: 0 0 0 4px rgba(109,74,255,0.12);
-      outline: none;
-    }
-    .form-field.error { border-color: #e5484d; box-shadow: 0 0 0 4px rgba(229,72,77,0.12); }
-    .field-error { color: #e5484d; font-size: 12.5px; margin-top: 6px; display: none; }
-    .field-error.show { display: block; }
+    .form-input::placeholder { color: rgba(31, 29, 27, 0.35); }
+    .form-input:focus { border-color: var(--brass); background: white; box-shadow: 0 0 0 4px rgba(184, 155, 122, 0.1); outline: none; }
+    .form-input.error { border-color: #C0392B; background: #FDF5F4; }
+    .error-msg { color: #C0392B; font-size: 0.78rem; margin-top: 6px; display: none; }
+    .error-msg.show { display: block; }
 
-    /* === Logo mark === */
-    .logo-mark {
-      width: 32px; height: 32px;
-      border-radius: 9px;
-      background: linear-gradient(135deg, var(--violet), #a78bfa);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 6px 16px -6px var(--violet-glow);
+    /* === Noise Texture === */
+    .noise-overlay {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9990; opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     }
 
-    /* === Mobile menu === */
-    .mobile-menu {
-      transform: translateY(-12px);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    /* === Section Tag === */
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 8px; font-size: 0.72rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--brass-dark); font-weight: 600;
     }
-    .mobile-menu.open {
-      transform: translateY(0);
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .section-tag::before { content: ''; width: 24px; height: 1px; background: var(--brass); }
 
-    /* === Stat counter === */
-    .stat-num { font-variant-numeric: tabular-nums; }
+    /* === Star Rating === */
+    .star { color: var(--gold); width: 18px; height: 18px; }
 
-    /* === CTA banner mesh === */
-    .cta-banner {
-      background: var(--ink);
-      position: relative;
-      overflow: hidden;
-      border-radius: 32px;
-    }
-    .cta-banner::before {
-      content: '';
-      position: absolute;
-      top: -50%; left: -10%;
-      width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(109,74,255,0.55), transparent 60%);
-      pointer-events: none;
-    }
-    .cta-banner::after {
-      content: '';
-      position: absolute;
-      bottom: -60%; right: -10%;
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(184,242,216,0.22), transparent 60%);
-      pointer-events: none;
-    }
+    /* === Mobile Menu === */
+    .mobile-menu { transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.25, 1, 0.3, 1); }
+    .mobile-menu.open { transform: translateX(0); }
 
-    /* === Utility === */
-    .hairline { border-color: var(--line); }
-    .text-balance { text-wrap: balance; }
-    .sr-only {
-      position: absolute; width: 1px; height: 1px;
-      padding: 0; margin: -1px; overflow: hidden;
-      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
-    }
+    /* === Success Check === */
+    .success-check { display: none; }
+    .success-check.show { display: flex; animation: fadeInUp 0.6s cubic-bezier(0.25, 1, 0.3, 1) forwards; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.001ms !important;
-        transition-duration: 0.001ms !important;
-      }
-      .reveal-word { transform: none; opacity: 1; }
-      .fade-up { opacity: 1; transform: none; }
+    /* === Smooth reveal for sections === */
+    .section-reveal { opacity: 0; transform: translateY(48px); transition: opacity 1s cubic-bezier(0.25,0.1,0.25,1), transform 1s cubic-bezier(0.25,0.1,0.25,1); }
+    .section-reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* === Scrollbar === */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--taupe); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--brass); }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      .cursor-dot, .cursor-ring { display: none; }
     }
   </style>
 </head>
-<body class="grain">
+<body>
 
-  <!-- ==================== HEADER ==================== -->
-  <header id="header" class="nav-shell fixed top-0 left-0 right-0 z-50">
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
-      <div class="flex items-center justify-between h-[72px]">
-        <!-- Logo -->
-        <a href="#" class="flex items-center gap-2.5 group" aria-label="Flowline home">
-          <span class="logo-mark">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M3 12h4l3-9 4 18 3-9h4"/>
-            </svg>
-          </span>
-          <span class="text-[17px] font-semibold tracking-[-0.02em]">Flowline</span>
-        </a>
+  <!-- Noise overlay -->
+  <div class="noise-overlay" aria-hidden="true"></div>
 
-        <!-- Desktop Nav -->
-        <nav class="hidden lg:flex items-center gap-9" aria-label="Main navigation">
-          <a href="#features" class="nav-link text-[14.5px] font-medium text-[var(--ink-soft)]">Features</a>
-          <a href="#how" class="nav-link text-[14.5px] font-medium text-[var(--ink-soft)]">How it works</a>
-          <a href="#pricing" class="nav-link text-[14.5px] font-medium text-[var(--ink-soft)]">Pricing</a>
-          <a href="#testimonials" class="nav-link text-[14.5px] font-medium text-[var(--ink-soft)]">Customers</a>
-        </nav>
+  <!-- Custom cursor (desktop) -->
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
 
-        <!-- Desktop CTA -->
-        <div class="hidden lg:flex items-center gap-3">
-          <a href="#contact" class="text-[14.5px] font-medium text-[var(--ink-soft)] px-4 py-2 transition-colors hover:text-[var(--violet)]">Sign in</a>
-          <a href="#contact" class="btn-primary text-[14px] font-semibold px-5 py-2.5 rounded-full">Start free</a>
-        </div>
+  <!-- ========== HEADER / NAV ========== -->
+  <header class="glass-nav fixed top-0 left-0 right-0 z-50" id="navbar">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="#" class="font-display text-2xl font-800 tracking-tight text-espresso" aria-label="LUMIÈRE home">
+        LUMIÈRE<span class="text-brass">.</span>
+      </a>
 
-        <!-- Mobile toggle -->
-        <button id="mobileToggle" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-full border hairline bg-white/60" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-          <svg id="menuIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="mobile-menu lg:hidden absolute top-[72px] left-0 right-0 bg-[rgba(250,249,247,0.96)] backdrop-blur-xl border-b hairline">
-      <nav class="max-w-[1280px] mx-auto px-6 py-6 flex flex-col gap-1" aria-label="Mobile navigation">
-        <a href="#features" class="mobile-link py-3 text-[15px] font-medium border-b hairline">Features</a>
-        <a href="#how" class="mobile-link py-3 text-[15px] font-medium border-b hairline">How it works</a>
-        <a href="#pricing" class="mobile-link py-3 text-[15px] font-medium border-b hairline">Pricing</a>
-        <a href="#testimonials" class="mobile-link py-3 text-[15px] font-medium border-b hairline">Customers</a>
-        <a href="#contact" class="mobile-link btn-primary text-center text-[15px] font-semibold px-5 py-3 rounded-full mt-4">Start free</a>
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-10" aria-label="Main navigation">
+        <a href="#menu" class="text-sm font-medium text-espresso/70 hover:text-espresso transition-colors duration-300">Menu</a>
+        <a href="#gallery" class="text-sm font-medium text-espresso/70 hover:text-espresso transition-colors duration-300">Gallery</a>
+        <a href="#reviews" class="text-sm font-medium text-espresso/70 hover:text-espresso transition-colors duration-300">Reviews</a>
+        <a href="#location" class="text-sm font-medium text-espresso/70 hover:text-espresso transition-colors duration-300">Location</a>
+        <a href="#reservation" class="btn-primary text-xs !py-3 !px-6">Reserve a Table</a>
       </nav>
+
+      <!-- Mobile hamburger -->
+      <button id="menuToggle" class="lg:hidden p-2 text-espresso" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
     </div>
   </header>
 
-  <main>
-    <!-- ==================== HERO ==================== -->
-    <section class="relative pt-[140px] lg:pt-[180px] pb-20 lg:pb-32 overflow-hidden">
-      <div class="orb orb-1" aria-hidden="true"></div>
-      <div class="orb orb-2" aria-hidden="true"></div>
-      <div class="orb orb-3" aria-hidden="true"></div>
+  <!-- Mobile Menu Overlay -->
+  <div id="mobileMenu" class="mobile-menu fixed inset-0 z-40 bg-cream/98 backdrop-blur-xl lg:hidden" aria-hidden="true">
+    <div class="flex flex-col h-full pt-28 px-8">
+      <nav class="flex flex-col gap-6" aria-label="Mobile navigation">
+        <a href="#menu" class="mobile-link font-display text-4xl font-700 text-espresso hover:text-brass transition-colors">Menu</a>
+        <a href="#gallery" class="mobile-link font-display text-4xl font-700 text-espresso hover:text-brass transition-colors">Gallery</a>
+        <a href="#reviews" class="mobile-link font-display text-4xl font-700 text-espresso hover:text-brass transition-colors">Reviews</a>
+        <a href="#location" class="mobile-link font-display text-4xl font-700 text-espresso hover:text-brass transition-colors">Location</a>
+        <a href="#reservation" class="mobile-link btn-primary mt-8 self-start">Reserve a Table</a>
+      </nav>
+    </div>
+  </div>
 
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-10 relative">
-        <div class="grid lg:grid-cols-[1.05fr_1fr] gap-14 lg:gap-16 items-center">
+  <!-- ========== HERO ========== -->
+  <section class="relative min-h-screen flex items-center pt-20 overflow-hidden" id="hero">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 bg-gradient-to-br from-cream via-ivory to-stone/30" aria-hidden="true"></div>
+    <!-- Radial glow -->
+    <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-brass/5 blur-3xl" aria-hidden="true"></div>
+    <div class="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-gold/5 blur-3xl" aria-hidden="true"></div>
 
-          <!-- Left: copy -->
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-10 w-full grid lg:grid-cols-2 gap-16 items-center py-20">
+      <!-- Left: Copy -->
+      <div class="order-2 lg:order-1">
+        <p class="section-tag mb-6">Modern French Dining</p>
+        <h1 class="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-800 leading-[1.05] text-espresso mb-8">
+          <span class="reveal-line"><span>Where taste</span></span>
+          <span class="reveal-line"><span>meets</span></span>
+          <span class="reveal-line"><span class="text-brass italic font-600">artistry.</span></span>
+        </h1>
+        <p class="text-base lg:text-lg text-espresso/60 leading-relaxed max-w-md mb-10 font-300">
+          A refined dining experience in the heart of the city. Seasonal ingredients, classical technique, and an atmosphere that lingers long after the last course.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#reservation" class="btn-primary">
+            Reserve a Table
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <a href="#menu" class="btn-secondary">
+            Explore Menu
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="flex gap-10 mt-16">
           <div>
-            <div class="fade-up inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border hairline bg-white/70 backdrop-blur-sm mb-7">
-              <span class="w-1.5 h-1.5 rounded-full bg-[var(--violet)] animate-pulse"></span>
-              <span class="text-[12.5px] font-medium tracking-wide text-[var(--ink-soft)]">Now with autonomous agent runs</span>
-            </div>
-
-            <h1 class="font-display text-[clamp(2.75rem,7vw,5.25rem)] leading-[0.98] tracking-[-0.02em] mb-7 text-balance">
-              <span class="reveal-line"><span class="reveal-word">Your</span> <span class="reveal-word">busywork,</span></span>
-              <span class="reveal-line"><span class="reveal-word">handled</span> <span class="reveal-word serif-italic" style="color:var(--violet)">while</span></span>
-              <span class="reveal-line"><span class="reveal-word">you</span> <span class="reveal-word">sleep.</span></span>
-            </h1>
-
-            <p class="fade-up text-[17px] lg:text-[18px] leading-[1.65] text-[var(--ink-muted)] max-w-[520px] mb-9">
-              Flowline wires your tools together and drops intelligent agents into the gaps. Approvals, handoffs, follow-ups, reports — running quietly in the background, exactly how you'd do it.
-            </p>
-
-            <div class="fade-up flex flex-col sm:flex-row gap-3.5 mb-11">
-              <a href="#contact" class="btn-violet text-[15px] font-semibold px-7 py-3.5 rounded-full text-center inline-flex items-center justify-center gap-2">
-                Start free — no card
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </a>
-              <a href="#how" class="btn-ghost text-[15px] font-semibold px-7 py-3.5 rounded-full text-center">See it in action</a>
-            </div>
-
-            <div class="fade-up flex items-center gap-5 text-[13.5px] text-[var(--ink-muted)]">
-              <div class="flex -space-x-2.5">
-                <div class="w-8 h-8 rounded-full border-2 border-[var(--cream)] bg-gradient-to-br from-violet-300 to-violet-500"></div>
-                <div class="w-8 h-8 rounded-full border-2 border-[var(--cream)] bg-gradient-to-br from-emerald-200 to-teal-400"></div>
-                <div class="w-8 h-8 rounded-full border-2 border-[var(--cream)] bg-gradient-to-br from-orange-200 to-rose-400"></div>
-                <div class="w-8 h-8 rounded-full border-2 border-[var(--cream)] bg-gradient-to-br from-sky-200 to-indigo-400"></div>
-              </div>
-              <span><strong class="text-[var(--ink)] font-semibold">4,200+</strong> teams automate with Flowline</span>
-            </div>
+            <p class="font-display text-3xl font-700 text-espresso">2</p>
+            <p class="text-xs text-espresso/50 mt-1 tracking-wide uppercase">Michelin Stars</p>
           </div>
+          <div class="w-px bg-brass/20"></div>
+          <div>
+            <p class="font-display text-3xl font-700 text-espresso">14</p>
+            <p class="text-xs text-espresso/50 mt-1 tracking-wide uppercase">Years Running</p>
+          </div>
+          <div class="w-px bg-brass/20"></div>
+          <div>
+            <p class="font-display text-3xl font-700 text-espresso">98%</p>
+            <p class="text-xs text-espresso/50 mt-1 tracking-wide uppercase">Return Guests</p>
+          </div>
+        </div>
+      </div>
 
-          <!-- Right: visual -->
-          <div class="hero-visual fade-up relative">
-            <div id="visualCard" class="visual-card relative rounded-[26px] bg-white border hairline p-5 lg:p-6">
-              <!-- Fake app chrome -->
-              <div class="flex items-center justify-between mb-5 pb-4 border-b hairline">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></span>
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#febc2e]"></span>
-                  <span class="w-2.5 h-2.5 rounded-full bg-[#28c840]"></span>
-                </div>
-                <span class="text-[11.5px] font-medium text-[var(--ink-muted)] tracking-wide">flowline / ops-pipeline</span>
-                <div class="w-5"></div>
-              </div>
-
-              <!-- Workflow nodes -->
-              <div class="space-y-3">
-                <!-- Node 1 -->
-                <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-[var(--cream-2)] border hairline">
-                  <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-sm shrink-0">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-[13px] font-semibold">New deal in CRM</p>
-                    <p class="text-[11.5px] text-[var(--ink-muted)]">Trigger · HubSpot</p>
-                  </div>
-                  <span class="text-[10.5px] font-semibold px-2 py-1 rounded-md bg-emerald-50 text-emerald-600">Live</span>
-                </div>
-
-                <!-- Connector -->
-                <div class="flex justify-center -my-1.5">
-                  <div class="w-px h-5 bg-[var(--line-strong)]"></div>
-                </div>
-
-                <!-- Node 2 -->
-                <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-[var(--violet)] text-white shadow-[0_12px_28px_-12px_var(--violet-glow)]">
-                  <div class="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-[13px] font-semibold">Agent drafts proposal</p>
-                    <p class="text-[11.5px] text-white/70">AI step · 1.8s</p>
-                  </div>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-                </div>
-
-                <!-- Connector -->
-                <div class="flex justify-center -my-1.5">
-                  <div class="w-px h-5 bg-[var(--line-strong)]"></div>
-                </div>
-
-                <!-- Node 3 -->
-                <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-[var(--cream-2)] border hairline">
-                  <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-sm shrink-0">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-[13px] font-semibold">Send + follow up</p>
-                    <p class="text-[11.5px] text-[var(--ink-muted)]">Action · Gmail + Calendar</p>
-                  </div>
-                  <span class="text-[10.5px] font-semibold px-2 py-1 rounded-md bg-[var(--cream)] text-[var(--ink-muted)]">Queued</span>
-                </div>
-              </div>
-
-              <!-- Footer stat bar -->
-              <div class="mt-5 pt-4 border-t hairline flex items-center justify-between">
-                <div class="flex items-center gap-2 text-[12px] text-[var(--ink-muted)]">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                  Saved 14.2 hrs this week
-                </div>
-                <div class="flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                  <span class="text-[11.5px] font-medium text-[var(--ink-muted)]">All systems go</span>
-                </div>
-              </div>
+      <!-- Right: Hero Image -->
+      <div class="order-1 lg:order-2 relative">
+        <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-espresso/10 aspect-[4/5]">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80" alt="Elegant plated dish at LUMIÈRE restaurant" class="w-full h-full object-cover" loading="eager" />
+          <!-- Subtle gradient overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-espresso/20 via-transparent to-transparent" aria-hidden="true"></div>
+        </div>
+        <!-- Floating badge -->
+        <div class="absolute -bottom-6 -left-6 lg:-left-10 bg-ivory/90 backdrop-blur-xl rounded-2xl p-5 shadow-xl shadow-espresso/5 border border-brass/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center">
+              <i data-lucide="award" class="w-5 h-5 text-brass"></i>
             </div>
-
-            <!-- Floating badge -->
-            <div class="absolute -bottom-5 -left-4 lg:-left-8 bg-white rounded-2xl border hairline shadow-[var(--shadow-lg)] px-4 py-3 flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#b8f2d8] to-emerald-400 flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-              </div>
-              <div>
-                <p class="text-[12.5px] font-semibold leading-tight">Zero errors</p>
-                <p class="text-[11px] text-[var(--ink-muted)]">last 30 days</p>
-              </div>
+            <div>
+              <p class="text-xs text-espresso/50 tracking-wide uppercase">Best Fine Dining</p>
+              <p class="font-display text-sm font-600 text-espresso">Culinary Awards 2025</p>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ==================== LOGOS / SOCIAL PROOF ==================== -->
-    <section class="py-12 lg:py-16 border-y hairline bg-white/40">
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <p class="fade-up text-center text-[12.5px] font-medium tracking-[0.14em] uppercase text-[var(--ink-muted)] mb-9">Trusted by operators at</p>
-        <div class="marquee-mask overflow-hidden">
-          <div class="marquee-track">
-            <!-- Set A -->
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap">Northwind</span>
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap">Vantage&nbsp;Labs</span>
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap">Lumen&nbsp;Co</span>
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap">Arcadia</span>
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap">Pillar&nbsp;HQ</span>
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap">Foundry</span>
-            <!-- Set B (duplicate for seamless loop) -->
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap" aria-hidden="true">Northwind</span>
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap" aria-hidden="true">Vantage&nbsp;Labs</span>
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap" aria-hidden="true">Lumen&nbsp;Co</span>
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap" aria-hidden="true">Arcadia</span>
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap" aria-hidden="true">Pillar&nbsp;HQ</span>
-            <span class="text-[22px] lg:text-[26px] font-semibold tracking-[-0.02em] text-[var(--ink-soft)] opacity-55 whitespace-nowrap" aria-hidden="true">Foundry</span>
-          </div>
-        </div>
+  <!-- ========== MARQUEE / SOCIAL PROOF ========== -->
+  <section class="py-10 border-y border-brass/10 bg-ivory/50" aria-label="Press mentions">
+    <div class="marquee">
+      <div class="marquee-content">
+        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">The New York Times</span>
+        <span class="text-brass text-lg">✦</span>
+        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Michelin Guide</span>
+        <span class="text-brass text-lg">✦</span>
+        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Bon Appétit</span>
+        <span class="text-brass text-lg">✦</span>
+        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Condé Nast Traveler</span>
+        <span class="text-brass text-lg">✦</span>
+        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Food & Wine</span>
+        <span class="text-brass text-lg">✦</span>
       </div>
-    </section>
-
-    <!-- ==================== STATS ==================== -->
-    <section class="py-20 lg:py-28">
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
-          <div class="fade-up text-center lg:text-left">
-            <p class="stat-num font-display text-[clamp(2.5rem,5vw,3.75rem)] leading-none tracking-[-0.02em] mb-2" data-count="14.2" data-suffix="h">0h</p>
-            <p class="text-[13.5px] text-[var(--ink-muted)]">saved per person, weekly</p>
-          </div>
-          <div class="fade-up text-center lg:text-left">
-            <p class="stat-num font-display text-[clamp(2.5rem,5vw,3.75rem)] leading-none tracking-[-0.02em] mb-2" data-count="4200" data-suffix="+">0+</p>
-            <p class="text-[13.5px] text-[var(--ink-muted)]">teams running Flowline</p>
-          </div>
-          <div class="fade-up text-center lg:text-left">
-            <p class="stat-num font-display text-[clamp(2.5rem,5vw,3.75rem)] leading-none tracking-[-0.02em] mb-2" data-count="99.9" data-suffix="%">0%</p>
-            <p class="text-[13.5px] text-[var(--ink-muted)]">workflow success rate</p>
-          </div>
-          <div class="fade-up text-center lg:text-left">
-            <p class="stat-num font-display text-[clamp(2.5rem,5vw,3.75rem)] leading-none tracking-[-0.02em] mb-2" data-count="120" data-suffix="+">0+</p>
-            <p class="text-[13.5px] text-[var(--ink-muted)]">native integrations</p>
-          </div>
-        </div>
+      <div class="marquee-content" aria-hidden="true">
+        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">The New York Times</span>
+        <span class="text-brass text-lg">✦</span>
+        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Michelin Guide</span>
+        <span class="text-brass text-lg">✦</span>
+        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Bon Appétit</span>
+        <span class="text-brass text-lg">✦</span>
+        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Condé Nast Traveler</span>
+        <span class="text-brass text-lg">✦</span>
+        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Food & Wine</span>
+        <span class="text-brass text-lg">✦</span>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ==================== FEATURES ==================== -->
-    <section id="features" class="py-20 lg:py-32 relative">
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <div class="max-w-[640px] mb-16 lg:mb-20">
-          <p class="fade-up text-[12.5px] font-semibold tracking-[0.14em] uppercase text-[var(--violet)] mb-4">Capabilities</p>
-          <h2 class="fade-up font-display text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.05] tracking-[-0.02em] mb-5 text-balance">
-            Automation that actually <span class="serif-italic" style="color:var(--violet)">thinks</span>
+  <!-- ========== MENU SECTION ========== -->
+  <section id="menu" class="py-24 lg:py-32 bg-cream">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <!-- Header -->
+      <div class="section-reveal mb-16 lg:mb-20">
+        <p class="section-tag mb-4">The Menu</p>
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <h2 class="text-4xl sm:text-5xl lg:text-6xl font-800 text-espresso leading-[1.1] max-w-2xl">
+            A seasonal journey<br>through <span class="text-brass italic font-600">flavour.</span>
           </h2>
-          <p class="fade-up text-[16.5px] leading-[1.65] text-[var(--ink-muted)]">
-            Most tools move data. Flowline understands context, makes judgment calls, and knows when to loop in a human.
+          <p class="text-espresso/50 max-w-sm text-sm leading-relaxed lg:text-right">
+            Our menu evolves with the seasons, guided by the finest local producers and a relentless pursuit of balance.
           </p>
         </div>
+      </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-          <!-- Card 1 -->
-          <article class="feature-card fade-up p-7">
-            <div class="feature-icon mb-5">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-            </div>
-            <h3 class="text-[17.5px] font-semibold tracking-[-0.01em] mb-2.5">Context-aware agents</h3>
-            <p class="text-[14.5px] leading-[1.6] text-[var(--ink-muted)]">Agents read your docs, threads, and history before acting — so drafts sound like you, not a robot.</p>
-          </article>
+      <!-- Menu Grid -->
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <!-- Left column -->
+        <div class="space-y-2">
+          <!-- Course label -->
+          <div class="flex items-center gap-4 mb-8">
+            <span class="font-display text-xs tracking-[0.2em] uppercase text-brass-dark font-600">To Begin</span>
+            <div class="flex-1 h-px bg-brass/20"></div>
+          </div>
 
-          <!-- Card 2 -->
-          <article class="feature-card fade-up p-7">
-            <div class="feature-icon mb-5">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
+            <div>
+              <h3 class="font-display text-lg font-600 text-espresso">Oysters & Champagne Mignonette</h3>
+              <p class="text-espresso/50 text-sm mt-1 font-300">Fine de Claire, shallot, chardonnay vinegar, lemon oil</p>
             </div>
-            <h3 class="text-[17.5px] font-semibold tracking-[-0.01em] mb-2.5">120+ native integrations</h3>
-            <p class="text-[14.5px] leading-[1.6] text-[var(--ink-muted)]">Slack, Notion, HubSpot, Stripe, Linear, Gmail — connected in two clicks. No brittle webhooks.</p>
-          </article>
+            <span class="font-display text-brass font-600 whitespace-nowrap">24</span>
+          </div>
 
-          <!-- Card 3 -->
-          <article class="feature-card fade-up p-7">
-            <div class="feature-icon mb-5">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
+            <div>
+              <h3 class="font-display text-lg font-600 text-espresso">Foie Gras Terrine</h3>
+              <p class="text-espresso/50 text-sm mt-1 font-300">Sauternes gelée, brioche, fig, toasted hazelnut</p>
             </div>
-            <h3 class="text-[17.5px] font-semibold tracking-[-0.01em] mb-2.5">Human-in-the-loop guardrails</h3>
-            <p class="text-[14.5px] leading-[1.6] text-[var(--ink-muted)]">Set thresholds, budgets, and approvals. Flowline pauses and asks before anything sensitive.</p>
-          </article>
+            <span class="font-display text-brass font-600 whitespace-nowrap">32</span>
+          </div>
 
-          <!-- Card 4 -->
-          <article class="feature-card fade-up p-7">
-            <div class="feature-icon mb-5">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
+            <div>
+              <h3 class="font-display text-lg font-600 text-espresso">Heirloom Beetroot Tartare</h3>
+              <p class="text-espresso/50 text-sm mt-1 font-300">Smoked crème fraîche, dill, rye crisp, caviar</p>
             </div>
-            <h3 class="text-[17.5px] font-semibold tracking-[-0.01em] mb-2.5">Live observability</h3>
-            <p class="text-[14.5px] leading-[1.6] text-[var(--ink-muted)]">Every run is logged, replayable, and costed. See exactly what fired, when, and why.</p>
-          </article>
+            <span class="font-display text-brass font-600 whitespace-nowrap">26</span>
+          </div>
 
-          <!-- Card 5 -->
-          <article class="feature-card fade-up p-7">
-            <div class="feature-icon mb-5">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
-            </div>
-            <h3 class="text-[17.5px] font-semibold tracking-[-0.01em] mb-2.5">Self-healing runs</h3>
-            <p class="text-[14.5px] leading-[1.6] text-[var(--ink-muted)]">When an API changes or a step fails, Flowline retries, reroutes, and alerts — automatically.</p>
-          </article>
+          <!-- Main course label -->
+          <div class="flex items-center gap-4 mt-12 mb-8">
+            <span class="font-display text-xs tracking-[0.2em] uppercase text-brass-dark font-600">Main Course</span>
+            <div class="flex-1 h-px bg-brass/20"></div>
+          </div>
 
-          <!-- Card 6 -->
-          <article class="feature-card fade-up p-7">
-            <div class="feature-icon mb-5">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
+            <div>
+              <h3 class="font-display text-lg font-600 text-espresso">Dover Sole Meunière</h3>
+              <p class="text-espresso/50 text-sm mt-1 font-300">Brown butter, capers, parsley, lemon, fingerlings</p>
             </div>
-            <h3 class="text-[17.5px] font-semibold tracking-[-0.01em] mb-2.5">Sub-second triggers</h3>
-            <p class="text-[14.5px] leading-[1.6] text-[var(--ink-muted)]">Event-driven architecture means your workflows fire the instant something happens. Not on a cron.</p>
-          </article>
+            <span class="font-display text-brass font-600 whitespace-nowrap">58</span>
+          </div>
+
+          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
+            <div>
+              <h3 class="font-display text-lg font-600 text-espresso">Dry-Aged Duck Breast</h3>
+              <p class="text-espresso/50 text-sm mt-1 font-300">Cherry gastrique, endive, walnut, sauce salmis</p>
+            </div>
+            <span class="font-display text-brass font-600 whitespace-nowrap">52</span>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="space-y-2">
+          <!-- Continue mains -->
+          <div class="flex items-center gap-4 mb-8 opacity-0" aria-hidden="true">
+            <span class="font-display text-xs tracking-[0.2em] uppercase text-brass-dark font-600">Main Course</span>
+            <div class="flex-1 h-px bg-brass/20"></div>
+          </div>
+
+          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
+            <div>
+              <h3 class="font-display text-lg font-600 text-espresso">Herb-Crusted Rack of Lamb</h3>
+              <p class="text-espresso/50 text-sm mt-1 font-300">Pistachio, aubergine caviar, jus gras, mint</p>
+            </div>
+            <span class="font-display text-brass font-600 whitespace-nowrap">56</span>
+          </div>
+
+          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
+            <div>
+              <h3 class="font-display text-lg font-600 text-espresso">Wild Mushroom Risotto</h3>
+              <p class="text-espresso/50 text-sm mt-1 font-300">Acquerello rice, porcini, truffle, aged parmesan</p>
+            </div>
+            <span class="font-display text-brass font-600 whitespace-nowrap">42</span>
+          </div>
+
+          <!-- Dessert label -->
+          <div class="flex items-center gap-4 mt-12 mb-8">
+            <span class="font-display text-xs tracking-[0.2em] uppercase text-brass-dark font-600">Dessert</span>
+            <div class="flex-1 h-px bg-brass/20"></div>
+          </div>
+
+          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
+            <div>
+              <h3 class="font-display text-lg font-600 text-espresso">Valrhona Chocolate Soufflé</h3>
+              <p class="text-espresso/50 text-sm mt-1 font-300">Tahitian vanilla ice cream, cocoa nib tuile</p>
+            </div>
+            <span class="font-display text-brass font-600 whitespace-nowrap">22</span>
+          </div>
+
+          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
+            <div>
+              <h3 class="font-display text-lg font-600 text-espresso">Tarte Tatin</h3>
+              <p class="text-espresso/50 text-sm mt-1 font-300">Caramelised apple, crème fraîche, Calvados</p>
+            </div>
+            <span class="font-display text-brass font-600 whitespace-nowrap">18</span>
+          </div>
+
+          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
+            <div>
+              <h3 class="font-display text-lg font-600 text-espresso">Artisan Cheese Selection</h3>
+              <p class="text-espresso/50 text-sm mt-1 font-300">Five cheeses, quince, walnut, sourdough</p>
+            </div>
+            <span class="font-display text-brass font-600 whitespace-nowrap">28</span>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- ==================== HOW IT WORKS ==================== -->
-    <section id="how" class="py-20 lg:py-32 bg-white/50 border-y hairline">
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <div class="grid lg:grid-cols-[0.85fr_1.15fr] gap-14 lg:gap-20 items-start">
-          <div class="lg:sticky lg:top-32">
-            <p class="fade-up text-[12.5px] font-semibold tracking-[0.14em] uppercase text-[var(--violet)] mb-4">How it works</p>
-            <h2 class="fade-up font-display text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.05] tracking-[-0.02em] mb-5 text-balance">
-              From messy to <span class="serif-italic" style="color:var(--violet)">magical</span> in three steps
-            </h2>
-            <p class="fade-up text-[16px] leading-[1.65] text-[var(--ink-muted)] mb-8 max-w-[400px]">
-              No code. No ops team. No six-week onboarding. Most teams ship their first workflow in under an hour.
-            </p>
-            <a href="#contact" class="fade-up btn-ghost inline-flex items-center gap-2 text-[14.5px] font-semibold px-6 py-3 rounded-full">
-              Get started
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
+      <!-- CTA -->
+      <div class="section-reveal mt-16 text-center">
+        <a href="#reservation" class="btn-secondary">
+          View Full Tasting Menu
+          <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== GALLERY ========== -->
+  <section id="gallery" class="py-24 lg:py-32 bg-ivory">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="section-reveal mb-16">
+        <p class="section-tag mb-4">Gallery</p>
+        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-800 text-espresso leading-[1.1] max-w-2xl">
+          Moments from<br>the <span class="text-brass italic font-600">table.</span>
+        </h2>
+      </div>
+
+      <!-- Gallery grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div class="gallery-item aspect-[3/4] col-span-2 lg:col-span-1 lg:row-span-2">
+          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80" alt="Interior of LUMIÈRE restaurant with warm lighting" loading="lazy" />
+        </div>
+        <div class="gallery-item aspect-square">
+          <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&q=80" alt="Fresh salmon dish with herbs" loading="lazy" />
+        </div>
+        <div class="gallery-item aspect-square">
+          <img src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=600&q=80" alt="Chef plating a dish with precision" loading="lazy" />
+        </div>
+        <div class="gallery-item aspect-square">
+          <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&q=80" alt="Elegant dining table setting" loading="lazy" />
+        </div>
+        <div class="gallery-item aspect-square">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" alt="Grilled steak with garnish" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== REVIEWS ========== -->
+  <section id="reviews" class="py-24 lg:py-32 bg-cream">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="section-reveal mb-16">
+        <p class="section-tag mb-4">Guest Reviews</p>
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <h2 class="text-4xl sm:text-5xl lg:text-6xl font-800 text-espresso leading-[1.1] max-w-2xl">
+            Words from<br>our <span class="text-brass italic font-600">guests.</span>
+          </h2>
+          <div class="flex items-center gap-3">
+            <div class="flex gap-1">
+              <i data-lucide="star" class="star fill-current"></i>
+              <i data-lucide="star" class="star fill-current"></i>
+              <i data-lucide="star" class="star fill-current"></i>
+              <i data-lucide="star" class="star fill-current"></i>
+              <i data-lucide="star" class="star fill-current"></i>
+            </div>
+            <span class="text-espresso/60 text-sm font-400">4.9 from 240+ reviews</span>
           </div>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <!-- Review 1 -->
+        <div class="review-card bg-ivory rounded-2xl p-8 border border-brass/10 shadow-sm">
+          <div class="flex gap-1 mb-6">
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+          </div>
+          <p class="text-espresso/70 leading-relaxed font-300 mb-8 text-[0.95rem]">
+            "An unforgettable evening. The Dover sole was cooked to absolute perfection, and the service felt genuinely warm rather than rehearsed. This is dining as it should be."
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
+              <span class="font-display text-xs font-700 text-brass-dark">EM</span>
+            </div>
+            <div>
+              <p class="font-display text-sm font-600 text-espresso">Eleanor M.</p>
+              <p class="text-xs text-espresso/40">Dined March 2025</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 2 -->
+        <div class="review-card bg-ivory rounded-2xl p-8 border border-brass/10 shadow-sm">
+          <div class="flex gap-1 mb-6">
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+          </div>
+          <p class="text-espresso/70 leading-relaxed font-300 mb-8 text-[0.95rem]">
+            "The tasting menu is a masterclass in restraint and flavour. Every course arrived with a story, and the sommelier's pairings were inspired. Worth every penny."
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
+              <span class="font-display text-xs font-700 text-brass-dark">JR</span>
+            </div>
+            <div>
+              <p class="font-display text-sm font-600 text-espresso">James R.</p>
+              <p class="text-xs text-espresso/40">Dined February 2025</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 3 -->
+        <div class="review-card bg-ivory rounded-2xl p-8 border border-brass/10 shadow-sm md:col-span-2 lg:col-span-1">
+          <div class="flex gap-1 mb-6">
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+            <i data-lucide="star" class="star fill-current"></i>
+          </div>
+          <p class="text-espresso/70 leading-relaxed font-300 mb-8 text-[0.95rem]">
+            "We celebrated our anniversary here and it exceeded every expectation. The chocolate soufflé alone is worth the visit. Impeccable from start to finish."
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
+              <span class="font-display text-xs font-700 text-brass-dark">SL</span>
+            </div>
+            <div>
+              <p class="font-display text-sm font-600 text-espresso">Sophia L.</p>
+              <p class="text-xs text-espresso/40">Dined April 2025</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== LOCATION ========== -->
+  <section id="location" class="py-24 lg:py-32 bg-ivory">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <!-- Info -->
+        <div class="section-reveal">
+          <p class="section-tag mb-4">Find Us</p>
+          <h2 class="text-4xl sm:text-5xl lg:text-6xl font-800 text-espresso leading-[1.1] mb-8">
+            In the heart<br>of the <span class="text-brass italic font-600">city.</span>
+          </h2>
+          <p class="text-espresso/50 leading-relaxed max-w-md mb-12 font-300">
+            Tucked away on a quiet cobblestone street, LUMIÈRE offers a serene escape from the bustle. Valet parking available.
+          </p>
+
+          <div class="space-y-6">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="map-pin" class="w-4 h-4 text-brass"></i>
+              </div>
+              <div>
+                <p class="font-display text-sm font-600 text-espresso">Address</p>
+                <p class="text-espresso/50 text-sm font-300">12 Rue Saint-Honoré, 75001 Paris, France</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="clock" class="w-4 h-4 text-brass"></i>
+              </div>
+              <div>
+                <p class="font-display text-sm font-600 text-espresso">Hours</p>
+                <p class="text-espresso/50 text-sm font-300">Tue – Sat: 6:30pm – 10:30pm</p>
+                <p class="text-espresso/50 text-sm font-300">Sun: 12pm – 3pm (Brunch)</p>
+                <p class="text-espresso/50 text-sm font-300">Mon: Closed</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i data-lucide="phone" class="w-4 h-4 text-brass"></i>
+              </div>
+              <div>
+                <p class="font-display text-sm font-600 text-espresso">Reservations</p>
+                <p class="text-espresso/50 text-sm font-300">+33 1 42 60 00 00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map placeholder / Image -->
+        <div class="section-reveal relative rounded-3xl overflow-hidden shadow-2xl shadow-espresso/10 aspect-[4/3] lg:aspect-square">
+          <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&q=80" alt="Exterior view of LUMIÈRE restaurant on a Paris street" class="w-full h-full object-cover" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-espresso/30 via-transparent to-transparent" aria-hidden="true"></div>
+          <!-- Map pin overlay -->
+          <div class="absolute bottom-6 left-6 bg-ivory/90 backdrop-blur-xl rounded-2xl px-5 py-4 shadow-lg border border-brass/10">
+            <div class="flex items-center gap-3">
+              <i data-lucide="navigation" class="w-4 h-4 text-brass"></i>
+              <span class="font-display text-sm font-600 text-espresso">Get Directions</span>
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-espresso/40"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESERVATION ========== -->
+  <section id="reservation" class="py-24 lg:py-32 bg-espresso relative overflow-hidden">
+    <!-- Decorative glow -->
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-brass/10 blur-3xl" aria-hidden="true"></div>
+    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gold/8 blur-3xl" aria-hidden="true"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="grid lg:grid-cols-2 gap-16 items-start">
+        <!-- Copy -->
+        <div class="section-reveal">
+          <p class="section-tag mb-4 !text-brass-light">Reservations</p>
+          <h2 class="text-4xl sm:text-5xl lg:text-6xl font-800 text-cream leading-[1.1] mb-8">
+            Secure your<br><span class="text-brass italic font-600">table.</span>
+          </h2>
+          <p class="text-cream/50 leading-relaxed max-w-md mb-10 font-300">
+            We welcome reservations up to 30 days in advance. For parties of 7 or more, please contact us directly.
+          </p>
 
           <div class="space-y-5">
-            <!-- Step 1 -->
-            <div class="fade-up flex gap-5 p-6 lg:p-7 rounded-[24px] bg-white border hairline">
-              <div class="shrink-0 w-11 h-11 rounded-2xl bg-[var(--ink)] text-[var(--cream)] flex items-center justify-center font-display text-[19px]">1</div>
-              <div>
-                <h3 class="text-[17.5px] font-semibold tracking-[-0.01em] mb-2">Connect your stack</h3>
-                <p class="text-[14.5px] leading-[1.65] text-[var(--ink-muted)]">Point Flowline at the tools you already use. It maps your data model, permissions, and common patterns in minutes.</p>
-              </div>
+            <div class="flex items-center gap-3 text-cream/40 text-sm font-300">
+              <i data-lucide="check" class="w-4 h-4 text-brass"></i>
+              <span>Complimentary valet parking</span>
             </div>
-
-            <!-- Step 2 -->
-            <div class="fade-up flex gap-5 p-6 lg:p-7 rounded-[24px] bg-white border hairline">
-              <div class="shrink-0 w-11 h-11 rounded-2xl bg-[var(--ink)] text-[var(--cream)] flex items-center justify-center font-display text-[19px]">2</div>
-              <div>
-                <h3 class="text-[17.5px] font-semibold tracking-[-0.01em] mb-2">Describe the outcome</h3>
-                <p class="text-[14.5px] leading-[1.65] text-[var(--ink-muted)]">Tell Flowline what you want to happen in plain English. It builds the workflow, tests it against your real data, and shows you the plan.</p>
-              </div>
+            <div class="flex items-center gap-3 text-cream/40 text-sm font-300">
+              <i data-lucide="check" class="w-4 h-4 text-brass"></i>
+              <span>Dietary requirements accommodated</span>
             </div>
-
-            <!-- Step 3 -->
-            <div class="fade-up flex gap-5 p-6 lg:p-7 rounded-[24px] bg-[var(--ink)] text-[var(--cream)] border border-[var(--ink)] relative overflow-hidden">
-              <div class="absolute top-0 right-0 w-[300px] h-[300px] rounded-full bg-[var(--violet)] opacity-25 blur-[80px] pointer-events-none" aria-hidden="true"></div>
-              <div class="shrink-0 w-11 h-11 rounded-2xl bg-white/10 text-white flex items-center justify-center font-display text-[19px] relative z-10">3</div>
-              <div class="relative z-10">
-                <h3 class="text-[17.5px] font-semibold tracking-[-0.01em] mb-2">Approve and forget</h3>
-                <p class="text-[14.5px] leading-[1.65] text-white/70">Hit publish. Flowline runs it, monitors it, and only pings you when something genuinely needs a decision.</p>
-              </div>
+            <div class="flex items-center gap-3 text-cream/40 text-sm font-300">
+              <i data-lucide="check" class="w-4 h-4 text-brass"></i>
+              <span>Private dining available on request</span>
             </div>
           </div>
+        </div>
+
+        <!-- Form -->
+        <div class="section-reveal">
+          <form id="reservationForm" class="bg-ivory/5 backdrop-blur-sm rounded-3xl p-8 lg:p-10 border border-cream/10" novalidate>
+            <div class="grid sm:grid-cols-2 gap-5 mb-5">
+              <div>
+                <label for="resName" class="sr-only">Full name</label>
+                <input type="text" id="resName" name="name" class="form-input !bg-cream/5 !border-cream/15 !text-cream placeholder:!text-cream/30" placeholder="Full name" required />
+                <p class="error-msg" id="resNameError">Please enter your name</p>
+              </div>
+              <div>
+                <label for="resEmail" class="sr-only">Email address</label>
+                <input type="email" id="resEmail" name="email" class="form-input !bg-cream/5 !border-cream/15 !text-cream placeholder:!text-cream/30" placeholder="Email address" required />
+                <p class="error-msg" id="resEmailError">Please enter a valid email</p>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-5 mb-5">
+              <div>
+                <label for="resPhone" class="sr-only">Phone number</label>
+                <input type="tel" id="resPhone" name="phone" class="form-input !bg-cream/5 !border-cream/15 !text-cream placeholder:!text-cream/30" placeholder="Phone number" />
+                <p class="error-msg" id="resPhoneError">Please enter a valid phone number</p>
+              </div>
+              <div>
+                <label for="resGuests" class="sr-only">Number of guests</label>
+                <select id="resGuests" name="guests" class="form-input !bg-cream/5 !border-cream/15 !text-cream" required>
+                  <option value="" disabled selected>Guests</option>
+                  <option value="1">1 Guest</option>
+                  <option value="2">2 Guests</option>
+                  <option value="3">3 Guests</option>
+                  <option value="4">4 Guests</option>
+                  <option value="5">5 Guests</option>
+                  <option value="6">6 Guests</option>
+                  <option value="7+">7+ Guests</option>
+                </select>
+                <p class="error-msg" id="resGuestsError">Please select party size</p>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-5 mb-5">
+              <div>
+                <label for="resDate" class="sr-only">Reservation date</label>
+                <input type="date" id="resDate" name="date" class="form-input !bg-cream/5 !border-cream/15 !text-cream" required />
+                <p class="error-msg" id="resDateError">Please select a date</p>
+              </div>
+              <div>
+                <label for="resTime" class="sr-only">Reservation time</label>
+                <select id="resTime" name="time" class="form-input !bg-cream/5 !border-cream/15 !text-cream" required>
+                  <option value="" disabled selected>Time</option>
+                  <option value="18:30">6:30 PM</option>
+                  <option value="19:00">7:00 PM</option>
+                  <option value="19:30">7:30 PM</option>
+                  <option value="20:00">8:00 PM</option>
+                  <option value="20:30">8:30 PM</option>
+                  <option value="21:00">9:00 PM</option>
+                  <option value="21:30">9:30 PM</option>
+                  <option value="22:00">10:00 PM</option>
+                </select>
+                <p class="error-msg" id="resTimeError">Please select a time</p>
+              </div>
+            </div>
+
+            <div class="mb-8">
+              <label for="resNotes" class="sr-only">Special requests</label>
+              <textarea id="resNotes" name="notes" rows="3" class="form-input !bg-cream/5 !border-cream/15 !text-cream placeholder:!text-cream/30 resize-none" placeholder="Special requests or dietary requirements"></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary w-full justify-center !bg-brass !border-brass hover:!bg-transparent hover:!text-brass">
+              Confirm Reservation
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+
+            <!-- Success state -->
+            <div id="formSuccess" class="success-check mt-6 items-center gap-3 text-brass">
+              <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+              <span class="font-display text-sm font-600">Reservation confirmed. We'll be in touch shortly.</span>
+            </div>
+          </form>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ==================== PRICING ==================== -->
-    <section id="pricing" class="py-20 lg:py-32">
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <div class="text-center max-w-[560px] mx-auto mb-14 lg:mb-16">
-          <p class="fade-up text-[12.5px] font-semibold tracking-[0.14em] uppercase text-[var(--violet)] mb-4">Pricing</p>
-          <h2 class="fade-up font-display text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.05] tracking-[-0.02em] mb-5 text-balance">
-            Simple pricing, <span class="serif-italic" style="color:var(--violet)">serious</span> leverage
-          </h2>
-          <p class="fade-up text-[16px] leading-[1.65] text-[var(--ink-muted)]">
-            Start free. Upgrade when Flowline is already saving you more than it costs.
-          </p>
-        </div>
-
-        <!-- Billing toggle -->
-        <div class="fade-up flex justify-center mb-14">
-          <div class="billing-toggle" role="group" aria-label="Billing period">
-            <span id="togglePill" class="toggle-pill" style="left:4px; width:96px;"></span>
-            <button id="btnMonthly" class="active" aria-pressed="true">Monthly</button>
-            <button id="btnYearly" aria-pressed="false">Yearly <span class="text-[11px] text-[var(--violet)] font-bold ml-0.5">-20%</span></button>
-          </div>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-5 lg:gap-6 max-w-[1080px] mx-auto items-stretch">
-          <!-- Starter -->
-          <div class="price-card fade-up p-7 lg:p-8 flex flex-col">
-            <p class="text-[13px] font-semibold tracking-wide text-[var(--ink-muted)] uppercase mb-3">Starter</p>
-            <div class="flex items-baseline gap-1.5 mb-2">
-              <span class="font-display text-[42px] leading-none tracking-[-0.02em] price-amount" data-monthly="0" data-yearly="0">$0</span>
-              <span class="text-[14px] text-[var(--ink-muted)]">/ month</span>
-            </div>
-            <p class="text-[13.5px] text-[var(--ink-muted)] mb-7 leading-[1.6]">For individuals testing the waters.</p>
-            <ul class="space-y-3 mb-8 flex-1">
-              <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>3 active workflows</li>
-              <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>1,000 runs / month</li>
-              <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>30+ integrations</li>
-              <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Community support</li>
-            </ul>
-            <a href="#contact" class="btn-ghost text-center text-[14.5px] font-semibold px-6 py-3 rounded-full w-full">Start free</a>
-          </div>
-
-          <!-- Growth (featured) -->
-          <div class="price-card price-featured fade-up p-7 lg:p-8 flex flex-col relative">
-            <div class="relative z-10 flex flex-col h-full">
-              <div class="flex items-center justify-between mb-3">
-                <p class="text-[13px] font-semibold tracking-wide text-white/70 uppercase">Growth</p>
-                <span class="text-[10.5px] font-bold tracking-wide uppercase px-2.5 py-1 rounded-full bg-[var(--violet)] text-white">Most popular</span>
-              </div>
-              <div class="flex items-baseline gap-1.5 mb-2">
-                <span class="font-display text-[42px] leading-none tracking-[-0.02em] price-amount" data-monthly="49" data-yearly="39">$49</span>
-                <span class="text-[14px] text-white/60">/ month</span>
-              </div>
-              <p class="text-[13.5px] text-white/60 mb-7 leading-[1.6]">For small teams shipping fast.</p>
-              <ul class="space-y-3 mb-8 flex-1">
-                <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Unlimited workflows</li>
-                <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>25,000 runs / month</li>
-                <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>All 120+ integrations</li>
-                <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>AI agents + guardrails</li>
-                <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Priority support</li>
-              </ul>
-              <a href="#contact" class="btn-violet text-center text-[14.5px] font-semibold px-6 py-3 rounded-full w-full">Start 14-day trial</a>
-            </div>
-          </div>
-
-          <!-- Scale -->
-          <div class="price-card fade-up p-7 lg:p-8 flex flex-col">
-            <p class="text-[13px] font-semibold tracking-wide text-[var(--ink-muted)] uppercase mb-3">Scale</p>
-            <div class="flex items-baseline gap-1.5 mb-2">
-              <span class="font-display text-[42px] leading-none tracking-[-0.02em] price-amount" data-monthly="149" data-yearly="119">$149</span>
-              <span class="text-[14px] text-[var(--ink-muted)]">/ month</span>
-            </div>
-            <p class="text-[13.5px] text-[var(--ink-muted)] mb-7 leading-[1.6]">For companies with real volume.</p>
-            <ul class="space-y-3 mb-8 flex-1">
-              <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Everything in Growth</li>
-              <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>500,000 runs / month</li>
-              <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>SSO, audit logs, RBAC</li>
-              <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Custom models + SLAs</li>
-              <li class="flex items-start gap-2.5 text-[14px]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Dedicated success manager</li>
-            </ul>
-            <a href="#contact" class="btn-ghost text-center text-[14.5px] font-semibold px-6 py-3 rounded-full w-full">Talk to sales</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== TESTIMONIALS ==================== -->
-    <section id="testimonials" class="py-20 lg:py-32 bg-white/50 border-y hairline">
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <div class="max-w-[560px] mb-14 lg:mb-16">
-          <p class="fade-up text-[12.5px] font-semibold tracking-[0.14em] uppercase text-[var(--violet)] mb-4">Customers</p>
-          <h2 class="fade-up font-display text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.05] tracking-[-0.02em] text-balance">
-            Operators who stopped <span class="serif-italic" style="color:var(--violet)">firefighting</span>
-          </h2>
-        </div>
-
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-          <!-- Test 1 -->
-          <figure class="test-card fade-up p-7 flex flex-col">
-            <div class="flex gap-1 mb-5" aria-label="5 out of 5 stars">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            </div>
-            <blockquote class="text-[15px] leading-[1.65] text-[var(--ink-soft)] mb-6 flex-1">"We replaced four internal tools and a part-time ops contractor in one week. Flowline just... handles it. Our Monday standups are 10 minutes now."</blockquote>
-            <figcaption class="flex items-center gap-3 pt-5 border-t hairline">
-              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-300 to-violet-500"></div>
-              <div>
-                <p class="text-[13.5px] font-semibold leading-tight">Maya Chen</p>
-                <p class="text-[12px] text-[var(--ink-muted)]">VP Operations, Vantage Labs</p>
-              </div>
-            </figcaption>
-          </figure>
-
-          <!-- Test 2 -->
-          <figure class="test-card fade-up p-7 flex flex-col">
-            <div class="flex gap-1 mb-5" aria-label="5 out of 5 stars">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            </div>
-            <blockquote class="text-[15px] leading-[1.65] text-[var(--ink-soft)] mb-6 flex-1">"The AI agent drafts our client proposals better than our template did. It reads the call notes and knows what to emphasize. Genuinely uncanny."</blockquote>
-            <figcaption class="flex items-center gap-3 pt-5 border-t hairline">
-              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-200 to-teal-400"></div>
-              <div>
-                <p class="text-[13.5px] font-semibold leading-tight">Daniel Okafor</p>
-                <p class="text-[12px] text-[var(--ink-muted)]">Founder, Arcadia Studio</p>
-              </div>
-            </figcaption>
-          </figure>
-
-          <!-- Test 3 -->
-          <figure class="test-card fade-up p-7 flex flex-col md:col-span-2 lg:col-span-1">
-            <div class="flex gap-1 mb-5" aria-label="5 out of 5 stars">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--violet)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            </div>
-            <blockquote class="text-[15px] leading-[1.65] text-[var(--ink-soft)] mb-6 flex-1">"We were skeptical about 'set it and forget it.' Six months in, our support SLA dropped from 4 hours to 18 minutes. The guardrails make it safe."</blockquote>
-            <figcaption class="flex items-center gap-3 pt-5 border-t hairline">
-              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-200 to-rose-400"></div>
-              <div>
-                <p class="text-[13.5px] font-semibold leading-tight">Priya Raman</p>
-                <p class="text-[12px] text-[var(--ink-muted)]">Head of CX, Pillar HQ</p>
-              </div>
-            </figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== CTA BANNER ==================== -->
-    <section class="py-20 lg:py-28">
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <div class="cta-banner fade-up px-8 py-16 lg:px-20 lg:py-24 text-center">
-          <div class="relative z-10 max-w-[640px] mx-auto">
-            <h2 class="font-display text-[clamp(2.25rem,5.5vw,4rem)] leading-[1.05] tracking-[-0.02em] text-[var(--cream)] mb-5 text-balance">
-              Stop doing work a machine <span class="serif-italic" style="color:var(--violet)">should</span> be doing.
-            </h2>
-            <p class="text-[16.5px] leading-[1.65] text-white/60 mb-9 max-w-[480px] mx-auto">
-              Set up your first workflow in under an hour. Free forever plan. No credit card. No sales call.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-3.5 justify-center">
-              <a href="#contact" class="btn-violet text-[15px] font-semibold px-8 py-3.5 rounded-full inline-flex items-center justify-center gap-2">
-                Start building free
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </a>
-              <a href="#how" class="text-[15px] font-semibold px-8 py-3.5 rounded-full border border-white/20 text-white/90 hover:bg-white/10 transition-colors text-center">See how it works</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== CONTACT / ENQUIRY ==================== -->
-    <section id="contact" class="py-20 lg:py-28">
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
-        <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-14 lg:gap-20">
-          <!-- Left copy -->
-          <div>
-            <p class="fade-up text-[12.5px] font-semibold tracking-[0.14em] uppercase text-[var(--violet)] mb-4">Get started</p>
-            <h2 class="fade-up font-display text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.05] tracking-[-0.02em] mb-5 text-balance">
-              Tell us what's eating your <span class="serif-italic" style="color:var(--violet)">week</span>
-            </h2>
-            <p class="fade-up text-[16px] leading-[1.65] text-[var(--ink-muted)] mb-9 max-w-[440px]">
-              We'll map your first three workflows and show you exactly what Flowline would automate — no obligation, no generic demo.
-            </p>
-
-            <ul class="space-y-4">
-              <li class="fade-up flex items-start gap-3.5">
-                <div class="w-9 h-9 rounded-xl bg-white border hairline flex items-center justify-center shrink-0">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-                </div>
-                <div>
-                  <p class="text-[14.5px] font-semibold mb-0.5">Reply within one business day</p>
-                  <p class="text-[13.5px] text-[var(--ink-muted)]">Usually much faster.</p>
-                </div>
-              </li>
-              <li class="fade-up flex items-start gap-3.5">
-                <div class="w-9 h-9 rounded-xl bg-white border hairline flex items-center justify-center shrink-0">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-                </div>
-                <div>
-                  <p class="text-[14.5px] font-semibold mb-0.5">Free workflow blueprint</p>
-                  <p class="text-[13.5px] text-[var(--ink-muted)]">A custom plan for your stack, not a template.</p>
-                </div>
-              </li>
-              <li class="fade-up flex items-start gap-3.5">
-                <div class="w-9 h-9 rounded-xl bg-white border hairline flex items-center justify-center shrink-0">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-                </div>
-                <div>
-                  <p class="text-[14.5px] font-semibold mb-0.5">No pushy sales calls</p>
-                  <p class="text-[13.5px] text-[var(--ink-muted)]">We'll send the plan. You decide if it's worth a chat.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Right form -->
-          <div class="fade-up">
-            <form id="enquiryForm" class="bg-white rounded-[28px] border hairline p-7 lg:p-9 shadow-[var(--shadow-md)]" novalidate>
-              <div class="grid sm:grid-cols-2 gap-5 mb-5">
-                <div>
-                  <label for="name" class="block text-[13px] font-semibold mb-2">Full name</label>
-                  <input type="text" id="name" name="name" class="form-field w-full px-4 py-3 text-[14.5px]" placeholder="Jane Doe" autocomplete="name" required />
-                  <p class="field-error" id="nameError">Please enter your name.</p>
-                </div>
-                <div>
-                  <label for="email" class="block text-[13px] font-semibold mb-2">Work email</label>
-                  <input type="email" id="email" name="email" class="form-field w-full px-4 py-3 text-[14.5px]" placeholder="jane@company.com" autocomplete="email" required />
-                  <p class="field-error" id="emailError">Please enter a valid email.</p>
-                </div>
-              </div>
-
-              <div class="grid sm:grid-cols-2 gap-5 mb-5">
-                <div>
-                  <label for="company" class="block text-[13px] font-semibold mb-2">Company</label>
-                  <input type="text" id="company" name="company" class="form-field w-full px-4 py-3 text-[14.5px]" placeholder="Acme Inc." autocomplete="organization" required />
-                  <p class="field-error" id="companyError">Please enter your company.</p>
-                </div>
-                <div>
-                  <label for="teamSize" class="block text-[13px] font-semibold mb-2">Team size</label>
-                  <select id="teamSize" name="teamSize" class="form-field w-full px-4 py-3 text-[14.5px] appearance-none bg-no-repeat" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b6779%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22m6 9 6 6 6-6%22/></svg>'); background-position: right 16px center; background-size: 16px;" required>
-                    <option value="">Select…</option>
-                    <option value="1-10">1–10</option>
-                    <option value="11-50">11–50</option>
-                    <option value="51-200">51–200</option>
-                    <option value="200+">200+</option>
-                  </select>
-                  <p class="field-error" id="teamSizeError">Please select a team size.</p>
-                </div>
-              </div>
-
-              <div class="mb-5">
-                <label for="message" class="block text-[13px] font-semibold mb-2">What would you like to automate?</label>
-                <textarea id="message" name="message" rows="4" class="form-field w-full px-4 py-3 text-[14.5px] resize-none" placeholder="e.g. We manually route inbound leads to reps and it takes 3 hours a day…" required></textarea>
-                <p class="field-error" id="messageError">Please tell us a little about your workflow.</p>
-              </div>
-
-              <button type="submit" id="submitBtn" class="btn-violet w-full text-[15px] font-semibold px-6 py-3.5 rounded-full inline-flex items-center justify-center gap-2">
-                <span id="submitText">Send enquiry</span>
-                <svg id="submitArrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                <svg id="submitSpinner" class="hidden animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-              </button>
-
-              <!-- Success state -->
-              <div id="formSuccess" class="hidden mt-6 p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
-                <div class="w-11 h-11 rounded-full bg-emerald-400 flex items-center justify-center mx-auto mb-3">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-                </div>
-                <p class="text-[14.5px] font-semibold text-emerald-800 mb-1">Got it — talk soon.</p>
-                <p class="text-[13px] text-emerald-700">We'll send your workflow blueprint within one business day.</p>
-              </div>
-
-              <p class="text-[12px] text-[var(--ink-muted)] mt-4 text-center">We'll never share your info. Unsubscribe anytime.</p>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- ==================== FOOTER ==================== -->
-  <footer class="border-t hairline bg-white/40 pt-16 pb-8">
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
-      <div class="grid md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10 lg:gap-8 mb-14">
+  <!-- ========== FOOTER ========== -->
+  <footer class="bg-charcoal text-cream/60 pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
         <!-- Brand -->
-        <div>
-          <a href="#" class="flex items-center gap-2.5 mb-4" aria-label="Flowline home">
-            <span class="logo-mark">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
-            </span>
-            <span class="text-[17px] font-semibold tracking-[-0.02em]">Flowline</span>
-          </a>
-          <p class="text-[13.5px] leading-[1.65] text-[var(--ink-muted)] max-w-[280px] mb-6">
-            AI workflows that run your operations quietly in the background — so your team can do the work that matters.
+        <div class="lg:col-span-1">
+          <a href="#" class="font-display text-2xl font-800 text-cream tracking-tight">LUMIÈRE<span class="text-brass">.</span></a>
+          <p class="text-sm leading-relaxed mt-4 max-w-xs font-300">
+            Modern French dining in the heart of Paris. A place where taste meets artistry.
           </p>
-          <div class="flex items-center gap-2.5">
-            <a href="#" class="w-9 h-9 rounded-full bg-white border hairline flex items-center justify-center text-[var(--ink-muted)] transition-all hover:text-[var(--violet)] hover:border-[var(--violet)] hover:-translate-y-0.5" aria-label="Flowline on X">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <div class="flex gap-3 mt-6">
+            <a href="#" class="w-9 h-9 rounded-full border border-cream/10 flex items-center justify-center hover:border-brass/40 hover:text-brass transition-all duration-300" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
             </a>
-            <a href="#" class="w-9 h-9 rounded-full bg-white border hairline flex items-center justify-center text-[var(--ink-muted)] transition-all hover:text-[var(--violet)] hover:border-[var(--violet)] hover:-translate-y-0.5" aria-label="Flowline on LinkedIn">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
+            <a href="#" class="w-9 h-9 rounded-full border border-cream/10 flex items-center justify-center hover:border-brass/40 hover:text-brass transition-all duration-300" aria-label="Facebook">
+              <i data-lucide="facebook" class="w-4 h-4"></i>
             </a>
-            <a href="#" class="w-9 h-9 rounded-full bg-white border hairline flex items-center justify-center text-[var(--ink-muted)] transition-all hover:text-[var(--violet)] hover:border-[var(--violet)] hover:-translate-y-0.5" aria-label="Flowline on GitHub">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            <a href="#" class="w-9 h-9 rounded-full border border-cream/10 flex items-center justify-center hover:border-brass/40 hover:text-brass transition-all duration-300" aria-label="Twitter">
+              <i data-lucide="twitter" class="w-4 h-4"></i>
             </a>
           </div>
         </div>
 
-        <!-- Product -->
+        <!-- Explore -->
         <div>
-          <h3 class="text-[13px] font-semibold tracking-wide uppercase text-[var(--ink)] mb-4">Product</h3>
+          <h4 class="font-display text-sm font-600 text-cream tracking-wide uppercase mb-5">Explore</h4>
           <ul class="space-y-3">
-            <li><a href="#features" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Features</a></li>
-            <li><a href="#how" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">How it works</a></li>
-            <li><a href="#pricing" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Pricing</a></li>
-            <li><a href="#" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Integrations</a></li>
-            <li><a href="#" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Changelog</a></li>
+            <li><a href="#menu" class="text-sm hover:text-brass transition-colors duration-300 font-300">Menu</a></li>
+            <li><a href="#gallery" class="text-sm hover:text-brass transition-colors duration-300 font-300">Gallery</a></li>
+            <li><a href="#reviews" class="text-sm hover:text-brass transition-colors duration-300 font-300">Reviews</a></li>
+            <li><a href="#location" class="text-sm hover:text-brass transition-colors duration-300 font-300">Location</a></li>
           </ul>
         </div>
 
-        <!-- Company -->
+        <!-- Visit -->
         <div>
-          <h3 class="text-[13px] font-semibold tracking-wide uppercase text-[var(--ink)] mb-4">Company</h3>
-          <ul class="space-y-3">
-            <li><a href="#" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">About</a></li>
-            <li><a href="#testimonials" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Customers</a></li>
-            <li><a href="#" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Careers</a></li>
-            <li><a href="#" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Blog</a></li>
-            <li><a href="#contact" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Contact</a></li>
+          <h4 class="font-display text-sm font-600 text-cream tracking-wide uppercase mb-5">Visit</h4>
+          <ul class="space-y-3 text-sm font-300">
+            <li>12 Rue Saint-Honoré</li>
+            <li>75001 Paris, France</li>
+            <li class="pt-2">+33 1 42 60 00 00</li>
+            <li>bonjour@lumiere.paris</li>
           </ul>
         </div>
 
-        <!-- Legal -->
+        <!-- Hours -->
         <div>
-          <h3 class="text-[13px] font-semibold tracking-wide uppercase text-[var(--ink)] mb-4">Legal</h3>
-          <ul class="space-y-3">
-            <li><a href="#" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Privacy</a></li>
-            <li><a href="#" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Terms</a></li>
-            <li><a href="#" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Security</a></li>
-            <li><a href="#" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">DPA</a></li>
-            <li><a href="#" class="text-[13.5px] text-[var(--ink-muted)] transition-colors hover:text-[var(--violet)]">Status</a></li>
+          <h4 class="font-display text-sm font-600 text-cream tracking-wide uppercase mb-5">Hours</h4>
+          <ul class="space-y-3 text-sm font-300">
+            <li>Tue – Sat: 6:30pm – 10:30pm</li>
+            <li>Sun: 12pm – 3pm</li>
+            <li>Monday: Closed</li>
           </ul>
+          <a href="#reservation" class="inline-flex items-center gap-2 mt-5 text-brass text-sm font-500 hover:gap-3 transition-all duration-300">
+            Reserve a Table <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </a>
         </div>
       </div>
 
-      <div class="pt-7 border-t hairline flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-[13px] text-[var(--ink-muted)]">© 2025 Flowline, Inc. All rights reserved.</p>
-        <div class="flex items-center gap-2 text-[13px] text-[var(--ink-muted)]">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          All systems operational
+      <!-- Bottom bar -->
+      <div class="border-t border-cream/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <p class="text-xs text-cream/30 font-300">&copy; 2025 LUMIÈRE. All rights reserved.</p>
+        <div class="flex gap-6 text-xs text-cream/30 font-300">
+          <a href="#" class="hover:text-brass transition-colors duration-300">Privacy Policy</a>
+          <a href="#" class="hover:text-brass transition-colors duration-300">Terms of Service</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- ==================== SCRIPTS ==================== -->
+  <!-- ========== SCRIPTS ========== -->
   <script>
-    (function() {
-      'use strict';
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Lucide icons
+      lucide.createIcons();
 
-      // ---------- Lucide icons ----------
-      if (window.lucide) { window.lucide.createIcons(); }
-
-      // ---------- Nav scroll state ----------
-      const header = document.getElementById('header');
-      const onScroll = () => {
-        if (window.scrollY > 24) header.classList.add('scrolled');
-        else header.classList.remove('scrolled');
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-
-      // ---------- Mobile menu ----------
-      const mobileToggle = document.getElementById('mobileToggle');
-      const mobileMenu = document.getElementById('mobileMenu');
-      const menuIcon = document.getElementById('menuIcon');
-      let menuOpen = false;
-
-      function setMenu(open) {
-        menuOpen = open;
-        mobileMenu.classList.toggle('open', open);
-        mobileToggle.setAttribute('aria-expanded', String(open));
-        mobileToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-        menuIcon.innerHTML = open
-          ? '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'
-          : '<line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/>';
-      }
-      mobileToggle.addEventListener('click', () => setMenu(!menuOpen));
-      document.querySelectorAll('.mobile-link').forEach(link => {
-        link.addEventListener('click', () => setMenu(false));
+      // === Navbar scroll effect ===
+      const navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 40) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
       });
 
-      // ---------- GSAP setup ----------
-      if (window.gsap) {
-        gsap.registerPlugin(window.ScrollTrigger);
+      // === Mobile menu ===
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileLinks = document.querySelectorAll('.mobile-link');
+      let menuOpen = false;
 
-        // Hero headline word reveal
-        gsap.to('.reveal-word', {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: 'power3.out',
-          stagger: 0.07,
-          delay: 0.15
+      function toggleMenu() {
+        menuOpen = !menuOpen;
+        mobileMenu.classList.toggle('open', menuOpen);
+        menuToggle.setAttribute('aria-expanded', menuOpen);
+        mobileMenu.setAttribute('aria-hidden', !menuOpen);
+        menuToggle.innerHTML = menuOpen 
+          ? '<i data-lucide="x" class="w-6 h-6"></i>' 
+          : '<i data-lucide="menu" class="w-6 h-6"></i>';
+        lucide.createIcons();
+        document.body.style.overflow = menuOpen ? 'hidden' : '';
+      }
+
+      menuToggle.addEventListener('click', toggleMenu);
+      mobileLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+          if (menuOpen) toggleMenu();
+        });
+      });
+
+      // === Custom cursor ===
+      const cursorDot = document.querySelector('.cursor-dot');
+      const cursorRing = document.querySelector('.cursor-ring');
+      let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+      if (cursorDot && cursorRing && window.matchMedia('(pointer: fine)').matches) {
+        document.addEventListener('mousemove', function(e) {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          cursorDot.style.left = (mouseX - 3) + 'px';
+          cursorDot.style.top = (mouseY - 3) + 'px';
         });
 
-        // Fade-up reveals
-        gsap.utils.toArray('.fade-up').forEach((el, i) => {
-          gsap.to(el, {
-            opacity: 1,
-            y: 0,
-            duration: 0.85,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 88%',
-              toggleActions: 'play none none none'
-            },
-            delay: (i % 3) * 0.08
-          });
+        function animateRing() {
+          ringX += (mouseX - ringX) * 0.12;
+          ringY += (mouseY - ringY) * 0.12;
+          cursorRing.style.left = ringX + 'px';
+          cursorRing.style.top = ringY + 'px';
+          requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        // Hover effect on interactive elements
+        const interactiveEls = document.querySelectorAll('a, button, .gallery-item, .menu-item, input, select, textarea');
+        interactiveEls.forEach(function(el) {
+          el.addEventListener('mouseenter', function() { cursorRing.classList.add('hovering'); });
+          el.addEventListener('mouseleave', function() { cursorRing.classList.remove('hovering'); });
         });
+      }
 
-        // Hero visual parallax + 3D tilt
-        const visualCard = document.getElementById('visualCard');
-        if (visualCard && window.matchMedia('(min-width: 1024px)').matches) {
-          const heroSection = visualCard.closest('section');
-          heroSection.addEventListener('mousemove', (e) => {
-            const rect = heroSection.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width - 0.5;
-            const y = (e.clientY - rect.top) / rect.height - 0.5;
-            gsap.to(visualCard, {
-              rotateY: x * 6,
-              rotateX: -y * 6,
-              duration: 0.7,
-              ease: 'power2.out',
-              overwrite: 'auto'
-            });
-          });
-          heroSection.addEventListener('mouseleave', () => {
-            gsap.to(visualCard, { rotateY: 0, rotateX: 0, duration: 0.9, ease: 'power3.out' });
-          });
+      // === Scroll reveal ===
+      const revealElements = document.querySelectorAll('.section-reveal');
+      const fadeElements = document.querySelectorAll('.fade-up');
 
-          // Subtle scroll parallax on the card
-          gsap.to(visualCard, {
-            y: -36,
+      const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+      revealElements.forEach(function(el) { observer.observe(el); });
+      fadeElements.forEach(function(el) { observer.observe(el); });
+
+      // === 3D Tilt on cards ===
+      const tiltCards = document.querySelectorAll('.tilt-card');
+      tiltCards.forEach(function(card) {
+        const inner = card.querySelector('.tilt-card-inner');
+        if (!inner) return;
+        card.addEventListener('mousemove', function(e) {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -6;
+          const rotateY = ((x - centerX) / centerX) * 6;
+          inner.style.transform = 'rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
+        });
+        card.addEventListener('mouseleave', function() {
+          inner.style.transform = 'rotateX(0) rotateY(0)';
+        });
+      });
+
+      // === GSAP ScrollTrigger for parallax ===
+      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero image subtle parallax
+        const heroImg = document.querySelector('#hero .rounded-3xl img');
+        if (heroImg) {
+          gsap.to(heroImg, {
+            yPercent: -8,
             ease: 'none',
             scrollTrigger: {
-              trigger: heroSection,
+              trigger: '#hero',
               start: 'top top',
               end: 'bottom top',
-              scrub: 1
+              scrub: true
             }
           });
         }
 
-        // Stat counters
-        gsap.utils.toArray('[data-count]').forEach(el => {
-          const target = parseFloat(el.dataset.count);
-          const suffix = el.dataset.suffix || '';
-          const decimals = (String(target).split('.')[1] || '').length;
-          const obj = { val: 0 };
-          gsap.to(obj, {
-            val: target,
-            duration: 1.8,
-            ease: 'power2.out',
-            scrollTrigger: { trigger: el, start: 'top 90%', once: true },
-            onUpdate: () => {
-              el.textContent = obj.val.toFixed(decimals) + suffix;
+        // Floating badge subtle move
+        const badge = document.querySelector('#hero .absolute.-bottom-6');
+        if (badge) {
+          gsap.to(badge, {
+            y: -20,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '#hero',
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true
             }
           });
-        });
-      } else {
-        // Fallback: reveal everything if GSAP fails to load
-        document.querySelectorAll('.fade-up, .reveal-word').forEach(el => {
-          el.style.opacity = '1';
-          el.style.transform = 'none';
-        });
-      }
-
-      // ---------- Pricing toggle ----------
-      const btnMonthly = document.getElementById('btnMonthly');
-      const btnYearly = document.getElementById('btnYearly');
-      const togglePill = document.getElementById('togglePill');
-      const priceAmounts = document.querySelectorAll('.price-amount');
-
-      function setBilling(period) {
-        const isYearly = period === 'yearly';
-        btnMonthly.classList.toggle('active', !isYearly);
-        btnYearly.classList.toggle('active', isYearly);
-        btnMonthly.setAttribute('aria-pressed', String(!isYearly));
-        btnYearly.setAttribute('aria-pressed', String(isYearly));
-
-        // Move pill
-        if (isYearly) {
-          const w = btnYearly.offsetWidth;
-          togglePill.style.width = w + 'px';
-          togglePill.style.transform = 'translateX(' + btnMonthly.offsetWidth + 'px)';
-        } else {
-          togglePill.style.width = btnMonthly.offsetWidth + 'px';
-          togglePill.style.transform = 'translateX(0)';
         }
-
-        // Update prices
-        priceAmounts.forEach(el => {
-          const monthly = el.dataset.monthly;
-          const yearly = el.dataset.yearly;
-          el.textContent = '$' + (isYearly ? yearly : monthly);
-        });
       }
 
-      // Init pill width
-      window.addEventListener('load', () => setBilling('monthly'));
-      setTimeout(() => setBilling('monthly'), 100);
-
-      btnMonthly.addEventListener('click', () => setBilling('monthly'));
-      btnYearly.addEventListener('click', () => setBilling('yearly'));
-
-      // ---------- Form validation + submission ----------
-      const form = document.getElementById('enquiryForm');
+      // === Reservation Form ===
+      const form = document.getElementById('reservationForm');
       const successEl = document.getElementById('formSuccess');
-      const submitBtn = document.getElementById('submitBtn');
-      const submitText = document.getElementById('submitText');
-      const submitArrow = document.getElementById('submitArrow');
-      const submitSpinner = document.getElementById('submitSpinner');
 
-      const validators = {
-        name: (v) => v.trim().length >= 2,
-        email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
-        company: (v) => v.trim().length >= 1,
-        teamSize: (v) => v !== '',
-        message: (v) => v.trim().length >= 10
-      };
-
-      function validateField(id) {
-        const input = document.getElementById(id);
-        const errorEl = document.getElementById(id + 'Error');
-        const valid = validators[id](input.value);
-        input.classList.toggle('error', !valid);
-        if (errorEl) errorEl.classList.toggle('show', !valid);
-        return valid;
+      // Set min date to today
+      const dateInput = document.getElementById('resDate');
+      if (dateInput) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        dateInput.min = yyyy + '-' + mm + '-' + dd;
       }
 
-      // Live validation on blur
-      Object.keys(validators).forEach(id => {
-        const input = document.getElementById(id);
-        if (!input) return;
-        input.addEventListener('blur', () => validateField(id));
-        input.addEventListener('input', () => {
-          if (input.classList.contains('error')) validateField(id);
-        });
+      function validateField(id, errorId, condition) {
+        const field = document.getElementById(id);
+        const error = document.getElementById(errorId);
+        if (condition) {
+          field.classList.add('error');
+          error.classList.add('show');
+          return false;
+        } else {
+          field.classList.remove('error');
+          error.classList.remove('show');
+          return true;
+        }
+      }
+
+      // Real-time validation
+      const nameInput = document.getElementById('resName');
+      const emailInput = document.getElementById('resEmail');
+      const phoneInput = document.getElementById('resPhone');
+      const guestsInput = document.getElementById('resGuests');
+      const timeInput = document.getElementById('resTime');
+
+      nameInput.addEventListener('blur', function() {
+        validateField('resName', 'resNameError', this.value.trim().length < 2);
+      });
+      emailInput.addEventListener('blur', function() {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        validateField('resEmail', 'resEmailError', !emailRegex.test(this.value.trim()));
+      });
+      phoneInput.addEventListener('blur', function() {
+        if (this.value.trim() === '') return;
+        const phoneRegex = /^[\d\s\-()+]{7,}$/;
+        validateField('resPhone', 'resPhoneError', !phoneRegex.test(this.value.trim()));
+      });
+      guestsInput.addEventListener('change', function() {
+        validateField('resGuests', 'resGuestsError', this.value === '');
+      });
+      timeInput.addEventListener('change', function() {
+        validateField('resTime', 'resTimeError', this.value === '');
+      });
+      dateInput.addEventListener('change', function() {
+        validateField('resDate', 'resDateError', this.value === '');
       });
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
-        let allValid = true;
-        Object.keys(validators).forEach(id => {
-          if (!validateField(id)) allValid = false;
-        });
 
-        if (!allValid) {
-          const firstError = form.querySelector('.form-field.error');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let isValid = true;
+
+        if (!validateField('resName', 'resNameError', nameInput.value.trim().length < 2)) isValid = false;
+        if (!validateField('resEmail', 'resEmailError', !emailRegex.test(emailInput.value.trim()))) isValid = false;
+        if (phoneInput.value.trim() !== '') {
+          const phoneRegex = /^[\d\s\-()+]{7,}$/;
+          if (!validateField('resPhone', 'resPhoneError', !phoneRegex.test(phoneInput.value.trim()))) isValid = false;
+        }
+        if (!validateField('resGuests', 'resGuestsError', guestsInput.value === '')) isValid = false;
+        if (!validateField('resDate', 'resDateError', dateInput.value === '')) isValid = false;
+        if (!validateField('resTime', 'resTimeError', timeInput.value === '')) isValid = false;
+
+        if (!isValid) {
+          // Scroll to first error
+          const firstError = form.querySelector('.error');
           if (firstError) firstError.focus();
           return;
         }
 
-        // Loading state
-        submitBtn.disabled = true;
-        submitBtn.style.opacity = '0.85';
-        submitText.textContent = 'Sending…';
-        submitArrow.classList.add('hidden');
-        submitSpinner.classList.remove('hidden');
-
-        // Build payload
-        const formData = {};
-        Object.keys(validators).forEach(id => {
-          const el = document.getElementById(id);
-          if (el) formData[id] = el.value;
-        });
-
-        const payload = {
-          url: window.location.host,
-          table: 'enquiries',
-          data: formData
+        // Collect form data
+        const formData = {
+          name: nameInput.value.trim(),
+          email: emailInput.value.trim(),
+          phone: phoneInput.value.trim(),
+          guests: guestsInput.value,
+          date: dateInput.value,
+          time: timeInput.value,
+          notes: document.getElementById('resNotes').value.trim()
         };
 
-        // TODO: connect form action to backend endpoint
+        // Submit to backend (placeholder)
+        /* TODO: connect form action to backend endpoint */
         fetch('submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           cache: 'no-store',
-          body: JSON.stringify(payload)
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'reservations',
+            data: formData
+          })
         })
-        .then(response => {
-          if (!response.ok) throw new Error('Network response was not ok');
-          return response.json().catch(() => ({}));
+        .then(function(response) {
+          if (response.ok) {
+            // Show success
+            form.querySelector('button[type="submit"]').style.display = 'none';
+            successEl.classList.add('show');
+            lucide.createIcons();
+          } else {
+            throw new Error('Server error');
+          }
         })
-        .then(() => {
-          showSuccess();
-        })
-        .catch(() => {
-          // Since this is a static demo, show success anyway so the UI is testable.
-          // In production, replace the catch block with real error handling.
-          showSuccess();
+        .catch(function(error) {
+          // For static demo, show success anyway
+          form.querySelector('button[type="submit"]').style.display = 'none';
+          successEl.classList.add('show');
+          lucide.createIcons();
         });
       });
 
-      function showSuccess() {
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = '1';
-        submitText.textContent = 'Send enquiry';
-        submitArrow.classList.remove('hidden');
-        submitSpinner.classList.add('hidden');
-        successEl.classList.remove('hidden');
-        form.reset();
-        // Scroll success into view gently
-        setTimeout(() => {
-          successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 150);
-      }
-
-      // ---------- Smooth anchor scroll with header offset ----------
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      // === Smooth scroll for anchor links (respecting reduced motion) ===
+      document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         anchor.addEventListener('click', function(e) {
-          const targetId = this.getAttribute('href');
-          if (targetId === '#') return;
-          const target = document.querySelector(targetId);
-          if (!target) return;
-          e.preventDefault();
-          const headerH = 72;
-          const top = target.getBoundingClientRect().top + window.pageYOffset - headerH - 16;
-          window.scrollTo({ top, behavior: 'smooth' });
+          const href = this.getAttribute('href');
+          if (href === '#') return;
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            target.scrollIntoView({
+              behavior: prefersReducedMotion ? 'auto' : 'smooth',
+              block: 'start'
+            });
+          }
         });
       });
 
-    })();
+    });
   </script>
 </body>
 </html>
