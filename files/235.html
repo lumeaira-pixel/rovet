@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AMEERSHAH — Personal Portfolio & Career Dashboard</title>
+<meta name="description" content="Ameershah — Personal portfolio dashboard exploring Data Analytics, Digital Marketing, Business Analytics, and Web Design. Business. Data. Digital Growth." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230B1020'/><text x='50' y='68' font-family='Arial' font-size='52' font-weight='800' text-anchor='middle' fill='%2370E1C1'>A</text></svg>" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<style>
+  /* === Design Tokens === */
+  :root {
+    --bg-primary: #0B1020;
+    --bg-secondary: #11182B;
+    --bg-card: #172238;
+    --accent-mint: #70E1C1;
+    --accent-blue: #79A9FF;
+    --accent-lime: #B6F36B;
+    --text-primary: #F5F7FA;
+    --text-secondary: #A4AEC1;
+    --border-light: rgba(255, 255, 255, 0.10);
+    --radius-xl: 1.5rem;
+    --radius-2xl: 2rem;
+    --shadow-soft: 0 20px 40px -12px rgba(0, 0, 0, 0.5);
+    --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* === Reset & Base === */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(112, 225, 193, 0.06) 0%, transparent 40%),
+      radial-gradient(circle at 85% 60%, rgba(121, 169, 255, 0.05) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  img { max-width: 100%; height: auto; display: block; }
+  a { text-decoration: none; color: inherit; }
+  button { cursor: pointer; font-family: inherit; border: none; background: none; color: inherit; }
+  ul { list-style: none; }
+
+  /* === Accessibility === */
+  :focus-visible {
+    outline: 2px solid var(--accent-mint);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0, 0, 0, 0); border: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* === Scrollbar === */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: rgba(112, 225, 193, 0.25); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent-mint); }
+
+  /* === Layout === */
+  .app-layout {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    min-height: 100vh;
+    gap: 0;
+  }
+  .main-content {
+    padding: 0 32px 60px;
+    max-width: 1440px;
+    margin: 0 auto;
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* === Sidebar === */
+  .sidebar {
+    background: rgba(17, 24, 43, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: 40;
+  }
+  .sidebar-logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent-mint);
+    margin-bottom: 40px;
+    letter-spacing: -0.03em;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 12px;
+    background: rgba(112, 225, 193, 0.10);
+    border: 1px solid rgba(112, 225, 193, 0.20);
+  }
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    width: 100%;
+    align-items: center;
+  }
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px; height: 46px;
+    border-radius: 14px;
+    color: var(--text-secondary);
+    transition: var(--transition-smooth);
+    position: relative;
+  }
+  .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+  .sidebar-link.active {
+    background: rgba(112, 225, 193, 0.12);
+    color: var(--accent-mint);
+  }
+  .sidebar-link.active::before {
+    content: '';
+    position: absolute;
+    left: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 22px;
+    background: var(--accent-mint);
+    border-radius: 0 4px 4px 0;
+  }
+  .sidebar-link .tooltip {
+    position: absolute;
+    left: 62px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition-smooth);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-soft);
+    z-index: 50;
+  }
+  .sidebar-link:hover .tooltip, .sidebar-link:focus-visible .tooltip { opacity: 1; left: 58px; }
+
+  /* === Top Navbar === */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 0;
+    margin-bottom: 28px;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(11, 16, 32, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .brand-mark {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+  .brand-mark span { color: var(--accent-mint); }
+  .nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+  }
+  .nav-links a {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: var(--transition-smooth);
+    position: relative;
+    padding: 4px 0;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent-mint); }
+  .nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-mint);
+    border-radius: 2px;
+  }
+  .nav-right { display: flex; align-items: center; gap: 14px; }
+  .status-dot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border: 1px solid var(--border-light);
+    border-radius: 100px;
+    background: rgba(255,255,255,0.02);
+  }
+  .status-dot span.pulse {
+    width: 8px; height: 8px;
+    background: var(--accent-lime);
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 0 rgba(182, 243, 107, 0.6);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(182, 243, 107, 0.6); }
+    70% { box-shadow: 0 0 0 8px rgba(182, 243, 107, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(182, 243, 107, 0); }
+  }
+  .avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-mint), var(--accent-blue));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--bg-primary);
+    border: 2px solid rgba(255,255,255,0.08);
+  }
+
+  /* === Buttons === */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: 12px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: var(--transition-smooth);
+    white-space: nowrap;
+    border: 1px solid transparent;
+    line-height: 1;
+  }
+  .btn-primary {
+    background: var(--accent-mint);
+    color: var(--bg-primary);
+  }
+  .btn-primary:hover {
+    background: #5cd4b0;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -10px rgba(112, 225, 193, 0.5);
+  }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    background: rgba(255,255,255,0.03);
+    color: var(--text-primary);
+    border-color: var(--border-light);
+  }
+  .btn-secondary:hover {
+    border-color: var(--accent-mint);
+    color: var(--accent-mint);
+    transform: translateY(-2px);
+    background: rgba(112, 225, 193, 0.06);
+  }
+  .btn-sm { padding: 8px 16px; font-size: 0.8rem; border-radius: 10px; }
+
+  /* === Sections & Headings === */
+  .section { margin-top: 72px; }
+  .section-header { margin-bottom: 28px; max-width: 720px; }
+  .section-header h2 {
+    font-size: clamp(1.75rem, 3.4vw, 2.6rem);
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.03em;
+  }
+  .section-header p {
+    color: var(--text-secondary);
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-mint);
+    margin-bottom: 12px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 20px; height: 1px;
+    background: var(--accent-mint);
+  }
+
+  /* === Glass Cards === */
+  .glass-card {
+    background: rgba(23, 34, 56, 0.65);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    padding: 26px;
+    transition: var(--transition-smooth);
+  }
+  .glass-card:hover {
+    border-color: rgba(112, 225, 193, 0.28);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* === Grids === */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+
+  /* === Hero === */
+  .hero-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 36px;
+    align-items: center;
+    margin-top: 24px;
+    position: relative;
+  }
+  .hero-heading {
+    font-size: clamp(2.5rem, 5.2vw, 4.25rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    margin-bottom: 12px;
+  }
+  .hero-heading .highlight {
+    color: var(--accent-mint);
+    position: relative;
+    display: inline-block;
+  }
+  .hero-sub {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+    font-weight: 600;
+    color: var(--accent-blue);
+    margin-bottom: 18px;
+    letter-spacing: -0.01em;
+  }
+  .hero-desc {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 540px;
+    margin-bottom: 26px;
+    line-height: 1.75;
+  }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+  .hero-tag {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.02);
+    transition: var(--transition-smooth);
+  }
+  .hero-tag:hover { color: var(--accent-mint); border-color: rgba(112,225,193,0.3); }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-visual {
+    position: relative;
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    aspect-ratio: 16 / 11;
+    box-shadow: var(--shadow-soft);
+  }
+  .hero-visual img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.75;
+    transition: transform 1.2s ease;
+  }
+  .hero-visual:hover img { transform: scale(1.04); }
+  .hero-visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(11, 16, 32, 0.75) 0%, rgba(11, 16, 32, 0.15) 70%);
+    pointer-events: none;
+  }
+  .hero-visual-meta {
+    position: absolute;
+    bottom: 22px; left: 24px; right: 24px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .hero-visual-meta p {
+    font-size: 0.78rem;
+    color: var(--text-primary);
+    letter-spacing: 0.03em;
+    font-weight: 500;
+  }
+  .hero-visual-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 100px;
+    background: rgba(112, 225, 193, 0.14);
+    border: 1px solid rgba(112, 225, 193, 0.28);
+    color: var(--accent-mint);
+    backdrop-filter: blur(6px);
+  }
+
+  /* Hero floating decorations */
+  .hero-decor {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .hero-dot {
+    position: absolute;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent-mint);
+    opacity: 0.5;
+    animation: floatDot 8s ease-in-out infinite;
+  }
+  .hero-dot:nth-child(1) { top: 12%; left: 8%; animation-delay: 0s; }
+  .hero-dot:nth-child(2) { top: 70%; left: 45%; animation-delay: 1.5s; background: var(--accent-blue); }
+  .hero-dot:nth-child(3) { top: 30%; right: 6%; animation-delay: 3s; background: var(--accent-lime); }
+  .hero-dot:nth-child(4) { bottom: 18%; right: 22%; animation-delay: 4.5s; }
+  @keyframes floatDot {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.35; }
+    50% { transform: translateY(-16px) scale(1.4); opacity: 0.75; }
+  }
+
+  /* === Featured Project === */
+  .featured-project {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    border: 1px solid var(--border-light);
+    background: var(--bg-card);
+    margin-bottom: 30px;
+    transition: var(--transition-smooth);
+  }
+  .featured-project:hover { border-color: rgba(112, 225, 193, 0.3); }
+  .featured-project-image {
+    position: relative;
+    min-height: 340px;
+    overflow: hidden;
+  }
+  .featured-project-image img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s ease;
+  }
+  .featured-project:hover .featured-project-image img { transform: scale(1.05); }
+  .featured-project-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent 50%, var(--bg-card) 100%);
+  }
+  .featured-project-content {
+    padding: 42px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+  .featured-project-content .category {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-mint);
+    margin-bottom: 14px;
+  }
+  .featured-project-content h3 {
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    margin-bottom: 14px;
+    letter-spacing: -0.025em;
+  }
+  .featured-project-content p {
+    color: var(--text-secondary);
+    margin-bottom: 26px;
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+  .featured-project-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* === Project Cards === */
+  .project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+  }
+  .project-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(112, 225, 193, 0.3);
+    box-shadow: var(--shadow-soft);
+  }
+  .project-card-image {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--bg-secondary);
+  }
+  .project-card-image img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+  }
+  .project-card:hover .project-card-image img { transform: scale(1.06); }
+  .project-card-body {
+    padding: 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .project-card-body .category {
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    margin-bottom: 10px;
+  }
+  .project-card-body h4 {
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+    letter-spacing: -0.015em;
+  }
+  .project-card-body p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.65;
+    margin-bottom: 18px;
+    flex: 1;
+  }
+  .project-card-link {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-mint);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: var(--transition-smooth);
+    width: fit-content;
+  }
+  .project-card-link:hover { gap: 10px; }
+
+  /* === Skill Cards === */
+  .skill-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+  }
+  .skill-card:hover {
+    border-color: rgba(112, 225, 193, 0.3);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-soft);
+  }
+  .skill-icon {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    background: rgba(112, 225, 193, 0.1);
+    border: 1px solid rgba(112, 225, 193, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-mint);
+    margin-bottom: 18px;
+  }
+  .skill-card h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    letter-spacing: -0.015em;
+  }
+  .skill-card p {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    line-height: 1.6;
+    flex: 1;
+  }
+  .skill-status {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 5px 12px;
+    border-radius: 100px;
+    display: inline-block;
+    width: fit-content;
+  }
+  .status-learning { background: rgba(121, 169, 255, 0.14); color: var(--accent-blue); border: 1px solid rgba(121, 169, 255, 0.22); }
+  .status-practicing { background: rgba(112, 225, 193, 0.14); color: var(--accent-mint); border: 1px solid rgba(112, 225, 193, 0.22); }
+  .status-concept { background: rgba(182, 243, 107, 0.14); color: var(--accent-lime); border: 1px solid rgba(182, 243, 107, 0.22); }
+
+  /* === Demo Dashboard === */
+  .demo-dashboard {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-2xl);
+    padding: 30px;
+    margin-top: 30px;
+  }
+  .demo-badge {
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-lime);
+    background: rgba(182, 243, 107, 0.1);
+    border: 1px solid rgba(182, 243, 107, 0.22);
+    padding: 5px 12px;
+    border-radius: 100px;
+    display: inline-block;
+    margin-bottom: 22px;
+  }
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    padding: 18px;
+    transition: var(--transition-smooth);
+  }
+  .kpi-card:hover { background: rgba(112, 225, 193, 0.05); border-color: rgba(112, 225, 193, 0.2); }
+  .kpi-card .label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    letter-spacing: 0.03em;
+  }
+  .kpi-card .value {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+  .kpi-card .delta {
+    font-size: 0.7rem;
+    color: var(--accent-lime);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .chart-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .chart-box h5 {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-weight: 500;
+    font-family: var(--font-body);
+    letter-spacing: 0;
+  }
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    height: 120px;
+  }
+  .bar {
+    flex: 1;
+    background: linear-gradient(to top, var(--accent-blue), var(--accent-mint));
+    border-radius: 5px 5px 2px 2px;
+    animation: growBar 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    transform-origin: bottom;
+    min-height: 4px;
+  }
+  @keyframes growBar {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+  .line-chart-svg { width: 100%; height: 120px; }
+
+  /* === Timeline === */
+  .timeline { position: relative; padding-left: 38px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent-mint), var(--accent-blue), transparent);
+    opacity: 0.4;
+  }
+  .timeline-item { position: relative; margin-bottom: 30px; }
+  .timeline-item:last-child { margin-bottom: 0; }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -38px;
+    top: 6px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 2px solid var(--accent-mint);
+    box-shadow: 0 0 0 4px rgba(112, 225, 193, 0.1);
+  }
+  .timeline-item h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    letter-spacing: -0.015em;
+  }
+  .timeline-item p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* === Mobile Nav === */
+  .mobile-nav-toggle {
+    display: none;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border-light);
+  }
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 16, 32, 0.97);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    padding: 32px;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: var(--transition-smooth);
+  }
+  .mobile-nav a:hover, .mobile-nav a.active { color: var(--accent-mint); }
+  .mobile-nav-close {
+    position: absolute;
+    top: 24px; right: 24px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border-light);
+  }
+
+  /* === Contact === */
+  .contact-panel {
+    background: linear-gradient(135deg, rgba(112, 225, 193, 0.08) 0%, rgba(121, 169, 255, 0.06) 100%);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-2xl);
+    padding: 56px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-panel::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(112, 225, 193, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .contact-actions {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+
+  /* === Footer === */
+  .footer {
+    border-top: 1px solid var(--border-light);
+    padding: 52px 0 26px;
+    margin-top: 80px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .footer h5 {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+    font-family: var(--font-body);
+  }
+  .footer a {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    transition: var(--transition-smooth);
+    width: fit-content;
+  }
+  .footer a:hover { color: var(--accent-mint); transform: translateX(3px); }
+  .footer-bottom {
+    border-top: 1px solid var(--border-light);
+    padding-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* === Fade-in on scroll === */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* === Responsive === */
+  @media (max-width: 1100px) {
+    .hero-section { grid-template-columns: 1fr; gap: 30px; }
+    .hero-visual { aspect-ratio: 16 / 9; max-width: 640px; }
+    .featured-project { grid-template-columns: 1fr; }
+    .featured-project-image { min-height: 260px; }
+    .featured-project-image::after { background: linear-gradient(to bottom, transparent 55%, var(--bg-card) 100%); }
+    .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .footer-grid { grid-template-columns: 1.5fr 1fr 1fr; }
+  }
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .status-dot span:not(.pulse) { display: none; }
+    .status-dot { padding: 8px; gap: 0; }
+  }
+  @media (max-width: 820px) {
+    .app-layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .mobile-nav-toggle { display: flex; align-items: center; justify-content: center; }
+    .main-content { padding: 0 20px 48px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .chart-row { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .featured-project-content { padding: 28px; }
+    .hero-heading { font-size: clamp(2rem, 8vw, 2.75rem); }
+  }
+  @media (max-width: 520px) {
+    .main-content { padding: 0 16px 40px; }
+    .top-nav { padding: 14px 0; }
+    .brand-mark { font-size: 1rem; }
+    .avatar { width: 34px; height: 34px; font-size: 0.78rem; }
+    .contact-panel { padding: 40px 22px; }
+    .footer-grid { grid-template-columns: 1fr; gap: 22px; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+    .hero-actions .btn, .featured-project-actions .btn, .contact-actions .btn { width: 100%; }
+    .hero-actions, .featured-project-actions, .contact-actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== MOBILE NAV ===================== -->
+<div class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">
+    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <a href="#overview" data-mobile-link>Overview</a>
+  <a href="#projects" data-mobile-link>Projects</a>
+  <a href="#analytics" data-mobile-link>Analytics</a>
+  <a href="#marketing" data-mobile-link>Marketing</a>
+  <a href="#webdesign" data-mobile-link>Web Design</a>
+  <a href="#about" data-mobile-link>About</a>
+  <a href="#contact" data-mobile-link>Contact</a>
+</div>
+
+<!-- ===================== APP LAYOUT ===================== -->
+<div class="app-layout">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" aria-label="Primary sidebar">
+    <div class="sidebar-logo" aria-hidden="true">AS</div>
+    <nav class="sidebar-nav" aria-label="Section navigation">
+      <a href="#overview" class="sidebar-link active" data-nav-link aria-label="Home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="tooltip">Home</span>
+      </a>
+      <a href="#projects" class="sidebar-link" data-nav-link aria-label="Projects">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/><path d="M2 10h20"/></svg>
+        <span class="tooltip">Projects</span>
+      </a>
+      <a href="#analytics" class="sidebar-link" data-nav-link aria-label="Analytics">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+        <span class="tooltip">Analytics</span>
+      </a>
+      <a href="#marketing" class="sidebar-link" data-nav-link aria-label="Marketing">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+        <span class="tooltip">Marketing</span>
+      </a>
+      <a href="#webdesign" class="sidebar-link" data-nav-link aria-label="Web Design">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        <span class="tooltip">Web Design</span>
+      </a>
+      <a href="#about" class="sidebar-link" data-nav-link aria-label="About Me">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="tooltip">About Me</span>
+      </a>
+      <a href="#contact" class="sidebar-link" data-nav-link aria-label="Contact">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        <span class="tooltip">Contact</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main-content">
+
+    <!-- ===================== TOP NAV ===================== -->
+    <header class="top-nav">
+      <div style="display:flex;align-items:center;gap:14px;min-width:0;">
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNav">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        </button>
+        <div class="brand-mark">AMEER<span>SHAH</span></div>
+      </div>
+
+      <nav class="nav-links" aria-label="Top navigation">
+        <a href="#overview" class="active" data-top-link>Overview</a>
+        <a href="#projects" data-top-link>Projects</a>
+        <a href="#skills" data-top-link>Skills</a>
+        <a href="#about" data-top-link>About</a>
+      </nav>
+
+      <div class="nav-right">
+        <div class="status-dot" aria-label="Availability status">
+          <span class="pulse" aria-hidden="true"></span>
+          <span>Open to opportunities</span>
+        </div>
+        <div class="avatar" aria-label="Profile avatar">AS</div>
+        <a href="#contact" class="btn btn-primary btn-sm">Contact</a>
+      </div>
+    </header>
+
+    <!-- ===================== HERO ===================== -->
+    <section id="overview" class="hero-section fade-in">
+      <div class="hero-decor" aria-hidden="true">
+        <span class="hero-dot"></span>
+        <span class="hero-dot"></span>
+        <span class="hero-dot"></span>
+        <span class="hero-dot"></span>
+      </div>
+
+      <div style="position:relative;z-index:1;">
+        <span class="section-tag">Portfolio & Career Dashboard</span>
+        <h1 class="hero-heading">Hi, I'm <span class="highlight">Ameershah.</span></h1>
+        <p class="hero-sub">Business. Data. Digital Growth.</p>
+        <p class="hero-desc">
+          I explore the intersection of business, data analytics, digital marketing,
+          and web design to turn ideas into meaningful digital experiences.
+        </p>
+        <div class="hero-tags">
+          <span class="hero-tag">Data Analytics</span>
+          <span class="hero-tag">Digital Marketing</span>
+          <span class="hero-tag">Business</span>
+          <span class="hero-tag">Web Design</span>
+        </div>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">
+            Explore My Work
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a href="#about" class="btn btn-secondary">
+            About Me
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80" alt="Modern analytics dashboard interface with charts and KPI panels" loading="eager" />
+        <div class="hero-visual-meta">
+          <p>Dashboard UI · Data Visualization</p>
+          <span class="hero-visual-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Live Concept
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FEATURED PROJECTS ===================== -->
+    <section id="projects" class="section fade-in">
+      <div class="section-header">
+        <span class="section-tag">Featured Projects</span>
+        <h2>Selected Work &amp; Portfolio Concepts</h2>
+        <p>A curated collection of portfolio concepts exploring the intersection of data, marketing, business, and design. All work is conceptual.</p>
+      </div>
+
+      <!-- Primary featured -->
+      <article class="featured-project">
+        <div class="featured-project-image">
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1400&q=80" alt="Business analytics and marketing performance dashboard with charts" loading="lazy" />
+        </div>
+        <div class="featured-project-content">
+          <span class="category">Business Analytics / Digital Marketing</span>
+          <h3>Data-Driven Growth</h3>
+          <p>A portfolio concept exploring how data insights, marketing performance, and business strategy work together.</p>
+          <div class="featured-project-actions">
+            <a href="#analytics" class="btn btn-primary btn-sm">
+              View Project
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a href="#analytics" class="btn btn-secondary btn-sm">Explore Details</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Supporting cards -->
+      <div class="grid-3">
+        <article class="project-card">
+          <div class="project-card-image">
+            <img src="https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&w=800&q=80" alt="Floating analytics interface with charts and data panels" loading="lazy" />
+          </div>
+          <div class="project-card-body">
+            <span class="category">Data Analytics</span>
+            <h4>Data Analytics Dashboard</h4>
+            <p>Explore data visualization, KPI tracking, and analytical insights through a dashboard concept.</p>
+            <a href="#analytics" class="project-card-link">Explore <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-card-image">
+            <img src="https://images.unsplash.com/photo-1611926653458-09294b3142bf?auto=format&fit=crop&w=800&q=80" alt="Digital marketing workspace with campaign strategy and analytics" loading="lazy" />
+          </div>
+          <div class="project-card-body">
+            <span class="category">Digital Marketing</span>
+            <h4>Digital Marketing Strategy</h4>
+            <p>A marketing concept focused on SEO, content strategy, social media, and audience engagement.</p>
+            <a href="#marketing" class="project-card-link">Explore <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-card-image">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Futuristic business intelligence dashboard with metrics" loading="lazy" />
+          </div>
+          <div class="project-card-body">
+            <span class="category">Business Intelligence</span>
+            <h4>Business Intelligence</h4>
+            <p>A dashboard concept designed to organize business metrics and support data-informed decisions.</p>
+            <a href="#analytics" class="project-card-link">Explore <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-card-image">
+            <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=800&q=80" alt="Creative web design team collaborating on digital project" loading="lazy" />
+          </div>
+          <div class="project-card-body">
+            <span class="category">Web Design</span>
+            <h4>Creative Web Design</h4>
+            <p>A modern website concept focused on responsive layouts, clean typography, and user experience.</p>
+            <a href="#webdesign" class="project-card-link">Explore <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-card-image">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Elegant digital wedding invitation website concept" loading="lazy" />
+          </div>
+          <div class="project-card-body">
+            <span class="category">Web Design</span>
+            <h4>AUREUM — Digital Wedding Invitations</h4>
+            <p>A luxury digital wedding invitation and wedding website brand concept featuring elegant layouts and refined visual storytelling.</p>
+            <a href="#webdesign" class="project-card-link">Explore <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-card-image">
+            <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=800&q=80" alt="High-contrast digital growth agency website concept" loading="lazy" />
+          </div>
+          <div class="project-card-body">
+            <span class="category">Digital Marketing</span>
+            <h4>Growth Marketing Agency</h4>
+            <p>A digital agency website concept featuring marketing services, analytics, and growth-focused visual design.</p>
+            <a href="#marketing" class="project-card-link">Explore <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================== DATA ANALYTICS ===================== -->
+    <section id="analytics" class="section fade-in">
+      <div class="section-header">
+        <span class="section-tag">Data Analytics</span>
+        <h2>Turning Data Into Direction</h2>
+        <p>Explore the tools and techniques used to understand data, identify patterns, and communicate insights.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+          </div>
+          <h4>Microsoft Excel</h4>
+          <p>Data organization, formulas, pivot tables, and structured analysis workflows.</p>
+          <span class="skill-status status-practicing">Practicing</span>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+          </div>
+          <h4>SQL</h4>
+          <p>Querying, filtering, and joining data from relational databases.</p>
+          <span class="skill-status status-learning">Learning</span>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <h4>Python</h4>
+          <p>Data manipulation and analysis using pandas and NumPy libraries.</p>
+          <span class="skill-status status-learning">Learning</span>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect width="4" height="8" x="7" y="13"/><rect width="4" height="12" x="13" y="9"/><rect width="4" height="5" x="19" y="16"/></svg>
+          </div>
+          <h4>Power BI</h4>
+          <p>Building interactive dashboards and business intelligence reports.</p>
+          <span class="skill-status status-practicing">Practicing</span>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          </div>
+          <h4>Data Visualization</h4>
+          <p>Presenting data clearly through charts, dashboards, and visual storytelling.</p>
+          <span class="skill-status status-practicing">Practicing</span>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M4 20V4"/><path d="m8 16 4-8 4 5 4-6"/></svg>
+          </div>
+          <h4>Statistics Fundamentals</h4>
+          <p>Descriptive statistics, distributions, and basic inference techniques.</p>
+          <span class="skill-status status-learning">Learning</span>
+        </div>
+      </div>
+
+      <!-- Sample dashboard -->
+      <div class="demo-dashboard">
+        <span class="demo-badge">Sample Data — Demonstration Only</span>
+        <h4 style="font-family:var(--font-display);font-size:1.15rem;margin-bottom:24px;letter-spacing:-0.02em;">Analytics Dashboard Preview</h4>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="label">Total Revenue</div>
+            <div class="value">$124.5K</div>
+            <div class="delta">+12.4% vs last period</div>
+          </div>
+          <div class="kpi-card">
+            <div class="label">Active Users</div>
+            <div class="value">8,942</div>
+            <div class="delta">+8.1% vs last period</div>
+          </div>
+          <div class="kpi-card">
+            <div class="label">Conversion Rate</div>
+            <div class="value">3.24%</div>
+            <div class="delta">+0.6% vs last period</div>
+          </div>
+          <div class="kpi-card">
+            <div class="label">Avg. Session</div>
+            <div class="value">4m 32s</div>
+            <div class="delta">+22s vs last period</div>
+          </div>
+        </div>
+
+        <div class="chart-row">
+          <div class="chart-box">
+            <h5>Monthly Performance (Sample)</h5>
+            <div class="bar-chart" aria-label="Bar chart showing sample monthly performance">
+              <div class="bar" style="height:40%;animation-delay:0.1s;"></div>
+              <div class="bar" style="height:62%;animation-delay:0.2s;"></div>
+              <div class="bar" style="height:50%;animation-delay:0.3s;"></div>
+              <div class="bar" style="height:78%;animation-delay:0.4s;"></div>
+              <div class="bar" style="height:58%;animation-delay:0.5s;"></div>
+              <div class="bar" style="height:88%;animation-delay:0.6s;"></div>
+              <div class="bar" style="height:72%;animation-delay:0.7s;"></div>
+            </div>
+          </div>
+          <div class="chart-box">
+            <h5>Traffic Trend (Sample)</h5>
+            <svg class="line-chart-svg" viewBox="0 0 200 100" preserveAspectRatio="none" role="img" aria-label="Line chart showing sample traffic trend">
+              <defs>
+                <linearGradient id="grad-line" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#70E1C1" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#70E1C1" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <polyline points="0,80 30,58 60,68 90,42 120,52 150,30 180,36 200,20 200,100 0,100"
+                fill="url(#grad-line)" stroke="none"/>
+              <polyline points="0,80 30,58 60,68 90,42 120,52 150,30 180,36 200,20"
+                fill="none" stroke="#70E1C1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="200" cy="20" r="3" fill="#70E1C1"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DIGITAL MARKETING ===================== -->
+    <section id="marketing" class="section fade-in">
+      <div class="section-header">
+        <span class="section-tag">Digital Marketing</span>
+        <h2>Creative Strategy. Measurable Growth.</h2>
+        <p>Exploring the strategies, channels, and tools that connect content, audiences, and measurable outcomes.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <h4>Search Engine Optimization</h4>
+          <p>On-page SEO, keyword research, and technical fundamentals for organic visibility.</p>
+          <span class="skill-status status-learning">Learning</span>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </div>
+          <h4>Social Media Marketing</h4>
+          <p>Content planning, engagement strategy, and community building across platforms.</p>
+          <span class="skill-status status-practicing">Practicing</span>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="m2 2 7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+          </div>
+          <h4>Content Strategy</h4>
+          <p>Audience-focused content planning, storytelling, and editorial direction.</p>
+          <span class="skill-status status-practicing">Practicing</span>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <h4>Campaign Analytics</h4>
+          <p>Tracking performance metrics and deriving actionable insights from campaigns.</p>
+          <span class="skill-status status-learning">Learning</span>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h4>Audience Research</h4>
+          <p>Understanding target demographics, personas, and behavioral patterns.</p>
+          <span class="skill-status status-practicing">Practicing</span>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <h4>Conversion Optimization</h4>
+          <p>Improving user journeys, landing pages, and funnel performance.</p>
+          <span class="skill-status status-concept">Project Concept</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== WEB DESIGN ===================== -->
+    <section id="webdesign" class="section fade-in">
+      <div class="section-header">
+        <span class="section-tag">Web Design</span>
+        <h2>Designing Digital Experiences</h2>
+        <p>Creating responsive, user-friendly websites and interfaces with modern design principles and clean code.</p>
+      </div>
+
+      <div class="grid-3">
+        <article class="project-card">
+          <div class="project-card-image">
+            <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=800&q=80" alt="Personal portfolio website design concept" loading="lazy" />
+          </div>
+          <div class="project-card-body">
+            <span class="category">Web Design</span>
+            <h4>Personal Portfolio</h4>
+            <p>A clean, modern portfolio concept focused on showcasing work effectively with clear hierarchy.</p>
+          </div>
+        </article>
+        <article class="project-card">
+          <div class="project-card-image">
+            <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=800&q=80" alt="Business landing page design concept" loading="lazy" />
+          </div>
+          <div class="project-card-body">
+            <span class="category">Web Design</span>
+            <h4>Business Landing Page</h4>
+            <p>A conversion-focused landing page concept for service-based businesses.</p>
+          </div>
+        </article>
+        <article class="project-card">
+          <div class="project-card-image">
+            <img src="https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&w=800&q=80" alt="Analytics dashboard UI design concept" loading="lazy" />
+          </div>
+          <div class="project-card-body">
+            <span class="category">Web Design</span>
+            <h4>Dashboard UI</h4>
+            <p>An analytics dashboard interface concept with clean data presentation and cards.</p>
+          </div>
+        </article>
+        <article class="project-card">
+          <div class="project-card-image">
+            <img src="https://images.unsplash.com/photo-1581276879432-15e50529f34b?auto=format&fit=crop&w=800&q=80" alt="Responsive login page design concept" loading="lazy" />
+          </div>
+          <div class="project-card-body">
+            <span class="category">Web Design</span>
+            <h4>Responsive Login Page</h4>
+            <p>A modern authentication screen concept focused on usability and clear visual hierarchy.</p>
+          </div>
+        </article>
+        <article class="project-card">
+          <div class="project-card-image">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Digital wedding invitation website concept" loading="lazy" />
+          </div>
+          <div class="project-card-body">
+            <span class="category">Web Design</span>
+            <h4>Digital Wedding Invitation</h4>
+            <p>An elegant wedding website concept with refined visual storytelling and typography.</p>
+          </div>
+        </article>
+        <article class="project-card" style="background:linear-gradient(135deg, rgba(112,225,193,0.08), rgba(121,169,255,0.06));border-color:rgba(112,225,193,0.25);">
+          <div class="project-card-body" style="justify-content:center;text-align:center;">
+            <div style="margin-bottom:16px;display:flex;justify-content:center;color:var(--accent-mint);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <h4 style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:10px;">Tech Stack</h4>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px;">
+              <span class="hero-tag" style="font-size:0.62rem;padding:5px 10px;">HTML</span>
+              <span class="hero-tag" style="font-size:0.62rem;padding:5px 10px;">CSS</span>
+              <span class="hero-tag" style="font-size:0.62rem;padding:5px 10px;">JavaScript</span>
+              <span class="hero-tag" style="font-size:0.62rem;padding:5px 10px;">Bootstrap</span>
+              <span class="hero-tag" style="font-size:0.62rem;padding:5px 10px;">Responsive</span>
+              <span class="hero-tag" style="font-size:0.62rem;padding:5px 10px;">UI/UX</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================== SKILLS & TOOLS ===================== -->
+    <section id="skills" class="section fade-in">
+      <div class="section-header">
+        <span class="section-tag">Skills &amp; Tools</span>
+        <h2>Capabilities Dashboard</h2>
+        <p>Tools and areas of focus across data, marketing, web, and business — mapped to my current learning journey.</p>
+      </div>
+
+      <div class="grid-4">
+        <div class="glass-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+            <span style="color:var(--accent-mint);"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span>
+            <h4 style="font-size:0.9rem;font-family:var(--font-body);font-weight:600;">Data</h4>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="hero-tag">Excel</span>
+            <span class="hero-tag">SQL</span>
+            <span class="hero-tag">Python</span>
+            <span class="hero-tag">Power BI</span>
+            <span class="hero-tag">Statistics</span>
+          </div>
+        </div>
+        <div class="glass-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+            <span style="color:var(--accent-blue);"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span>
+            <h4 style="font-size:0.9rem;font-family:var(--font-body);font-weight:600;">Marketing</h4>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="hero-tag">SEO</span>
+            <span class="hero-tag">Social Media</span>
+            <span class="hero-tag">Content Strategy</span>
+            <span class="hero-tag">Marketing Analytics</span>
+          </div>
+        </div>
+        <div class="glass-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+            <span style="color:var(--accent-lime);"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></span>
+            <h4 style="font-size:0.9rem;font-family:var(--font-body);font-weight:600;">Web</h4>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="hero-tag">HTML</span>
+            <span class="hero-tag">CSS</span>
+            <span class="hero-tag">JavaScript</span>
+            <span class="hero-tag">Bootstrap</span>
+          </div>
+        </div>
+        <div class="glass-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+            <span style="color:var(--accent-mint);"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><path d="m4.93 4.93 14.14 14.14M19.07 4.93 4.93 19.07"/></svg></span>
+            <h4 style="font-size:0.9rem;font-family:var(--font-body);font-weight:600;">Business</h4>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="hero-tag">Business Analysis</span>
+            <span class="hero-tag">Research</span>
+            <span class="hero-tag">Problem Solving</span>
+            <span class="hero-tag">Data-Informed Decisions</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT ME ===================== -->
+    <section id="about" class="section fade-in">
+      <div class="grid-2" style="align-items:center;gap:40px;">
+        <div>
+          <span class="section-tag">About Me</span>
+          <h2 style="font-size:clamp(1.75rem,3.2vw,2.5rem);margin-bottom:18px;letter-spacing:-0.03em;">A Curious Mind With a Data-Driven Perspective</h2>
+          <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:16px;">
+            I'm interested in how business, technology, and creativity come together to solve problems. My learning journey focuses on data analytics, digital marketing, business strategy, and web design.
+          </p>
+          <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:26px;">
+            I enjoy exploring new tools, building practical projects, and developing the skills needed to create useful, well-designed digital experiences.
+          </p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;">
+            <span class="hero-tag">Data Analytics</span>
+            <span class="hero-tag">Digital Marketing</span>
+            <span class="hero-tag">Business Strategy</span>
+            <span class="hero-tag">Web Design</span>
+          </div>
+          <a href="#projects" class="btn btn-primary">
+            View My Projects
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="glass-card" style="padding:34px;">
+          <div style="display:flex;align-items:center;gap:18px;margin-bottom:24px;">
+            <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent-mint),var(--accent-blue));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:1.4rem;color:var(--bg-primary);flex-shrink:0;">AS</div>
+            <div>
+              <h4 style="font-family:var(--font-display);font-size:1.05rem;letter-spacing:-0.02em;margin-bottom:4px;">Ameershah</h4>
+              <p style="font-size:0.8rem;color:var(--text-secondary);">Learner · Builder · Explorer</p>
+            </div>
+          </div>
+
+          <h5 style="font-family:var(--font-body);font-size:0.85rem;font-weight:600;margin-bottom:16px;color:var(--text-primary);">Current Learning Goals</h5>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;align-items:flex-start;gap:12px;font-size:0.85rem;color:var(--text-secondary);line-height:1.5;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-mint)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Advanced SQL &amp; Python for data analysis</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;font-size:0.85rem;color:var(--text-secondary);line-height:1.5;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-mint)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Power BI dashboard development</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;font-size:0.85rem;color:var(--text-secondary);line-height:1.5;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-mint)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Digital marketing analytics fundamentals</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;font-size:0.85rem;color:var(--text-secondary);line-height:1.5;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-mint)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Responsive web design projects</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LEARNING JOURNEY ===================== -->
+    <section class="section fade-in">
+      <div class="section-header">
+        <span class="section-tag">Learning Journey</span>
+        <h2>My Roadmap</h2>
+        <p>A flexible learning roadmap — a direction of travel rather than a claim of completed qualifications.</p>
+      </div>
+
+      <div class="grid-2" style="gap:40px;">
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>Stage 1 — Foundations</h4>
+            <p>Excel · Business fundamentals · Statistics basics · HTML and CSS</p>
+          </div>
+          <div class="timeline-item">
+            <h4>Stage 2 — Core Tools</h4>
+            <p>SQL · Power BI · Digital marketing fundamentals · Responsive web design</p>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>Stage 3 — Practical Projects</h4>
+            <p>Data dashboards · Marketing campaign analysis · Website concepts · Business case studies</p>
+          </div>
+          <div class="timeline-item">
+            <h4>Stage 4 — Career Preparation</h4>
+            <p>Portfolio development · Project documentation · Communication skills · Internship preparation</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CONTACT ===================== -->
+    <section id="contact" class="section fade-in">
+      <div class="contact-panel">
+        <span class="section-tag" style="justify-content:center;">Contact</span>
+        <h2 style="font-size:clamp(1.75rem,3.2vw,2.5rem);margin-bottom:14px;letter-spacing:-0.03em;">Let's Connect</h2>
+        <p style="color:var(--text-secondary);max-width:540px;margin:0 auto;line-height:1.7;">
+          Interested in discussing data, business, digital marketing, or creative web projects? Feel free to connect.
+        </p>
+
+        <div class="contact-actions">
+          <a href="mailto:hello@ameershah.com" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Email Me
+          </a>
+          <a href="#" class="btn btn-secondary" aria-label="LinkedIn profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+          <a href="#" class="btn btn-secondary" aria-label="GitHub profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+            GitHub
+          </a>
+          <a href="#" class="btn btn-secondary" aria-label="Instagram profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            Instagram
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="footer">
+      <div class="footer-grid">
+        <div>
+          <div class="brand-mark" style="margin-bottom:14px;">AMEER<span>SHAH</span></div>
+          <p style="color:var(--text-secondary);font-size:0.85rem;line-height:1.7;max-width:320px;">
+            Business. Data. Digital Growth. Building meaningful digital experiences through analytics, marketing, business strategy, and design.
+          </p>
+        </div>
+        <div>
+          <h5>Navigate</h5>
+          <a href="#overview">Overview</a>
+          <a href="#projects">Projects</a>
+          <a href="#skills">Skills</a>
+          <a href="#about">About</a>
+        </div>
+        <div>
+          <h5>Focus Areas</h5>
+          <a href="#analytics">Data Analytics</a>
+          <a href="#marketing">Digital Marketing</a>
+          <a href="#webdesign">Web Design</a>
+          <a href="#skills">Business</a>
+        </div>
+        <div>
+          <h5>Connect</h5>
+          <a href="mailto:hello@ameershah.com">Email</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">GitHub</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2025 Ameershah. Portfolio concepts and learning projects.</span>
+        <span>Designed with care.</span>
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<!-- ===================== SCRIPTS ===================== -->
+<script>
+  (function () {
+    'use strict';
+
+    // --- Lucide Icons init ---
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+
+    // --- Mobile Nav ---
+    var mobileNav = document.getElementById('mobileNav');
+    var mobileNavToggle = document.getElementById('mobileNavToggle');
+    var mobileNavClose = document.getElementById('mobileNavClose');
+
+    function openMobileNav() {
+      mobileNav.classList.add('open');
+      mobileNavToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileNav() {
+      mobileNav.classList.remove('open');
+      mobileNavToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    if (mobileNavToggle) mobileNavToggle.addEventListener('click', openMobileNav);
+    if (mobileNavClose) mobileNavClose.addEventListener('click', closeMobileNav);
+
+    document.querySelectorAll('[data-mobile-link]').forEach(function (link) {
+      link.addEventListener('click', closeMobileNav);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && mobileNav && mobileNav.classList.contains('open')) {
+        closeMobileNav();
+      }
+    });
+
+    // --- Smooth scrolling for anchors ---
+    document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+      anchor.addEventListener('click', function (e) {
+        var href = this.getAttribute('href');
+        if (!href || href === '#' || href.length < 2) return;
+        var target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          var offset = 90;
+          var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // --- Active link highlighting on scroll ---
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('.nav-links a[data-top-link], .sidebar-link[data-nav-link]');
+
+    function setActive() {
+      var scrollY = window.pageYOffset;
+      var current = '';
+      sections.forEach(function (section) {
+        var top = section.offsetTop - 140;
+        if (scrollY >= top) current = section.getAttribute('id');
+      });
+      navLinks.forEach(function (link) {
+        link.classList.remove('active');
+        var href = link.getAttribute('href');
+        if (href && href.substring(1) === current) link.classList.add('active');
+      });
+    }
+    window.addEventListener('scroll', setActive, { passive: true });
+    setActive();
+
+    // --- Intersection observer for fade-in reveals ---
+    var revealEls = document.querySelectorAll('.fade-in');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+      revealEls.forEach(function (el) { io.observe(el); });
+    } else {
+      revealEls.forEach(function (el) { el.classList.add('visible'); });
+    }
+
+    // --- Reduced motion: reveal everything instantly ---
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      revealEls.forEach(function (el) { el.classList.add('visible'); });
+      document.querySelectorAll('.bar').forEach(function (b) {
+        b.style.animation = 'none';
+        b.style.transform = 'scaleY(1)';
+      });
+    }
+
+    // --- Card tilt micro-interaction (subtle, optional) ---
+    var tiltCards = document.querySelectorAll('.project-card, .skill-card');
+    tiltCards.forEach(function (card) {
+      card.addEventListener('mousemove', function (e) {
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        var rx = ((y / rect.height) - 0.5) * -4;
+        var ry = ((x / rect.width) - 0.5) * 4;
+        card.style.transform = 'translateY(-6px) perspective(1000px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)';
+      });
+      card.addEventListener('mouseleave', function () {
+        card.style.transform = '';
+      });
+    });
+  })();
+</script>
+</body>
+</html>
