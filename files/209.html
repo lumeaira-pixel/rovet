@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELENA VOSS — Design Portfolio</title>
+
+  <!-- Tailwind via CDN (jsdelivr) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Google Fonts: Instrument Serif + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #141514;
+      --ink-soft: #2b2c2a;
+      --ink-mute: #6f726e;
+      --cream: #fbfaf7;
+      --paper: #f5f3ee;
+      --line: rgba(20,21,20,0.08);
+      --line-strong: rgba(20,21,20,0.16);
+      --brass: #b58a4a;
+      --brass-soft: #d9b878;
+      --moss: #3f4a3c;
+      --focus: #b58a4a;
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --shadow-soft: 0 20px 60px -20px rgba(20,21,20,0.12);
+      --shadow-card: 0 30px 80px -30px rgba(20,21,20,0.18);
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    /* === Base === */
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      font-feature-settings: "ss01", "cv11";
+    }
+    ::selection { background: var(--brass); color: var(--cream); }
+
+    /* === Focus ring === */
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    /* === Typography === */
+    .font-display { font-family: var(--font-display); }
+    .display-hero {
+      font-family: var(--font-display);
+      font-weight: 400;
+      line-height: 0.94;
+      letter-spacing: -0.03em;
+      font-size: clamp(3.5rem, 10vw, 9rem);
+    }
+    .display-lg {
+      font-family: var(--font-display);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.025em;
+      font-size: clamp(2.4rem, 6vw, 5rem);
+    }
+    .display-md {
+      font-family: var(--font-display);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      font-size: clamp(1.8rem, 3.4vw, 2.75rem);
+    }
+    .eyebrow {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+    .body-lead {
+      font-size: clamp(1rem, 1.15vw, 1.15rem);
+      line-height: 1.65;
+      color: var(--ink-soft);
+      font-weight: 400;
+    }
+
+    /* === Grain overlay === */
+    .grain::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* === Nav === */
+    .nav-shell {
+      transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      background: transparent;
+    }
+    .nav-shell.scrolled {
+      background: rgba(251, 250, 247, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-link {
+      position: relative;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: var(--ink-soft);
+      transition: color 0.25s ease;
+    }
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 100%;
+      height: 1px;
+      background: var(--brass);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link:hover::after { transform: scaleX(1); transform-origin: left; }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 0.9rem 1.8rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+      border: 1px solid var(--ink);
+    }
+    .btn-primary:hover {
+      background: var(--brass);
+      border-color: var(--brass);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px -10px rgba(181,138,74,0.5);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: transparent;
+      color: var(--ink);
+      padding: 0.9rem 1.8rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      border: 1px solid var(--line-strong);
+      transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .btn-ghost:hover {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--cream);
+      transform: translateY(-2px);
+    }
+    .btn-ghost:active { transform: translateY(0) scale(0.98); }
+
+    /* === Cards === */
+    .project-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      background: var(--paper);
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease;
+      cursor: pointer;
+    }
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-card);
+    }
+    .project-card .thumb {
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 4 / 3;
+      background: #e8e4dc;
+    }
+    .project-card .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .project-card:hover .thumb img { transform: scale(1.06); }
+
+    /* Abstract project visuals (no external images) */
+    .viz {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .viz-1 {
+      background:
+        radial-gradient(circle at 30% 25%, rgba(181,138,74,0.35), transparent 55%),
+        radial-gradient(circle at 75% 70%, rgba(63,74,60,0.35), transparent 50%),
+        linear-gradient(135deg, #f0ece4, #e2ddd2);
+    }
+    .viz-1 .ring {
+      width: 42%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1.5px solid rgba(20,21,20,0.28);
+      box-shadow: 0 0 0 24px rgba(20,21,20,0.05), 0 0 0 48px rgba(20,21,20,0.03);
+    }
+    .viz-2 {
+      background:
+        radial-gradient(circle at 70% 30%, rgba(181,138,74,0.4), transparent 50%),
+        linear-gradient(200deg, #eae4d8, #d9d2c4);
+    }
+    .viz-2 .bars {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      height: 46%;
+    }
+    .viz-2 .bars span {
+      display: block;
+      width: 14px;
+      border-radius: 8px 8px 2px 2px;
+      background: linear-gradient(to top, rgba(20,21,20,0.55), rgba(20,21,20,0.12));
+    }
+    .viz-2 .bars span:nth-child(1) { height: 40%; }
+    .viz-2 .bars span:nth-child(2) { height: 78%; }
+    .viz-2 .bars span:nth-child(3) { height: 55%; }
+    .viz-2 .bars span:nth-child(4) { height: 92%; }
+    .viz-2 .bars span:nth-child(5) { height: 64%; }
+    .viz-3 {
+      background:
+        radial-gradient(circle at 20% 80%, rgba(63,74,60,0.4), transparent 55%),
+        linear-gradient(160deg, #efeae0, #ddd6c8);
+    }
+    .viz-3 .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 50%;
+      aspect-ratio: 1;
+    }
+    .viz-3 .grid i {
+      border-radius: 6px;
+      background: rgba(20,21,20,0.18);
+      display: block;
+    }
+    .viz-3 .grid i:nth-child(2) { background: rgba(181,138,74,0.6); }
+    .viz-3 .grid i:nth-child(5) { background: rgba(20,21,20,0.45); }
+    .viz-3 .grid i:nth-child(7) { background: rgba(63,74,60,0.5); }
+
+    .project-meta {
+      padding: 1.4rem 1.6rem 1.7rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .project-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      font-weight: 500;
+    }
+    .project-arrow {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--line-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      color: var(--ink);
+    }
+    .project-card:hover .project-arrow {
+      background: var(--ink);
+      color: var(--cream);
+      border-color: var(--ink);
+      transform: rotate(-45deg);
+    }
+
+    /* === Marquee === */
+    .marquee {
+      overflow: hidden;
+      white-space: nowrap;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 1.6rem 0;
+    }
+    .marquee-track {
+      display: inline-flex;
+      gap: 3.5rem;
+      animation: marquee 32s linear infinite;
+      will-change: transform;
+    }
+    .marquee-track span {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 2vw, 1.75rem);
+      color: var(--ink-mute);
+      display: inline-flex;
+      align-items: center;
+      gap: 3.5rem;
+    }
+    .marquee-track span::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brass);
+      display: inline-block;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* === Forms === */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+    .field label {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      font-weight: 500;
+    }
+    .field input, .field textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line-strong);
+      padding: 0.75rem 0;
+      font-size: 1rem;
+      color: var(--ink);
+      font-family: var(--font-sans);
+      transition: border-color 0.3s ease, background 0.3s ease;
+      border-radius: 0;
+    }
+    .field input::placeholder, .field textarea::placeholder { color: rgba(20,21,20,0.28); }
+    .field input:focus, .field textarea:focus {
+      outline: none;
+      border-bottom-color: var(--brass);
+    }
+    .field textarea { resize: vertical; min-height: 110px; }
+    .field.error input, .field.error textarea { border-bottom-color: #c0392b; }
+    .field .err-msg {
+      font-size: 0.75rem;
+      color: #c0392b;
+      min-height: 1rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .field.error .err-msg { opacity: 1; }
+
+    /* === Success toast === */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translate(-50%, 130%);
+      background: var(--ink);
+      color: var(--cream);
+      padding: 1rem 1.6rem;
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: 0 20px 50px -12px rgba(0,0,0,0.4);
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+      z-index: 999;
+    }
+    .toast.show { transform: translate(-50%, 0); }
+
+    /* === Mobile menu === */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      transform: translateY(-100%);
+      transition: transform 0.6s cubic-bezier(0.7, 0, 0.2, 1);
+    }
+    .mobile-menu.open { transform: translateY(0); }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-size: 2.6rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      transition: color 0.25s ease, padding-left 0.35s ease;
+    }
+    .mobile-menu a:hover { color: var(--brass); padding-left: 0.5rem; }
+
+    /* === Stats === */
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    /* === Reveal animation === */
+    .reveal { opacity: 0; transform: translateY(30px); }
+    .no-js .reveal { opacity: 1; transform: none; }
+
+    /* === Hero decorative === */
+    .hero-canvas-wrap {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 46%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.9;
+    }
+    @media (max-width: 1023px) {
+      .hero-canvas-wrap { display: none; }
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    /* === Section line === */
+    .hairline { height: 1px; background: var(--line); width: 100%; }
+
+    /* === Contact card === */
+    .contact-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+    }
+
+    /* === Footer === */
+    footer {
+      background: var(--ink);
+      color: var(--cream);
+    }
+    footer a {
+      color: rgba(251,250,247,0.62);
+      transition: color 0.25s ease;
+    }
+    footer a:hover { color: var(--brass-soft); }
+    footer .field input, footer .field textarea {
+      color: var(--cream);
+      border-bottom-color: rgba(251,250,247,0.2);
+    }
+    footer .field input::placeholder, footer .field textarea::placeholder {
+      color: rgba(251,250,247,0.3);
+    }
+    footer .field label { color: rgba(251,250,247,0.5); }
+    footer .field input:focus, footer .field textarea:focus {
+      border-bottom-color: var(--brass-soft);
+    }
+    footer .field.error input, footer .field.error textarea { border-bottom-color: #e77; }
+    footer .field .err-msg { color: #f0a0a0; }
+
+    /* === Utility === */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+
+<body class="grain no-js">
+
+  <!-- ================= NAV ================= -->
+  <header id="nav" class="nav-shell fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-[1400px] mx-auto px-6 md:px-10 h-[76px] flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#top" class="flex items-center gap-2.5 group" aria-label="Elena Voss home">
+        <span class="w-7 h-7 rounded-full bg-[var(--ink)] flex items-center justify-center transition-transform duration-500 group-hover:rotate-90">
+          <span class="w-2.5 h-2.5 rounded-full bg-[var(--brass)]"></span>
+        </span>
+        <span class="font-display text-[1.35rem] tracking-tight leading-none pt-0.5">Elena Voss</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-9" aria-label="Primary">
+        <a href="#work" class="nav-link">Work</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#services" class="nav-link">Services</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="btn-primary hidden sm:inline-flex">
+          Start a project
+          <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+        </a>
+        <!-- Mobile toggle -->
+        <button id="menuBtn" class="md:hidden w-11 h-11 rounded-full border border-[var(--line-strong)] flex items-center justify-center transition-colors duration-300 hover:bg-[var(--ink)] hover:text-[var(--cream)]" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MOBILE MENU ================= -->
+  <div id="mobileMenu" class="mobile-menu md:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex items-center justify-between mb-10">
+      <span class="font-display text-[1.35rem]">Elena Voss</span>
+      <button id="menuClose" class="w-11 h-11 rounded-full border border-[var(--line-strong)] flex items-center justify-center" aria-label="Close menu">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <nav class="flex flex-col" aria-label="Mobile primary">
+      <a href="#work" data-close>Work</a>
+      <a href="#about" data-close>About</a>
+      <a href="#services" data-close>Services</a>
+      <a href="#contact" data-close>Contact</a>
+    </nav>
+    <div class="mt-auto pt-10">
+      <a href="#contact" data-close class="btn-primary w-full justify-center">
+        Start a project <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+      </a>
+      <p class="eyebrow mt-6">Amsterdam · Available worldwide</p>
+    </div>
+  </div>
+
+  <main id="top">
+
+    <!-- ================= HERO ================= -->
+    <section class="relative min-h-[92vh] flex items-center pt-32 pb-20 overflow-hidden">
+      <!-- Background orbs -->
+      <div class="hero-orb" style="width:420px;height:420px;background:rgba(181,138,74,0.16);top:-80px;right:8%;" aria-hidden="true"></div>
+      <div class="hero-orb" style="width:340px;height:340px;background:rgba(63,74,60,0.10);bottom:-60px;left:-60px;" aria-hidden="true"></div>
+
+      <!-- Three.js canvas hero visual -->
+      <div class="hero-canvas-wrap" aria-hidden="true">
+        <canvas id="heroCanvas"></canvas>
+      </div>
+
+      <div class="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10 w-full">
+        <div class="max-w-[820px]">
+          <p class="eyebrow reveal mb-6 flex items-center gap-3">
+            <span class="w-10 h-[1px] bg-[var(--brass)] inline-block"></span>
+            Independent Designer · Est. 2014
+          </p>
+
+          <h1 class="display-hero reveal">
+            Design that<br />
+            <span class="italic" style="color:var(--brass)">earns</span> its keep.
+          </h1>
+
+          <p class="body-lead reveal mt-8 max-w-[540px]">
+            I'm Elena Voss — a brand and product designer crafting identities, interfaces, and editorial systems for founders who'd rather be remembered than merely seen. Ten years, forty launches, zero templates.
+          </p>
+
+          <div class="reveal flex flex-wrap items-center gap-4 mt-10">
+            <a href="#work" class="btn-primary">
+              View selected work
+              <i data-lucide="arrow-down" class="w-4 h-4"></i>
+            </a>
+            <a href="#contact" class="btn-ghost">
+              Book a discovery call
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero bottom strip -->
+        <div class="reveal mt-24 md:mt-32 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-[var(--line)] pt-10">
+          <div>
+            <p class="stat-num">10<span class="text-[var(--brass)]">+</span></p>
+            <p class="eyebrow mt-2">Years in practice</p>
+          </div>
+          <div>
+            <p class="stat-num">42</p>
+            <p class="eyebrow mt-2">Products shipped</p>
+          </div>
+          <div>
+            <p class="stat-num">17</p>
+            <p class="eyebrow mt-2">Awards & features</p>
+          </div>
+          <div>
+            <p class="stat-num">9</p>
+            <p class="eyebrow mt-2">Countries served</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MARQUEE ================= -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Brand Identity</span>
+        <span>Product Design</span>
+        <span>Art Direction</span>
+        <span>Editorial Systems</span>
+        <span>Packaging</span>
+        <span>Design Strategy</span>
+        <span>Brand Identity</span>
+        <span>Product Design</span>
+        <span>Art Direction</span>
+        <span>Editorial Systems</span>
+        <span>Packaging</span>
+        <span>Design Strategy</span>
+      </div>
+    </div>
+
+    <!-- ================= WORK ================= -->
+    <section id="work" class="py-24 md:py-36">
+      <div class="max-w-[1400px] mx-auto px-6 md:px-10">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+          <div class="max-w-[620px]">
+            <p class="eyebrow reveal mb-5 flex items-center gap-3">
+              <span class="w-10 h-[1px] bg-[var(--brass)] inline-block"></span>
+              Selected Work
+            </p>
+            <h2 class="display-lg reveal">Projects with a point of view.</h2>
+          </div>
+          <p class="body-lead reveal max-w-[360px] md:text-right">
+            A short cross-section of recent engagements — from seed-stage identity work to full design systems for scale-ups.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+
+          <!-- Project 1 -->
+          <article class="project-card reveal">
+            <div class="thumb">
+              <div class="viz viz-1"><div class="ring"></div></div>
+            </div>
+            <div class="project-meta">
+              <div>
+                <p class="project-tag mb-2">Brand Identity · 2024</p>
+                <h3 class="display-md">Meridian Capital</h3>
+                <p class="text-sm text-[var(--ink-mute)] mt-1.5">A restrained identity for a private markets firm.</p>
+              </div>
+              <span class="project-arrow" aria-hidden="true"><i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+            </div>
+          </article>
+
+          <!-- Project 2 -->
+          <article class="project-card reveal">
+            <div class="thumb">
+              <div class="viz viz-2">
+                <div class="bars">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+            <div class="project-meta">
+              <div>
+                <p class="project-tag mb-2">Product Design · 2024</p>
+                <h3 class="display-md">Northbeam OS</h3>
+                <p class="text-sm text-[var(--ink-mute)] mt-1.5">A calm analytics dashboard for logistics teams.</p>
+              </div>
+              <span class="project-arrow" aria-hidden="true"><i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+            </div>
+          </article>
+
+          <!-- Project 3 -->
+          <article class="project-card reveal">
+            <div class="thumb">
+              <div class="viz viz-3">
+                <div class="grid">
+                  <i></i><i></i><i></i>
+                  <i></i><i></i><i></i>
+                  <i></i><i></i><i></i>
+                </div>
+              </div>
+            </div>
+            <div class="project-meta">
+              <div>
+                <p class="project-tag mb-2">Art Direction · 2023</p>
+                <h3 class="display-md">Atelier Sable</h3>
+                <p class="text-sm text-[var(--ink-mute)] mt-1.5">Editorial system and campaign for a Parisian fashion house.</p>
+              </div>
+              <span class="project-arrow" aria-hidden="true"><i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+            </div>
+          </article>
+
+          <!-- Project 4 -->
+          <article class="project-card reveal">
+            <div class="thumb">
+              <div class="viz" style="background: radial-gradient(circle at 60% 40%, rgba(181,138,74,0.45), transparent 55%), linear-gradient(120deg, #e9e3d7, #d6cec0);">
+                <div style="width:44%; aspect-ratio:1; border-radius:24% 76% 62% 38% / 42% 38% 62% 58%; border:1.5px solid rgba(20,21,20,0.3); box-shadow: 0 0 0 22px rgba(20,21,20,0.045);"></div>
+              </div>
+            </div>
+            <div class="project-meta">
+              <div>
+                <p class="project-tag mb-2">Packaging · 2023</p>
+                <h3 class="display-md">Terroir Coffee</h3>
+                <p class="text-sm text-[var(--ink-mute)] mt-1.5">A tactile packaging system for a single-origin roaster.</p>
+              </div>
+              <span class="project-arrow" aria-hidden="true"><i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="reveal mt-14 text-center">
+          <a href="#contact" class="btn-ghost">
+            Full case studies on request
+            <i data-lucide="mail" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ABOUT ================= -->
+    <section id="about" class="py-24 md:py-36" style="background:var(--paper);">
+      <div class="max-w-[1400px] mx-auto px-6 md:px-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+
+          <div class="lg:col-span-5">
+            <p class="eyebrow reveal mb-5 flex items-center gap-3">
+              <span class="w-10 h-[1px] bg-[var(--brass)] inline-block"></span>
+              About
+            </p>
+            <h2 class="display-lg reveal">A designer who reads the brief twice.</h2>
+            <div class="reveal mt-8 flex items-center gap-4">
+              <div class="w-14 h-14 rounded-full flex items-center justify-center" style="background:var(--ink);">
+                <span class="font-display text-[var(--brass)] text-xl">EV</span>
+              </div>
+              <div>
+                <p class="font-medium text-sm">Elena Voss</p>
+                <p class="text-xs text-[var(--ink-mute)]">Founder & Design Lead</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 space-y-8">
+            <p class="body-lead reveal">
+              I started my studio after a decade inside product teams at agencies and startups across Amsterdam, Berlin, and London. That vantage point taught me something simple: great design isn't decoration — it's the shortest path between what a business believes and what a customer feels.
+            </p>
+            <p class="body-lead reveal">
+              Today I work with a small number of clients each year. Founders who want their brand to carry weight. Teams who need a design system that survives contact with reality. I lead every engagement personally, from first sketch to final handoff — no account managers, no telephone game.
+            </p>
+
+            <div class="reveal grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6 pt-4 border-t border-[var(--line)]">
+              <div class="flex gap-3 pt-6">
+                <i data-lucide="compass" class="w-5 h-5 text-[var(--brass)] flex-shrink-0 mt-0.5"></i>
+                <div>
+                  <p class="font-medium text-sm">Brand strategy first</p>
+                  <p class="text-sm text-[var(--ink-mute)] mt-1 leading-relaxed">Every visual decision traces back to a positioning choice.</p>
+                </div>
+              </div>
+              <div class="flex gap-3 pt-6">
+                <i data-lucide="layers" class="w-5 h-5 text-[var(--brass)] flex-shrink-0 mt-0.5"></i>
+                <div>
+                  <p class="font-medium text-sm">Systems, not one-offs</p>
+                  <p class="text-sm text-[var(--ink-mute)] mt-1 leading-relaxed">Deliverables your team can actually extend without me.</p>
+                </div>
+              </div>
+              <div class="flex gap-3 pt-6">
+                <i data-lucide="handshake" class="w-5 h-5 text-[var(--brass)] flex-shrink-0 mt-0.5"></i>
+                <div>
+                  <p class="font-medium text-sm">Senior, end to end</p>
+                  <p class="text-sm text-[var(--ink-mute)] mt-1 leading-relaxed">One person accountable from kickoff to launch.</p>
+                </div>
+              </div>
+              <div class="flex gap-3 pt-6">
+                <i data-lucide="pen-tool" class="w-5 h-5 text-[var(--brass)] flex-shrink-0 mt-0.5"></i>
+                <div>
+                  <p class="font-medium text-sm">Craft as default</p>
+                  <p class="text-sm text-[var(--ink-mute)] mt-1 leading-relaxed">Kerning, contrast, and load time are not afterthoughts.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SERVICES ================= -->
+    <section id="services" class="py-24 md:py-36">
+      <div class="max-w-[1400px] mx-auto px-6 md:px-10">
+        <div class="max-w-[620px] mb-16">
+          <p class="eyebrow reveal mb-5 flex items-center gap-3">
+            <span class="w-10 h-[1px] bg-[var(--brass)] inline-block"></span>
+            Services
+          </p>
+          <h2 class="display-lg reveal">How we can work together.</h2>
+        </div>
+
+        <div class="space-y-0 border-t border-[var(--line)]">
+
+          <div class="reveal group grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 py-10 border-b border-[var(--line)] items-start transition-colors duration-500 hover:bg-[var(--paper)] md:px-4 md:-mx-4 rounded-2xl">
+            <div class="md:col-span-1">
+              <span class="font-display text-2xl text-[var(--brass)]">01</span>
+            </div>
+            <div class="md:col-span-4">
+              <h3 class="display-md">Brand Identity</h3>
+            </div>
+            <div class="md:col-span-5">
+              <p class="body-lead text-base">Positioning, naming, wordmark, visual system, and a brand book your team will actually open. Typically 6–8 weeks.</p>
+            </div>
+            <div class="md:col-span-2 md:text-right">
+              <span class="eyebrow">From €12k</span>
+            </div>
+          </div>
+
+          <div class="reveal group grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 py-10 border-b border-[var(--line)] items-start transition-colors duration-500 hover:bg-[var(--paper)] md:px-4 md:-mx-4 rounded-2xl">
+            <div class="md:col-span-1">
+              <span class="font-display text-2xl text-[var(--brass)]">02</span>
+            </div>
+            <div class="md:col-span-4">
+              <h3 class="display-md">Product Design</h3>
+            </div>
+            <div class="md:col-span-5">
+              <p class="body-lead text-base">UX architecture, interface design, and a component library in Figma — built to hand off cleanly to engineering. 8–12 weeks.</p>
+            </div>
+            <div class="md:col-span-2 md:text-right">
+              <span class="eyebrow">From €18k</span>
+            </div>
+          </div>
+
+          <div class="reveal group grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 py-10 border-b border-[var(--line)] items-start transition-colors duration-500 hover:bg-[var(--paper)] md:px-4 md:-mx-4 rounded-2xl">
+            <div class="md:col-span-1">
+              <span class="font-display text-2xl text-[var(--brass)]">03</span>
+            </div>
+            <div class="md:col-span-4">
+              <h3 class="display-md">Art Direction</h3>
+            </div>
+            <div class="md:col-span-5">
+              <p class="body-lead text-base">Campaign concepts, photography direction, and editorial layouts for launches, lookbooks, and seasonal drops. Project-based.</p>
+            </div>
+            <div class="md:col-span-2 md:text-right">
+              <span class="eyebrow">From €8k</span>
+            </div>
+          </div>
+
+          <div class="reveal group grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 py-10 border-b border-[var(--line)] items-start transition-colors duration-500 hover:bg-[var(--paper)] md:px-4 md:-mx-4 rounded-2xl">
+            <div class="md:col-span-1">
+              <span class="font-display text-2xl text-[var(--brass)]">04</span>
+            </div>
+            <div class="md:col-span-4">
+              <h3 class="display-md">Design Advisory</h3>
+            </div>
+            <div class="md:col-span-5">
+              <p class="body-lead text-base">Monthly retainer for founders who need a senior design voice in the room — reviews, hiring input, and roadmap pressure-testing.</p>
+            </div>
+            <div class="md:col-span-2 md:text-right">
+              <span class="eyebrow">€3.5k / mo</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TESTIMONIAL ================= -->
+    <section class="py-24 md:py-32" style="background:var(--paper);">
+      <div class="max-w-[1000px] mx-auto px-6 md:px-10 text-center">
+        <i data-lucide="quote" class="w-8 h-8 mx-auto mb-8 text-[var(--brass)] reveal"></i>
+        <blockquote class="reveal">
+          <p class="font-display text-[clamp(1.6rem,3.6vw,2.6rem)] leading-[1.25] tracking-[-0.015em]">
+            Elena didn't just give us a logo. She gave us a language for talking about our own company — internally and to the market. Two years on, it still holds.
+          </p>
+        </blockquote>
+        <div class="reveal mt-10 flex items-center justify-center gap-3">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--ink);">
+            <span class="text-[var(--brass)] text-sm font-display">JM</span>
+          </div>
+          <div class="text-left">
+            <p class="text-sm font-medium">Jonas Meier</p>
+            <p class="text-xs text-[var(--ink-mute)]">Co-founder, Meridian Capital</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CTA BANNER ================= -->
+    <section class="py-24 md:py-36">
+      <div class="max-w-[1400px] mx-auto px-6 md:px-10">
+        <div class="reveal contact-card p-10 md:p-16 lg:p-20 text-center relative overflow-hidden">
+          <div class="hero-orb" style="width:300px;height:300px;background:rgba(181,138,74,0.18);top:-100px;right:-60px;" aria-hidden="true"></div>
+          <div class="relative z-10">
+            <p class="eyebrow mb-6">Limited availability · 2025</p>
+            <h2 class="display-lg max-w-[760px] mx-auto">Let's build something worth keeping.</h2>
+            <p class="body-lead max-w-[480px] mx-auto mt-6">
+              I take on four new engagements per year. If your project has a real point of view, I'd like to hear it.
+            </p>
+            <div class="mt-9 flex flex-wrap items-center justify-center gap-4">
+              <a href="#contact" class="btn-primary">
+                Start the conversation
+                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+              </a>
+              <a href="mailto:hello@elenavoss.studio" class="btn-ghost">
+                hello@elenavoss.studio
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER + CONTACT FORM ================= -->
+  <footer id="contact" class="pt-24 md:pt-32 pb-10">
+    <div class="max-w-[1400px] mx-auto px-6 md:px-10">
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-20">
+
+        <!-- Left: brand + links -->
+        <div class="lg:col-span-5">
+          <p class="eyebrow mb-6" style="color:rgba(251,250,247,0.5);">Get in touch</p>
+          <h2 class="display-lg text-[var(--cream)] max-w-[420px]">Tell me about the project.</h2>
+          <p class="body-lead mt-6 max-w-[380px]" style="color:rgba(251,250,247,0.6);">
+            Fill in the form and I'll reply within two business days. Prefer email? Write to <a href="mailto:hello@elenavoss.studio" class="underline underline-offset-4">hello@elenavoss.studio</a>.
+          </p>
+
+          <!-- Sitemap columns -->
+          <div class="grid grid-cols-2 gap-8 mt-14 max-w-[420px]">
+            <div>
+              <p class="eyebrow mb-4" style="color:rgba(251,250,247,0.5);">Sitemap</p>
+              <ul class="space-y-2.5 text-sm">
+                <li><a href="#work">Work</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <p class="eyebrow mb-4" style="color:rgba(251,250,247,0.5);">Social</p>
+              <ul class="space-y-2.5 text-sm">
+                <li><a href="#" aria-label="Instagram">Instagram</a></li>
+                <li><a href="#" aria-label="LinkedIn">LinkedIn</a></li>
+                <li><a href="#" aria-label="Dribbble">Dribbble</a></li>
+                <li><a href="#" aria-label="Behance">Behance</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: contact form -->
+        <div class="lg:col-span-7">
+          <form id="contactForm" novalidate class="space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              <div class="field" data-field="name">
+                <label for="cf-name">Your name</label>
+                <input id="cf-name" name="name" type="text" placeholder="Jane Doe" autocomplete="name" required />
+                <span class="err-msg" aria-live="polite"></span>
+              </div>
+              <div class="field" data-field="email">
+                <label for="cf-email">Email</label>
+                <input id="cf-email" name="email" type="email" placeholder="jane@company.com" autocomplete="email" required />
+                <span class="err-msg" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              <div class="field" data-field="phone">
+                <label for="cf-phone">Phone <span style="text-transform:none;letter-spacing:0;">(optional)</span></label>
+                <input id="cf-phone" name="phone" type="tel" placeholder="+31 6 1234 5678" autocomplete="tel" />
+                <span class="err-msg" aria-live="polite"></span>
+              </div>
+              <div class="field" data-field="service">
+                <label for="cf-service">What do you need?</label>
+                <select id="cf-service" name="service" class="w-full bg-transparent border-b border-[rgba(251,250,247,0.2)] py-3 text-[var(--cream)] focus:outline-none focus:border-[var(--brass-soft)] transition-colors" style="font-size:1rem;">
+                  <option value="" style="color:#333;">Select a service</option>
+                  <option value="brand" style="color:#333;">Brand Identity</option>
+                  <option value="product" style="color:#333;">Product Design</option>
+                  <option value="art-direction" style="color:#333;">Art Direction</option>
+                  <option value="advisory" style="color:#333;">Design Advisory</option>
+                  <option value="other" style="color:#333;">Something else</option>
+                </select>
+                <span class="err-msg" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="field" data-field="message">
+              <label for="cf-message">About the project</label>
+              <textarea id="cf-message" name="message" placeholder="A few sentences on what you're building, timelines, and what success looks like." required></textarea>
+              <span class="err-msg" aria-live="polite"></span>
+            </div>
+
+            <!-- TODO: connect form action to backend endpoint -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-2">
+              <button type="submit" class="btn-primary" id="submitBtn">
+                Send message
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
+              <p class="text-xs" style="color:rgba(251,250,247,0.4); max-width:280px;">
+                Your details stay between us. No newsletters, no lists, no nonsense.
+              </p>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Footer bottom -->
+      <div class="mt-20 pt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4" style="border-color:rgba(251,250,247,0.1);">
+        <div class="flex items-center gap-2.5">
+          <span class="w-6 h-6 rounded-full flex items-center justify-center" style="background:var(--brass);">
+            <span class="w-2 h-2 rounded-full" style="background:var(--ink);"></span>
+          </span>
+          <span class="font-display text-lg text-[var(--cream)]">Elena Voss</span>
+        </div>
+        <p class="text-xs" style="color:rgba(251,250,247,0.4);">© <span id="year"></span> Elena Voss Studio. All rights reserved.</p>
+        <p class="text-xs" style="color:rgba(251,250,247,0.4);">Designed & built with intent.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= TOAST ================= -->
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <i data-lucide="check-circle-2" class="w-5 h-5" style="color:var(--brass-soft);"></i>
+    <span id="toastMsg">Message sent. I'll be in touch shortly.</span>
+  </div>
+
+  <script>
+    /* ============================================================
+       Portfolio — Elena Voss
+       Vanilla JS + GSAP + Three.js
+       ============================================================ */
+    (function () {
+      'use strict';
+
+      // Mark JS as available
+      document.body.classList.remove('no-js');
+
+      // ---------- Lucide icons ----------
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+
+      // ---------- Year ----------
+      var yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+      // ---------- Nav scroll state ----------
+      var nav = document.getElementById('nav');
+      function onScroll() {
+        if (window.scrollY > 24) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      // ---------- Mobile menu ----------
+      var menuBtn = document.getElementById('menuBtn');
+      var menuClose = document.getElementById('menuClose');
+      var mobileMenu = document.getElementById('mobileMenu');
+
+      function openMenu() {
+        mobileMenu.classList.add('open');
+        menuBtn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMenu() {
+        mobileMenu.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+      menuBtn.addEventListener('click', openMenu);
+      menuClose.addEventListener('click', closeMenu);
+      mobileMenu.querySelectorAll('[data-close]').forEach(function (a) {
+        a.addEventListener('click', closeMenu);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+      });
+
+      // ---------- GSAP reveals ----------
+      if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+
+        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!reduceMotion) {
+          // Staggered reveal for all .reveal elements
+          var reveals = gsap.utils.toArray('.reveal');
+          reveals.forEach(function (el) {
+            gsap.fromTo(el,
+              { opacity: 0, y: 34 },
+              {
+                opacity: 1, y: 0,
+                duration: 1,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: el,
+                  start: 'top 88%',
+                  toggleActions: 'play none none none'
+                }
+              }
+            );
+          });
+
+          // Hero headline word stagger (manual split on <br> and spans)
+          var heroH1 = document.querySelector('.display-hero');
+          if (heroH1) {
+            var html = heroH1.innerHTML;
+            // Wrap lines/words in spans preserving markup roughly
+            heroH1.innerHTML = html
+              .split(/<br\s*\/?>/i)
+              .map(function (line) {
+                return '<span class="hero-line" style="display:block;overflow:hidden;">' +
+                  '<span class="hero-line-inner" style="display:block;">' + line + '</span></span>';
+              })
+              .join('');
+            gsap.fromTo('.hero-line-inner',
+              { yPercent: 110 },
+              { yPercent: 0, duration: 1.2, ease: 'power4.out', stagger: 0.12, delay: 0.15 }
+            );
+          }
+
+          // Subtle parallax on project cards
+          gsap.utils.toArray('.project-card').forEach(function (card, i) {
+            gsap.fromTo(card, { y: 40 }, {
+              y: 0,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top bottom',
+                end: 'top 60%',
+                scrub: 1
+              }
+            });
+          });
+
+          // Stats count-up
+          gsap.utils.toArray('.stat-num').forEach(function (el) {
+            var finalText = el.textContent.trim();
+            var match = finalText.match(/^(\d+)/);
+            if (!match) return;
+            var target = parseInt(match[1], 10);
+            var obj = { val: 0 };
+            gsap.to(obj, {
+              val: target,
+              duration: 1.6,
+              ease: 'power2.out',
+              scrollTrigger: { trigger: el, start: 'top 90%' },
+              onUpdate: function () {
+                el.innerHTML = Math.round(obj.val) +
+                  (finalText.indexOf('+') > -1 ? '<span class="text-[var(--brass)]">+</span>' : '');
+              }
+            });
+          });
+        } else {
+          gsap.set('.reveal', { opacity: 1, y: 0 });
+        }
+      } else {
+        // Fallback if GSAP fails to load
+        document.querySelectorAll('.reveal').forEach(function (el) {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        });
+      }
+
+      // ---------- Three.js hero visual ----------
+      (function initHeroCanvas() {
+        var canvas = document.getElementById('heroCanvas');
+        if (!canvas) return;
+        if (!window.THREE) {
+          // Load Three.js dynamically if not already present
+          var s = document.createElement('script');
+          s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+          s.onload = buildScene;
+          s.onerror = function () { canvas.style.display = 'none'; };
+          document.head.appendChild(s);
+        } else {
+          buildScene();
+        }
+
+        function buildScene() {
+          try {
+            var parent = canvas.parentElement;
+            var w = parent.clientWidth;
+            var h = parent.clientHeight;
+
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+            camera.position.z = 6;
+
+            var renderer = new THREE.WebGLRenderer({
+              canvas: canvas,
+              alpha: true,
+              antialias: true
+            });
+            renderer.setSize(w, h);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Group
+            var group = new THREE.Group();
+            scene.add(group);
+
+            // Main torus knot
+            var geo = new THREE.TorusKnotGeometry(1.35, 0.4, 160, 24);
+            var mat = new THREE.MeshStandardMaterial({
+              color: 0xb58a4a,
+              roughness: 0.32,
+              metalness: 0.55,
+              emissive: 0x2a1c0a
+            });
+            var knot = new THREE.Mesh(geo, mat);
+            group.add(knot);
+
+            // Wireframe outer shell
+            var shellGeo = new THREE.IcosahedronGeometry(2.6, 1);
+            var shellMat = new THREE.MeshBasicMaterial({
+              color: 0x3f4a3c,
+              wireframe: true,
+              transparent: true,
+              opacity: 0.12
+            });
+            var shell = new THREE.Mesh(shellGeo, shellMat);
+            group.add(shell);
+
+            // Lights
+            scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+            var key = new THREE.DirectionalLight(0xfff0d8, 1.1);
+            key.position.set(4, 5, 6);
+            scene.add(key);
+            var rim = new THREE.DirectionalLight(0xb58a4a, 0.7);
+            rim.position.set(-5, -3, -4);
+            scene.add(rim);
+
+            // Animation
+            var clock = new THREE.Clock();
+            var raf;
+            function animate() {
+              raf = requestAnimationFrame(animate);
+              var t = clock.getElapsedTime();
+              group.rotation.x = t * 0.18;
+              group.rotation.y = t * 0.25;
+              knot.rotation.z = t * 0.1;
+              renderer.render(scene, camera);
+            }
+            animate();
+
+            // Resize
+            function resize() {
+              var nw = parent.clientWidth;
+              var nh = parent.clientHeight;
+              if (nw === 0 || nh === 0) return;
+              camera.aspect = nw / nh;
+              camera.updateProjectionMatrix();
+              renderer.setSize(nw, nh);
+            }
+            window.addEventListener('resize', resize);
+
+            // Pause when off-screen for perf
+            if ('IntersectionObserver' in window) {
+              var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                  if (entry.isIntersecting) {
+                    if (!raf) animate();
+                  } else {
+                    if (raf) { cancelAnimationFrame(raf); raf = null; }
+                  }
+                });
+              }, { threshold: 0.05 });
+              io.observe(canvas.parentElement);
+            }
+          } catch (err) {
+            // Fail gracefully — hide canvas
+            canvas.style.display = 'none';
+          }
+        }
+      })();
+
+      // ---------- Contact form ----------
+      var form = document.getElementById('contactForm');
+      var toast = document.getElementById('toast');
+      var toastMsg = document.getElementById('toastMsg');
+      var submitBtn = document.getElementById('submitBtn');
+
+      function showToast(msg, isError) {
+        toastMsg.textContent = msg;
+        toast.classList.add('show');
+        if (isError) {
+          toast.style.background = '#8c2f2f';
+        } else {
+          toast.style.background = 'var(--ink)';
+        }
+        setTimeout(function () { toast.classList.remove('show'); }, 4200);
+      }
+
+      function setError(fieldName, message) {
+        var field = form.querySelector('[data-field="' + fieldName + '"]');
+        if (!field) return;
+        field.classList.add('error');
+        var msgEl = field.querySelector('.err-msg');
+        if (msgEl) msgEl.textContent = message;
+      }
+      function clearError(fieldName) {
+        var field = form.querySelector('[data-field="' + fieldName + '"]');
+        if (!field) return;
+        field.classList.remove('error');
+      }
+
+      function validateEmail(v) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+      }
+
+      if (form) {
+        // Live clearing of errors
+        ['name', 'email', 'phone', 'service', 'message'].forEach(function (n) {
+          var el = form.querySelector('[name="' + n + '"]');
+          if (el) {
+            el.addEventListener('input', function () { clearError(n); });
+            el.addEventListener('change', function () { clearError(n); });
+          }
+        });
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var valid = true;
+
+          var name = form.querySelector('[name="name"]').value.trim();
+          var email = form.querySelector('[name="email"]').value.trim();
+          var phone = form.querySelector('[name="phone"]').value.trim();
+          var service = form.querySelector('[name="service"]').value;
+          var message = form.querySelector('[name="message"]').value.trim();
+
+          // Reset
+          ['name', 'email', 'phone', 'service', 'message'].forEach(clearError);
+
+          if (!name) { setError('name', 'Please tell me your name.'); valid = false; }
+          if (!email) { setError('email', 'An email address is required.'); valid = false; }
+          else if (!validateEmail(email)) { setError('email', 'That email looks off — mind checking it?'); valid = false; }
+          if (phone && phone.replace(/\D/g, '').length < 6) {
+            setError('phone', 'That phone number seems too short.'); valid = false;
+          }
+          if (!service) { setError('service', 'Please pick a service.'); valid = false; }
+          if (!message) { setError('message', 'Tell me a little about the project.'); valid = false; }
+          else if (message.length < 10) { setError('message', 'A sentence or two helps me reply well.'); valid = false; }
+
+          if (!valid) {
+            // Focus first errored field
+            var firstErr = form.querySelector('.field.error input, .field.error textarea, .field.error select');
+            if (firstErr) firstErr.focus();
+            return;
+          }
+
+          // Build payload
+          var formData = {
+            name: name,
+            email: email,
+            phone: phone,
+            service: service,
+            message: message
+          };
+
+          // UI: loading state
+          var originalHTML = submitBtn.innerHTML;
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = 'Sending…';
+
+          // POST JSON
+          fetch('submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store',
+            body: JSON.stringify({
+              url: window.location.host,
+              table: 'contact',
+              data: formData
+            })
+          })
+          .then(function (res) {
+            if (!res.ok) throw new Error('Network response was not ok');
+            return res.json().catch(function () { return {}; });
+          })
+          .then(function () {
+            submitBtn.innerHTML = originalHTML;
+            submitBtn.disabled = false;
+            form.reset();
+            showToast('Message sent. I\u2019ll be in touch shortly.', false);
+            if (window.lucide) window.lucide.createIcons();
+          })
+          .catch(function () {
+            submitBtn.innerHTML = originalHTML;
+            submitBtn.disabled = false;
+            showToast('Something went wrong. Please email hello@elenavoss.studio.', true);
+            if (window.lucide) window.lucide.createIcons();
+          });
+        });
+      }
+
+    })();
+  </script>
+</body>
+</html>
