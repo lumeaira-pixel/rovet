@@ -1,883 +1,1049 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LUMIÈRE — Modern French Dining</title>
-  <!-- Google Fonts: Bricolage Grotesque + Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
-  <!-- Tailwind CSS via CDN (Play CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- GSAP + ScrollTrigger -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <!-- Tailwind config with custom colors & fonts -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atelier & Co. — Digital Design Studio</title>
+
+  <!-- Tailwind via CDN + custom config -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            cream: '#FAF8F5',
-            ivory: '#FEFCF9',
-            stone: '#E8E2D9',
-            taupe: '#B8A99A',
-            espresso: '#2E2A27',
-            charcoal: '#1F1D1B',
-            brass: '#B89B7A',
-            gold: '#C9A96E',
-            'brass-light': '#D4C0A8',
-            'brass-dark': '#9E8262',
+            ink: '#0F0E0C',
+            cream: '#FCFAF7',
+            sand: '#F3EFE9',
+            brass: '#B8946B',
+            'brass-light': '#D4B896',
+            stone: '#8A8178',
           },
           fontFamily: {
-            display: ['"Bricolage Grotesque"', 'serif'],
-            body: ['Inter', 'sans-serif'],
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            body: ['"Inter"', 'sans-serif'],
           },
-        }
-      }
-    }
+        },
+      },
+    };
   </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
   <style>
     /* === Design Tokens === */
     :root {
-      --ink: #1F1D1B;
-      --cream: #FAF8F5;
-      --ivory: #FEFCF9;
-      --stone: #E8E2D9;
-      --taupe: #B8A99A;
-      --brass: #B89B7A;
-      --gold: #C9A96E;
-      --shadow-soft: 0 20px 40px -12px rgba(0,0,0,0.06), 0 8px 24px -8px rgba(0,0,0,0.04);
-      --shadow-card: 0 4px 16px rgba(0,0,0,0.02), 0 8px 32px -8px rgba(0,0,0,0.04);
-      --shadow-hover: 0 24px 48px -12px rgba(184, 155, 122, 0.18), 0 12px 24px -8px rgba(0,0,0,0.04);
+      --ink: #0F0E0C;
+      --cream: #FCFAF7;
+      --sand: #F3EFE9;
+      --brass: #B8946B;
+      --brass-light: #D4B896;
+      --stone: #8A8178;
+      --focus-ring: #B8946B;
+      --shadow-soft: 0 4px 24px rgba(15,14,12,0.06);
+      --shadow-lift: 0 20px 60px rgba(15,14,12,0.10);
+      --radius: 1.25rem;
     }
 
+    /* === Base === */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
     body {
       font-family: 'Inter', sans-serif;
-      background-color: var(--cream);
+      background: var(--cream);
       color: var(--ink);
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.6;
       overflow-x: hidden;
     }
 
-    /* === Typography === */
-    .font-display { font-family: 'Bricolage Grotesque', serif; }
-    h1, h2, h3, h4 { font-family: 'Bricolage Grotesque', serif; font-weight: 700; letter-spacing: -0.02em; }
-
-    /* === Focus States (a11y) === */
-    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--cream), 0 0 0 4px var(--brass);
+    /* === Focus States === */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 3px;
       border-radius: 4px;
     }
 
-    /* === Custom Cursor (desktop) === */
-    .cursor-dot {
-      width: 6px; height: 6px; background: var(--brass); border-radius: 50%;
-      position: fixed; pointer-events: none; z-index: 9999;
-      transition: transform 0.1s ease;
-    }
-    .cursor-ring {
-      width: 36px; height: 36px; border: 1px solid var(--brass); border-radius: 50%;
-      position: fixed; pointer-events: none; z-index: 9998;
-      transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1), width 0.3s, height 0.3s, border-color 0.3s;
-      transform: translate(-50%, -50%);
-    }
-    .cursor-ring.hovering { width: 60px; height: 60px; border-color: var(--gold); background: rgba(184, 155, 122, 0.06); }
-    @media (max-width: 1024px) { .cursor-dot, .cursor-ring { display: none; } }
+    /* === Typography === */
+    h1, h2, h3, h4 { font-family: 'Bricolage Grotesque', sans-serif; line-height: 1.1; letter-spacing: -0.03em; }
+    .display-xl { font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 700; letter-spacing: -0.04em; }
+    .display-lg { font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 700; letter-spacing: -0.03em; }
+    .display-md { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 600; letter-spacing: -0.02em; }
+    .body-lg { font-size: clamp(1rem, 1.3vw, 1.15rem); line-height: 1.7; color: var(--stone); }
 
-    /* === Glass Nav === */
-    .glass-nav {
-      background: rgba(250, 248, 245, 0.82);
-      backdrop-filter: blur(20px) saturate(1.2);
-      -webkit-backdrop-filter: blur(20px) saturate(1.2);
-      border-bottom: 1px solid rgba(184, 155, 122, 0.12);
-      transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    /* === Grain Texture === */
+    .grain::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
-    .glass-nav.scrolled { background: rgba(250, 248, 245, 0.95); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
 
-    /* === Hero Text Reveal === */
-    .reveal-line { display: block; overflow: hidden; }
-    .reveal-line span { display: block; transform: translateY(100%); animation: revealUp 0.9s cubic-bezier(0.25, 1, 0.3, 1) forwards; }
-    .reveal-line:nth-child(1) span { animation-delay: 0.1s; }
-    .reveal-line:nth-child(2) span { animation-delay: 0.25s; }
-    .reveal-line:nth-child(3) span { animation-delay: 0.4s; }
-    @keyframes revealUp { to { transform: translateY(0); } }
+    /* === Header === */
+    .header-scrolled {
+      background: rgba(252,250,247,0.82);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      box-shadow: 0 1px 0 rgba(15,14,12,0.06);
+    }
 
-    /* === Fade In Up === */
-    .fade-up { opacity: 0; transform: translateY(32px); transition: opacity 0.8s cubic-bezier(0.25,0.1,0.25,1), transform 0.8s cubic-bezier(0.25,0.1,0.25,1); }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    /* === Nav Link Underline === */
+    .nav-link {
+      position: relative;
+      color: var(--stone);
+      transition: color 0.25s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -4px;
+      width: 0; height: 1.5px;
+      background: var(--brass);
+      transition: width 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link:hover::after { width: 100%; }
 
     /* === Buttons === */
     .btn-primary {
-      background: var(--ink); color: var(--cream); padding: 14px 32px; border-radius: 100px;
-      font-weight: 500; font-size: 0.9rem; letter-spacing: 0.02em;
-      transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-      position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 8px;
-      border: 1px solid var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.8rem;
+      background: var(--ink);
+      color: var(--cream);
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+      border: 1.5px solid var(--ink);
+      cursor: pointer;
     }
-    .btn-primary:hover { background: transparent; color: var(--ink); box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
-    .btn-primary:active { transform: scale(0.97) translateY(0); }
-
-    .btn-secondary {
-      background: transparent; color: var(--ink); padding: 14px 32px; border-radius: 100px;
-      font-weight: 500; font-size: 0.9rem; letter-spacing: 0.02em;
-      border: 1px solid rgba(184, 155, 122, 0.4);
-      transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-      display: inline-flex; align-items: center; gap: 8px;
+    .btn-primary:hover {
+      background: var(--brass);
+      border-color: var(--brass);
+      color: var(--ink);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(184,148,107,0.30);
     }
-    .btn-secondary:hover { border-color: var(--brass); background: rgba(184, 155, 122, 0.06); transform: translateY(-2px); }
-    .btn-secondary:active { transform: scale(0.97) translateY(0); }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
 
-    /* === Cards 3D Tilt === */
-    .tilt-card { perspective: 1200px; }
-    .tilt-card-inner { transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); transform-style: preserve-3d; }
-
-    /* === Menu Item Hover === */
-    .menu-item { transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1); border-bottom: 1px solid rgba(184, 155, 122, 0.12); }
-    .menu-item:hover { padding-left: 12px; border-bottom-color: var(--brass); background: rgba(184, 155, 122, 0.03); }
-
-    /* === Gallery === */
-    .gallery-item { overflow: hidden; border-radius: 16px; position: relative; cursor: pointer; }
-    .gallery-item img { transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1); width: 100%; height: 100%; object-fit: cover; }
-    .gallery-item:hover img { transform: scale(1.06); }
-    .gallery-item::after {
-      content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(31,29,27,0.3), transparent 60%);
-      opacity: 0; transition: opacity 0.4s ease;
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.8rem;
+      background: transparent;
+      color: var(--ink);
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: 1.5px solid rgba(15,14,12,0.15);
+      transition: all 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+      cursor: pointer;
     }
-    .gallery-item:hover::after { opacity: 1; }
+    .btn-outline:hover {
+      border-color: var(--ink);
+      background: rgba(15,14,12,0.03);
+      transform: translateY(-2px);
+    }
+    .btn-outline:active { transform: translateY(0) scale(0.98); }
 
-    /* === Review Card === */
-    .review-card { transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); }
-    .review-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
+    /* === Cards === */
+    .card-lift {
+      transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1), box-shadow 0.4s ease;
+    }
+    .card-lift:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lift);
+    }
 
-    /* === Marquee === */
-    .marquee { display: flex; overflow: hidden; user-select: none; gap: 0; }
-    .marquee-content { display: flex; flex-shrink: 0; gap: 3rem; padding-right: 3rem; animation: scrollX 30s linear infinite; }
-    @keyframes scrollX { to { transform: translateX(-100%); } }
+    /* === Service Card === */
+    .service-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(15,14,12,0.06);
+      border-radius: var(--radius);
+      padding: 2.2rem;
+      transition: all 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--brass), var(--brass-light));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lift);
+      border-color: rgba(184,148,107,0.20);
+    }
 
-    /* === Section Divider === */
-    .divider { width: 60px; height: 1px; background: var(--brass); opacity: 0.5; }
+    /* === Project Card === */
+    .project-card {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--sand);
+    }
+    .project-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .project-card:hover img { transform: scale(1.06); }
+    .project-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(15,14,12,0.80) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 2rem;
+    }
+    .project-card:hover .project-overlay { opacity: 1; }
+
+    /* === Testimonial === */
+    .testimonial-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(15,14,12,0.06);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      transition: all 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lift);
+      border-color: rgba(184,148,107,0.20);
+    }
+
+    /* === Stat Number === */
+    .stat-number {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
 
     /* === Form === */
     .form-input {
-      width: 100%; padding: 16px 20px; background: rgba(255,255,255,0.6); border: 1px solid rgba(184, 155, 122, 0.25);
-      border-radius: 12px; font-size: 0.95rem; color: var(--ink); transition: all 0.3s ease;
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      background: #FFFFFF;
+      border: 1.5px solid rgba(15,14,12,0.10);
+      border-radius: 0.85rem;
       font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: all 0.25s ease;
     }
-    .form-input::placeholder { color: rgba(31, 29, 27, 0.35); }
-    .form-input:focus { border-color: var(--brass); background: white; box-shadow: 0 0 0 4px rgba(184, 155, 122, 0.1); outline: none; }
-    .form-input.error { border-color: #C0392B; background: #FDF5F4; }
-    .error-msg { color: #C0392B; font-size: 0.78rem; margin-top: 6px; display: none; }
-    .error-msg.show { display: block; }
-
-    /* === Noise Texture === */
-    .noise-overlay {
-      position: fixed; inset: 0; pointer-events: none; z-index: 9990; opacity: 0.025;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    .form-input::placeholder { color: var(--stone); opacity: 0.6; }
+    .form-input:hover { border-color: rgba(15,14,12,0.20); }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184,148,107,0.12);
     }
-
-    /* === Section Tag === */
-    .section-tag {
-      display: inline-flex; align-items: center; gap: 8px; font-size: 0.72rem; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--brass-dark); font-weight: 600;
+    .form-input.error {
+      border-color: #D14343;
+      box-shadow: 0 0 0 3px rgba(209,67,67,0.10);
     }
-    .section-tag::before { content: ''; width: 24px; height: 1px; background: var(--brass); }
-
-    /* === Star Rating === */
-    .star { color: var(--gold); width: 18px; height: 18px; }
+    .error-msg {
+      color: #D14343;
+      font-size: 0.78rem;
+      margin-top: 0.35rem;
+      display: none;
+    }
+    .error-msg.visible { display: block; }
 
     /* === Mobile Menu === */
-    .mobile-menu { transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.25, 1, 0.3, 1); }
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+    }
     .mobile-menu.open { transform: translateX(0); }
 
-    /* === Success Check === */
-    .success-check { display: none; }
-    .success-check.show { display: flex; animation: fadeInUp 0.6s cubic-bezier(0.25, 1, 0.3, 1) forwards; }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    /* === Section Reveal === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+    }
 
-    /* === Smooth reveal for sections === */
-    .section-reveal { opacity: 0; transform: translateY(48px); transition: opacity 1s cubic-bezier(0.25,0.1,0.25,1), transform 1s cubic-bezier(0.25,0.1,0.25,1); }
-    .section-reveal.visible { opacity: 1; transform: translateY(0); }
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      gap: 4rem;
+      animation: marquee 30s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Gradient Text === */
+    .gradient-text {
+      background: linear-gradient(135deg, var(--brass) 0%, var(--brass-light) 50%, var(--brass) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* === Hero Glow === */
+    .hero-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(184,148,107,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      filter: blur(60px);
+    }
+
+    /* === Accordion === */
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.65, 0, 0.35, 1), padding 0.4s ease;
+    }
+    .faq-answer.open { max-height: 300px; padding-top: 1rem; }
+
+    /* === CTA Banner === */
+    .cta-banner {
+      background: linear-gradient(135deg, #0F0E0C 0%, #2A2520 50%, #1A1714 100%);
+      border-radius: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%; right: -20%;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(184,148,107,0.20) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
     /* === Scrollbar === */
     ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: var(--cream); }
-    ::-webkit-scrollbar-thumb { background: var(--taupe); border-radius: 4px; }
+    ::-webkit-scrollbar-track { background: var(--sand); }
+    ::-webkit-scrollbar-thumb { background: var(--brass-light); border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--brass); }
 
-    /* === Responsive === */
-    @media (max-width: 768px) {
-      .cursor-dot, .cursor-ring { display: none; }
+    /* === Success Message === */
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+    .success-message.visible { display: block; }
+
+    /* === Reduced Motion === */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .reveal { opacity: 1; transform: none; }
     }
   </style>
 </head>
-<body>
 
-  <!-- Noise overlay -->
-  <div class="noise-overlay" aria-hidden="true"></div>
+<body class="grain">
 
-  <!-- Custom cursor (desktop) -->
-  <div class="cursor-dot" aria-hidden="true"></div>
-  <div class="cursor-ring" aria-hidden="true"></div>
+  <!-- ========== HEADER ========== -->
+  <header id="header" class="fixed top-0 left-0 w-full z-50 transition-all duration-400">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="flex items-center justify-between h-20 lg:h-24 transition-all duration-400" id="headerInner">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2.5 group" aria-label="Atelier & Co. home">
+          <div class="w-9 h-9 rounded-xl bg-ink flex items-center justify-center transition-transform duration-300 group-hover:rotate-6">
+            <span class="text-cream font-display font-bold text-sm">A</span>
+          </div>
+          <span class="font-display font-bold text-xl tracking-tight">Atelier <span class="text-brass">&</span> Co.</span>
+        </a>
 
-  <!-- ========== HEADER / NAV ========== -->
-  <header class="glass-nav fixed top-0 left-0 right-0 z-50" id="navbar">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
-      <!-- Logo -->
-      <a href="#" class="font-display text-2xl font-800 tracking-tight text-espresso" aria-label="LUMIÈRE home">
-        LUMIÈRE<span class="text-brass">.</span>
-      </a>
+        <!-- Desktop Nav -->
+        <nav class="hidden lg:flex items-center gap-9" aria-label="Primary navigation">
+          <a href="#services" class="nav-link text-sm font-medium">Services</a>
+          <a href="#work" class="nav-link text-sm font-medium">Work</a>
+          <a href="#about" class="nav-link text-sm font-medium">About</a>
+          <a href="#testimonials" class="nav-link text-sm font-medium">Testimonials</a>
+          <a href="#contact" class="nav-link text-sm font-medium">Contact</a>
+        </nav>
 
-      <!-- Desktop Nav -->
-      <nav class="hidden lg:flex items-center gap-10" aria-label="Main navigation">
-        <a href="#menu" class="text-sm font-medium text-espresso/70 hover:text-espresso transition-colors duration-300">Menu</a>
-        <a href="#gallery" class="text-sm font-medium text-espresso/70 hover:text-espresso transition-colors duration-300">Gallery</a>
-        <a href="#reviews" class="text-sm font-medium text-espresso/70 hover:text-espresso transition-colors duration-300">Reviews</a>
-        <a href="#location" class="text-sm font-medium text-espresso/70 hover:text-espresso transition-colors duration-300">Location</a>
-        <a href="#reservation" class="btn-primary text-xs !py-3 !px-6">Reserve a Table</a>
+        <div class="hidden lg:flex items-center gap-4">
+          <a href="#contact" class="btn-primary text-sm">
+            Start a project
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <!-- Mobile toggle -->
+        <button id="mobileToggle" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-ink/5 transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-full max-w-sm h-full bg-cream z-50 shadow-2xl lg:hidden" role="dialog" aria-label="Mobile navigation">
+      <div class="flex items-center justify-between p-6 border-b border-ink/5">
+        <span class="font-display font-bold text-lg">Menu</span>
+        <button id="mobileClose" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-ink/5 transition-colors" aria-label="Close menu">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <nav class="flex flex-col p-6 gap-2" aria-label="Mobile navigation links">
+        <a href="#services" class="mobile-nav-link py-3 px-4 rounded-xl font-display text-xl font-semibold hover:bg-sand transition-colors">Services</a>
+        <a href="#work" class="mobile-nav-link py-3 px-4 rounded-xl font-display text-xl font-semibold hover:bg-sand transition-colors">Work</a>
+        <a href="#about" class="mobile-nav-link py-3 px-4 rounded-xl font-display text-xl font-semibold hover:bg-sand transition-colors">About</a>
+        <a href="#testimonials" class="mobile-nav-link py-3 px-4 rounded-xl font-display text-xl font-semibold hover:bg-sand transition-colors">Testimonials</a>
+        <a href="#contact" class="mobile-nav-link py-3 px-4 rounded-xl font-display text-xl font-semibold hover:bg-sand transition-colors">Contact</a>
+        <a href="#contact" class="mobile-nav-link btn-primary justify-center mt-4">Start a project</a>
       </nav>
-
-      <!-- Mobile hamburger -->
-      <button id="menuToggle" class="lg:hidden p-2 text-espresso" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-        <i data-lucide="menu" class="w-6 h-6"></i>
-      </button>
     </div>
   </header>
 
-  <!-- Mobile Menu Overlay -->
-  <div id="mobileMenu" class="mobile-menu fixed inset-0 z-40 bg-cream/98 backdrop-blur-xl lg:hidden" aria-hidden="true">
-    <div class="flex flex-col h-full pt-28 px-8">
-      <nav class="flex flex-col gap-6" aria-label="Mobile navigation">
-        <a href="#menu" class="mobile-link font-display text-4xl font-700 text-espresso hover:text-brass transition-colors">Menu</a>
-        <a href="#gallery" class="mobile-link font-display text-4xl font-700 text-espresso hover:text-brass transition-colors">Gallery</a>
-        <a href="#reviews" class="mobile-link font-display text-4xl font-700 text-espresso hover:text-brass transition-colors">Reviews</a>
-        <a href="#location" class="mobile-link font-display text-4xl font-700 text-espresso hover:text-brass transition-colors">Location</a>
-        <a href="#reservation" class="mobile-link btn-primary mt-8 self-start">Reserve a Table</a>
-      </nav>
-    </div>
-  </div>
-
   <!-- ========== HERO ========== -->
-  <section class="relative min-h-screen flex items-center pt-20 overflow-hidden" id="hero">
-    <!-- Background gradient -->
-    <div class="absolute inset-0 bg-gradient-to-br from-cream via-ivory to-stone/30" aria-hidden="true"></div>
-    <!-- Radial glow -->
-    <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-brass/5 blur-3xl" aria-hidden="true"></div>
-    <div class="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-gold/5 blur-3xl" aria-hidden="true"></div>
+  <section class="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden">
+    <div class="hero-glow" style="top: -10%; right: -10%;"></div>
+    <div class="hero-glow" style="bottom: -20%; left: -15%; background: radial-gradient(circle, rgba(184,148,107,0.08) 0%, transparent 70%);"></div>
 
-    <div class="relative max-w-7xl mx-auto px-6 lg:px-10 w-full grid lg:grid-cols-2 gap-16 items-center py-20">
-      <!-- Left: Copy -->
-      <div class="order-2 lg:order-1">
-        <p class="section-tag mb-6">Modern French Dining</p>
-        <h1 class="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-800 leading-[1.05] text-espresso mb-8">
-          <span class="reveal-line"><span>Where taste</span></span>
-          <span class="reveal-line"><span>meets</span></span>
-          <span class="reveal-line"><span class="text-brass italic font-600">artistry.</span></span>
-        </h1>
-        <p class="text-base lg:text-lg text-espresso/60 leading-relaxed max-w-md mb-10 font-300">
-          A refined dining experience in the heart of the city. Seasonal ingredients, classical technique, and an atmosphere that lingers long after the last course.
-        </p>
-        <div class="flex flex-wrap gap-4">
-          <a href="#reservation" class="btn-primary">
-            Reserve a Table
-            <i data-lucide="arrow-right" class="w-4 h-4"></i>
-          </a>
-          <a href="#menu" class="btn-secondary">
-            Explore Menu
-          </a>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10 w-full">
+      <div class="grid lg:grid-cols-12 gap-12 items-center">
+        <!-- Left -->
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brass/8 border border-brass/15 mb-8 opacity-0" id="heroBadge">
+            <span class="w-2 h-2 rounded-full bg-brass animate-pulse"></span>
+            <span class="text-xs font-medium tracking-wide text-stone">Award-winning design studio · Est. 2016</span>
+          </div>
+
+          <h1 class="display-xl mb-6">
+            <span class="block overflow-hidden"><span class="hero-line block">We craft digital</span></span>
+            <span class="block overflow-hidden"><span class="hero-line block">experiences that</span></span>
+            <span class="block overflow-hidden"><span class="hero-line block gradient-text">move people.</span></span>
+          </h1>
+
+          <p class="body-lg max-w-xl mb-10 opacity-0" id="heroSub">
+            Atelier & Co. is a design and engineering studio building brands, websites, and products for ambitious companies. We blend craft with strategy to create work that performs as beautifully as it looks.
+          </p>
+
+          <div class="flex flex-wrap gap-4 opacity-0" id="heroCta">
+            <a href="#contact" class="btn-primary">
+              Start a project
+              <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+            </a>
+            <a href="#work" class="btn-outline">
+              View our work
+              <i data-lucide="arrow-down" class="w-4 h-4"></i>
+            </a>
+          </div>
         </div>
 
-        <!-- Stats -->
-        <div class="flex gap-10 mt-16">
-          <div>
-            <p class="font-display text-3xl font-700 text-espresso">2</p>
-            <p class="text-xs text-espresso/50 mt-1 tracking-wide uppercase">Michelin Stars</p>
-          </div>
-          <div class="w-px bg-brass/20"></div>
-          <div>
-            <p class="font-display text-3xl font-700 text-espresso">14</p>
-            <p class="text-xs text-espresso/50 mt-1 tracking-wide uppercase">Years Running</p>
-          </div>
-          <div class="w-px bg-brass/20"></div>
-          <div>
-            <p class="font-display text-3xl font-700 text-espresso">98%</p>
-            <p class="text-xs text-espresso/50 mt-1 tracking-wide uppercase">Return Guests</p>
+        <!-- Right visual -->
+        <div class="lg:col-span-5 relative opacity-0" id="heroVisual">
+          <div class="relative">
+            <!-- Main card -->
+            <div class="relative z-10 rounded-3xl overflow-hidden shadow-2xl" style="transform: perspective(1200px) rotateY(-6deg) rotateX(4deg);">
+              <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80" alt="Modern interior design project" class="w-full h-[420px] object-cover" loading="eager" />
+              <div class="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent"></div>
+              <div class="absolute bottom-6 left-6 right-6">
+                <p class="text-cream/70 text-xs font-medium tracking-widest uppercase mb-1">Featured Project</p>
+                <p class="text-cream font-display font-semibold text-lg">Maison Verre — Brand & Digital</p>
+              </div>
+            </div>
+            <!-- Floating stat card -->
+            <div class="absolute -bottom-8 -left-8 z-20 bg-white rounded-2xl p-5 shadow-xl border border-ink/5" style="animation: float 6s ease-in-out infinite;">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-brass/10 flex items-center justify-center">
+                  <i data-lucide="trending-up" class="w-6 h-6 text-brass"></i>
+                </div>
+                <div>
+                  <p class="font-display font-bold text-2xl leading-none">+240%</p>
+                  <p class="text-stone text-xs mt-1">Avg. conversion lift</p>
+                </div>
+              </div>
+            </div>
+            <!-- Floating badge -->
+            <div class="absolute -top-6 -right-6 z-20 bg-ink rounded-2xl p-4 shadow-xl" style="animation: float 5s ease-in-out infinite 0.5s;">
+              <div class="flex items-center gap-2">
+                <i data-lucide="award" class="w-5 h-5 text-brass-light"></i>
+                <span class="text-cream text-xs font-medium">Awwwards</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Right: Hero Image -->
-      <div class="order-1 lg:order-2 relative">
-        <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-espresso/10 aspect-[4/5]">
-          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80" alt="Elegant plated dish at LUMIÈRE restaurant" class="w-full h-full object-cover" loading="eager" />
-          <!-- Subtle gradient overlay -->
-          <div class="absolute inset-0 bg-gradient-to-t from-espresso/20 via-transparent to-transparent" aria-hidden="true"></div>
-        </div>
-        <!-- Floating badge -->
-        <div class="absolute -bottom-6 -left-6 lg:-left-10 bg-ivory/90 backdrop-blur-xl rounded-2xl p-5 shadow-xl shadow-espresso/5 border border-brass/10">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center">
-              <i data-lucide="award" class="w-5 h-5 text-brass"></i>
-            </div>
-            <div>
-              <p class="text-xs text-espresso/50 tracking-wide uppercase">Best Fine Dining</p>
-              <p class="font-display text-sm font-600 text-espresso">Culinary Awards 2025</p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2 opacity-0" id="scrollIndicator">
+      <span class="text-[10px] tracking-widest uppercase text-stone">Scroll</span>
+      <div class="w-px h-10 bg-gradient-to-b from-brass to-transparent"></div>
     </div>
   </section>
 
   <!-- ========== MARQUEE / SOCIAL PROOF ========== -->
-  <section class="py-10 border-y border-brass/10 bg-ivory/50" aria-label="Press mentions">
-    <div class="marquee">
-      <div class="marquee-content">
-        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">The New York Times</span>
-        <span class="text-brass text-lg">✦</span>
-        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Michelin Guide</span>
-        <span class="text-brass text-lg">✦</span>
-        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Bon Appétit</span>
-        <span class="text-brass text-lg">✦</span>
-        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Condé Nast Traveler</span>
-        <span class="text-brass text-lg">✦</span>
-        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Food & Wine</span>
-        <span class="text-brass text-lg">✦</span>
-      </div>
-      <div class="marquee-content" aria-hidden="true">
-        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">The New York Times</span>
-        <span class="text-brass text-lg">✦</span>
-        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Michelin Guide</span>
-        <span class="text-brass text-lg">✦</span>
-        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Bon Appétit</span>
-        <span class="text-brass text-lg">✦</span>
-        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Condé Nast Traveler</span>
-        <span class="text-brass text-lg">✦</span>
-        <span class="text-espresso/30 font-display text-lg font-500 whitespace-nowrap">Food & Wine</span>
-        <span class="text-brass text-lg">✦</span>
+  <section class="py-12 border-y border-ink/5 overflow-hidden">
+    <div class="flex items-center gap-4 mb-6 px-6 lg:px-10 max-w-7xl mx-auto">
+      <span class="text-[10px] tracking-widest uppercase text-stone whitespace-nowrap">Trusted by forward-thinking brands</span>
+      <div class="h-px flex-1 bg-ink/5"></div>
+    </div>
+    <div class="relative overflow-hidden">
+      <div class="marquee-track">
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">MAISON VERRE</span>
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">NORDIC & CO</span>
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">LUMIÈRE</span>
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">ATLAS VENTURES</span>
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">VERDE STUDIO</span>
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">ORBIT LABS</span>
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">MAISON VERRE</span>
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">NORDIC & CO</span>
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">LUMIÈRE</span>
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">ATLAS VENTURES</span>
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">VERDE STUDIO</span>
+        <span class="font-display font-semibold text-2xl text-ink/20 whitespace-nowrap">ORBIT LABS</span>
       </div>
     </div>
   </section>
 
-  <!-- ========== MENU SECTION ========== -->
-  <section id="menu" class="py-24 lg:py-32 bg-cream">
+  <!-- ========== SERVICES ========== -->
+  <section id="services" class="py-24 lg:py-32">
     <div class="max-w-7xl mx-auto px-6 lg:px-10">
-      <!-- Header -->
-      <div class="section-reveal mb-16 lg:mb-20">
-        <p class="section-tag mb-4">The Menu</p>
-        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-          <h2 class="text-4xl sm:text-5xl lg:text-6xl font-800 text-espresso leading-[1.1] max-w-2xl">
-            A seasonal journey<br>through <span class="text-brass italic font-600">flavour.</span>
-          </h2>
-          <p class="text-espresso/50 max-w-sm text-sm leading-relaxed lg:text-right">
-            Our menu evolves with the seasons, guided by the finest local producers and a relentless pursuit of balance.
-          </p>
+      <div class="max-w-2xl mb-16 reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brass/8 border border-brass/15 mb-6">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brass"></i>
+          <span class="text-xs font-medium tracking-wide text-stone">What we do</span>
         </div>
+        <h2 class="display-lg mb-5">Services built for<br />brands that refuse average.</h2>
+        <p class="body-lg">From first sketch to final deploy, we handle the entire digital journey with obsessive attention to craft.</p>
       </div>
 
-      <!-- Menu Grid -->
-      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
-        <!-- Left column -->
-        <div class="space-y-2">
-          <!-- Course label -->
-          <div class="flex items-center gap-4 mb-8">
-            <span class="font-display text-xs tracking-[0.2em] uppercase text-brass-dark font-600">To Begin</span>
-            <div class="flex-1 h-px bg-brass/20"></div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Service 1 -->
+        <article class="service-card reveal">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="palette" class="w-7 h-7 text-brass"></i>
           </div>
+          <h3 class="font-display font-semibold text-xl mb-3">Brand Identity</h3>
+          <p class="text-stone text-sm leading-relaxed mb-5">Strategy-led visual systems that capture who you are and where you're going. Logos, typography, color, motion, guidelines.</p>
+          <ul class="space-y-2 text-sm text-stone">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Brand strategy & positioning</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Visual identity systems</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Brand guidelines</li>
+          </ul>
+        </article>
 
-          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
-            <div>
-              <h3 class="font-display text-lg font-600 text-espresso">Oysters & Champagne Mignonette</h3>
-              <p class="text-espresso/50 text-sm mt-1 font-300">Fine de Claire, shallot, chardonnay vinegar, lemon oil</p>
-            </div>
-            <span class="font-display text-brass font-600 whitespace-nowrap">24</span>
+        <!-- Service 2 -->
+        <article class="service-card reveal">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="monitor" class="w-7 h-7 text-brass"></i>
           </div>
+          <h3 class="font-display font-semibold text-xl mb-3">Web Design</h3>
+          <p class="text-stone text-sm leading-relaxed mb-5">Conversion-focused websites that look extraordinary and perform even better. Designed pixel by pixel, built to last.</p>
+          <ul class="space-y-2 text-sm text-stone">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>UX research & wireframing</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>High-fidelity UI design</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Responsive design systems</li>
+          </ul>
+        </article>
 
-          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
-            <div>
-              <h3 class="font-display text-lg font-600 text-espresso">Foie Gras Terrine</h3>
-              <p class="text-espresso/50 text-sm mt-1 font-300">Sauternes gelée, brioche, fig, toasted hazelnut</p>
-            </div>
-            <span class="font-display text-brass font-600 whitespace-nowrap">32</span>
+        <!-- Service 3 -->
+        <article class="service-card reveal">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="code-2" class="w-7 h-7 text-brass"></i>
           </div>
+          <h3 class="font-display font-semibold text-xl mb-3">Development</h3>
+          <p class="text-stone text-sm leading-relaxed mb-5">Clean, fast, accessible front-end engineering. From marketing sites to complex web applications.</p>
+          <ul class="space-y-2 text-sm text-stone">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Front-end engineering</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>CMS integration</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Performance optimization</li>
+          </ul>
+        </article>
 
-          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
-            <div>
-              <h3 class="font-display text-lg font-600 text-espresso">Heirloom Beetroot Tartare</h3>
-              <p class="text-espresso/50 text-sm mt-1 font-300">Smoked crème fraîche, dill, rye crisp, caviar</p>
-            </div>
-            <span class="font-display text-brass font-600 whitespace-nowrap">26</span>
+        <!-- Service 4 -->
+        <article class="service-card reveal">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="layers" class="w-7 h-7 text-brass"></i>
           </div>
+          <h3 class="font-display font-semibold text-xl mb-3">Product Design</h3>
+          <p class="text-stone text-sm leading-relaxed mb-5">End-to-end product design from discovery to launch. We design interfaces people love to use every day.</p>
+          <ul class="space-y-2 text-sm text-stone">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Product discovery</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Design systems</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Prototyping & testing</li>
+          </ul>
+        </article>
 
-          <!-- Main course label -->
-          <div class="flex items-center gap-4 mt-12 mb-8">
-            <span class="font-display text-xs tracking-[0.2em] uppercase text-brass-dark font-600">Main Course</span>
-            <div class="flex-1 h-px bg-brass/20"></div>
+        <!-- Service 5 -->
+        <article class="service-card reveal">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="search" class="w-7 h-7 text-brass"></i>
           </div>
+          <h3 class="font-display font-semibold text-xl mb-3">SEO & Growth</h3>
+          <p class="text-stone text-sm leading-relaxed mb-5">Technical SEO, content strategy, and conversion optimization that turns traffic into revenue.</p>
+          <ul class="space-y-2 text-sm text-stone">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Technical SEO audits</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Content strategy</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>CRO & analytics</li>
+          </ul>
+        </article>
 
-          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
-            <div>
-              <h3 class="font-display text-lg font-600 text-espresso">Dover Sole Meunière</h3>
-              <p class="text-espresso/50 text-sm mt-1 font-300">Brown butter, capers, parsley, lemon, fingerlings</p>
-            </div>
-            <span class="font-display text-brass font-600 whitespace-nowrap">58</span>
+        <!-- Service 6 -->
+        <article class="service-card reveal">
+          <div class="w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="zap" class="w-7 h-7 text-brass"></i>
           </div>
-
-          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
-            <div>
-              <h3 class="font-display text-lg font-600 text-espresso">Dry-Aged Duck Breast</h3>
-              <p class="text-espresso/50 text-sm mt-1 font-300">Cherry gastrique, endive, walnut, sauce salmis</p>
-            </div>
-            <span class="font-display text-brass font-600 whitespace-nowrap">52</span>
-          </div>
-        </div>
-
-        <!-- Right column -->
-        <div class="space-y-2">
-          <!-- Continue mains -->
-          <div class="flex items-center gap-4 mb-8 opacity-0" aria-hidden="true">
-            <span class="font-display text-xs tracking-[0.2em] uppercase text-brass-dark font-600">Main Course</span>
-            <div class="flex-1 h-px bg-brass/20"></div>
-          </div>
-
-          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
-            <div>
-              <h3 class="font-display text-lg font-600 text-espresso">Herb-Crusted Rack of Lamb</h3>
-              <p class="text-espresso/50 text-sm mt-1 font-300">Pistachio, aubergine caviar, jus gras, mint</p>
-            </div>
-            <span class="font-display text-brass font-600 whitespace-nowrap">56</span>
-          </div>
-
-          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
-            <div>
-              <h3 class="font-display text-lg font-600 text-espresso">Wild Mushroom Risotto</h3>
-              <p class="text-espresso/50 text-sm mt-1 font-300">Acquerello rice, porcini, truffle, aged parmesan</p>
-            </div>
-            <span class="font-display text-brass font-600 whitespace-nowrap">42</span>
-          </div>
-
-          <!-- Dessert label -->
-          <div class="flex items-center gap-4 mt-12 mb-8">
-            <span class="font-display text-xs tracking-[0.2em] uppercase text-brass-dark font-600">Dessert</span>
-            <div class="flex-1 h-px bg-brass/20"></div>
-          </div>
-
-          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
-            <div>
-              <h3 class="font-display text-lg font-600 text-espresso">Valrhona Chocolate Soufflé</h3>
-              <p class="text-espresso/50 text-sm mt-1 font-300">Tahitian vanilla ice cream, cocoa nib tuile</p>
-            </div>
-            <span class="font-display text-brass font-600 whitespace-nowrap">22</span>
-          </div>
-
-          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
-            <div>
-              <h3 class="font-display text-lg font-600 text-espresso">Tarte Tatin</h3>
-              <p class="text-espresso/50 text-sm mt-1 font-300">Caramelised apple, crème fraîche, Calvados</p>
-            </div>
-            <span class="font-display text-brass font-600 whitespace-nowrap">18</span>
-          </div>
-
-          <div class="menu-item py-5 flex justify-between items-start gap-6 cursor-default">
-            <div>
-              <h3 class="font-display text-lg font-600 text-espresso">Artisan Cheese Selection</h3>
-              <p class="text-espresso/50 text-sm mt-1 font-300">Five cheeses, quince, walnut, sourdough</p>
-            </div>
-            <span class="font-display text-brass font-600 whitespace-nowrap">28</span>
-          </div>
-        </div>
+          <h3 class="font-display font-semibold text-xl mb-3">Motion & 3D</h3>
+          <p class="text-stone text-sm leading-relaxed mb-5">Scroll-driven storytelling, 3D web experiences, and micro-interactions that make interfaces feel alive.</p>
+          <ul class="space-y-2 text-sm text-stone">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>WebGL & Three.js</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Scroll animations</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i>Interactive prototypes</li>
+          </ul>
+        </article>
       </div>
+    </div>
+  </section>
 
-      <!-- CTA -->
-      <div class="section-reveal mt-16 text-center">
-        <a href="#reservation" class="btn-secondary">
-          View Full Tasting Menu
-          <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+  <!-- ========== WORK ========== -->
+  <section id="work" class="py-24 lg:py-32 bg-sand">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16 reveal">
+        <div class="max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brass/8 border border-brass/15 mb-6">
+            <i data-lucide="folder-open" class="w-3.5 h-3.5 text-brass"></i>
+            <span class="text-xs font-medium tracking-wide text-stone">Selected work</span>
+          </div>
+          <h2 class="display-lg mb-5">Projects we're<br />proud to sign.</h2>
+          <p class="body-lg">A selection of recent collaborations across hospitality, tech, and lifestyle.</p>
+        </div>
+        <a href="#contact" class="btn-outline self-start lg:self-end">
+          Discuss your project
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </a>
       </div>
-    </div>
-  </section>
 
-  <!-- ========== GALLERY ========== -->
-  <section id="gallery" class="py-24 lg:py-32 bg-ivory">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10">
-      <div class="section-reveal mb-16">
-        <p class="section-tag mb-4">Gallery</p>
-        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-800 text-espresso leading-[1.1] max-w-2xl">
-          Moments from<br>the <span class="text-brass italic font-600">table.</span>
-        </h2>
-      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Project 1 -->
+        <article class="project-card reveal lg:col-span-2 h-[380px]">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80" alt="Maison Verre brand and digital project" loading="lazy" />
+          <div class="project-overlay">
+            <span class="text-brass-light text-xs font-medium tracking-widest uppercase mb-2">Branding · Web</span>
+            <h3 class="font-display font-semibold text-2xl text-cream">Maison Verre</h3>
+            <p class="text-cream/60 text-sm mt-2 max-w-md">A complete brand and digital overhaul for a boutique architecture firm in Provence.</p>
+          </div>
+        </article>
 
-      <!-- Gallery grid -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-        <div class="gallery-item aspect-[3/4] col-span-2 lg:col-span-1 lg:row-span-2">
-          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80" alt="Interior of LUMIÈRE restaurant with warm lighting" loading="lazy" />
-        </div>
-        <div class="gallery-item aspect-square">
-          <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&q=80" alt="Fresh salmon dish with herbs" loading="lazy" />
-        </div>
-        <div class="gallery-item aspect-square">
-          <img src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=600&q=80" alt="Chef plating a dish with precision" loading="lazy" />
-        </div>
-        <div class="gallery-item aspect-square">
-          <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&q=80" alt="Elegant dining table setting" loading="lazy" />
-        </div>
-        <div class="gallery-item aspect-square">
-          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" alt="Grilled steak with garnish" loading="lazy" />
-        </div>
-      </div>
-    </div>
-  </section>
+        <!-- Project 2 -->
+        <article class="project-card reveal h-[380px]">
+          <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80" alt="Lumière product design project" loading="lazy" />
+          <div class="project-overlay">
+            <span class="text-brass-light text-xs font-medium tracking-widest uppercase mb-2">Product Design</span>
+            <h3 class="font-display font-semibold text-2xl text-cream">Lumière</h3>
+            <p class="text-cream/60 text-sm mt-2">A smart lighting platform used in 40,000+ homes.</p>
+          </div>
+        </article>
 
-  <!-- ========== REVIEWS ========== -->
-  <section id="reviews" class="py-24 lg:py-32 bg-cream">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10">
-      <div class="section-reveal mb-16">
-        <p class="section-tag mb-4">Guest Reviews</p>
-        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-          <h2 class="text-4xl sm:text-5xl lg:text-6xl font-800 text-espresso leading-[1.1] max-w-2xl">
-            Words from<br>our <span class="text-brass italic font-600">guests.</span>
-          </h2>
-          <div class="flex items-center gap-3">
-            <div class="flex gap-1">
-              <i data-lucide="star" class="star fill-current"></i>
-              <i data-lucide="star" class="star fill-current"></i>
-              <i data-lucide="star" class="star fill-current"></i>
-              <i data-lucide="star" class="star fill-current"></i>
-              <i data-lucide="star" class="star fill-current"></i>
-            </div>
-            <span class="text-espresso/60 text-sm font-400">4.9 from 240+ reviews</span>
+        <!-- Project 3 -->
+        <article class="project-card reveal h-[380px]">
+          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80" alt="Atlas Ventures web platform" loading="lazy" />
+          <div class="project-overlay">
+            <span class="text-brass-light text-xs font-medium tracking-widest uppercase mb-2">Web Platform</span>
+            <h3 class="font-display font-semibold text-2xl text-cream">Atlas Ventures</h3>
+            <p class="text-cream/60 text-sm mt-2">Investment platform redesign driving 3x engagement.</p>
           </div>
-        </div>
-      </div>
+        </article>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-        <!-- Review 1 -->
-        <div class="review-card bg-ivory rounded-2xl p-8 border border-brass/10 shadow-sm">
-          <div class="flex gap-1 mb-6">
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
+        <!-- Project 4 -->
+        <article class="project-card reveal h-[380px]">
+          <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80" alt="Orbit Labs 3D web experience" loading="lazy" />
+          <div class="project-overlay">
+            <span class="text-brass-light text-xs font-medium tracking-widest uppercase mb-2">WebGL · Motion</span>
+            <h3 class="font-display font-semibold text-2xl text-cream">Orbit Labs</h3>
+            <p class="text-cream/60 text-sm mt-2">An immersive 3D product launch experience.</p>
           </div>
-          <p class="text-espresso/70 leading-relaxed font-300 mb-8 text-[0.95rem]">
-            "An unforgettable evening. The Dover sole was cooked to absolute perfection, and the service felt genuinely warm rather than rehearsed. This is dining as it should be."
-          </p>
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
-              <span class="font-display text-xs font-700 text-brass-dark">EM</span>
-            </div>
-            <div>
-              <p class="font-display text-sm font-600 text-espresso">Eleanor M.</p>
-              <p class="text-xs text-espresso/40">Dined March 2025</p>
-            </div>
-          </div>
-        </div>
+        </article>
 
-        <!-- Review 2 -->
-        <div class="review-card bg-ivory rounded-2xl p-8 border border-brass/10 shadow-sm">
-          <div class="flex gap-1 mb-6">
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
+        <!-- Project 5 -->
+        <article class="project-card reveal h-[380px]">
+          <img src="https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=800&q=80" alt="Verde Studio brand identity" loading="lazy" />
+          <div class="project-overlay">
+            <span class="text-brass-light text-xs font-medium tracking-widest uppercase mb-2">Identity</span>
+            <h3 class="font-display font-semibold text-2xl text-cream">Verde Studio</h3>
+            <p class="text-cream/60 text-sm mt-2">Brand identity for a sustainable fashion label.</p>
           </div>
-          <p class="text-espresso/70 leading-relaxed font-300 mb-8 text-[0.95rem]">
-            "The tasting menu is a masterclass in restraint and flavour. Every course arrived with a story, and the sommelier's pairings were inspired. Worth every penny."
-          </p>
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
-              <span class="font-display text-xs font-700 text-brass-dark">JR</span>
-            </div>
-            <div>
-              <p class="font-display text-sm font-600 text-espresso">James R.</p>
-              <p class="text-xs text-espresso/40">Dined February 2025</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Review 3 -->
-        <div class="review-card bg-ivory rounded-2xl p-8 border border-brass/10 shadow-sm md:col-span-2 lg:col-span-1">
-          <div class="flex gap-1 mb-6">
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
-            <i data-lucide="star" class="star fill-current"></i>
-          </div>
-          <p class="text-espresso/70 leading-relaxed font-300 mb-8 text-[0.95rem]">
-            "We celebrated our anniversary here and it exceeded every expectation. The chocolate soufflé alone is worth the visit. Impeccable from start to finish."
-          </p>
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
-              <span class="font-display text-xs font-700 text-brass-dark">SL</span>
-            </div>
-            <div>
-              <p class="font-display text-sm font-600 text-espresso">Sophia L.</p>
-              <p class="text-xs text-espresso/40">Dined April 2025</p>
-            </div>
-          </div>
-        </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- ========== LOCATION ========== -->
-  <section id="location" class="py-24 lg:py-32 bg-ivory">
+  <!-- ========== STATS / ABOUT ========== -->
+  <section id="about" class="py-24 lg:py-32">
     <div class="max-w-7xl mx-auto px-6 lg:px-10">
       <div class="grid lg:grid-cols-2 gap-16 items-center">
-        <!-- Info -->
-        <div class="section-reveal">
-          <p class="section-tag mb-4">Find Us</p>
-          <h2 class="text-4xl sm:text-5xl lg:text-6xl font-800 text-espresso leading-[1.1] mb-8">
-            In the heart<br>of the <span class="text-brass italic font-600">city.</span>
-          </h2>
-          <p class="text-espresso/50 leading-relaxed max-w-md mb-12 font-300">
-            Tucked away on a quiet cobblestone street, LUMIÈRE offers a serene escape from the bustle. Valet parking available.
-          </p>
+        <div class="reveal">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brass/8 border border-brass/15 mb-6">
+            <i data-lucide="users" class="w-3.5 h-3.5 text-brass"></i>
+            <span class="text-xs font-medium tracking-wide text-stone">About the studio</span>
+          </div>
+          <h2 class="display-lg mb-6">A small team with<br />an outsized impact.</h2>
+          <p class="body-lg mb-6">We're a tight-knit collective of designers, engineers, and strategists who believe great work comes from close collaboration and genuine care. No account managers, no handoffs — you work directly with the people building your product.</p>
+          <p class="text-stone text-sm leading-relaxed mb-8">Since 2016, we've partnered with over 80 companies across four continents, from seed-stage startups to established luxury brands. Our work has been recognized by Awwwards, CSS Design Awards, and Communication Arts.</p>
+
+          <div class="flex flex-wrap gap-8">
+            <div>
+              <p class="stat-number">80+</p>
+              <p class="text-stone text-sm mt-1">Projects shipped</p>
+            </div>
+            <div>
+              <p class="stat-number">12</p>
+              <p class="text-stone text-sm mt-1">Industry awards</p>
+            </div>
+            <div>
+              <p class="stat-number">96%</p>
+              <p class="text-stone text-sm mt-1">Client retention</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative reveal">
+          <div class="rounded-3xl overflow-hidden shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80" alt="Atelier & Co. team collaborating in the studio" class="w-full h-[500px] object-cover" loading="lazy" />
+          </div>
+          <!-- Floating card -->
+          <div class="absolute -bottom-6 -left-6 bg-white rounded-2xl p-6 shadow-xl border border-ink/5 max-w-[220px]">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center">
+                <i data-lucide="heart" class="w-5 h-5 text-brass"></i>
+              </div>
+              <p class="font-display font-semibold text-sm">Craft-first</p>
+            </div>
+            <p class="text-stone text-xs leading-relaxed">Every pixel considered. Every interaction intentional.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS ========== -->
+  <section id="testimonials" class="py-24 lg:py-32 bg-sand">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="max-w-2xl mb-16 reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brass/8 border border-brass/15 mb-6">
+          <i data-lucide="quote" class="w-3.5 h-3.5 text-brass"></i>
+          <span class="text-xs font-medium tracking-wide text-stone">Client words</span>
+        </div>
+        <h2 class="display-lg mb-5">Don't take our word<br />for it.</h2>
+        <p class="body-lg">Honest reflections from the founders, marketers, and product leaders we've worked with.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Testimonial 1 -->
+        <article class="testimonial-card reveal">
+          <div class="flex gap-1 mb-5">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="text-ink leading-relaxed mb-6">"Atelier & Co. didn't just redesign our website — they reshaped how we think about our brand. The work is stunning, but the strategy behind it is what truly moved the needle."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-full bg-brass/10 flex items-center justify-center font-display font-bold text-brass text-sm">CM</div>
+            <div>
+              <p class="font-medium text-sm">Clara Moreau</p>
+              <p class="text-stone text-xs">Founder, Maison Verre</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Testimonial 2 -->
+        <article class="testimonial-card reveal">
+          <div class="flex gap-1 mb-5">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="text-ink leading-relaxed mb-6">"The most detail-oriented team we've ever worked with. They caught edge cases our own engineers missed. Conversion is up 240% since launch."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-full bg-brass/10 flex items-center justify-center font-display font-bold text-brass text-sm">JL</div>
+            <div>
+              <p class="font-medium text-sm">James Lindqvist</p>
+              <p class="text-stone text-xs">CEO, Atlas Ventures</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Testimonial 3 -->
+        <article class="testimonial-card reveal">
+          <div class="flex gap-1 mb-5">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="text-ink leading-relaxed mb-6">"Working with them felt like adding a senior design team overnight. Fast, thoughtful, and genuinely invested in our success. We've since hired them for three more projects."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-full bg-brass/10 flex items-center justify-center font-display font-bold text-brass text-sm">SP</div>
+            <div>
+              <p class="font-medium text-sm">Sofia Patel</p>
+              <p class="text-stone text-xs">VP Product, Lumière</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA BANNER ========== -->
+  <section class="py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="cta-banner p-10 lg:p-20 reveal">
+        <div class="relative z-10 max-w-3xl">
+          <h2 class="display-lg text-cream mb-6">Let's build something<br />worth talking about.</h2>
+          <p class="text-cream/60 text-lg leading-relaxed mb-10 max-w-xl">Tell us about your project. We'll respond within one business day with honest thoughts on fit, timeline, and budget.</p>
+          <div class="flex flex-wrap gap-4">
+            <a href="#contact" class="btn-primary" style="background: var(--brass); border-color: var(--brass); color: var(--ink);">
+              Start a conversation
+              <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+            </a>
+            <a href="mailto:hello@atelierandco.studio" class="btn-outline" style="border-color: rgba(252,250,247,0.20); color: var(--cream);">
+              hello@atelierandco.studio
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section id="contact" class="py-24 lg:py-32 bg-sand">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="grid lg:grid-cols-2 gap-16">
+        <!-- Left info -->
+        <div class="reveal">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brass/8 border border-brass/15 mb-6">
+            <i data-lucide="mail" class="w-3.5 h-3.5 text-brass"></i>
+            <span class="text-xs font-medium tracking-wide text-stone">Get in touch</span>
+          </div>
+          <h2 class="display-lg mb-6">Tell us about<br />your project.</h2>
+          <p class="body-lg mb-10">Whether you have a detailed brief or just a rough idea, we'd love to hear from you. Fill in the form and we'll be in touch shortly.</p>
 
           <div class="space-y-6">
             <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <i data-lucide="map-pin" class="w-4 h-4 text-brass"></i>
+              <div class="w-12 h-12 rounded-xl bg-white border border-ink/5 flex items-center justify-center shrink-0">
+                <i data-lucide="mail" class="w-5 h-5 text-brass"></i>
               </div>
               <div>
-                <p class="font-display text-sm font-600 text-espresso">Address</p>
-                <p class="text-espresso/50 text-sm font-300">12 Rue Saint-Honoré, 75001 Paris, France</p>
+                <p class="font-medium text-sm mb-1">Email</p>
+                <a href="mailto:hello@atelierandco.studio" class="text-stone text-sm hover:text-brass transition-colors">hello@atelierandco.studio</a>
               </div>
             </div>
             <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <i data-lucide="clock" class="w-4 h-4 text-brass"></i>
+              <div class="w-12 h-12 rounded-xl bg-white border border-ink/5 flex items-center justify-center shrink-0">
+                <i data-lucide="map-pin" class="w-5 h-5 text-brass"></i>
               </div>
               <div>
-                <p class="font-display text-sm font-600 text-espresso">Hours</p>
-                <p class="text-espresso/50 text-sm font-300">Tue – Sat: 6:30pm – 10:30pm</p>
-                <p class="text-espresso/50 text-sm font-300">Sun: 12pm – 3pm (Brunch)</p>
-                <p class="text-espresso/50 text-sm font-300">Mon: Closed</p>
+                <p class="font-medium text-sm mb-1">Studio</p>
+                <p class="text-stone text-sm">12 Rue des Ateliers, 75011 Paris, France</p>
               </div>
             </div>
             <div class="flex items-start gap-4">
-              <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <i data-lucide="phone" class="w-4 h-4 text-brass"></i>
+              <div class="w-12 h-12 rounded-xl bg-white border border-ink/5 flex items-center justify-center shrink-0">
+                <i data-lucide="clock" class="w-5 h-5 text-brass"></i>
               </div>
               <div>
-                <p class="font-display text-sm font-600 text-espresso">Reservations</p>
-                <p class="text-espresso/50 text-sm font-300">+33 1 42 60 00 00</p>
+                <p class="font-medium text-sm mb-1">Response time</p>
+                <p class="text-stone text-sm">Within one business day</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Map placeholder / Image -->
-        <div class="section-reveal relative rounded-3xl overflow-hidden shadow-2xl shadow-espresso/10 aspect-[4/3] lg:aspect-square">
-          <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&q=80" alt="Exterior view of LUMIÈRE restaurant on a Paris street" class="w-full h-full object-cover" loading="lazy" />
-          <div class="absolute inset-0 bg-gradient-to-t from-espresso/30 via-transparent to-transparent" aria-hidden="true"></div>
-          <!-- Map pin overlay -->
-          <div class="absolute bottom-6 left-6 bg-ivory/90 backdrop-blur-xl rounded-2xl px-5 py-4 shadow-lg border border-brass/10">
-            <div class="flex items-center gap-3">
-              <i data-lucide="navigation" class="w-4 h-4 text-brass"></i>
-              <span class="font-display text-sm font-600 text-espresso">Get Directions</span>
-              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-espresso/40"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== RESERVATION ========== -->
-  <section id="reservation" class="py-24 lg:py-32 bg-espresso relative overflow-hidden">
-    <!-- Decorative glow -->
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-brass/10 blur-3xl" aria-hidden="true"></div>
-    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gold/8 blur-3xl" aria-hidden="true"></div>
-
-    <div class="relative max-w-7xl mx-auto px-6 lg:px-10">
-      <div class="grid lg:grid-cols-2 gap-16 items-start">
-        <!-- Copy -->
-        <div class="section-reveal">
-          <p class="section-tag mb-4 !text-brass-light">Reservations</p>
-          <h2 class="text-4xl sm:text-5xl lg:text-6xl font-800 text-cream leading-[1.1] mb-8">
-            Secure your<br><span class="text-brass italic font-600">table.</span>
-          </h2>
-          <p class="text-cream/50 leading-relaxed max-w-md mb-10 font-300">
-            We welcome reservations up to 30 days in advance. For parties of 7 or more, please contact us directly.
-          </p>
-
-          <div class="space-y-5">
-            <div class="flex items-center gap-3 text-cream/40 text-sm font-300">
-              <i data-lucide="check" class="w-4 h-4 text-brass"></i>
-              <span>Complimentary valet parking</span>
-            </div>
-            <div class="flex items-center gap-3 text-cream/40 text-sm font-300">
-              <i data-lucide="check" class="w-4 h-4 text-brass"></i>
-              <span>Dietary requirements accommodated</span>
-            </div>
-            <div class="flex items-center gap-3 text-cream/40 text-sm font-300">
-              <i data-lucide="check" class="w-4 h-4 text-brass"></i>
-              <span>Private dining available on request</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Form -->
-        <div class="section-reveal">
-          <form id="reservationForm" class="bg-ivory/5 backdrop-blur-sm rounded-3xl p-8 lg:p-10 border border-cream/10" novalidate>
-            <div class="grid sm:grid-cols-2 gap-5 mb-5">
-              <div>
-                <label for="resName" class="sr-only">Full name</label>
-                <input type="text" id="resName" name="name" class="form-input !bg-cream/5 !border-cream/15 !text-cream placeholder:!text-cream/30" placeholder="Full name" required />
-                <p class="error-msg" id="resNameError">Please enter your name</p>
+        <!-- Right form -->
+        <div class="reveal">
+          <form id="contactForm" class="bg-white rounded-3xl p-8 lg:p-10 shadow-xl border border-ink/5" novalidate>
+            <div class="space-y-5">
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="name" class="block text-sm font-medium mb-2">Full name</label>
+                  <input type="text" id="name" name="name" class="form-input" placeholder="Jane Doe" required aria-required="true" />
+                  <p class="error-msg" data-for="name">Please enter your name.</p>
+                </div>
+                <div>
+                  <label for="email" class="block text-sm font-medium mb-2">Email</label>
+                  <input type="email" id="email" name="email" class="form-input" placeholder="jane@company.com" required aria-required="true" />
+                  <p class="error-msg" data-for="email">Please enter a valid email.</p>
+                </div>
               </div>
-              <div>
-                <label for="resEmail" class="sr-only">Email address</label>
-                <input type="email" id="resEmail" name="email" class="form-input !bg-cream/5 !border-cream/15 !text-cream placeholder:!text-cream/30" placeholder="Email address" required />
-                <p class="error-msg" id="resEmailError">Please enter a valid email</p>
-              </div>
-            </div>
 
-            <div class="grid sm:grid-cols-2 gap-5 mb-5">
-              <div>
-                <label for="resPhone" class="sr-only">Phone number</label>
-                <input type="tel" id="resPhone" name="phone" class="form-input !bg-cream/5 !border-cream/15 !text-cream placeholder:!text-cream/30" placeholder="Phone number" />
-                <p class="error-msg" id="resPhoneError">Please enter a valid phone number</p>
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="phone" class="block text-sm font-medium mb-2">Phone <span class="text-stone font-normal">(optional)</span></label>
+                  <input type="tel" id="phone" name="phone" class="form-input" placeholder="+33 6 12 34 56 78" />
+                </div>
+                <div>
+                  <label for="service" class="block text-sm font-medium mb-2">Service</label>
+                  <select id="service" name="service" class="form-input" required aria-required="true">
+                    <option value="">Select a service</option>
+                    <option value="brand-identity">Brand Identity</option>
+                    <option value="web-design">Web Design</option>
+                    <option value="development">Development</option>
+                    <option value="product-design">Product Design</option>
+                    <option value="seo-growth">SEO & Growth</option>
+                    <option value="motion-3d">Motion & 3D</option>
+                  </select>
+                  <p class="error-msg" data-for="service">Please select a service.</p>
+                </div>
               </div>
+
               <div>
-                <label for="resGuests" class="sr-only">Number of guests</label>
-                <select id="resGuests" name="guests" class="form-input !bg-cream/5 !border-cream/15 !text-cream" required>
-                  <option value="" disabled selected>Guests</option>
-                  <option value="1">1 Guest</option>
-                  <option value="2">2 Guests</option>
-                  <option value="3">3 Guests</option>
-                  <option value="4">4 Guests</option>
-                  <option value="5">5 Guests</option>
-                  <option value="6">6 Guests</option>
-                  <option value="7+">7+ Guests</option>
+                <label for="budget" class="block text-sm font-medium mb-2">Budget range</label>
+                <select id="budget" name="budget" class="form-input" required aria-required="true">
+                  <option value="">Select budget range</option>
+                  <option value="under-10k">Under $10,000</option>
+                  <option value="10-25k">$10,000 – $25,000</option>
+                  <option value="25-50k">$25,000 – $50,000</option>
+                  <option value="50-100k">$50,000 – $100,000</option>
+                  <option value="over-100k">$100,000+</option>
                 </select>
-                <p class="error-msg" id="resGuestsError">Please select party size</p>
+                <p class="error-msg" data-for="budget">Please select a budget range.</p>
               </div>
-            </div>
 
-            <div class="grid sm:grid-cols-2 gap-5 mb-5">
               <div>
-                <label for="resDate" class="sr-only">Reservation date</label>
-                <input type="date" id="resDate" name="date" class="form-input !bg-cream/5 !border-cream/15 !text-cream" required />
-                <p class="error-msg" id="resDateError">Please select a date</p>
+                <label for="message" class="block text-sm font-medium mb-2">Project details</label>
+                <textarea id="message" name="message" rows="4" class="form-input resize-none" placeholder="Tell us about your project, timeline, and goals..." required aria-required="true"></textarea>
+                <p class="error-msg" data-for="message">Please tell us a bit about your project.</p>
               </div>
-              <div>
-                <label for="resTime" class="sr-only">Reservation time</label>
-                <select id="resTime" name="time" class="form-input !bg-cream/5 !border-cream/15 !text-cream" required>
-                  <option value="" disabled selected>Time</option>
-                  <option value="18:30">6:30 PM</option>
-                  <option value="19:00">7:00 PM</option>
-                  <option value="19:30">7:30 PM</option>
-                  <option value="20:00">8:00 PM</option>
-                  <option value="20:30">8:30 PM</option>
-                  <option value="21:00">9:00 PM</option>
-                  <option value="21:30">9:30 PM</option>
-                  <option value="22:00">10:00 PM</option>
-                </select>
-                <p class="error-msg" id="resTimeError">Please select a time</p>
-              </div>
-            </div>
 
-            <div class="mb-8">
-              <label for="resNotes" class="sr-only">Special requests</label>
-              <textarea id="resNotes" name="notes" rows="3" class="form-input !bg-cream/5 !border-cream/15 !text-cream placeholder:!text-cream/30 resize-none" placeholder="Special requests or dietary requirements"></textarea>
-            </div>
-
-            <button type="submit" class="btn-primary w-full justify-center !bg-brass !border-brass hover:!bg-transparent hover:!text-brass">
-              Confirm Reservation
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </button>
-
-            <!-- Success state -->
-            <div id="formSuccess" class="success-check mt-6 items-center gap-3 text-brass">
-              <i data-lucide="check-circle-2" class="w-5 h-5"></i>
-              <span class="font-display text-sm font-600">Reservation confirmed. We'll be in touch shortly.</span>
+              <button type="submit" class="btn-primary w-full justify-center text-base py-4">
+                Send enquiry
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
             </div>
           </form>
+
+          <!-- Success message -->
+          <div id="successMessage" class="success-message bg-white rounded-3xl p-10 shadow-xl border border-ink/5">
+            <div class="w-16 h-16 rounded-full bg-brass/10 flex items-center justify-center mx-auto mb-6">
+              <i data-lucide="check" class="w-8 h-8 text-brass"></i>
+            </div>
+            <h3 class="font-display font-semibold text-2xl mb-3">Message sent</h3>
+            <p class="text-stone text-sm leading-relaxed max-w-sm mx-auto">Thank you for reaching out. We've received your enquiry and will respond within one business day.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ========== FOOTER ========== -->
-  <footer class="bg-charcoal text-cream/60 pt-20 pb-10">
+  <footer class="bg-ink text-cream pt-20 pb-10">
     <div class="max-w-7xl mx-auto px-6 lg:px-10">
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
+      <div class="grid lg:grid-cols-12 gap-12 pb-16 border-b border-cream/10">
         <!-- Brand -->
-        <div class="lg:col-span-1">
-          <a href="#" class="font-display text-2xl font-800 text-cream tracking-tight">LUMIÈRE<span class="text-brass">.</span></a>
-          <p class="text-sm leading-relaxed mt-4 max-w-xs font-300">
-            Modern French dining in the heart of Paris. A place where taste meets artistry.
-          </p>
-          <div class="flex gap-3 mt-6">
-            <a href="#" class="w-9 h-9 rounded-full border border-cream/10 flex items-center justify-center hover:border-brass/40 hover:text-brass transition-all duration-300" aria-label="Instagram">
+        <div class="lg:col-span-4">
+          <div class="flex items-center gap-2.5 mb-6">
+            <div class="w-9 h-9 rounded-xl bg-brass flex items-center justify-center">
+              <span class="text-ink font-display font-bold text-sm">A</span>
+            </div>
+            <span class="font-display font-bold text-xl">Atelier <span class="text-brass">&</span> Co.</span>
+          </div>
+          <p class="text-cream/50 text-sm leading-relaxed max-w-xs mb-6">A design and engineering studio building brands, websites, and products for ambitious companies.</p>
+          <div class="flex gap-3">
+            <a href="#" class="w-10 h-10 rounded-full border border-cream/15 flex items-center justify-center hover:bg-brass hover:border-brass hover:text-ink transition-all duration-300" aria-label="Dribbble">
+              <i data-lucide="dribbble" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-cream/15 flex items-center justify-center hover:bg-brass hover:border-brass hover:text-ink transition-all duration-300" aria-label="Instagram">
               <i data-lucide="instagram" class="w-4 h-4"></i>
             </a>
-            <a href="#" class="w-9 h-9 rounded-full border border-cream/10 flex items-center justify-center hover:border-brass/40 hover:text-brass transition-all duration-300" aria-label="Facebook">
-              <i data-lucide="facebook" class="w-4 h-4"></i>
+            <a href="#" class="w-10 h-10 rounded-full border border-cream/15 flex items-center justify-center hover:bg-brass hover:border-brass hover:text-ink transition-all duration-300" aria-label="LinkedIn">
+              <i data-lucide="linkedin" class="w-4 h-4"></i>
             </a>
-            <a href="#" class="w-9 h-9 rounded-full border border-cream/10 flex items-center justify-center hover:border-brass/40 hover:text-brass transition-all duration-300" aria-label="Twitter">
+            <a href="#" class="w-10 h-10 rounded-full border border-cream/15 flex items-center justify-center hover:bg-brass hover:border-brass hover:text-ink transition-all duration-300" aria-label="Twitter / X">
               <i data-lucide="twitter" class="w-4 h-4"></i>
             </a>
           </div>
         </div>
 
-        <!-- Explore -->
-        <div>
-          <h4 class="font-display text-sm font-600 text-cream tracking-wide uppercase mb-5">Explore</h4>
+        <!-- Links -->
+        <div class="lg:col-span-2">
+          <h4 class="font-display font-semibold text-sm mb-5">Studio</h4>
           <ul class="space-y-3">
-            <li><a href="#menu" class="text-sm hover:text-brass transition-colors duration-300 font-300">Menu</a></li>
-            <li><a href="#gallery" class="text-sm hover:text-brass transition-colors duration-300 font-300">Gallery</a></li>
-            <li><a href="#reviews" class="text-sm hover:text-brass transition-colors duration-300 font-300">Reviews</a></li>
-            <li><a href="#location" class="text-sm hover:text-brass transition-colors duration-300 font-300">Location</a></li>
+            <li><a href="#services" class="text-cream/50 text-sm hover:text-brass transition-colors">Services</a></li>
+            <li><a href="#work" class="text-cream/50 text-sm hover:text-brass transition-colors">Work</a></li>
+            <li><a href="#about" class="text-cream/50 text-sm hover:text-brass transition-colors">About</a></li>
+            <li><a href="#testimonials" class="text-cream/50 text-sm hover:text-brass transition-colors">Testimonials</a></li>
           </ul>
         </div>
 
-        <!-- Visit -->
-        <div>
-          <h4 class="font-display text-sm font-600 text-cream tracking-wide uppercase mb-5">Visit</h4>
-          <ul class="space-y-3 text-sm font-300">
-            <li>12 Rue Saint-Honoré</li>
-            <li>75001 Paris, France</li>
-            <li class="pt-2">+33 1 42 60 00 00</li>
-            <li>bonjour@lumiere.paris</li>
+        <div class="lg:col-span-2">
+          <h4 class="font-display font-semibold text-sm mb-5">Services</h4>
+          <ul class="space-y-3">
+            <li><a href="#services" class="text-cream/50 text-sm hover:text-brass transition-colors">Brand Identity</a></li>
+            <li><a href="#services" class="text-cream/50 text-sm hover:text-brass transition-colors">Web Design</a></li>
+            <li><a href="#services" class="text-cream/50 text-sm hover:text-brass transition-colors">Development</a></li>
+            <li><a href="#services" class="text-cream/50 text-sm hover:text-brass transition-colors">Product Design</a></li>
           </ul>
         </div>
 
-        <!-- Hours -->
-        <div>
-          <h4 class="font-display text-sm font-600 text-cream tracking-wide uppercase mb-5">Hours</h4>
-          <ul class="space-y-3 text-sm font-300">
-            <li>Tue – Sat: 6:30pm – 10:30pm</li>
-            <li>Sun: 12pm – 3pm</li>
-            <li>Monday: Closed</li>
+        <div class="lg:col-span-2">
+          <h4 class="font-display font-semibold text-sm mb-5">Contact</h4>
+          <ul class="space-y-3">
+            <li><a href="mailto:hello@atelierandco.studio" class="text-cream/50 text-sm hover:text-brass transition-colors">hello@atelierandco.studio</a></li>
+            <li><a href="tel:+33612345678" class="text-cream/50 text-sm hover:text-brass transition-colors">+33 6 12 34 56 78</a></li>
+            <li><a href="#contact" class="text-cream/50 text-sm hover:text-brass transition-colors">Start a project</a></li>
           </ul>
-          <a href="#reservation" class="inline-flex items-center gap-2 mt-5 text-brass text-sm font-500 hover:gap-3 transition-all duration-300">
-            Reserve a Table <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-          </a>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="lg:col-span-2">
+          <h4 class="font-display font-semibold text-sm mb-5">Newsletter</h4>
+          <p class="text-cream/40 text-xs leading-relaxed mb-4">Occasional notes on design, craft, and the studio.</p>
+          <form class="flex gap-2" onsubmit="event.preventDefault(); this.reset(); this.querySelector('button').innerHTML = '<i data-lucide=\'check\' class=\'w-4 h-4\'></i>'; lucide.createIcons();">
+            <input type="email" placeholder="Email" required class="flex-1 bg-cream/5 border border-cream/10 rounded-full px-4 py-2.5 text-xs text-cream placeholder:text-cream/30 focus:outline-none focus:border-brass transition-colors" aria-label="Email address for newsletter" />
+            <button type="submit" class="w-10 h-10 rounded-full bg-brass flex items-center justify-center text-ink hover:bg-brass-light transition-colors shrink-0" aria-label="Subscribe">
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </form>
         </div>
       </div>
 
-      <!-- Bottom bar -->
-      <div class="border-t border-cream/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <p class="text-xs text-cream/30 font-300">&copy; 2025 LUMIÈRE. All rights reserved.</p>
-        <div class="flex gap-6 text-xs text-cream/30 font-300">
-          <a href="#" class="hover:text-brass transition-colors duration-300">Privacy Policy</a>
-          <a href="#" class="hover:text-brass transition-colors duration-300">Terms of Service</a>
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-8">
+        <p class="text-cream/30 text-xs">© 2025 Atelier & Co. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="text-cream/30 text-xs hover:text-brass transition-colors">Privacy Policy</a>
+          <a href="#" class="text-cream/30 text-xs hover:text-brass transition-colors">Terms of Service</a>
+          <a href="#" class="text-cream/30 text-xs hover:text-brass transition-colors">Cookies</a>
         </div>
       </div>
     </div>
@@ -885,285 +1051,226 @@
 
   <!-- ========== SCRIPTS ========== -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize Lucide icons
-      lucide.createIcons();
+    // Initialize Lucide icons
+    lucide.createIcons();
 
-      // === Navbar scroll effect ===
-      const navbar = document.getElementById('navbar');
-      window.addEventListener('scroll', function() {
-        if (window.scrollY > 40) {
-          navbar.classList.add('scrolled');
-        } else {
-          navbar.classList.remove('scrolled');
-        }
+    // ========== Header scroll behavior ==========
+    const header = document.getElementById('header');
+    const headerInner = document.getElementById('headerInner');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (y > 40) {
+        header.classList.add('header-scrolled');
+        headerInner.classList.remove('h-20', 'lg:h-24');
+        headerInner.classList.add('h-16', 'lg:h-20');
+      } else {
+        header.classList.remove('header-scrolled');
+        headerInner.classList.remove('h-16', 'lg:h-20');
+        headerInner.classList.add('h-20', 'lg:h-24');
+      }
+      lastScroll = y;
+    }, { passive: true });
+
+    // ========== Mobile menu ==========
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobileClose = document.getElementById('mobileClose');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      mobileToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      mobileToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    mobileToggle.addEventListener('click', openMenu);
+    mobileClose.addEventListener('click', closeMenu);
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // ========== GSAP Animations ==========
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero animations
+    const heroTl = gsap.timeline({ delay: 0.3 });
+
+    heroTl.from('#heroBadge', { opacity: 0, y: 20, duration: 0.6, ease: 'power3.out' })
+      .from('.hero-line', {
+        y: '100%',
+        duration: 0.9,
+        stagger: 0.12,
+        ease: 'power4.out',
+      }, '-=0.3')
+      .to('#heroSub', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
+      .to('#heroCta', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.4')
+      .to('#heroVisual', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, '-=0.7')
+      .to('#scrollIndicator', { opacity: 1, duration: 0.6 }, '-=0.3');
+
+    // Hero sub/cta initial state
+    gsap.set('#heroSub', { y: 30 });
+    gsap.set('#heroCta', { y: 30 });
+    gsap.set('#heroVisual', { y: 40 });
+
+    // Reveal animations
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          toggleActions: 'play none none none',
+        },
+        delay: (i % 3) * 0.1,
       });
+    });
 
-      // === Mobile menu ===
-      const menuToggle = document.getElementById('menuToggle');
-      const mobileMenu = document.getElementById('mobileMenu');
-      const mobileLinks = document.querySelectorAll('.mobile-link');
-      let menuOpen = false;
+    // ========== Form validation ==========
+    const form = document.getElementById('contactForm');
+    const successMessage = document.getElementById('successMessage');
 
-      function toggleMenu() {
-        menuOpen = !menuOpen;
-        mobileMenu.classList.toggle('open', menuOpen);
-        menuToggle.setAttribute('aria-expanded', menuOpen);
-        mobileMenu.setAttribute('aria-hidden', !menuOpen);
-        menuToggle.innerHTML = menuOpen 
-          ? '<i data-lucide="x" class="w-6 h-6"></i>' 
-          : '<i data-lucide="menu" class="w-6 h-6"></i>';
-        lucide.createIcons();
-        document.body.style.overflow = menuOpen ? 'hidden' : '';
+    function showError(field, show) {
+      const errorMsg = document.querySelector(`.error-msg[data-for="${field.id}"]`);
+      if (show) {
+        field.classList.add('error');
+        if (errorMsg) errorMsg.classList.add('visible');
+      } else {
+        field.classList.remove('error');
+        if (errorMsg) errorMsg.classList.remove('visible');
+      }
+    }
+
+    function validateField(field) {
+      let valid = true;
+      const value = field.value.trim();
+
+      if (field.hasAttribute('required') && !value) {
+        valid = false;
+      } else if (field.type === 'email' && value) {
+        valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
       }
 
-      menuToggle.addEventListener('click', toggleMenu);
-      mobileLinks.forEach(function(link) {
-        link.addEventListener('click', function() {
-          if (menuOpen) toggleMenu();
-        });
+      showError(field, !valid);
+      return valid;
+    }
+
+    // Real-time validation on blur
+    form.querySelectorAll('input, select, textarea').forEach(field => {
+      field.addEventListener('blur', () => validateField(field));
+      field.addEventListener('input', () => {
+        if (field.classList.contains('error')) validateField(field);
+      });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      let allValid = true;
+      form.querySelectorAll('input, select, textarea').forEach(field => {
+        if (!validateField(field)) allValid = false;
       });
 
-      // === Custom cursor ===
-      const cursorDot = document.querySelector('.cursor-dot');
-      const cursorRing = document.querySelector('.cursor-ring');
-      let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-
-      if (cursorDot && cursorRing && window.matchMedia('(pointer: fine)').matches) {
-        document.addEventListener('mousemove', function(e) {
-          mouseX = e.clientX;
-          mouseY = e.clientY;
-          cursorDot.style.left = (mouseX - 3) + 'px';
-          cursorDot.style.top = (mouseY - 3) + 'px';
-        });
-
-        function animateRing() {
-          ringX += (mouseX - ringX) * 0.12;
-          ringY += (mouseY - ringY) * 0.12;
-          cursorRing.style.left = ringX + 'px';
-          cursorRing.style.top = ringY + 'px';
-          requestAnimationFrame(animateRing);
-        }
-        animateRing();
-
-        // Hover effect on interactive elements
-        const interactiveEls = document.querySelectorAll('a, button, .gallery-item, .menu-item, input, select, textarea');
-        interactiveEls.forEach(function(el) {
-          el.addEventListener('mouseenter', function() { cursorRing.classList.add('hovering'); });
-          el.addEventListener('mouseleave', function() { cursorRing.classList.remove('hovering'); });
-        });
+      if (!allValid) {
+        const firstError = form.querySelector('.error');
+        if (firstError) firstError.focus();
+        return;
       }
 
-      // === Scroll reveal ===
-      const revealElements = document.querySelectorAll('.section-reveal');
-      const fadeElements = document.querySelectorAll('.fade-up');
+      // Collect form data
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
 
-      const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+      // Submit button loading state
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalContent = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="inline-block w-5 h-5 border-2 border-cream/30 border-t-cream rounded-full animate-spin"></span>';
+      submitBtn.disabled = true;
 
-      revealElements.forEach(function(el) { observer.observe(el); });
-      fadeElements.forEach(function(el) { observer.observe(el); });
-
-      // === 3D Tilt on cards ===
-      const tiltCards = document.querySelectorAll('.tilt-card');
-      tiltCards.forEach(function(card) {
-        const inner = card.querySelector('.tilt-card-inner');
-        if (!inner) return;
-        card.addEventListener('mousemove', function(e) {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          const rotateX = ((y - centerY) / centerY) * -6;
-          const rotateY = ((x - centerX) / centerX) * 6;
-          inner.style.transform = 'rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
-        });
-        card.addEventListener('mouseleave', function() {
-          inner.style.transform = 'rotateX(0) rotateY(0)';
-        });
-      });
-
-      // === GSAP ScrollTrigger for parallax ===
-      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-        gsap.registerPlugin(ScrollTrigger);
-
-        // Hero image subtle parallax
-        const heroImg = document.querySelector('#hero .rounded-3xl img');
-        if (heroImg) {
-          gsap.to(heroImg, {
-            yPercent: -8,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: '#hero',
-              start: 'top top',
-              end: 'bottom top',
-              scrub: true
-            }
-          });
-        }
-
-        // Floating badge subtle move
-        const badge = document.querySelector('#hero .absolute.-bottom-6');
-        if (badge) {
-          gsap.to(badge, {
-            y: -20,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: '#hero',
-              start: 'top top',
-              end: 'bottom top',
-              scrub: true
-            }
-          });
-        }
-      }
-
-      // === Reservation Form ===
-      const form = document.getElementById('reservationForm');
-      const successEl = document.getElementById('formSuccess');
-
-      // Set min date to today
-      const dateInput = document.getElementById('resDate');
-      if (dateInput) {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        dateInput.min = yyyy + '-' + mm + '-' + dd;
-      }
-
-      function validateField(id, errorId, condition) {
-        const field = document.getElementById(id);
-        const error = document.getElementById(errorId);
-        if (condition) {
-          field.classList.add('error');
-          error.classList.add('show');
-          return false;
-        } else {
-          field.classList.remove('error');
-          error.classList.remove('show');
-          return true;
-        }
-      }
-
-      // Real-time validation
-      const nameInput = document.getElementById('resName');
-      const emailInput = document.getElementById('resEmail');
-      const phoneInput = document.getElementById('resPhone');
-      const guestsInput = document.getElementById('resGuests');
-      const timeInput = document.getElementById('resTime');
-
-      nameInput.addEventListener('blur', function() {
-        validateField('resName', 'resNameError', this.value.trim().length < 2);
-      });
-      emailInput.addEventListener('blur', function() {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        validateField('resEmail', 'resEmailError', !emailRegex.test(this.value.trim()));
-      });
-      phoneInput.addEventListener('blur', function() {
-        if (this.value.trim() === '') return;
-        const phoneRegex = /^[\d\s\-()+]{7,}$/;
-        validateField('resPhone', 'resPhoneError', !phoneRegex.test(this.value.trim()));
-      });
-      guestsInput.addEventListener('change', function() {
-        validateField('resGuests', 'resGuestsError', this.value === '');
-      });
-      timeInput.addEventListener('change', function() {
-        validateField('resTime', 'resTimeError', this.value === '');
-      });
-      dateInput.addEventListener('change', function() {
-        validateField('resDate', 'resDateError', this.value === '');
-      });
-
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        let isValid = true;
-
-        if (!validateField('resName', 'resNameError', nameInput.value.trim().length < 2)) isValid = false;
-        if (!validateField('resEmail', 'resEmailError', !emailRegex.test(emailInput.value.trim()))) isValid = false;
-        if (phoneInput.value.trim() !== '') {
-          const phoneRegex = /^[\d\s\-()+]{7,}$/;
-          if (!validateField('resPhone', 'resPhoneError', !phoneRegex.test(phoneInput.value.trim()))) isValid = false;
-        }
-        if (!validateField('resGuests', 'resGuestsError', guestsInput.value === '')) isValid = false;
-        if (!validateField('resDate', 'resDateError', dateInput.value === '')) isValid = false;
-        if (!validateField('resTime', 'resTimeError', timeInput.value === '')) isValid = false;
-
-        if (!isValid) {
-          // Scroll to first error
-          const firstError = form.querySelector('.error');
-          if (firstError) firstError.focus();
-          return;
-        }
-
-        // Collect form data
-        const formData = {
-          name: nameInput.value.trim(),
-          email: emailInput.value.trim(),
-          phone: phoneInput.value.trim(),
-          guests: guestsInput.value,
-          date: dateInput.value,
-          time: timeInput.value,
-          notes: document.getElementById('resNotes').value.trim()
-        };
-
-        // Submit to backend (placeholder)
-        /* TODO: connect form action to backend endpoint */
-        fetch('submit', {
+      try {
+        // TODO: connect form action to backend endpoint
+        const response = await fetch('submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           cache: 'no-store',
           body: JSON.stringify({
             url: window.location.host,
-            table: 'reservations',
-            data: formData
-          })
-        })
-        .then(function(response) {
-          if (response.ok) {
-            // Show success
-            form.querySelector('button[type="submit"]').style.display = 'none';
-            successEl.classList.add('show');
-            lucide.createIcons();
-          } else {
-            throw new Error('Server error');
-          }
-        })
-        .catch(function(error) {
-          // For static demo, show success anyway
-          form.querySelector('button[type="submit"]').style.display = 'none';
-          successEl.classList.add('show');
-          lucide.createIcons();
+            table: 'contact_enquiries',
+            data: data,
+          }),
         });
-      });
 
-      // === Smooth scroll for anchor links (respecting reduced motion) ===
-      document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-        anchor.addEventListener('click', function(e) {
-          const href = this.getAttribute('href');
-          if (href === '#') return;
-          const target = document.querySelector(href);
-          if (target) {
-            e.preventDefault();
-            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            target.scrollIntoView({
-              behavior: prefersReducedMotion ? 'auto' : 'smooth',
-              block: 'start'
-            });
-          }
-        });
-      });
-
+        // Show success regardless (static demo)
+        form.style.display = 'none';
+        successMessage.classList.add('visible');
+        lucide.createIcons();
+      } catch (error) {
+        // Even on network error (static file), show success for demo
+        form.style.display = 'none';
+        successMessage.classList.add('visible');
+        lucide.createIcons();
+      }
     });
+
+    // ========== Smooth anchor scrolling ==========
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // ========== Float animation keyframes ==========
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-12px); }
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      .animate-spin { animation: spin 0.8s linear infinite; }
+    `;
+    document.head.appendChild(style);
+
+    // ========== Hero visual tilt on mouse move ==========
+    const heroVisual = document.getElementById('heroVisual');
+    if (heroVisual && window.innerWidth > 1024) {
+      const mainCard = heroVisual.querySelector('.rounded-3xl');
+      heroVisual.addEventListener('mousemove', (e) => {
+        const rect = heroVisual.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        gsap.to(mainCard, {
+          rotationY: -6 + x * 8,
+          rotationX: 4 - y * 6,
+          duration: 0.6,
+          ease: 'power2.out',
+        });
+      });
+      heroVisual.addEventListener('mouseleave', () => {
+        gsap.to(mainCard, {
+          rotationY: -6,
+          rotationX: 4,
+          duration: 0.8,
+          ease: 'power3.out',
+        });
+      });
+    }
   </script>
 </body>
 </html>
