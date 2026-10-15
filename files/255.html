@@ -3,1021 +3,896 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PixelCraft · Master Photoshop</title>
-
-  <!-- Tailwind via CDN + config -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            canvas: '#F8F9FC',
-            ink: '#1A1D26',
-            muted: '#5A5F6E',
-            accent: '#2A6FDB',
-            'accent-soft': '#E8F0FE',
-            hairline: '#E9ECF0',
-            brass: '#B8875C',
-          },
-          fontFamily: {
-            display: ['"Bricolage Grotesque"', 'serif'],
-            sans: ['Inter', 'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
-
-  <!-- Google Fonts -->
+  <title>Studio Meridian — Bespoke WordPress atelier</title>
+  <!-- Google Fonts: Instrument Serif + Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
-
-  <!-- Lucide Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS via jsDelivr (Play CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- Lucide icons via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
   <style>
-    /* === Design Tokens === */
+    /* ===== Design Tokens ===== */
     :root {
-      --ink: #1A1D26;
-      --muted: #5A5F6E;
-      --accent: #2A6FDB;
-      --accent-soft: #E8F0FE;
-      --canvas: #F8F9FC;
-      --surface: #FFFFFF;
-      --hairline: #E9ECF0;
-      --brass: #B8875C;
-      --focus-ring: 0 0 0 4px rgba(42, 111, 219, 0.25);
-      --radius-lg: 24px;
-      --radius-md: 18px;
-      --radius-sm: 12px;
-      --shadow-soft: 0 20px 40px -12px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.02);
-      --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.02), 0 12px 32px -8px rgba(0, 0, 0, 0.04);
+      --ink: #191919;
+      --ink-light: #3d3d3d;
+      --cream: #faf9f8;
+      --paper: #ffffff;
+      --accent: #b8865b;
+      --accent-soft: #e6d9ce;
+      --hairline: rgba(0,0,0,0.06);
+      --shadow-card: 0 24px 48px -16px rgba(0,0,0,0.06), 0 8px 24px -8px rgba(0,0,0,0.03);
+      --shadow-float: 0 40px 72px -24px rgba(0,0,0,0.12), 0 12px 32px -12px rgba(0,0,0,0.05);
+      --radius-xl: 2rem;
+      --radius-lg: 1.5rem;
+      --radius-md: 1rem;
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
     }
 
-    /* === Base & Typography === */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    /* ===== Base & Reset ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
     body {
-      background: var(--canvas);
+      background-color: var(--cream);
       color: var(--ink);
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-body);
       font-weight: 400;
       line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
     }
-    h1, h2, h3, h4 {
-      font-family: 'Bricolage Grotesque', serif;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-    }
-    .font-display { font-family: 'Bricolage Grotesque', serif; }
+    ::selection { background: var(--accent-soft); color: var(--ink); }
+
+    /* ===== Typography ===== */
+    .font-display { font-family: var(--font-display); }
+    h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.02em; line-height: 1.1; }
+    h1 { font-size: clamp(3rem, 8vw, 6rem); }
+    h2 { font-size: clamp(2.2rem, 5vw, 3.8rem); }
+    h3 { font-size: clamp(1.5rem, 3vw, 2.2rem); }
     .text-balance { text-wrap: balance; }
+    .text-soft { color: var(--ink-light); }
 
-    /* === Custom Components === */
-    .container-lux {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 24px;
+    /* ===== Custom Utilities ===== */
+    .container-lux { max-width: 1280px; margin-left: auto; margin-right: auto; padding-left: 1.5rem; padding-right: 1.5rem; }
+    @media (min-width: 768px) { .container-lux { padding-left: 2.5rem; padding-right: 2.5rem; } }
+    .hairline { border: 1px solid var(--hairline); }
+    .card-lux {
+      background: var(--paper);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(255,255,255,0.6);
+      transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.4s ease;
     }
-    @media (min-width: 1024px) {
-      .container-lux { padding: 0 40px; }
-    }
-
-    /* Glass surface */
+    .card-lux:hover { transform: translateY(-6px); box-shadow: var(--shadow-float); }
     .glass-panel {
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255,255,255,0.7);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255,255,255,0.8);
     }
 
-    /* Buttons */
+    /* ===== Animations ===== */
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0px); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+    .reveal { opacity: 0; transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.9, 0.3, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-up { transform: translateY(32px); }
+    .reveal-scale { transform: scale(0.96); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .hover-lift { transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.3s ease; }
+    .hover-lift:hover { transform: translateY(-3px); }
+
+    /* ===== Header ===== */
+    .header-sticky {
+      position: fixed;
+      top: 0; left: 0; right: 0; z-index: 100;
+      transition: background 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease, padding 0.3s ease;
+      padding: 1.25rem 0;
+    }
+    .header-sticky.scrolled {
+      background: rgba(250, 249, 248, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+      padding: 0.75rem 0;
+    }
+    .nav-link {
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink-light);
+      transition: color 0.2s ease;
+      text-decoration: none;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; left: 0; bottom: -4px; width: 0; height: 1.5px; background: var(--accent);
+      transition: width 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link:hover::after { width: 100%; }
+
+    /* ===== Buttons ===== */
     .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--accent);
-      color: #fff;
-      font-weight: 600;
-      font-size: 0.95rem;
-      padding: 0.75rem 1.75rem;
-      border-radius: 60px;
-      transition: all 0.2s ease-out;
-      border: 1px solid transparent;
-      box-shadow: 0 8px 20px -8px rgba(42, 111, 219, 0.4);
-      text-decoration: none;
-      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: var(--ink); color: #fff; font-weight: 500; font-size: 0.95rem;
+      padding: 0.85rem 1.8rem; border-radius: 999px; border: none; cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    .btn-primary:hover {
-      background: #1E5BC4;
-      box-shadow: 0 12px 28px -8px rgba(42, 111, 219, 0.5);
-      transform: translateY(-1px);
+    .btn-primary:hover { background: #2a2a2a; transform: translateY(-2px); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.2); }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn-outline {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: transparent; color: var(--ink); font-weight: 500; font-size: 0.95rem;
+      padding: 0.85rem 1.8rem; border-radius: 999px; border: 1.5px solid rgba(0,0,0,0.12); cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
     }
-    .btn-primary:active { transform: scale(0.98); }
-    .btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; box-shadow: var(--focus-ring); }
+    .btn-outline:hover { border-color: var(--ink); background: rgba(0,0,0,0.02); transform: translateY(-2px); }
+    .btn-outline:active { transform: translateY(0) scale(0.98); }
+    .btn-icon { display: inline-flex; align-items: center; gap: 0.4rem; }
 
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: transparent;
-      color: var(--ink);
-      font-weight: 600;
-      font-size: 0.95rem;
-      padding: 0.75rem 1.75rem;
-      border-radius: 60px;
-      border: 1.5px solid var(--hairline);
-      transition: all 0.2s ease-out;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .btn-secondary:hover {
-      border-color: var(--accent);
-      background: rgba(42, 111, 219, 0.04);
-      transform: translateY(-1px);
-    }
-    .btn-secondary:active { transform: scale(0.98); }
-    .btn-secondary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    /* ===== Focus / Accessibility ===== */
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
 
-    /* Cards */
-    .card-lux {
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--hairline);
-      box-shadow: var(--shadow-card);
-      transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
-    }
-    .card-lux:hover {
-      box-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.08), 0 8px 16px -4px rgba(0, 0, 0, 0.02);
-      transform: translateY(-4px);
-    }
-
-    /* Gradient accent */
-    .gradient-bg {
-      background: radial-gradient(circle at 30% 20%, rgba(42, 111, 219, 0.06), transparent 50%),
-                  radial-gradient(circle at 80% 70%, rgba(184, 135, 92, 0.04), transparent 50%);
-    }
-
-    /* Section spacing */
-    .section-pad { padding: 96px 0; }
-    @media (min-width: 1024px) { .section-pad { padding: 128px 0; } }
-
-    /* Hairline */
-    .hairline-top { border-top: 1px solid var(--hairline); }
-    .hairline-bottom { border-bottom: 1px solid var(--hairline); }
-
-    /* Inputs */
+    /* ===== Form ===== */
     .input-lux {
-      width: 100%;
-      padding: 0.875rem 1.25rem;
-      border-radius: var(--radius-sm);
-      border: 1.5px solid var(--hairline);
-      background: var(--surface);
-      font-size: 0.95rem;
-      color: var(--ink);
-      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%; padding: 1rem 1.25rem; border-radius: var(--radius-md);
+      border: 1px solid rgba(0,0,0,0.08); background: var(--paper);
+      font-family: var(--font-body); font-size: 0.95rem; color: var(--ink);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-    .input-lux:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(42, 111, 219, 0.08);
-    }
-    .input-lux.error { border-color: #E03E3E; }
-    .error-msg { color: #E03E3E; font-size: 0.8rem; margin-top: 4px; display: none; }
+    .input-lux:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(184, 134, 91, 0.12); outline: none; }
+    .input-lux.error { border-color: #d94f4f; box-shadow: 0 0 0 4px rgba(217, 79, 79, 0.08); }
+    .error-msg { color: #d94f4f; font-size: 0.8rem; margin-top: 0.35rem; display: none; }
     .error-msg.show { display: block; }
 
-    /* Scroll reveal */
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.8s cubic-bezier(0.2, 0, 0, 1), transform 0.8s cubic-bezier(0.2, 0, 0, 1);
+    /* ===== Marquee / ticker ===== */
+    .marquee-wrap { overflow: hidden; white-space: nowrap; }
+    .marquee-track { display: inline-block; animation: marquee 32s linear infinite; }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .marquee-item { display: inline-flex; align-items: center; gap: 0.75rem; margin: 0 2rem; font-size: 0.95rem; color: var(--ink-light); font-weight: 400; }
+
+    /* ===== Gradient / glow accents ===== */
+    .radial-glow {
+      position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.25; pointer-events: none; z-index: 0;
     }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .glow-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(184,134,91,0.3) 0%, transparent 70%); top: -200px; right: -150px; }
+    .glow-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(180,200,220,0.3) 0%, transparent 70%); bottom: -100px; left: -100px; }
 
-    /* Split text animation */
-    .split-text .word { display: inline-block; overflow: hidden; }
-    .split-text .word span { display: inline-block; transform: translateY(110%); transition: transform 0.9s cubic-bezier(0.2, 0, 0, 1); }
-    .split-text.visible .word span { transform: translateY(0); }
-
-    /* Ticker */
-    .ticker-wrap { overflow: hidden; }
-    .ticker-track { display: flex; gap: 3rem; animation: ticker 30s linear infinite; width: max-content; }
-    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-    /* Cursor follow glow (subtle) */
-    .glow-dot {
-      position: fixed;
-      width: 400px;
-      height: 400px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(42, 111, 219, 0.04), transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-      transition: transform 0.15s ease-out;
-      will-change: transform;
+    /* ===== Pricing emphasis ===== */
+    .pricing-featured { border: 1.5px solid var(--accent); position: relative; background: var(--paper); }
+    .pricing-badge {
+      position: absolute; top: -0.75rem; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: #fff; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 0.35rem 1rem; border-radius: 999px; white-space: nowrap;
     }
 
-    /* Divider */
-    .divider-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; }
+    /* ===== Toggle switch ===== */
+    .toggle-switch { position: relative; display: inline-flex; background: rgba(0,0,0,0.04); border-radius: 999px; padding: 3px; }
+    .toggle-btn {
+      padding: 0.5rem 1.5rem; border-radius: 999px; font-size: 0.85rem; font-weight: 500;
+      border: none; background: transparent; cursor: pointer; color: var(--ink-light);
+      transition: all 0.3s ease; font-family: var(--font-body);
+    }
+    .toggle-btn.active { background: var(--paper); color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 
-    /* Pricing emphasis */
-    .pricing-featured {
-      border: 1.5px solid var(--accent);
-      background: linear-gradient(180deg, rgba(42, 111, 219, 0.02) 0%, rgba(255, 255, 255, 1) 30%);
-      position: relative;
-      overflow: hidden;
-    }
-    .pricing-featured::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent), #7BA9F5);
-    }
+    /* ===== Custom scrollbar ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: #d4d0cb; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #b8b4af; }
 
-    /* Success check */
-    .success-check {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      color: #16A34A;
-      font-weight: 500;
-      padding: 12px 16px;
-      background: #F0FDF4;
-      border-radius: var(--radius-sm);
-      border: 1px solid #BBF7D0;
+    /* ===== Mobile menu ===== */
+    .mobile-menu {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 200;
+      background: rgba(250, 249, 248, 0.98); backdrop-filter: blur(24px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+      opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
     }
-    .success-check.show { display: flex; }
+    .mobile-menu.open { opacity: 1; pointer-events: auto; }
+    .mobile-menu a { font-family: var(--font-display); font-size: 2.2rem; color: var(--ink); text-decoration: none; transition: color 0.2s ease; }
+    .mobile-menu a:hover { color: var(--accent); }
+    .menu-close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; cursor: pointer; padding: 0.5rem; }
 
-    /* Utility for focus */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      border: 0;
-    }
+    /* ===== Success animation ===== */
+    @keyframes checkPop { 0% { transform: scale(0); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+    .check-success { animation: checkPop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; }
   </style>
 </head>
-<body class="gradient-bg">
+<body>
 
-  <!-- Cursor glow (decorative) -->
-  <div class="glow-dot" id="glowDot" aria-hidden="true"></div>
+<!-- ========== HEADER ========== -->
+<header class="header-sticky" id="header">
+  <div class="container-lux flex items-center justify-between">
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-2 text-xl font-display tracking-tight" style="text-decoration: none; color: var(--ink);">
+      <span style="font-size: 1.6rem; line-height: 1;">Meridian</span>
+      <span class="hidden sm:inline text-sm font-body font-normal text-soft" style="letter-spacing: 0.02em;">studio</span>
+    </a>
 
-  <!-- ============ HEADER ============ -->
-  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-    <div class="container-lux flex items-center justify-between h-20 lg:h-24">
-      <!-- Logo -->
-      <a href="#" class="flex items-center gap-2.5 text-xl font-bold tracking-tight font-display" aria-label="PixelCraft home">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <rect x="2" y="2" width="24" height="24" rx="8" fill="#2A6FDB" opacity="0.12"/>
-          <circle cx="14" cy="14" r="5" fill="#2A6FDB"/>
-          <circle cx="14" cy="14" r="10" stroke="#2A6FDB" stroke-width="1.5" opacity="0.3"/>
-          <circle cx="14" cy="14" r="13" stroke="#2A6FDB" stroke-width="1" opacity="0.15"/>
-        </svg>
-        <span>PixelCraft</span>
+    <!-- Desktop nav -->
+    <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+      <a href="#work" class="nav-link">Work</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#process" class="nav-link">Process</a>
+      <a href="#pricing" class="nav-link">Pricing</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="#contact" class="btn-primary hidden sm:inline-flex" style="padding: 0.7rem 1.5rem; font-size: 0.85rem;">
+        Start a project <i data-lucide="arrow-up-right" style="width: 16px; height: 16px;"></i>
       </a>
+      <!-- Mobile hamburger -->
+      <button class="md:hidden p-2" id="menuOpen" aria-label="Open menu" aria-expanded="false">
+        <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+      </button>
+    </div>
+  </div>
+</header>
 
-      <!-- Desktop Nav -->
-      <nav class="hidden lg:flex items-center gap-10" aria-label="Main navigation">
-        <a href="#features" class="text-sm font-medium text-muted hover:text-ink transition-colors">Features</a>
-        <a href="#curriculum" class="text-sm font-medium text-muted hover:text-ink transition-colors">Curriculum</a>
-        <a href="#pricing" class="text-sm font-medium text-muted hover:text-ink transition-colors">Pricing</a>
-        <a href="#testimonials" class="text-sm font-medium text-muted hover:text-ink transition-colors">Stories</a>
-      </nav>
+<!-- ========== MOBILE MENU ========== -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <button class="menu-close" id="menuClose" aria-label="Close menu">
+    <i data-lucide="x" style="width: 32px; height: 32px;"></i>
+  </button>
+  <a href="#work" class="menu-link">Work</a>
+  <a href="#services" class="menu-link">Services</a>
+  <a href="#process" class="menu-link">Process</a>
+  <a href="#pricing" class="menu-link">Pricing</a>
+  <a href="#contact" class="menu-link">Contact</a>
+  <a href="#contact" class="btn-primary mt-4 menu-link" style="font-size: 1rem; padding: 1rem 2.5rem;">Start a project</a>
+</div>
 
-      <!-- CTA -->
-      <div class="flex items-center gap-3">
-        <a href="#enroll" class="btn-primary hidden sm:inline-flex text-sm">
-          Start learning
-          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+<!-- ========== HERO ========== -->
+<section class="relative pt-40 pb-24 md:pt-48 md:pb-32 overflow-hidden">
+  <div class="radial-glow glow-1"></div>
+  <div class="radial-glow glow-2"></div>
+  <div class="container-lux relative z-10">
+    <div class="max-w-4xl">
+      <div class="reveal reveal-up mb-6">
+        <span class="inline-flex items-center gap-2 text-sm font-medium text-soft bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full border" style="border-color: rgba(0,0,0,0.04);">
+          <span class="w-1.5 h-1.5 rounded-full" style="background: var(--accent);"></span>
+          WordPress atelier — est. 2016
+        </span>
+      </div>
+      <h1 class="reveal reveal-up text-balance" style="max-width: 900px;">
+        Where <em style="font-style: italic; color: var(--accent);">craft</em> meets content.
+      </h1>
+      <p class="reveal reveal-up reveal-delay-1 mt-8 text-lg md:text-xl text-soft max-w-2xl leading-relaxed">
+        We build bespoke WordPress experiences for brands that refuse to look like everyone else. Custom themes, editorial-grade design, and performance that feels effortless.
+      </p>
+      <div class="reveal reveal-up reveal-delay-2 mt-10 flex flex-wrap gap-4">
+        <a href="#contact" class="btn-primary text-base">
+          Book a discovery call <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
         </a>
-        <!-- Mobile menu toggle -->
-        <button id="menuToggle" class="lg:hidden p-2 rounded-lg hover:bg-white/60 transition-colors" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
-          <i data-lucide="menu" class="w-6 h-6 text-ink"></i>
-        </button>
+        <a href="#work" class="btn-outline text-base">
+          See our work <i data-lucide="arrow-down" style="width: 18px; height: 18px;"></i>
+        </a>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="lg:hidden hidden bg-white/95 backdrop-blur-xl border-t border-hairline">
-      <nav class="container-lux py-6 flex flex-col gap-1" aria-label="Mobile navigation">
-        <a href="#features" class="py-3 text-base font-medium text-muted hover:text-ink transition-colors">Features</a>
-        <a href="#curriculum" class="py-3 text-base font-medium text-muted hover:text-ink transition-colors">Curriculum</a>
-        <a href="#pricing" class="py-3 text-base font-medium text-muted hover:text-ink transition-colors">Pricing</a>
-        <a href="#testimonials" class="py-3 text-base font-medium text-muted hover:text-ink transition-colors">Stories</a>
-        <a href="#enroll" class="btn-primary mt-4 justify-center">Start learning <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-      </nav>
+<!-- ========== SOCIAL PROOF / STATS ========== -->
+<section class="pb-20 md:pb-28">
+  <div class="container-lux">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
+      <div class="reveal reveal-up text-center md:text-left">
+        <div class="font-display text-4xl md:text-5xl" style="color: var(--ink);">120+</div>
+        <p class="text-soft text-sm mt-1">Projects shipped</p>
+      </div>
+      <div class="reveal reveal-up reveal-delay-1 text-center md:text-left">
+        <div class="font-display text-4xl md:text-5xl" style="color: var(--ink);">98%</div>
+        <p class="text-soft text-sm mt-1">Client retention</p>
+      </div>
+      <div class="reveal reveal-up reveal-delay-2 text-center md:text-left">
+        <div class="font-display text-4xl md:text-5xl" style="color: var(--ink);">4.9</div>
+        <p class="text-soft text-sm mt-1">Average rating</p>
+      </div>
+      <div class="reveal reveal-up reveal-delay-3 text-center md:text-left">
+        <div class="font-display text-4xl md:text-5xl" style="color: var(--ink);">8</div>
+        <p class="text-soft text-sm mt-1">Years of craft</p>
+      </div>
     </div>
-  </header>
+  </div>
+</section>
 
-  <main>
-    <!-- ============ HERO ============ -->
-    <section class="relative pt-32 pb-20 lg:pt-44 lg:pb-28 overflow-hidden" aria-label="Hero">
-      <div class="container-lux relative z-10">
-        <div class="max-w-3xl">
-          <!-- Eyebrow -->
-          <div class="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-accent-soft border border-accent/10 reveal">
-            <span class="divider-dot"></span>
-            <span class="text-xs font-semibold tracking-wide uppercase text-accent">New · Masterclass 2025</span>
-          </div>
+<!-- ========== MARQUEE ========== -->
+<section class="py-12 border-y" style="border-color: var(--hairline);">
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item"><i data-lucide="award" style="width: 18px; height: 18px;"></i> Awwwards honorable mention</span>
+      <span class="marquee-item"><i data-lucide="star" style="width: 18px; height: 18px;"></i> Featured on CSS Design Awards</span>
+      <span class="marquee-item"><i data-lucide="zap" style="width: 18px; height: 18px;"></i> 99/100 Lighthouse average</span>
+      <span class="marquee-item"><i data-lucide="users" style="width: 18px; height: 18px;"></i> Trusted by 40+ brands</span>
+      <span class="marquee-item"><i data-lucide="award" style="width: 18px; height: 18px;"></i> Awwwards honorable mention</span>
+      <span class="marquee-item"><i data-lucide="star" style="width: 18px; height: 18px;"></i> Featured on CSS Design Awards</span>
+      <span class="marquee-item"><i data-lucide="zap" style="width: 18px; height: 18px;"></i> 99/100 Lighthouse average</span>
+      <span class="marquee-item"><i data-lucide="users" style="width: 18px; height: 18px;"></i> Trusted by 40+ brands</span>
+    </div>
+  </div>
+</section>
 
-          <!-- Headline -->
-          <h1 class="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-extrabold font-display text-balance leading-[1.02] mb-8 split-text" id="heroHeadline">
-            <span class="word"><span>Master</span></span>
-            <span class="word"><span>Photoshop</span></span>
-            <span class="word"><span>like</span></span>
-            <span class="word"><span>a</span></span>
-            <span class="word"><span>pro.</span></span>
-          </h1>
+<!-- ========== WORK / PORTFOLIO ========== -->
+<section id="work" class="py-24 md:py-32">
+  <div class="container-lux">
+    <div class="reveal reveal-up mb-14 md:mb-20">
+      <span class="text-sm font-medium text-soft tracking-widest uppercase" style="letter-spacing: 0.12em;">Selected work</span>
+      <h2 class="mt-3 text-balance" style="max-width: 700px;">Sites that feel like <em style="font-style: italic; color: var(--accent);">destinations</em>.</h2>
+    </div>
 
-          <!-- Subhead -->
-          <p class="text-lg lg:text-xl text-muted max-w-xl leading-relaxed mb-10 reveal">
-            From raw pixels to refined masterpieces. A structured, project‑based curriculum that turns beginners into confident digital artists — one layer at a time.
-          </p>
-
-          <!-- CTAs -->
-          <div class="flex flex-wrap items-center gap-4 reveal">
-            <a href="#enroll" class="btn-primary">
-              Begin your journey
-              <i data-lucide="sparkles" class="w-4 h-4"></i>
-            </a>
-            <a href="#curriculum" class="btn-secondary">
-              <i data-lucide="play-circle" class="w-4 h-4"></i>
-              View curriculum
-            </a>
-          </div>
-
-          <!-- Stats bar -->
-          <div class="mt-16 flex flex-wrap gap-8 lg:gap-16 reveal">
-            <div>
-              <p class="text-3xl lg:text-4xl font-bold font-display">12k+</p>
-              <p class="text-sm text-muted mt-1">Students enrolled</p>
-            </div>
-            <div>
-              <p class="text-3xl lg:text-4xl font-bold font-display">4.9/5</p>
-              <p class="text-sm text-muted mt-1">Average rating</p>
-            </div>
-            <div>
-              <p class="text-3xl lg:text-4xl font-bold font-display">48</p>
-              <p class="text-sm text-muted mt-1">Hands‑on lessons</p>
-            </div>
-          </div>
+    <div class="grid md:grid-cols-2 gap-6 md:gap-8">
+      <!-- Card 1 -->
+      <div class="reveal reveal-up card-lux p-8 md:p-10 flex flex-col justify-between" style="min-height: 320px;">
+        <div>
+          <span class="text-xs font-medium text-soft uppercase tracking-wider" style="letter-spacing: 0.1em;">Hospitality</span>
+          <h3 class="mt-3 text-2xl md:text-3xl">Casa Lumen</h3>
+          <p class="text-soft mt-3 max-w-md">A boutique hotel group with a custom booking flow and an editorial magazine feel.</p>
+        </div>
+        <div class="mt-8 flex items-center gap-2 text-sm font-medium" style="color: var(--accent);">
+          View case study <i data-lucide="arrow-up-right" style="width: 16px; height: 16px;"></i>
         </div>
       </div>
-
-      <!-- Decorative gradient orb -->
-      <div class="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-accent/10 to-brass/5 blur-3xl" aria-hidden="true"></div>
-    </section>
-
-    <!-- ============ SOCIAL PROOF / LOGOS ============ -->
-    <section class="py-12 hairline-top hairline-bottom" aria-label="Trusted by">
-      <div class="container-lux">
-        <p class="text-xs font-semibold tracking-widest uppercase text-muted text-center mb-8">Trusted by creatives at</p>
-        <div class="ticker-wrap">
-          <div class="ticker-track">
-            <!-- duplicate set for seamless loop -->
-            <span class="text-xl font-display font-semibold text-muted/50 whitespace-nowrap">Studio North</span>
-            <span class="text-xl font-display font-semibold text-muted/50 whitespace-nowrap">Halo Agency</span>
-            <span class="text-xl font-display font-semibold text-muted/50 whitespace-nowrap">Format Mag</span>
-            <span class="text-xl font-display font-semibold text-muted/50 whitespace-nowrap">Lumen Labs</span>
-            <span class="text-xl font-display font-semibold text-muted/50 whitespace-nowrap">Craft & Co</span>
-            <span class="text-xl font-display font-semibold text-muted/50 whitespace-nowrap">Studio North</span>
-            <span class="text-xl font-display font-semibold text-muted/50 whitespace-nowrap">Halo Agency</span>
-            <span class="text-xl font-display font-semibold text-muted/50 whitespace-nowrap">Format Mag</span>
-            <span class="text-xl font-display font-semibold text-muted/50 whitespace-nowrap">Lumen Labs</span>
-            <span class="text-xl font-display font-semibold text-muted/50 whitespace-nowrap">Craft & Co</span>
-          </div>
+      <!-- Card 2 -->
+      <div class="reveal reveal-up reveal-delay-1 card-lux p-8 md:p-10 flex flex-col justify-between" style="min-height: 320px; background: #f7f5f2;">
+        <div>
+          <span class="text-xs font-medium text-soft uppercase tracking-wider" style="letter-spacing: 0.1em;">Architecture</span>
+          <h3 class="mt-3 text-2xl md:text-3xl">Atelier Nord</h3>
+          <p class="text-soft mt-3 max-w-md">A minimalist portfolio with horizontal scroll galleries and slow-reveal typography.</p>
+        </div>
+        <div class="mt-8 flex items-center gap-2 text-sm font-medium" style="color: var(--accent);">
+          View case study <i data-lucide="arrow-up-right" style="width: 16px; height: 16px;"></i>
         </div>
       </div>
-    </section>
-
-    <!-- ============ FEATURES ============ -->
-    <section id="features" class="section-pad" aria-label="Features">
-      <div class="container-lux">
-        <div class="max-w-2xl mb-16">
-          <p class="text-xs font-semibold tracking-widest uppercase text-accent mb-4 reveal">Why PixelCraft</p>
-          <h2 class="text-4xl lg:text-5xl font-display font-bold text-balance reveal">Everything you need to go from zero to confident.</h2>
+      <!-- Card 3 -->
+      <div class="reveal reveal-up reveal-delay-2 card-lux p-8 md:p-10 flex flex-col justify-between" style="min-height: 320px; background: #f7f5f2;">
+        <div>
+          <span class="text-xs font-medium text-soft uppercase tracking-wider" style="letter-spacing: 0.1em;">Fashion</span>
+          <h3 class="mt-3 text-2xl md:text-3xl">Maison Verre</h3>
+          <p class="text-soft mt-3 max-w-md">A luxury e‑commerce experience with buttery-smooth transitions and custom product storytelling.</p>
         </div>
-
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          <!-- Card 1 -->
-          <article class="card-lux p-8 lg:p-10 reveal" style="transition-delay: 0.1s;">
-            <div class="w-12 h-12 rounded-2xl bg-accent-soft flex items-center justify-center mb-6">
-              <i data-lucide="layers" class="w-6 h-6 text-accent"></i>
-            </div>
-            <h3 class="text-xl font-display font-bold mb-3">Layer‑by‑layer mastery</h3>
-            <p class="text-muted leading-relaxed">Understand the architecture behind every composition — smart objects, masks, blend modes, and non‑destructive workflows that professionals rely on.</p>
-          </article>
-
-          <!-- Card 2 -->
-          <article class="card-lux p-8 lg:p-10 reveal" style="transition-delay: 0.2s;">
-            <div class="w-12 h-12 rounded-2xl bg-accent-soft flex items-center justify-center mb-6">
-              <i data-lucide="wand-2" class="w-6 h-6 text-accent"></i>
-            </div>
-            <h3 class="text-xl font-display font-bold mb-3">Retouching & compositing</h3>
-            <p class="text-muted leading-relaxed">Master frequency separation, dodging & burning, and advanced masking to create seamless composites and flawless portraits.</p>
-          </article>
-
-          <!-- Card 3 -->
-          <article class="card-lux p-8 lg:p-10 reveal" style="transition-delay: 0.3s;">
-            <div class="w-12 h-12 rounded-2xl bg-accent-soft flex items-center justify-center mb-6">
-              <i data-lucide="palette" class="w-6 h-6 text-accent"></i>
-            </div>
-            <h3 class="text-xl font-display font-bold mb-3">Color & light theory</h3>
-            <p class="text-muted leading-relaxed">Learn to read light, grade color, and build mood through curves, gradients, and camera raw — the secret to images that feel cinematic.</p>
-          </article>
-
-          <!-- Card 4 -->
-          <article class="card-lux p-8 lg:p-10 reveal" style="transition-delay: 0.1s;">
-            <div class="w-12 h-12 rounded-2xl bg-accent-soft flex items-center justify-center mb-6">
-              <i data-lucide="zap" class="w-6 h-6 text-accent"></i>
-            </div>
-            <h3 class="text-xl font-display font-bold mb-3">Speed & automation</h3>
-            <p class="text-muted leading-relaxed">Actions, batch processing, and scripting — eliminate repetitive work and focus on what matters: the creative decisions.</p>
-          </article>
-
-          <!-- Card 5 -->
-          <article class="card-lux p-8 lg:p-10 reveal" style="transition-delay: 0.2s;">
-            <div class="w-12 h-12 rounded-2xl bg-accent-soft flex items-center justify-center mb-6">
-              <i data-lucide="monitor-play" class="w-6 h-6 text-accent"></i>
-            </div>
-            <h3 class="text-xl font-display font-bold mb-3">Real project briefs</h3>
-            <p class="text-muted leading-relaxed">Each module ends with a real‑world brief — editorial, product, portrait — so you build a portfolio while you learn.</p>
-          </article>
-
-          <!-- Card 6 -->
-          <article class="card-lux p-8 lg:p-10 reveal" style="transition-delay: 0.3s;">
-            <div class="w-12 h-12 rounded-2xl bg-accent-soft flex items-center justify-center mb-6">
-              <i data-lucide="users" class="w-6 h-6 text-accent"></i>
-            </div>
-            <h3 class="text-xl font-display font-bold mb-3">Community & feedback</h3>
-            <p class="text-muted leading-relaxed">Join a private community of designers and get personalized feedback on your work from mentors and peers.</p>
-          </article>
+        <div class="mt-8 flex items-center gap-2 text-sm font-medium" style="color: var(--accent);">
+          View case study <i data-lucide="arrow-up-right" style="width: 16px; height: 16px;"></i>
         </div>
       </div>
-    </section>
-
-    <!-- ============ CURRICULUM ============ -->
-    <section id="curriculum" class="section-pad bg-white" aria-label="Curriculum">
-      <div class="container-lux">
-        <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
-          <!-- Left: copy -->
-          <div class="lg:sticky lg:top-32">
-            <p class="text-xs font-semibold tracking-widest uppercase text-accent mb-4 reveal">The curriculum</p>
-            <h2 class="text-4xl lg:text-5xl font-display font-bold text-balance mb-6 reveal">A structured path, designed for real growth.</h2>
-            <p class="text-lg text-muted leading-relaxed mb-8 reveal">Every lesson builds on the last. No random tutorials — just a coherent journey from foundational skills to advanced, portfolio‑ready work.</p>
-            <a href="#enroll" class="btn-primary reveal">
-              See full syllabus
-              <i data-lucide="file-text" class="w-4 h-4"></i>
-            </a>
-          </div>
-
-          <!-- Right: module list -->
-          <div class="space-y-4">
-            <!-- Module 1 -->
-            <div class="card-lux p-6 lg:p-8 reveal">
-              <div class="flex items-start gap-4">
-                <span class="text-2xl font-display font-bold text-accent/30">01</span>
-                <div>
-                  <h3 class="text-lg font-display font-bold mb-1">Foundations & interface</h3>
-                  <p class="text-sm text-muted">Workspace setup, navigation, selections, and the core tools you'll use every single day.</p>
-                </div>
-              </div>
-            </div>
-            <!-- Module 2 -->
-            <div class="card-lux p-6 lg:p-8 reveal">
-              <div class="flex items-start gap-4">
-                <span class="text-2xl font-display font-bold text-accent/30">02</span>
-                <div>
-                  <h3 class="text-lg font-display font-bold mb-1">Layers, masks & smart objects</h3>
-                  <p class="text-sm text-muted">Non‑destructive editing, layer comps, and the professional workflow that keeps you flexible.</p>
-                </div>
-              </div>
-            </div>
-            <!-- Module 3 -->
-            <div class="card-lux p-6 lg:p-8 reveal">
-              <div class="flex items-start gap-4">
-                <span class="text-2xl font-display font-bold text-accent/30">03</span>
-                <div>
-                  <h3 class="text-lg font-display font-bold mb-1">Retouching & compositing</h3>
-                  <p class="text-sm text-muted">Skin, product, and architectural retouching. Seamless blends and realistic shadows.</p>
-                </div>
-              </div>
-            </div>
-            <!-- Module 4 -->
-            <div class="card-lux p-6 lg:p-8 reveal">
-              <div class="flex items-start gap-4">
-                <span class="text-2xl font-display font-bold text-accent/30">04</span>
-                <div>
-                  <h3 class="text-lg font-display font-bold mb-1">Color grading & mood</h3>
-                  <p class="text-sm text-muted">Curves, LUTs, camera raw, and the art of building atmosphere through color.</p>
-                </div>
-              </div>
-            </div>
-            <!-- Module 5 -->
-            <div class="card-lux p-6 lg:p-8 reveal">
-              <div class="flex items-start gap-4">
-                <span class="text-2xl font-display font-bold text-accent/30">05</span>
-                <div>
-                  <h3 class="text-lg font-display font-bold mb-1">Advanced compositing & 3D</h3>
-                  <p class="text-sm text-muted">Integrate 3D renders, build complex scenes, and master lighting integration.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+      <!-- Card 4 -->
+      <div class="reveal reveal-up reveal-delay-3 card-lux p-8 md:p-10 flex flex-col justify-between" style="min-height: 320px;">
+        <div>
+          <span class="text-xs font-medium text-soft uppercase tracking-wider" style="letter-spacing: 0.1em;">Food & Drink</span>
+          <h3 class="mt-3 text-2xl md:text-3xl">Osteria Fiore</h3>
+          <p class="text-soft mt-3 max-w-md">A seasonal menu that updates itself, with a reservation system built natively in WordPress.</p>
+        </div>
+        <div class="mt-8 flex items-center gap-2 text-sm font-medium" style="color: var(--accent);">
+          View case study <i data-lucide="arrow-up-right" style="width: 16px; height: 16px;"></i>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <!-- ============ PRICING ============ -->
-    <section id="pricing" class="section-pad" aria-label="Pricing">
-      <div class="container-lux">
-        <div class="text-center max-w-2xl mx-auto mb-16">
-          <p class="text-xs font-semibold tracking-widest uppercase text-accent mb-4 reveal">Pricing</p>
-          <h2 class="text-4xl lg:text-5xl font-display font-bold text-balance mb-4 reveal">Invest in your craft.</h2>
-          <p class="text-lg text-muted reveal">Choose the plan that matches your ambition. All plans include lifetime access to updates.</p>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
-          <!-- Basic -->
-          <div class="card-lux p-8 lg:p-10 reveal">
-            <h3 class="text-lg font-display font-bold mb-2">Starter</h3>
-            <p class="text-sm text-muted mb-6">For the curious beginner.</p>
-            <p class="text-4xl font-display font-bold mb-8">$49<span class="text-base font-normal text-muted"> one‑time</span></p>
-            <ul class="space-y-3 text-sm text-muted mb-8">
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-accent"></i> 12 foundational lessons</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-accent"></i> Downloadable assets</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-accent"></i> Community access</li>
-            </ul>
-            <a href="#enroll" class="btn-secondary w-full justify-center">Get started</a>
-          </div>
-
-          <!-- Pro (featured) -->
-          <div class="card-lux pricing-featured p-8 lg:p-10 reveal" style="transition-delay: 0.1s;">
-            <div class="flex items-center justify-between mb-2">
-              <h3 class="text-lg font-display font-bold">Professional</h3>
-              <span class="text-xs font-semibold bg-accent text-white px-3 py-1 rounded-full">Most popular</span>
-            </div>
-            <p class="text-sm text-muted mb-6">For the serious creative.</p>
-            <p class="text-4xl font-display font-bold mb-8">$129<span class="text-base font-normal text-muted"> one‑time</span></p>
-            <ul class="space-y-3 text-sm text-muted mb-8">
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-accent"></i> All 48 lessons</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-accent"></i> Real project briefs</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-accent"></i> Mentor feedback</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-accent"></i> Private community</li>
-            </ul>
-            <a href="#enroll" class="btn-primary w-full justify-center">Enroll now <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-          </div>
-
-          <!-- Studio -->
-          <div class="card-lux p-8 lg:p-10 reveal" style="transition-delay: 0.2s;">
-            <h3 class="text-lg font-display font-bold mb-2">Studio</h3>
-            <p class="text-sm text-muted mb-6">For teams and agencies.</p>
-            <p class="text-4xl font-display font-bold mb-8">$349<span class="text-base font-normal text-muted"> one‑time</span></p>
-            <ul class="space-y-3 text-sm text-muted mb-8">
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-accent"></i> Everything in Pro</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-accent"></i> 5 team seats</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-accent"></i> Live group workshops</li>
-            </ul>
-            <a href="#enroll" class="btn-secondary w-full justify-center">Contact us</a>
-          </div>
-        </div>
+<!-- ========== SERVICES ========== -->
+<section id="services" class="py-24 md:py-32" style="background: var(--paper);">
+  <div class="container-lux">
+    <div class="grid md:grid-cols-2 gap-16 md:gap-20">
+      <div class="reveal reveal-up">
+        <span class="text-sm font-medium text-soft tracking-widest uppercase" style="letter-spacing: 0.12em;">What we do</span>
+        <h2 class="mt-3 text-balance" style="max-width: 500px;">Full‑stack WordPress, from strategy to launch.</h2>
+        <p class="text-soft mt-6 max-w-md leading-relaxed">
+          We don't do templates. Every project starts with a blank canvas and a conversation about what makes your brand worth remembering.
+        </p>
+        <a href="#contact" class="btn-primary mt-8 inline-flex">
+          Discuss your project <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+        </a>
       </div>
-    </section>
-
-    <!-- ============ TESTIMONIALS ============ -->
-    <section id="testimonials" class="section-pad bg-white" aria-label="Testimonials">
-      <div class="container-lux">
-        <div class="max-w-2xl mb-16">
-          <p class="text-xs font-semibold tracking-widest uppercase text-accent mb-4 reveal">Student stories</p>
-          <h2 class="text-4xl lg:text-5xl font-display font-bold text-balance reveal">Loved by creatives worldwide.</h2>
-        </div>
-
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          <!-- T1 -->
-          <div class="card-lux p-8 reveal">
-            <div class="flex gap-1 mb-4 text-accent">
-              <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            </div>
-            <p class="text-muted leading-relaxed mb-6">"I went from never opening Photoshop to retouching client work in six weeks. The structure is everything."</p>
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-accent-soft flex items-center justify-center text-accent font-bold text-sm">MC</div>
-              <div>
-                <p class="text-sm font-semibold">Maya Chen</p>
-                <p class="text-xs text-muted">Freelance Retoucher</p>
-              </div>
-            </div>
+      <div class="space-y-8">
+        <div class="reveal reveal-up flex gap-5 items-start">
+          <div class="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center" style="background: var(--accent-soft); color: var(--ink);">
+            <i data-lucide="layout" style="width: 22px; height: 22px;"></i>
           </div>
-
-          <!-- T2 -->
-          <div class="card-lux p-8 reveal" style="transition-delay: 0.1s;">
-            <div class="flex gap-1 mb-4 text-accent">
-              <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            </div>
-            <p class="text-muted leading-relaxed mb-6">"The compositing module alone was worth the price. I finally understand how to make images feel real."</p>
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-accent-soft flex items-center justify-center text-accent font-bold text-sm">JR</div>
-              <div>
-                <p class="text-sm font-semibold">James Rivera</p>
-                <p class="text-xs text-muted">Digital Artist</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- T3 -->
-          <div class="card-lux p-8 reveal" style="transition-delay: 0.2s;">
-            <div class="flex gap-1 mb-4 text-accent">
-              <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
-            </div>
-            <p class="text-muted leading-relaxed mb-6">"I've taken a lot of courses. PixelCraft is the first one that actually made things click. Highly recommend."</p>
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-accent-soft flex items-center justify-center text-accent font-bold text-sm">SO</div>
-              <div>
-                <p class="text-sm font-semibold">Sofia Okonkwo</p>
-                <p class="text-xs text-muted">Brand Designer</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ CTA BANNER ============ -->
-    <section class="section-pad" aria-label="Call to action">
-      <div class="container-lux">
-        <div class="relative rounded-3xl overflow-hidden bg-ink text-white p-12 lg:p-20 text-center reveal">
-          <!-- subtle gradient orb -->
-          <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-accent/20 blur-3xl" aria-hidden="true"></div>
-          <div class="relative z-10">
-            <h2 class="text-4xl lg:text-6xl font-display font-bold text-balance mb-6 max-w-3xl mx-auto">Ready to make images that speak for themselves?</h2>
-            <p class="text-white/70 text-lg mb-10 max-w-xl mx-auto">Join 12,000+ creatives who transformed their skills with PixelCraft.</p>
-            <a href="#enroll" class="btn-primary text-base px-8 py-4">
-              Enroll today
-              <i data-lucide="arrow-right" class="w-5 h-5"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ CONTACT / ENQUIRY FORM ============ -->
-    <section id="enroll" class="section-pad bg-white hairline-top" aria-label="Enroll form">
-      <div class="container-lux">
-        <div class="grid lg:grid-cols-2 gap-16 lg:gap-24">
-          <!-- Left: copy -->
           <div>
-            <p class="text-xs font-semibold tracking-widest uppercase text-accent mb-4 reveal">Get started</p>
-            <h2 class="text-4xl lg:text-5xl font-display font-bold text-balance mb-6 reveal">Reserve your seat.</h2>
-            <p class="text-lg text-muted leading-relaxed mb-10 reveal">Fill in the form and our team will reach out within 24 hours with enrollment details and next steps.</p>
-
-            <div class="space-y-6">
-              <div class="flex items-start gap-4 reveal">
-                <div class="w-10 h-10 rounded-xl bg-accent-soft flex items-center justify-center flex-shrink-0">
-                  <i data-lucide="mail" class="w-5 h-5 text-accent"></i>
-                </div>
-                <div>
-                  <p class="font-semibold text-sm">Email us</p>
-                  <p class="text-sm text-muted">hello@pixelcraft.studio</p>
-                </div>
-              </div>
-              <div class="flex items-start gap-4 reveal">
-                <div class="w-10 h-10 rounded-xl bg-accent-soft flex items-center justify-center flex-shrink-0">
-                  <i data-lucide="phone" class="w-5 h-5 text-accent"></i>
-                </div>
-                <div>
-                  <p class="font-semibold text-sm">Call us</p>
-                  <p class="text-sm text-muted">+1 (415) 555‑0132</p>
-                </div>
-              </div>
-              <div class="flex items-start gap-4 reveal">
-                <div class="w-10 h-10 rounded-xl bg-accent-soft flex items-center justify-center flex-shrink-0">
-                  <i data-lucide="map-pin" class="w-5 h-5 text-accent"></i>
-                </div>
-                <div>
-                  <p class="font-semibold text-sm">Studio</p>
-                  <p class="text-sm text-muted">24 Creative Ave, San Francisco, CA</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right: form -->
-          <div class="card-lux p-8 lg:p-10 reveal">
-            <form id="enrollForm" class="space-y-5" novalidate>
-              <div>
-                <label for="name" class="block text-sm font-medium mb-1.5">Full name</label>
-                <input type="text" id="name" name="name" class="input-lux" placeholder="Jane Doe" required>
-                <p class="error-msg" id="nameError">Please enter your name.</p>
-              </div>
-              <div>
-                <label for="email" class="block text-sm font-medium mb-1.5">Email address</label>
-                <input type="email" id="email" name="email" class="input-lux" placeholder="jane@example.com" required>
-                <p class="error-msg" id="emailError">Please enter a valid email.</p>
-              </div>
-              <div>
-                <label for="phone" class="block text-sm font-medium mb-1.5">Phone (optional)</label>
-                <input type="tel" id="phone" name="phone" class="input-lux" placeholder="+1 (555) 000‑0000">
-              </div>
-              <div>
-                <label for="message" class="block text-sm font-medium mb-1.5">Tell us about your goals</label>
-                <textarea id="message" name="message" rows="4" class="input-lux" placeholder="I want to master retouching for my portrait work..." required></textarea>
-                <p class="error-msg" id="messageError">Please share a short message.</p>
-              </div>
-
-              <button type="submit" class="btn-primary w-full justify-center text-base py-3.5">
-                Send enquiry
-                <i data-lucide="send" class="w-4 h-4"></i>
-              </button>
-
-              <div class="success-check" id="formSuccess" role="status" aria-live="polite">
-                <i data-lucide="check-circle" class="w-5 h-5"></i>
-                <span>Thanks! We'll be in touch within 24 hours.</span>
-              </div>
-            </form>
-            <!-- TODO: connect form action to backend endpoint -->
+            <h3 class="text-xl font-display">Custom theme development</h3>
+            <p class="text-soft mt-2 leading-relaxed">Bespoke WordPress themes built from scratch — no page builders, no bloat, just clean code and pixel-perfect design.</p>
           </div>
         </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- ============ FOOTER ============ -->
-  <footer class="bg-canvas hairline-top" aria-label="Footer">
-    <div class="container-lux py-16 lg:py-20">
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
-        <!-- Brand -->
-        <div class="lg:col-span-1">
-          <a href="#" class="flex items-center gap-2.5 text-xl font-bold tracking-tight font-display mb-4" aria-label="PixelCraft home">
-            <svg width="24" height="24" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <rect x="2" y="2" width="24" height="24" rx="8" fill="#2A6FDB" opacity="0.12"/>
-              <circle cx="14" cy="14" r="5" fill="#2A6FDB"/>
-            </svg>
-            <span>PixelCraft</span>
-          </a>
-          <p class="text-sm text-muted leading-relaxed max-w-xs">Master Photoshop through structured, project‑based learning.</p>
-        </div>
-
-        <!-- Links 1 -->
-        <div>
-          <h4 class="text-sm font-semibold mb-4">Program</h4>
-          <ul class="space-y-2.5">
-            <li><a href="#features" class="text-sm text-muted hover:text-ink transition-colors">Features</a></li>
-            <li><a href="#curriculum" class="text-sm text-muted hover:text-ink transition-colors">Curriculum</a></li>
-            <li><a href="#pricing" class="text-sm text-muted hover:text-ink transition-colors">Pricing</a></li>
-            <li><a href="#testimonials" class="text-sm text-muted hover:text-ink transition-colors">Stories</a></li>
-          </ul>
-        </div>
-
-        <!-- Links 2 -->
-        <div>
-          <h4 class="text-sm font-semibold mb-4">Company</h4>
-          <ul class="space-y-2.5">
-            <li><a href="#" class="text-sm text-muted hover:text-ink transition-colors">About</a></li>
-            <li><a href="#" class="text-sm text-muted hover:text-ink transition-colors">Careers</a></li>
-            <li><a href="#" class="text-sm text-muted hover:text-ink transition-colors">Blog</a></li>
-            <li><a href="#" class="text-sm text-muted hover:text-ink transition-colors">Contact</a></li>
-          </ul>
-        </div>
-
-        <!-- Social -->
-        <div>
-          <h4 class="text-sm font-semibold mb-4">Follow</h4>
-          <div class="flex gap-3">
-            <a href="#" class="w-9 h-9 rounded-full bg-white border border-hairline flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all" aria-label="Instagram">
-              <i data-lucide="instagram" class="w-4 h-4"></i>
-            </a>
-            <a href="#" class="w-9 h-9 rounded-full bg-white border border-hairline flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all" aria-label="Twitter / X">
-              <i data-lucide="twitter" class="w-4 h-4"></i>
-            </a>
-            <a href="#" class="w-9 h-9 rounded-full bg-white border border-hairline flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all" aria-label="YouTube">
-              <i data-lucide="youtube" class="w-4 h-4"></i>
-            </a>
-            <a href="#" class="w-9 h-9 rounded-full bg-white border border-hairline flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all" aria-label="LinkedIn">
-              <i data-lucide="linkedin" class="w-4 h-4"></i>
-            </a>
+        <div class="reveal reveal-up reveal-delay-1 flex gap-5 items-start">
+          <div class="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center" style="background: var(--accent-soft); color: var(--ink);">
+            <i data-lucide="zap" style="width: 22px; height: 22px;"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-display">Performance & SEO</h3>
+            <p class="text-soft mt-2 leading-relaxed">Sub-second load times, structured data, and technical SEO baked into every build. We obsess over Core Web Vitals.</p>
           </div>
         </div>
-      </div>
-
-      <div class="mt-12 pt-8 hairline-top flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-xs text-muted">© 2025 PixelCraft Studio. All rights reserved.</p>
-        <div class="flex gap-6">
-          <a href="#" class="text-xs text-muted hover:text-ink transition-colors">Privacy</a>
-          <a href="#" class="text-xs text-muted hover:text-ink transition-colors">Terms</a>
-          <a href="#" class="text-xs text-muted hover:text-ink transition-colors">Cookies</a>
+        <div class="reveal reveal-up reveal-delay-2 flex gap-5 items-start">
+          <div class="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center" style="background: var(--accent-soft); color: var(--ink);">
+            <i data-lucide="pen-tool" style="width: 22px; height: 22px;"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-display">Editorial design systems</h3>
+            <p class="text-soft mt-2 leading-relaxed">Typography-led design systems that make your content feel like a magazine — not a blog.</p>
+          </div>
+        </div>
+        <div class="reveal reveal-up reveal-delay-3 flex gap-5 items-start">
+          <div class="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center" style="background: var(--accent-soft); color: var(--ink);">
+            <i data-lucide="headphones" style="width: 22px; height: 22px;"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-display">Ongoing care & support</h3>
+            <p class="text-soft mt-2 leading-relaxed">Monthly retainers for updates, security, and continuous improvements — so your site stays as sharp as day one.</p>
+          </div>
         </div>
       </div>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <!-- ============ SCRIPTS ============ -->
-  <script>
-    // Initialize Lucide icons
+<!-- ========== PROCESS ========== -->
+<section id="process" class="py-24 md:py-32">
+  <div class="container-lux">
+    <div class="reveal reveal-up text-center mb-16">
+      <span class="text-sm font-medium text-soft tracking-widest uppercase" style="letter-spacing: 0.12em;">How we work</span>
+      <h2 class="mt-3 text-balance" style="max-width: 600px; margin-left: auto; margin-right: auto;">A process as considered as the output.</h2>
+    </div>
+    <div class="grid md:grid-cols-4 gap-8">
+      <div class="reveal reveal-up text-center">
+        <div class="font-display text-6xl" style="color: var(--accent); opacity: 0.4;">01</div>
+        <h3 class="text-xl mt-4 font-display">Discover</h3>
+        <p class="text-soft mt-2 text-sm leading-relaxed">We learn your brand, audience, and goals. No assumptions, just questions.</p>
+      </div>
+      <div class="reveal reveal-up reveal-delay-1 text-center">
+        <div class="font-display text-6xl" style="color: var(--accent); opacity: 0.4;">02</div>
+        <h3 class="text-xl mt-4 font-display">Design</h3>
+        <p class="text-soft mt-2 text-sm leading-relaxed">Moodboards, wireframes, and high-fidelity designs that push boundaries.</p>
+      </div>
+      <div class="reveal reveal-up reveal-delay-2 text-center">
+        <div class="font-display text-6xl" style="color: var(--accent); opacity: 0.4;">03</div>
+        <h3 class="text-xl mt-4 font-display">Build</h3>
+        <p class="text-soft mt-2 text-sm leading-relaxed">Clean, hand-coded WordPress themes. No page builders, no compromises.</p>
+      </div>
+      <div class="reveal reveal-up reveal-delay-3 text-center">
+        <div class="font-display text-6xl" style="color: var(--accent); opacity: 0.4;">04</div>
+        <h3 class="text-xl mt-4 font-display">Launch</h3>
+        <p class="text-soft mt-2 text-sm leading-relaxed">Testing, optimization, and a smooth handover — then we stick around.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PRICING ========== -->
+<section id="pricing" class="py-24 md:py-32" style="background: var(--paper);">
+  <div class="container-lux">
+    <div class="reveal reveal-up text-center mb-12">
+      <span class="text-sm font-medium text-soft tracking-widest uppercase" style="letter-spacing: 0.12em;">Pricing</span>
+      <h2 class="mt-3 text-balance" style="max-width: 600px; margin-left: auto; margin-right: auto;">Transparent, project‑based pricing.</h2>
+    </div>
+
+    <!-- Toggle -->
+    <div class="reveal reveal-up flex justify-center mb-14">
+      <div class="toggle-switch" role="group" aria-label="Pricing period">
+        <button class="toggle-btn active" id="toggleOneTime" aria-pressed="true">One‑time</button>
+        <button class="toggle-btn" id="toggleRetainer" aria-pressed="false">Retainer</button>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
+      <!-- Starter -->
+      <div class="reveal reveal-up card-lux p-8 md:p-10 flex flex-col">
+        <h3 class="text-2xl font-display">Essential</h3>
+        <p class="text-soft text-sm mt-2">For smaller sites that still need to impress.</p>
+        <div class="mt-6 mb-8">
+          <span class="font-display text-5xl" data-price-one-time="4,800" data-price-retainer="850">$4,800</span>
+          <span class="text-soft text-sm ml-1" data-period-one-time="one‑time" data-period-retainer="/month">one‑time</span>
+        </div>
+        <ul class="space-y-3 text-sm flex-1">
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> Up to 5 custom page designs</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> Bespoke WordPress theme</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> Responsive & accessible</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> Basic SEO setup</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> 30‑day support</li>
+        </ul>
+        <a href="#contact" class="btn-outline mt-8 w-full justify-center">Get started</a>
+      </div>
+
+      <!-- Signature (featured) -->
+      <div class="reveal reveal-up reveal-delay-1 card-lux pricing-featured p-8 md:p-10 flex flex-col" style="box-shadow: 0 32px 64px -20px rgba(184,134,91,0.15), var(--shadow-card);">
+        <span class="pricing-badge">Most popular</span>
+        <h3 class="text-2xl font-display mt-2">Signature</h3>
+        <p class="text-soft text-sm mt-2">Our most popular build for growing brands.</p>
+        <div class="mt-6 mb-8">
+          <span class="font-display text-5xl" data-price-one-time="9,600" data-price-retainer="1,600">$9,600</span>
+          <span class="text-soft text-sm ml-1" data-period-one-time="one‑time" data-period-retainer="/month">one‑time</span>
+        </div>
+        <ul class="space-y-3 text-sm flex-1">
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> Up to 12 custom page designs</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> Advanced custom theme</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> Animation & micro‑interactions</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> Full SEO & performance audit</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> 90‑day support</li>
+        </ul>
+        <a href="#contact" class="btn-primary mt-8 w-full justify-center">Start a project</a>
+      </div>
+
+      <!-- Atelier -->
+      <div class="reveal reveal-up reveal-delay-2 card-lux p-8 md:p-10 flex flex-col">
+        <h3 class="text-2xl font-display">Atelier</h3>
+        <p class="text-soft text-sm mt-2">For ambitious, multi‑faceted digital presences.</p>
+        <div class="mt-6 mb-8">
+          <span class="font-display text-5xl" data-price-one-time="16,000" data-price-retainer="2,800">$16,000</span>
+          <span class="text-soft text-sm ml-1" data-period-one-time="one‑time" data-period-retainer="/month">one‑time</span>
+        </div>
+        <ul class="space-y-3 text-sm flex-1">
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> Unlimited custom designs</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> E‑commerce or membership</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> Headless or hybrid architecture</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> Full design system handover</li>
+          <li class="flex items-center gap-2"><i data-lucide="check" style="width: 16px; height: 16px; color: var(--accent);"></i> 6‑month priority support</li>
+        </ul>
+        <a href="#contact" class="btn-outline mt-8 w-full justify-center">Enquire</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TESTIMONIALS ========== -->
+<section class="py-24 md:py-32">
+  <div class="container-lux">
+    <div class="reveal reveal-up text-center mb-16">
+      <span class="text-sm font-medium text-soft tracking-widest uppercase" style="letter-spacing: 0.12em;">Kind words</span>
+      <h2 class="mt-3 text-balance" style="max-width: 600px; margin-left: auto; margin-right: auto;">From the people we've built for.</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+      <div class="reveal reveal-up card-lux p-8 flex flex-col">
+        <div class="flex gap-1 mb-4" style="color: var(--accent);">
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+        </div>
+        <p class="text-soft leading-relaxed flex-1">"Working with Studio Meridian was the best decision we made. They translated our brand into a digital experience that feels unmistakably ours."</p>
+        <div class="mt-6 pt-6 border-t" style="border-color: var(--hairline);">
+          <p class="font-medium text-sm">Elena Marchetti</p>
+          <p class="text-soft text-xs">Founder, Casa Lumen</p>
+        </div>
+      </div>
+      <div class="reveal reveal-up reveal-delay-1 card-lux p-8 flex flex-col">
+        <div class="flex gap-1 mb-4" style="color: var(--accent);">
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+        </div>
+        <p class="text-soft leading-relaxed flex-1">"They care about the details most agencies ignore. The site loads instantly, looks incredible, and our clients constantly compliment it."</p>
+        <div class="mt-6 pt-6 border-t" style="border-color: var(--hairline);">
+          <p class="font-medium text-sm">James Whitfield</p>
+          <p class="text-soft text-xs">Director, Atelier Nord</p>
+        </div>
+      </div>
+      <div class="reveal reveal-up reveal-delay-2 card-lux p-8 flex flex-col">
+        <div class="flex gap-1 mb-4" style="color: var(--accent);">
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+          <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+        </div>
+        <p class="text-soft leading-relaxed flex-1">"We went from a template site to something genuinely custom. The process was calm, considered, and the result exceeded every expectation."</p>
+        <div class="mt-6 pt-6 border-t" style="border-color: var(--hairline);">
+          <p class="font-medium text-sm">Sophie Laurent</p>
+          <p class="text-soft text-xs">Creative Lead, Maison Verre</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CTA BANNER ========== -->
+<section class="pb-24 md:pb-32">
+  <div class="container-lux">
+    <div class="reveal reveal-scale glass-panel rounded-3xl p-12 md:p-20 text-center relative overflow-hidden" style="border-radius: 2.5rem;">
+      <div class="radial-glow glow-1" style="opacity: 0.15; top: -200px; right: -100px;"></div>
+      <h2 class="text-balance relative z-10" style="max-width: 700px; margin-left: auto; margin-right: auto;">Ready to build something <em style="font-style: italic; color: var(--accent);">unmistakably yours</em>?</h2>
+      <p class="text-soft mt-6 max-w-lg mx-auto relative z-10">We take on a limited number of projects each quarter to ensure every detail gets the attention it deserves.</p>
+      <a href="#contact" class="btn-primary mt-8 relative z-10 inline-flex">
+        Start the conversation <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER + CONTACT FORM ========== -->
+<footer id="contact" class="pt-24 pb-12" style="background: var(--paper); border-top: 1px solid var(--hairline);">
+  <div class="container-lux">
+    <div class="grid md:grid-cols-2 gap-16 md:gap-20 mb-20">
+      <!-- Left: brand + links -->
+      <div>
+        <div class="font-display text-3xl mb-4" style="color: var(--ink);">Meridian</div>
+        <p class="text-soft max-w-sm leading-relaxed">Bespoke WordPress studio crafting digital experiences for brands that value substance over noise.</p>
+
+        <div class="grid grid-cols-2 gap-10 mt-12">
+          <div>
+            <h4 class="text-sm font-medium mb-4" style="letter-spacing: 0.04em;">Studio</h4>
+            <ul class="space-y-3 text-sm">
+              <li><a href="#work" class="text-soft hover:text-ink transition-colors" style="text-decoration: none;">Work</a></li>
+              <li><a href="#services" class="text-soft hover:text-ink transition-colors" style="text-decoration: none;">Services</a></li>
+              <li><a href="#process" class="text-soft hover:text-ink transition-colors" style="text-decoration: none;">Process</a></li>
+              <li><a href="#pricing" class="text-soft hover:text-ink transition-colors" style="text-decoration: none;">Pricing</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-sm font-medium mb-4" style="letter-spacing: 0.04em;">Connect</h4>
+            <ul class="space-y-3 text-sm">
+              <li><a href="#" class="text-soft hover:text-ink transition-colors" style="text-decoration: none;">Instagram</a></li>
+              <li><a href="#" class="text-soft hover:text-ink transition-colors" style="text-decoration: none;">LinkedIn</a></li>
+              <li><a href="#" class="text-soft hover:text-ink transition-colors" style="text-decoration: none;">Dribbble</a></li>
+              <li><a href="#" class="text-soft hover:text-ink transition-colors" style="text-decoration: none;">GitHub</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="flex gap-4 mt-10">
+          <a href="#" class="w-10 h-10 rounded-full border flex items-center justify-center text-soft hover:text-ink hover:border-ink transition-all" style="border-color: rgba(0,0,0,0.08);" aria-label="Instagram">
+            <i data-lucide="instagram" style="width: 18px; height: 18px;"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full border flex items-center justify-center text-soft hover:text-ink hover:border-ink transition-all" style="border-color: rgba(0,0,0,0.08);" aria-label="LinkedIn">
+            <i data-lucide="linkedin" style="width: 18px; height: 18px;"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full border flex items-center justify-center text-soft hover:text-ink hover:border-ink transition-all" style="border-color: rgba(0,0,0,0.08);" aria-label="Dribbble">
+            <i data-lucide="dribbble" style="width: 18px; height: 18px;"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full border flex items-center justify-center text-soft hover:text-ink hover:border-ink transition-all" style="border-color: rgba(0,0,0,0.08);" aria-label="Email">
+            <i data-lucide="mail" style="width: 18px; height: 18px;"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: contact form -->
+      <div>
+        <h3 class="text-2xl font-display mb-2">Start a project</h3>
+        <p class="text-soft text-sm mb-8">Tell us a little about what you're building.</p>
+
+        <form id="contactForm" novalidate>
+          <div class="space-y-5">
+            <div>
+              <label for="name" class="sr-only">Your name</label>
+              <input type="text" id="name" name="name" class="input-lux" placeholder="Your name" required autocomplete="name">
+              <p class="error-msg" id="nameError">Please enter your name.</p>
+            </div>
+            <div>
+              <label for="email" class="sr-only">Email address</label>
+              <input type="email" id="email" name="email" class="input-lux" placeholder="Email address" required autocomplete="email">
+              <p class="error-msg" id="emailError">Please enter a valid email.</p>
+            </div>
+            <div>
+              <label for="phone" class="sr-only">Phone number</label>
+              <input type="tel" id="phone" name="phone" class="input-lux" placeholder="Phone (optional)" autocomplete="tel">
+              <p class="error-msg" id="phoneError">Please enter a valid phone number.</p>
+            </div>
+            <div>
+              <label for="message" class="sr-only">Message</label>
+              <textarea id="message" name="message" class="input-lux" rows="4" placeholder="Tell us about your project" required></textarea>
+              <p class="error-msg" id="messageError">Please tell us a little about your project.</p>
+            </div>
+            <button type="submit" class="btn-primary w-full justify-center" id="submitBtn">
+              Send enquiry <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+            </button>
+          </div>
+          <!-- TODO: connect form action to backend endpoint -->
+          <div id="formStatus" class="mt-4 text-sm text-center" style="min-height: 1.5rem;"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-soft" style="border-color: var(--hairline);">
+      <p>&copy; 2025 Studio Meridian. All rights reserved.</p>
+      <div class="flex gap-6">
+        <a href="#" class="text-soft hover:text-ink transition-colors" style="text-decoration: none;">Privacy</a>
+        <a href="#" class="text-soft hover:text-ink transition-colors" style="text-decoration: none;">Terms</a>
+        <a href="#" class="text-soft hover:text-ink transition-colors" style="text-decoration: none;">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ========== SCRIPTS ========== -->
+<script>
+  // ===== Lucide Icons =====
+  lucide.createIcons();
+
+  // ===== Header scroll state =====
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  // ===== Mobile menu =====
+  const menuOpen = document.getElementById('menuOpen');
+  const menuClose = document.getElementById('menuClose');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const menuLinks = document.querySelectorAll('.menu-link');
+
+  function openMenu() {
+    mobileMenu.classList.add('open');
+    menuOpen.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    mobileMenu.classList.remove('open');
+    menuOpen.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  menuOpen.addEventListener('click', openMenu);
+  menuClose.addEventListener('click', closeMenu);
+  menuLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+  // ===== Intersection Observer for reveals =====
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  // ===== Pricing toggle =====
+  const toggleOneTime = document.getElementById('toggleOneTime');
+  const toggleRetainer = document.getElementById('toggleRetainer');
+  const priceSpans = document.querySelectorAll('[data-price-one-time]');
+  const periodSpans = document.querySelectorAll('[data-period-one-time]');
+
+  toggleOneTime.addEventListener('click', () => {
+    toggleOneTime.classList.add('active');
+    toggleRetainer.classList.remove('active');
+    toggleOneTime.setAttribute('aria-pressed', 'true');
+    toggleRetainer.setAttribute('aria-pressed', 'false');
+    priceSpans.forEach(span => {
+      span.textContent = '$' + span.dataset.priceOneTime;
+    });
+    periodSpans.forEach(span => {
+      span.textContent = span.dataset.periodOneTime;
+    });
+  });
+
+  toggleRetainer.addEventListener('click', () => {
+    toggleRetainer.classList.add('active');
+    toggleOneTime.classList.remove('active');
+    toggleRetainer.setAttribute('aria-pressed', 'true');
+    toggleOneTime.setAttribute('aria-pressed', 'false');
+    priceSpans.forEach(span => {
+      span.textContent = '$' + span.dataset.priceRetainer;
+    });
+    periodSpans.forEach(span => {
+      span.textContent = span.dataset.periodRetainer;
+    });
+  });
+
+  // ===== Contact form validation & submission =====
+  const form = document.getElementById('contactForm');
+  const nameInput = document.getElementById('name');
+  const emailInput = document.getElementById('email');
+  const phoneInput = document.getElementById('phone');
+  const messageInput = document.getElementById('message');
+  const nameError = document.getElementById('nameError');
+  const emailError = document.getElementById('emailError');
+  const phoneError = document.getElementById('phoneError');
+  const messageError = document.getElementById('messageError');
+  const formStatus = document.getElementById('formStatus');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function clearErrors() {
+    [nameError, emailError, phoneError, messageError].forEach(el => el.classList.remove('show'));
+    [nameInput, emailInput, phoneInput, messageInput].forEach(el => el.classList.remove('error'));
+  }
+
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function validatePhone(phone) {
+    if (!phone) return true;
+    return /^[\d\s\+\-\(\)]{7,}$/.test(phone);
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearErrors();
+    formStatus.textContent = '';
+    formStatus.style.color = '';
+
+    let valid = true;
+
+    if (!nameInput.value.trim()) {
+      nameError.classList.add('show');
+      nameInput.classList.add('error');
+      valid = false;
+    }
+
+    if (!validateEmail(emailInput.value.trim())) {
+      emailError.classList.add('show');
+      emailInput.classList.add('error');
+      valid = false;
+    }
+
+    if (!validatePhone(phoneInput.value.trim())) {
+      phoneError.classList.add('show');
+      phoneInput.classList.add('error');
+      valid = false;
+    }
+
+    if (!messageInput.value.trim()) {
+      messageError.classList.add('show');
+      messageInput.classList.add('error');
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    // Submit
+    const formData = {
+      name: nameInput.value.trim(),
+      email: emailInput.value.trim(),
+      phone: phoneInput.value.trim(),
+      message: messageInput.value.trim()
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i data-lucide="loader" style="width: 16px; height: 16px; animation: spin 1s linear infinite;"></i> Sending...';
     lucide.createIcons();
 
-    // ---------- Header scroll effect ----------
-    const header = document.getElementById('header');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 20) {
-        header.classList.add('bg-white/80', 'backdrop-blur-xl', 'hairline-bottom', 'shadow-sm');
-        header.classList.remove('bg-transparent');
-      } else {
-        header.classList.remove('bg-white/80', 'backdrop-blur-xl', 'hairline-bottom', 'shadow-sm');
-        header.classList.add('bg-transparent');
-      }
-    });
-
-    // ---------- Mobile menu ----------
-    const menuToggle = document.getElementById('menuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    menuToggle.addEventListener('click', () => {
-      const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
-      menuToggle.setAttribute('aria-expanded', !expanded);
-      mobileMenu.classList.toggle('hidden');
-      // swap icon
-      const icon = menuToggle.querySelector('i');
-      icon.setAttribute('data-lucide', expanded ? 'menu' : 'x');
-      lucide.createIcons();
-    });
-
-    // Close mobile menu on link click
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
-        menuToggle.setAttribute('aria-expanded', 'false');
-        const icon = menuToggle.querySelector('i');
-        icon.setAttribute('data-lucide', 'menu');
-        lucide.createIcons();
-      });
-    });
-
-    // ---------- Scroll reveal ----------
-    const revealElements = document.querySelectorAll('.reveal');
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    revealElements.forEach(el => revealObserver.observe(el));
-
-    // ---------- Split text headline reveal ----------
-    const headline = document.getElementById('heroHeadline');
-    const headlineObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          headlineObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-    if (headline) headlineObserver.observe(headline);
-
-    // Manually trigger hero headline after load (it's above fold)
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        if (headline && !headline.classList.contains('visible')) {
-          headline.classList.add('visible');
-        }
-      }, 200);
-    });
-
-    // ---------- Cursor glow (decorative) ----------
-    const glowDot = document.getElementById('glowDot');
-    if (glowDot && window.matchMedia('(pointer: fine)').matches) {
-      let mouseX = 0, mouseY = 0, currentX = 0, currentY = 0;
-      document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-      });
-      function animateGlow() {
-        currentX += (mouseX - currentX) * 0.08;
-        currentY += (mouseY - currentY) * 0.08;
-        glowDot.style.transform = `translate(${currentX - 200}px, ${currentY - 200}px)`;
-        requestAnimationFrame(animateGlow);
-      }
-      animateGlow();
-    } else if (glowDot) {
-      glowDot.style.display = 'none';
-    }
-
-    // ---------- Form validation & submission ----------
-    const form = document.getElementById('enrollForm');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const phoneInput = document.getElementById('phone');
-    const messageInput = document.getElementById('message');
-    const successMsg = document.getElementById('formSuccess');
-
-    function showError(input, errorEl, condition) {
-      if (condition) {
-        input.classList.add('error');
-        errorEl.classList.add('show');
-        return true;
-      } else {
-        input.classList.remove('error');
-        errorEl.classList.remove('show');
-        return false;
-      }
-    }
-
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    // Real-time validation
-    nameInput.addEventListener('input', () => showError(nameInput, document.getElementById('nameError'), nameInput.value.trim() === ''));
-    emailInput.addEventListener('input', () => showError(emailInput, document.getElementById('emailError'), !validateEmail(emailInput.value.trim())));
-    messageInput.addEventListener('input', () => showError(messageInput, document.getElementById('messageError'), messageInput.value.trim() === ''));
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const nameInvalid = showError(nameInput, document.getElementById('nameError'), nameInput.value.trim() === '');
-      const emailInvalid = showError(emailInput, document.getElementById('emailError'), !validateEmail(emailInput.value.trim()));
-      const messageInvalid = showError(messageInput, document.getElementById('messageError'), messageInput.value.trim() === '');
-
-      if (nameInvalid || emailInvalid || messageInvalid) {
-        // Focus first error
-        const firstError = form.querySelector('.input-lux.error');
-        if (firstError) firstError.focus();
-        return;
-      }
-
-      // Build payload
-      const formData = {
-        name: nameInput.value.trim(),
-        email: emailInput.value.trim(),
-        phone: phoneInput.value.trim(),
-        message: messageInput.value.trim(),
-        source: 'pixelcraft_enroll'
-      };
-
-      // Submit via fetch
-      fetch('submit', {
+    try {
+      const response = await fetch('submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         cache: 'no-store',
         body: JSON.stringify({
           url: window.location.host,
-          table: 'enrollments',
+          table: 'enquiries',
           data: formData
         })
-      })
-      .then(response => {
-        if (response.ok) {
-          // Show success
-          successMsg.classList.add('show');
-          form.reset();
-          // Clear any error states
-          form.querySelectorAll('.input-lux').forEach(el => el.classList.remove('error'));
-          form.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
-          // Hide success after 5s
-          setTimeout(() => successMsg.classList.remove('show'), 5000);
-        } else {
-          throw new Error('Server error');
-        }
-      })
-      .catch(error => {
-        // For static demo / offline, still show success (simulated)
-        // In production, uncomment the alert below and comment out the success block
-        // alert('Something went wrong. Please try again.');
-        
-        // Simulate success for static preview (remove this block when backend is connected)
-        successMsg.classList.add('show');
-        form.reset();
-        form.querySelectorAll('.input-lux').forEach(el => el.classList.remove('error'));
-        form.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
-        setTimeout(() => successMsg.classList.remove('show'), 5000);
       });
-    });
 
-    // ---------- Smooth anchor scrolling (native CSS handles it, but adding offset for header) ----------
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        const target = document.querySelector(targetId);
-        if (target) {
-          e.preventDefault();
-          const headerOffset = 96;
-          const elementPosition = target.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-        }
-      });
+      if (!response.ok) throw new Error('Network response was not ok');
+
+      formStatus.textContent = 'Thank you — we will be in touch within 24 hours.';
+      formStatus.style.color = '#2e7d32';
+      form.reset();
+    } catch (error) {
+      formStatus.textContent = 'Something went wrong. Please try again or email hello@meridian.studio.';
+      formStatus.style.color = '#d94f4f';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Send enquiry <i data-lucide="send" style="width: 16px; height: 16px;"></i>';
+      lucide.createIcons();
+    }
+  });
+
+  // Clear error on input
+  [nameInput, emailInput, phoneInput, messageInput].forEach(input => {
+    input.addEventListener('input', () => {
+      input.classList.remove('error');
+      const errorEl = document.getElementById(input.id + 'Error');
+      if (errorEl) errorEl.classList.remove('show');
     });
-  </script>
+  });
+
+  // Add spin keyframe dynamically (for loading state)
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+  document.head.appendChild(styleSheet);
+</script>
 </body>
 </html>
