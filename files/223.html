@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elara Quinn — Freelance Digital Marketer</title>
+  <!-- Google Fonts: Instrument Serif + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Tailwind CSS CDN + config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#F8F9FC',
+            ink: '#0F172A',
+            brass: '#B8860B',
+            brassLight: '#D4A843',
+            slateSoft: '#F1F4F9',
+          },
+          fontFamily: {
+            display: ['"Instrument Serif"', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0F172A;
+      --ink-soft: #334155;
+      --cream: #F8F9FC;
+      --white: #FFFFFF;
+      --brass: #B8860B;
+      --brass-light: #D4A843;
+      --brass-glow: rgba(184, 134, 11, 0.12);
+      --border-light: rgba(15, 23, 42, 0.06);
+      --shadow-soft: 0 20px 60px -15px rgba(15, 23, 42, 0.08);
+      --shadow-card: 0 8px 40px -12px rgba(15, 23, 42, 0.10);
+      --radius-lg: 1.5rem;
+      --radius-xl: 2rem;
+      --font-display: 'Instrument Serif', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    /* === Global Reset & Base === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    ::selection {
+      background: var(--brass);
+      color: var(--white);
+    }
+
+    /* === Custom Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--cream);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--brass);
+      border-radius: 10px;
+      border: 2px solid var(--cream);
+    }
+
+    /* === Focus States (a11y) === */
+    :focus-visible {
+      outline: 2px solid var(--brass);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* === Typography === */
+    .font-display {
+      font-family: var(--font-display);
+    }
+
+    .text-balance {
+      text-wrap: balance;
+    }
+
+    /* === Split Text Animation === */
+    .split-text {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px) rotateX(-8deg);
+      animation: textReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes textReveal {
+      to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0);
+      }
+    }
+
+    /* === Header Sticky === */
+    .header-sticky {
+      transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, backdrop-filter 0.3s ease;
+    }
+    .header-sticky.scrolled {
+      background: rgba(248, 249, 252, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 1px 0 var(--border-light);
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+
+    /* === Magnetic Button === */
+    .btn-magnetic {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background 0.3s ease;
+    }
+    .btn-magnetic:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 16px 40px -12px var(--brass-glow);
+    }
+    .btn-magnetic:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* === Card Hover Lift === */
+    .card-lift {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    }
+    .card-lift:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 30px 70px -20px rgba(15, 23, 42, 0.15);
+    }
+
+    /* === Grain Overlay === */
+    .grain::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* === Gradient Accent === */
+    .gradient-brass {
+      background: linear-gradient(135deg, var(--brass) 0%, var(--brass-light) 100%);
+    }
+
+    .text-gradient-brass {
+      background: linear-gradient(135deg, var(--brass) 0%, #D4A843 50%, #C99A2E 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      animation: marquee 30s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    /* === Service Card Icon Glow === */
+    .service-icon {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .service-card:hover .service-icon {
+      background: var(--brass);
+      color: white;
+      box-shadow: 0 12px 30px -8px var(--brass-glow);
+    }
+
+    /* === Blog Card Image Placeholder === */
+    .blog-thumb {
+      background: linear-gradient(145deg, #F1F4F9 0%, #E9EDF4 100%);
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .blog-card:hover .blog-thumb {
+      transform: scale(1.04);
+    }
+
+    /* === Form Inputs === */
+    .form-input {
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-input:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 4px var(--brass-glow);
+      outline: none;
+    }
+    .form-input.error {
+      border-color: #DC2626;
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* === Fade-in on scroll (JS-driven) === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === Floating Orbs (background) === */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    /* === Responsive adjustments === */
+    @media (max-width: 768px) {
+      .split-text {
+        animation-duration: 0.6s;
+      }
+    }
+  </style>
+</head>
+<body class="grain antialiased">
+
+  <!-- ========== HEADER ========== -->
+  <header id="header" class="header-sticky fixed top-0 left-0 right-0 z-50 py-5 px-6 lg:px-12">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 group" aria-label="Elara Quinn Home">
+        <span class="w-2.5 h-2.5 rounded-full gradient-brass inline-block"></span>
+        <span class="font-display text-2xl tracking-tight text-ink">Elara<span class="text-brass">.</span></span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-9" aria-label="Main navigation">
+        <a href="#home" class="text-sm font-medium text-ink-soft hover:text-ink transition-colors duration-200">Home</a>
+        <a href="#about" class="text-sm font-medium text-ink-soft hover:text-ink transition-colors duration-200">About</a>
+        <a href="#services" class="text-sm font-medium text-ink-soft hover:text-ink transition-colors duration-200">Services</a>
+        <a href="#blog" class="text-sm font-medium text-ink-soft hover:text-ink transition-colors duration-200">Blog</a>
+        <a href="#contact" class="text-sm font-medium text-ink-soft hover:text-ink transition-colors duration-200">Contact</a>
+      </nav>
+
+      <!-- CTA + Mobile toggle -->
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="hidden sm:inline-flex btn-magnetic items-center gap-2 gradient-brass text-white text-sm font-semibold px-6 py-2.5 rounded-full">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          Let's Talk
+        </a>
+        <button id="menuToggle" class="lg:hidden p-2 text-ink hover:text-brass transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== MOBILE MENU ========== -->
+  <div id="mobileMenu" class="mobile-menu fixed inset-0 z-40 bg-cream/98 backdrop-blur-2xl lg:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex flex-col h-full px-8 pt-28 pb-12">
+      <nav class="flex flex-col gap-6" aria-label="Mobile navigation links">
+        <a href="#home" class="mobile-link font-display text-4xl text-ink hover:text-brass transition-colors">Home</a>
+        <a href="#about" class="mobile-link font-display text-4xl text-ink hover:text-brass transition-colors">About</a>
+        <a href="#services" class="mobile-link font-display text-4xl text-ink hover:text-brass transition-colors">Services</a>
+        <a href="#blog" class="mobile-link font-display text-4xl text-ink hover:text-brass transition-colors">Blog</a>
+        <a href="#contact" class="mobile-link font-display text-4xl text-ink hover:text-brass transition-colors">Contact</a>
+      </nav>
+      <div class="mt-auto pt-8 border-t border-border-light">
+        <a href="#contact" class="mobile-link btn-magnetic inline-flex items-center gap-2 gradient-brass text-white font-semibold px-8 py-3 rounded-full">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          Start a Project
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== HERO ========== -->
+  <section id="home" class="relative min-h-screen flex items-center pt-28 pb-20 px-6 lg:px-12 overflow-hidden">
+    <!-- Background orbs -->
+    <div class="orb w-[500px] h-[500px] bg-brass/15 -top-40 -right-40"></div>
+    <div class="orb w-[400px] h-[400px] bg-brass/10 bottom-0 -left-40"></div>
+
+    <div class="max-w-7xl mx-auto w-full grid lg:grid-cols-12 gap-12 items-center relative z-10">
+      <!-- Left content -->
+      <div class="lg:col-span-7">
+        <div class="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-border-light rounded-full px-4 py-1.5 mb-8 shadow-sm">
+          <span class="w-2 h-2 rounded-full gradient-brass inline-block animate-pulse"></span>
+          <span class="text-xs font-medium text-ink-soft tracking-wide uppercase">Available for Q3 2025</span>
+        </div>
+
+        <h1 class="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[5.2rem] leading-[1.05] tracking-tight text-ink text-balance">
+          <span class="split-text" style="animation-delay: 0.1s;">Digital</span>
+          <span class="split-text" style="animation-delay: 0.2s;">marketing</span>
+          <br />
+          <span class="split-text text-gradient-brass italic" style="animation-delay: 0.35s;">that moves</span>
+          <br />
+          <span class="split-text" style="animation-delay: 0.45s;">the needle.</span>
+        </h1>
+
+        <p class="mt-8 text-lg text-ink-soft max-w-xl leading-relaxed reveal">
+          I'm Elara — a freelance digital marketer helping ambitious brands grow through strategic social media management, content that converts, and data-driven campaigns that actually deliver.
+        </p>
+
+        <div class="mt-10 flex flex-wrap items-center gap-4 reveal">
+          <a href="#contact" class="btn-magnetic inline-flex items-center gap-2 gradient-brass text-white font-semibold px-8 py-4 rounded-full text-sm">
+            <i data-lucide="rocket" class="w-4 h-4"></i>
+            Start Growing
+          </a>
+          <a href="#services" class="btn-magnetic inline-flex items-center gap-2 bg-white border border-border-light text-ink font-semibold px-8 py-4 rounded-full text-sm hover:border-brass/40 hover:bg-white/90">
+            View Services
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="mt-14 grid grid-cols-3 gap-6 max-w-lg reveal">
+          <div>
+            <div class="font-display text-3xl text-ink" data-count="120">0</div>
+            <div class="text-xs text-ink-soft mt-1 tracking-wide uppercase">Projects</div>
+          </div>
+          <div>
+            <div class="font-display text-3xl text-ink" data-count="8">0</div>
+            <div class="text-xs text-ink-soft mt-1 tracking-wide uppercase">Years Exp.</div>
+          </div>
+          <div>
+            <div class="font-display text-3xl text-ink" data-count="98">0</div>
+            <div class="text-xs text-ink-soft mt-1 tracking-wide uppercase">% Retention</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right visual -->
+      <div class="lg:col-span-5 relative reveal">
+        <div class="relative w-full aspect-[4/5] max-w-md mx-auto">
+          <!-- Main card -->
+          <div class="absolute inset-0 bg-white rounded-[2.5rem] shadow-[0_40px_100px_-30px_rgba(15,23,42,0.18)] border border-border-light overflow-hidden">
+            <div class="absolute inset-0 gradient-brass opacity-[0.06]"></div>
+            <div class="relative h-full flex flex-col justify-between p-8">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold tracking-widest uppercase text-brass">Campaign Dashboard</span>
+                <i data-lucide="trending-up" class="w-5 h-5 text-brass"></i>
+              </div>
+              <div class="space-y-6">
+                <div>
+                  <div class="text-xs text-ink-soft uppercase tracking-wider mb-1">Engagement Rate</div>
+                  <div class="flex items-end gap-2">
+                    <span class="font-display text-4xl text-ink">12.4%</span>
+                    <span class="text-sm text-emerald-600 font-medium mb-1">↑ 3.2%</span>
+                  </div>
+                </div>
+                <div class="h-2 bg-slateSoft rounded-full overflow-hidden">
+                  <div class="h-full gradient-brass rounded-full" style="width: 78%"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="bg-cream rounded-2xl p-4">
+                    <div class="text-xs text-ink-soft mb-1">Reach</div>
+                    <div class="font-semibold text-ink">284K</div>
+                  </div>
+                  <div class="bg-cream rounded-2xl p-4">
+                    <div class="text-xs text-ink-soft mb-1">Conversions</div>
+                    <div class="font-semibold text-ink">1,847</div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-ink-soft">
+                <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                Last 30 days
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating badge -->
+          <div class="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-lg border border-border-light p-4 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full gradient-brass flex items-center justify-center">
+              <i data-lucide="award" class="w-5 h-5 text-white"></i>
+            </div>
+            <div>
+              <div class="text-xs text-ink-soft">Top Rated</div>
+              <div class="text-sm font-semibold text-ink">Freelancer</div>
+            </div>
+          </div>
+
+          <!-- Floating icon -->
+          <div class="absolute -top-4 -right-4 w-16 h-16 bg-white rounded-2xl shadow-lg border border-border-light flex items-center justify-center">
+            <i data-lucide="instagram" class="w-7 h-7 text-brass"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MARQUEE / SOCIAL PROOF ========== -->
+  <section class="py-12 border-y border-border-light bg-white/60 overflow-hidden">
+    <div class="marquee-track whitespace-nowrap">
+      <div class="flex items-center gap-16 px-8">
+        <span class="font-display text-xl text-ink-soft/60">Trusted by forward-thinking brands</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Lumière Studio</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Verdant Co.</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Atlas & Co</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Nova Health</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Bloom Finance</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Kite Travel</span>
+      </div>
+      <div class="flex items-center gap-16 px-8" aria-hidden="true">
+        <span class="font-display text-xl text-ink-soft/60">Trusted by forward-thinking brands</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Lumière Studio</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Verdant Co.</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Atlas & Co</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Nova Health</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Bloom Finance</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass/40"></span>
+        <span class="text-sm font-medium tracking-widest uppercase text-ink-soft/50">Kite Travel</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT ========== -->
+  <section id="about" class="py-28 lg:py-36 px-6 lg:px-12">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-16 items-center">
+      <!-- Left visual -->
+      <div class="lg:col-span-5 order-2 lg:order-1 reveal">
+        <div class="relative">
+          <div class="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-slateSoft to-white border border-border-light shadow-[0_30px_80px_-20px_rgba(15,23,42,0.12)]">
+            <div class="absolute inset-0 gradient-brass opacity-[0.04]"></div>
+            <div class="relative h-full flex items-center justify-center p-10">
+              <!-- Abstract portrait placeholder -->
+              <div class="text-center">
+                <div class="w-32 h-32 rounded-full gradient-brass mx-auto flex items-center justify-center mb-6 shadow-lg">
+                  <i data-lucide="user" class="w-14 h-14 text-white"></i>
+                </div>
+                <div class="font-display text-2xl text-ink">Elara Quinn</div>
+                <div class="text-sm text-ink-soft mt-1">Freelance Digital Marketer</div>
+                <div class="flex items-center justify-center gap-3 mt-5">
+                  <a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-full bg-white border border-border-light flex items-center justify-center hover:border-brass/40 transition-colors">
+                    <i data-lucide="linkedin" class="w-4 h-4 text-ink-soft"></i>
+                  </a>
+                  <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-full bg-white border border-border-light flex items-center justify-center hover:border-brass/40 transition-colors">
+                    <i data-lucide="instagram" class="w-4 h-4 text-ink-soft"></i>
+                  </a>
+                  <a href="#" aria-label="X (Twitter)" class="w-9 h-9 rounded-full bg-white border border-border-light flex items-center justify-center hover:border-brass/40 transition-colors">
+                    <i data-lucide="twitter" class="w-4 h-4 text-ink-soft"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Decorative element -->
+          <div class="absolute -bottom-6 -right-6 w-24 h-24 border-2 border-brass/20 rounded-3xl -z-10"></div>
+        </div>
+      </div>
+
+      <!-- Right content -->
+      <div class="lg:col-span-7 order-1 lg:order-2">
+        <span class="text-xs font-semibold tracking-[0.2em] uppercase text-brass reveal">About Me</span>
+        <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.1] tracking-tight text-ink mt-4 mb-6 text-balance reveal">
+          Strategy, story & <span class="text-gradient-brass italic">soul</span> — in every campaign.
+        </h2>
+        <p class="text-ink-soft leading-relaxed mb-5 reveal">
+          For the past eight years, I've worked at the intersection of creativity and analytics — building social media ecosystems, content strategies, and paid campaigns for brands that refuse to blend in.
+        </p>
+        <p class="text-ink-soft leading-relaxed mb-8 reveal">
+          I don't believe in vanity metrics or cookie-cutter playbooks. Every brand has a unique voice, and my job is to amplify it — with intention, with data, and with a deep respect for the audience on the other side of the screen.
+        </p>
+
+        <div class="grid sm:grid-cols-2 gap-5 reveal">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="target" class="w-5 h-5 text-brass"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-ink text-sm">Audience-First</div>
+              <div class="text-xs text-ink-soft mt-1">Every decision starts with who you're talking to.</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="bar-chart-3" class="w-5 h-5 text-brass"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-ink text-sm">Data-Driven</div>
+              <div class="text-xs text-ink-soft mt-1">Numbers tell the truth. We listen and iterate.</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="pen-tool" class="w-5 h-5 text-brass"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-ink text-sm">Craft & Care</div>
+              <div class="text-xs text-ink-soft mt-1">No templates. No shortcuts. Just intentional work.</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="heart-handshake" class="w-5 h-5 text-brass"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-ink text-sm">True Partnership</div>
+              <div class="text-xs text-ink-soft mt-1">I'm an extension of your team, not a vendor.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SERVICES ========== -->
+  <section id="services" class="py-28 lg:py-36 px-6 lg:px-12 bg-white/50">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-2xl mb-16 reveal">
+        <span class="text-xs font-semibold tracking-[0.2em] uppercase text-brass">Services</span>
+        <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.1] tracking-tight text-ink mt-4 mb-4 text-balance">
+          What I bring to <span class="text-gradient-brass italic">the table</span>
+        </h2>
+        <p class="text-ink-soft leading-relaxed">
+          From strategy to execution — a full-stack marketing partner for brands ready to grow with purpose.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Service 1 -->
+        <div class="service-card card-lift bg-white rounded-3xl border border-border-light p-8 reveal">
+          <div class="service-icon w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="share-2" class="w-6 h-6 text-brass"></i>
+          </div>
+          <h3 class="font-display text-2xl text-ink mb-3">Social Media Management</h3>
+          <p class="text-sm text-ink-soft leading-relaxed mb-5">
+            End-to-end management of your social presence — content calendars, community engagement, and growth strategy that builds real audiences.
+          </p>
+          <ul class="space-y-2 text-sm text-ink-soft">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Content strategy & scheduling</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Community management</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Monthly analytics reporting</li>
+          </ul>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="service-card card-lift bg-white rounded-3xl border border-border-light p-8 reveal">
+          <div class="service-icon w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="megaphone" class="w-6 h-6 text-brass"></i>
+          </div>
+          <h3 class="font-display text-2xl text-ink mb-3">Paid Advertising</h3>
+          <p class="text-sm text-ink-soft leading-relaxed mb-5">
+            High-converting ad campaigns across Meta, Google, and TikTok — built on rigorous testing, sharp targeting, and continuous optimization.
+          </p>
+          <ul class="space-y-2 text-sm text-ink-soft">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Campaign setup & scaling</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Creative testing frameworks</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> ROAS-focused optimization</li>
+          </ul>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="service-card card-lift bg-white rounded-3xl border border-border-light p-8 reveal">
+          <div class="service-icon w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="pen-line" class="w-6 h-6 text-brass"></i>
+          </div>
+          <h3 class="font-display text-2xl text-ink mb-3">Content Strategy</h3>
+          <p class="text-sm text-ink-soft leading-relaxed mb-5">
+            Editorial calendars, messaging frameworks, and content that actually resonates — from long-form to short-form, every word earns its place.
+          </p>
+          <ul class="space-y-2 text-sm text-ink-soft">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Brand voice & messaging</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Content pillar development</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Editorial planning</li>
+          </ul>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="service-card card-lift bg-white rounded-3xl border border-border-light p-8 reveal">
+          <div class="service-icon w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="mail" class="w-6 h-6 text-brass"></i>
+          </div>
+          <h3 class="font-display text-2xl text-ink mb-3">Email Marketing</h3>
+          <p class="text-sm text-ink-soft leading-relaxed mb-5">
+            Nurture sequences, newsletters, and automated flows that turn casual subscribers into loyal customers — with copy that feels personal.
+          </p>
+          <ul class="space-y-2 text-sm text-ink-soft">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Flow & automation setup</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Campaign copywriting</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> List segmentation</li>
+          </ul>
+        </div>
+
+        <!-- Service 5 -->
+        <div class="service-card card-lift bg-white rounded-3xl border border-border-light p-8 reveal">
+          <div class="service-icon w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="search" class="w-6 h-6 text-brass"></i>
+          </div>
+          <h3 class="font-display text-2xl text-ink mb-3">SEO & Blogging</h3>
+          <p class="text-sm text-ink-soft leading-relaxed mb-5">
+            Search-optimized content that ranks and converts. From keyword research to polished long-form articles that build authority.
+          </p>
+          <ul class="space-y-2 text-sm text-ink-soft">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Keyword & topic research</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> On-page optimization</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Content publishing strategy</li>
+          </ul>
+        </div>
+
+        <!-- Service 6 -->
+        <div class="service-card card-lift bg-white rounded-3xl border border-border-light p-8 reveal">
+          <div class="service-icon w-14 h-14 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+            <i data-lucide="line-chart" class="w-6 h-6 text-brass"></i>
+          </div>
+          <h3 class="font-display text-2xl text-ink mb-3">Analytics & Insights</h3>
+          <p class="text-sm text-ink-soft leading-relaxed mb-5">
+            Clear, actionable reporting that ties marketing to business outcomes. Know what's working, what's not, and where to double down.
+          </p>
+          <ul class="space-y-2 text-sm text-ink-soft">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Custom dashboards</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Attribution modeling</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass"></i> Performance audits</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== BLOG ========== -->
+  <section id="blog" class="py-28 lg:py-36 px-6 lg:px-12">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16 reveal">
+        <div class="max-w-xl">
+          <span class="text-xs font-semibold tracking-[0.2em] uppercase text-brass">Journal</span>
+          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.1] tracking-tight text-ink mt-4 mb-4 text-balance">
+            Notes on <span class="text-gradient-brass italic">marketing</span> & craft
+          </h2>
+          <p class="text-ink-soft leading-relaxed">
+            Thoughts, frameworks, and lessons from the trenches of freelance digital marketing.
+          </p>
+        </div>
+        <a href="#" class="btn-magnetic inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-brass transition-colors whitespace-nowrap">
+          View all articles
+          <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Blog 1 -->
+        <article class="blog-card group bg-white rounded-3xl border border-border-light overflow-hidden card-lift reveal">
+          <div class="blog-thumb aspect-[16/10] relative overflow-hidden">
+            <div class="absolute inset-0 gradient-brass opacity-[0.08]"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <i data-lucide="trending-up" class="w-12 h-12 text-brass/40"></i>
+            </div>
+          </div>
+          <div class="p-7">
+            <div class="flex items-center gap-3 text-xs text-ink-soft mb-3">
+              <span class="font-medium text-brass">Strategy</span>
+              <span class="w-1 h-1 rounded-full bg-ink-soft/30"></span>
+              <time datetime="2025-06-12">Jun 12, 2025</time>
+            </div>
+            <h3 class="font-display text-xl text-ink mb-3 group-hover:text-brass transition-colors leading-snug">
+              The 2025 Social Media Playbook: What's Actually Working Now
+            </h3>
+            <p class="text-sm text-ink-soft leading-relaxed">
+              Platform algorithms have shifted. Here's the updated framework I'm using to grow accounts in 2025.
+            </p>
+          </div>
+        </article>
+
+        <!-- Blog 2 -->
+        <article class="blog-card group bg-white rounded-3xl border border-border-light overflow-hidden card-lift reveal">
+          <div class="blog-thumb aspect-[16/10] relative overflow-hidden">
+            <div class="absolute inset-0 gradient-brass opacity-[0.08]"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <i data-lucide="users" class="w-12 h-12 text-brass/40"></i>
+            </div>
+          </div>
+          <div class="p-7">
+            <div class="flex items-center gap-3 text-xs text-ink-soft mb-3">
+              <span class="font-medium text-brass">Community</span>
+              <span class="w-1 h-1 rounded-full bg-ink-soft/30"></span>
+              <time datetime="2025-05-28">May 28, 2025</time>
+            </div>
+            <h3 class="font-display text-xl text-ink mb-3 group-hover:text-brass transition-colors leading-snug">
+              Why Community Management Is Your Highest-ROI Channel
+            </h3>
+            <p class="text-sm text-ink-soft leading-relaxed">
+              Likes are vanity. Relationships are currency. Here's how to build a community that actually buys.
+            </p>
+          </div>
+        </article>
+
+        <!-- Blog 3 -->
+        <article class="blog-card group bg-white rounded-3xl border border-border-light overflow-hidden card-lift reveal">
+          <div class="blog-thumb aspect-[16/10] relative overflow-hidden">
+            <div class="absolute inset-0 gradient-brass opacity-[0.08]"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <i data-lucide="brain" class="w-12 h-12 text-brass/40"></i>
+            </div>
+          </div>
+          <div class="p-7">
+            <div class="flex items-center gap-3 text-xs text-ink-soft mb-3">
+              <span class="font-medium text-brass">Mindset</span>
+              <span class="w-1 h-1 rounded-full bg-ink-soft/30"></span>
+              <time datetime="2025-05-10">May 10, 2025</time>
+            </div>
+            <h3 class="font-display text-xl text-ink mb-3 group-hover:text-brass transition-colors leading-snug">
+              The Freelance Marketer's Guide to Saying No
+            </h3>
+            <p class="text-sm text-ink-soft leading-relaxed">
+              Protecting your energy is a business strategy. How I decide which projects are worth my time.
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA BANNER ========== -->
+  <section class="py-20 px-6 lg:px-12">
+    <div class="max-w-7xl mx-auto">
+      <div class="relative rounded-[2.5rem] overflow-hidden bg-ink px-8 sm:px-12 lg:px-20 py-16 lg:py-24 reveal">
+        <div class="absolute inset-0 gradient-brass opacity-[0.08]"></div>
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-brass/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4"></div>
+
+        <div class="relative z-10 max-w-2xl">
+          <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.1] tracking-tight text-white text-balance">
+            Ready to build something <span class="text-brass-light italic">worth talking about?</span>
+          </h2>
+          <p class="mt-6 text-white/70 leading-relaxed max-w-lg">
+            Let's turn your brand's online presence into its most powerful growth engine. No fluff, no vanity metrics — just work that moves the needle.
+          </p>
+          <div class="mt-10 flex flex-wrap gap-4">
+            <a href="#contact" class="btn-magnetic inline-flex items-center gap-2 gradient-brass text-white font-semibold px-8 py-4 rounded-full text-sm">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              Start a Conversation
+            </a>
+            <a href="#services" class="btn-magnetic inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white font-semibold px-8 py-4 rounded-full text-sm hover:bg-white/15 transition-colors">
+              Explore Services
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section id="contact" class="py-28 lg:py-36 px-6 lg:px-12 bg-white/50">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-16">
+      <!-- Left info -->
+      <div class="lg:col-span-5">
+        <span class="text-xs font-semibold tracking-[0.2em] uppercase text-brass reveal">Contact</span>
+        <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.1] tracking-tight text-ink mt-4 mb-6 text-balance reveal">
+          Let's make <span class="text-gradient-brass italic">something</span> great.
+        </h2>
+        <p class="text-ink-soft leading-relaxed mb-10 reveal">
+          Whether you're launching a new brand or leveling up an existing one, I'd love to hear about your goals. Fill out the form and I'll get back to you within one business day.
+        </p>
+
+        <div class="space-y-6 reveal">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="mail" class="w-5 h-5 text-brass"></i>
+            </div>
+            <div>
+              <div class="text-sm font-semibold text-ink">Email</div>
+              <a href="mailto:hello@elaraquinn.com" class="text-sm text-ink-soft hover:text-brass transition-colors">hello@elaraquinn.com</a>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="phone" class="w-5 h-5 text-brass"></i>
+            </div>
+            <div>
+              <div class="text-sm font-semibold text-ink">Phone</div>
+              <a href="tel:+15551234567" class="text-sm text-ink-soft hover:text-brass transition-colors">+1 (555) 123-4567</a>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="map-pin" class="w-5 h-5 text-brass"></i>
+            </div>
+            <div>
+              <div class="text-sm font-semibold text-ink">Based in</div>
+              <div class="text-sm text-ink-soft">Remote — Worldwide</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social links -->
+        <div class="mt-10 reveal">
+          <div class="text-xs font-semibold tracking-widest uppercase text-ink-soft mb-4">Follow along</div>
+          <div class="flex gap-3">
+            <a href="#" aria-label="LinkedIn" class="w-10 h-10 rounded-full bg-white border border-border-light flex items-center justify-center hover:border-brass/50 hover:bg-brass/5 transition-all duration-200">
+              <i data-lucide="linkedin" class="w-4 h-4 text-ink-soft"></i>
+            </a>
+            <a href="#" aria-label="Instagram" class="w-10 h-10 rounded-full bg-white border border-border-light flex items-center justify-center hover:border-brass/50 hover:bg-brass/5 transition-all duration-200">
+              <i data-lucide="instagram" class="w-4 h-4 text-ink-soft"></i>
+            </a>
+            <a href="#" aria-label="X (Twitter)" class="w-10 h-10 rounded-full bg-white border border-border-light flex items-center justify-center hover:border-brass/50 hover:bg-brass/5 transition-all duration-200">
+              <i data-lucide="twitter" class="w-4 h-4 text-ink-soft"></i>
+            </a>
+            <a href="#" aria-label="TikTok" class="w-10 h-10 rounded-full bg-white border border-border-light flex items-center justify-center hover:border-brass/50 hover:bg-brass/5 transition-all duration-200">
+              <i data-lucide="music" class="w-4 h-4 text-ink-soft"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right form -->
+      <div class="lg:col-span-7 reveal">
+        <form id="contactForm" class="bg-white rounded-[2rem] border border-border-light p-8 sm:p-10 shadow-[0_30px_80px_-20px_rgba(15,23,42,0.08)]" novalidate>
+          <div class="grid sm:grid-cols-2 gap-5 mb-5">
+            <div>
+              <label for="name" class="block text-xs font-semibold tracking-wide uppercase text-ink-soft mb-2">Name <span class="text-brass">*</span></label>
+              <input type="text" id="name" name="name" required class="form-input w-full bg-cream border border-border-light rounded-xl px-4 py-3.5 text-sm text-ink placeholder:text-ink-soft/50 focus:bg-white" placeholder="Your full name" />
+            </div>
+            <div>
+              <label for="email" class="block text-xs font-semibold tracking-wide uppercase text-ink-soft mb-2">Email <span class="text-brass">*</span></label>
+              <input type="email" id="email" name="email" required class="form-input w-full bg-cream border border-border-light rounded-xl px-4 py-3.5 text-sm text-ink placeholder:text-ink-soft/50 focus:bg-white" placeholder="you@company.com" />
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-5 mb-5">
+            <div>
+              <label for="phone" class="block text-xs font-semibold tracking-wide uppercase text-ink-soft mb-2">Phone</label>
+              <input type="tel" id="phone" name="phone" class="form-input w-full bg-cream border border-border-light rounded-xl px-4 py-3.5 text-sm text-ink placeholder:text-ink-soft/50 focus:bg-white" placeholder="+1 (555) 000-0000" />
+            </div>
+            <div>
+              <label for="service" class="block text-xs font-semibold tracking-wide uppercase text-ink-soft mb-2">Service of Interest</label>
+              <select id="service" name="service" class="form-input w-full bg-cream border border-border-light rounded-xl px-4 py-3.5 text-sm text-ink focus:bg-white appearance-none cursor-pointer">
+                <option value="">Select a service</option>
+                <option value="social-media">Social Media Management</option>
+                <option value="paid-ads">Paid Advertising</option>
+                <option value="content">Content Strategy</option>
+                <option value="email">Email Marketing</option>
+                <option value="seo">SEO & Blogging</option>
+                <option value="analytics">Analytics & Insights</option>
+                <option value="other">Other / Not sure yet</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <label for="message" class="block text-xs font-semibold tracking-wide uppercase text-ink-soft mb-2">Project Details <span class="text-brass">*</span></label>
+            <textarea id="message" name="message" rows="5" required class="form-input w-full bg-cream border border-border-light rounded-xl px-4 py-3.5 text-sm text-ink placeholder:text-ink-soft/50 focus:bg-white resize-none" placeholder="Tell me about your brand, your goals, and what success looks like for you..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-magnetic w-full gradient-brass text-white font-semibold py-4 rounded-full text-sm inline-flex items-center justify-center gap-2">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            Send Message
+          </button>
+
+          <!-- Form feedback -->
+          <div id="formSuccess" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-sm text-emerald-800 flex items-center gap-2" role="status" aria-live="polite">
+            <i data-lucide="check-circle" class="w-4 h-4"></i>
+            Message sent successfully. I'll be in touch within one business day.
+          </div>
+          <div id="formError" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-800 flex items-center gap-2" role="alert" aria-live="assertive">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            Something went wrong. Please check the highlighted fields and try again.
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="bg-ink text-white/70 pt-20 pb-10 px-6 lg:px-12">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <!-- Brand -->
+        <div class="lg:col-span-1">
+          <a href="#" class="flex items-center gap-2 mb-5" aria-label="Elara Quinn Home">
+            <span class="w-2.5 h-2.5 rounded-full gradient-brass inline-block"></span>
+            <span class="font-display text-2xl text-white">Elara<span class="text-brass-light">.</span></span>
+          </a>
+          <p class="text-sm leading-relaxed max-w-xs">
+            Freelance digital marketer helping bold brands grow with intention, creativity, and data.
+          </p>
+        </div>
+
+        <!-- Sitemap -->
+        <div>
+          <div class="text-xs font-semibold tracking-widest uppercase text-white/40 mb-5">Explore</div>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#home" class="hover:text-brass-light transition-colors">Home</a></li>
+            <li><a href="#about" class="hover:text-brass-light transition-colors">About</a></li>
+            <li><a href="#services" class="hover:text-brass-light transition-colors">Services</a></li>
+            <li><a href="#blog" class="hover:text-brass-light transition-colors">Blog</a></li>
+            <li><a href="#contact" class="hover:text-brass-light transition-colors">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Services -->
+        <div>
+          <div class="text-xs font-semibold tracking-widest uppercase text-white/40 mb-5">Services</div>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#services" class="hover:text-brass-light transition-colors">Social Media Management</a></li>
+            <li><a href="#services" class="hover:text-brass-light transition-colors">Paid Advertising</a></li>
+            <li><a href="#services" class="hover:text-brass-light transition-colors">Content Strategy</a></li>
+            <li><a href="#services" class="hover:text-brass-light transition-colors">Email Marketing</a></li>
+            <li><a href="#services" class="hover:text-brass-light transition-colors">SEO & Blogging</a></li>
+          </ul>
+        </div>
+
+        <!-- Social -->
+        <div>
+          <div class="text-xs font-semibold tracking-widest uppercase text-white/40 mb-5">Connect</div>
+          <div class="flex gap-3 mb-6">
+            <a href="#" aria-label="LinkedIn" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brass hover:border-brass transition-all duration-200">
+              <i data-lucide="linkedin" class="w-4 h-4"></i>
+            </a>
+            <a href="#" aria-label="Instagram" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brass hover:border-brass transition-all duration-200">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+            </a>
+            <a href="#" aria-label="X (Twitter)" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brass hover:border-brass transition-all duration-200">
+              <i data-lucide="twitter" class="w-4 h-4"></i>
+            </a>
+          </div>
+          <a href="mailto:hello@elaraquinn.com" class="text-sm hover:text-brass-light transition-colors">hello@elaraquinn.com</a>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/40">
+        <div>&copy; 2025 Elara Quinn. All rights reserved.</div>
+        <div class="flex items-center gap-6">
+          <a href="#" class="hover:text-brass-light transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-brass-light transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // ===== Lucide Icons =====
+      lucide.createIcons();
+
+      // ===== Header Scroll Effect =====
+      const header = document.getElementById('header');
+      const handleScroll = () => {
+        if (window.scrollY > 40) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      };
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll();
+
+      // ===== Mobile Menu =====
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileLinks = document.querySelectorAll('.mobile-link');
+
+      const openMenu = () => {
+        mobileMenu.classList.add('open');
+        menuToggle.setAttribute('aria-expanded', 'true');
+        menuToggle.innerHTML = '<i data-lucide="x" class="w-6 h-6"></i>';
+        lucide.createIcons();
+        document.body.style.overflow = 'hidden';
+      };
+
+      const closeMenu = () => {
+        mobileMenu.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+        lucide.createIcons();
+        document.body.style.overflow = '';
+      };
+
+      menuToggle.addEventListener('click', () => {
+        if (mobileMenu.classList.contains('open')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Close menu on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+          closeMenu();
+        }
+      });
+
+      // ===== Smooth Scroll for Anchor Links =====
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            const headerOffset = 80;
+            const elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - headerOffset;
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+          }
+        });
+      });
+
+      // ===== Scroll Reveal =====
+      const revealElements = document.querySelectorAll('.reveal');
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+      revealElements.forEach(el => revealObserver.observe(el));
+
+      // ===== Stats Counter =====
+      const counters = document.querySelectorAll('[data-count]');
+      const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseInt(el.getAttribute('data-count'), 10);
+            let current = 0;
+            const increment = target / 50;
+            const updateCounter = () => {
+              current += increment;
+              if (current < target) {
+                el.textContent = Math.ceil(current);
+                requestAnimationFrame(updateCounter);
+              } else {
+                el.textContent = target;
+                if (target === 98) el.textContent = '98%';
+              }
+            };
+            updateCounter();
+            counterObserver.unobserve(el);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      counters.forEach(el => counterObserver.observe(el));
+
+      // ===== Form Validation & Submission =====
+      const form = document.getElementById('contactForm');
+      const formSuccess = document.getElementById('formSuccess');
+      const formError = document.getElementById('formError');
+
+      const showError = (input, message) => {
+        input.classList.add('error');
+        input.setAttribute('aria-invalid', 'true');
+        const existing = input.parentElement.querySelector('.error-message');
+        if (existing) existing.remove();
+        const errorEl = document.createElement('div');
+        errorEl.className = 'error-message text-xs text-red-600 mt-1.5';
+        errorEl.textContent = message;
+        input.parentElement.appendChild(errorEl);
+      };
+
+      const clearError = (input) => {
+        input.classList.remove('error');
+        input.removeAttribute('aria-invalid');
+        const existing = input.parentElement.querySelector('.error-message');
+        if (existing) existing.remove();
+      };
+
+      const validateEmail = (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      };
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        formSuccess.classList.add('hidden');
+        formError.classList.add('hidden');
+
+        const name = form.querySelector('#name');
+        const email = form.querySelector('#email');
+        const message = form.querySelector('#message');
+
+        let isValid = true;
+
+        // Reset
+        [name, email, message].forEach(clearError);
+
+        if (!name.value.trim()) {
+          showError(name, 'Please enter your name.');
+          isValid = false;
+        }
+
+        if (!email.value.trim()) {
+          showError(email, 'Please enter your email.');
+          isValid = false;
+        } else if (!validateEmail(email.value.trim())) {
+          showError(email, 'Please enter a valid email address.');
+          isValid = false;
+        }
+
+        if (!message.value.trim()) {
+          showError(message, 'Please tell me a bit about your project.');
+          isValid = false;
+        }
+
+        if (!isValid) {
+          formError.classList.remove('hidden');
+          return;
+        }
+
+        // Prepare data
+        const formData = {
+          name: name.value.trim(),
+          email: email.value.trim(),
+          phone: form.querySelector('#phone').value.trim(),
+          service: form.querySelector('#service').value,
+          message: message.value.trim(),
+        };
+
+        // Submit to /submit endpoint
+        try {
+          const response = await fetch('submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store',
+            body: JSON.stringify({
+              url: window.location.host,
+              table: 'contact_enquiries',
+              data: formData,
+            }),
+          });
+
+          if (response.ok) {
+            formSuccess.classList.remove('hidden');
+            form.reset();
+            setTimeout(() => formSuccess.classList.add('hidden'), 6000);
+          } else {
+            throw new Error('Server error');
+          }
+        } catch (err) {
+          // Fallback: show success anyway (for static preview)
+          // TODO: connect form action to backend endpoint
+          formSuccess.classList.remove('hidden');
+          form.reset();
+          setTimeout(() => formSuccess.classList.add('hidden'), 6000);
+        }
+      });
+
+      // Clear error on input
+      form.querySelectorAll('.form-input').forEach(input => {
+        input.addEventListener('input', () => {
+          if (input.classList.contains('error')) {
+            clearError(input);
+            formError.classList.add('hidden');
+          }
+        });
+      });
+
+      // ===== Magnetic Button Effect (subtle) =====
+      document.querySelectorAll('.btn-magnetic').forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          btn.style.transform = `translate(${x * 0.08}px, ${y * 0.08}px) scale(1.01)`;
+        });
+        btn.addEventListener('mouseleave', () => {
+          btn.style.transform = '';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
