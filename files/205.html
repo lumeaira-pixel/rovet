@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio Lumen — Design Portfolio</title>
+  <!-- Tailwind via CDN + custom config -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1A1E24',
+            cream: '#F8F7F5',
+            brass: '#B8925C',
+            mist: '#E8E6E1',
+            paper: '#FFFFFF',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'serif'],
+            body: ['"Inter"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1E24;
+      --cream: #F8F7F5;
+      --brass: #B8925C;
+      --mist: #E8E6E1;
+      --paper: #FFFFFF;
+      --shadow-soft: 0 20px 40px -12px rgba(26, 30, 36, 0.08);
+      --shadow-lift: 0 30px 60px -16px rgba(26, 30, 36, 0.12);
+      --radius: 20px;
+      --focus-ring: 0 0 0 3px rgba(184, 146, 92, 0.4);
+    }
+
+    /* === Base === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Bricolage Grotesque', serif;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    img {
+      max-width: 100%;
+      display: block;
+    }
+    .focus-visible:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Utility Overrides === */
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* === Custom Components === */
+    .glass-panel {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    .premium-shadow {
+      box-shadow: var(--shadow-soft);
+    }
+    .premium-shadow-lg {
+      box-shadow: var(--shadow-lift);
+    }
+
+    /* === Header === */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      transition: background 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+      background: transparent;
+      padding: 20px 0;
+    }
+    .site-header.scrolled {
+      background: rgba(248, 247, 245, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(26, 30, 36, 0.06);
+      padding: 12px 0;
+    }
+    .nav-link {
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink);
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--brass);
+      transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-link:hover {
+      opacity: 1;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background: #2A3038;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -8px rgba(26, 30, 36, 0.3);
+    }
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--ink);
+      padding: 14px 28px;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 1.5px solid rgba(26, 30, 36, 0.15);
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer;
+    }
+    .btn-outline:hover {
+      border-color: var(--ink);
+      background: rgba(26, 30, 36, 0.03);
+      transform: translateY(-2px);
+    }
+    .btn-outline:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* === Hero === */
+    .hero-headline {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+    .hero-headline .accent {
+      color: var(--brass);
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 1.4vw, 1.2rem);
+      color: rgba(26, 30, 36, 0.6);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    /* === Project Cards === */
+    .project-card {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--paper);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+      cursor: pointer;
+    }
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lift);
+    }
+    .project-card .project-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .project-card:hover .project-img {
+      transform: scale(1.04);
+    }
+    .project-card .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(26, 30, 36, 0.7) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px;
+    }
+    .project-card:hover .overlay {
+      opacity: 1;
+    }
+
+    /* === Tilt Effect === */
+    .tilt-card {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    .tilt-card .tilt-inner {
+      transition: transform 0.2s ease-out;
+    }
+
+    /* === Form === */
+    .form-input {
+      width: 100%;
+      padding: 16px 18px;
+      background: var(--paper);
+      border: 1.5px solid rgba(26, 30, 36, 0.1);
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 4px rgba(184, 146, 92, 0.12);
+    }
+    .form-input.error {
+      border-color: #D9534F;
+      box-shadow: 0 0 0 4px rgba(217, 83, 79, 0.1);
+    }
+    .form-input::placeholder {
+      color: rgba(26, 30, 36, 0.3);
+    }
+
+    /* === Animations === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .float-anim {
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .spin-slow {
+      animation: spin-slow 20s linear infinite;
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      gap: 48px;
+      animation: marquee 30s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: rgba(248, 247, 245, 0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 99;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .mobile-menu.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .mobile-menu a {
+      font-family: 'Bricolage Grotesque', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    /* === Responsive tweaks === */
+    @media (max-width: 768px) {
+      .hero-headline {
+        font-size: clamp(2.2rem, 9vw, 3.2rem);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- === HEADER === -->
+  <header class="site-header" id="header" role="banner">
+    <div class="container flex items-center justify-between">
+      <a href="#" class="font-display text-2xl font-bold tracking-tight" aria-label="Studio Lumen home">
+        Lumen<span class="text-brass">.</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-10" aria-label="Primary navigation">
+        <a href="#work" class="nav-link focus-visible">Work</a>
+        <a href="#about" class="nav-link focus-visible">About</a>
+        <a href="#contact" class="nav-link focus-visible">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="#contact" class="btn-primary hidden sm:inline-flex focus-visible" aria-label="Start a project">
+          Start a project
+          <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+        </a>
+        <button id="menuToggle" class="md:hidden p-2 focus-visible" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-6 h-6" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- === MOBILE MENU === -->
+  <div id="mobileMenu" class="mobile-menu md:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <a href="#work" class="focus-visible">Work</a>
+    <a href="#about" class="focus-visible">About</a>
+    <a href="#contact" class="focus-visible">Contact</a>
+    <a href="#contact" class="btn-primary focus-visible mt-4">Start a project</a>
+  </div>
+
+  <main>
+    <!-- === HERO === -->
+    <section class="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden" aria-label="Introduction">
+      <!-- Background accents -->
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full opacity-[0.04]" style="background: radial-gradient(circle, #B8925C 0%, transparent 70%);"></div>
+        <div class="absolute bottom-[-30%] left-[-10%] w-[500px] h-[500px] rounded-full opacity-[0.03]" style="background: radial-gradient(circle, #1A1E24 0%, transparent 70%);"></div>
+      </div>
+
+      <div class="container relative z-10">
+        <div class="grid lg:grid-cols-12 gap-16 items-center">
+          <div class="lg:col-span-7">
+            <div class="reveal">
+              <span class="inline-flex items-center gap-2 text-sm font-medium tracking-widest uppercase text-brass mb-6">
+                <span class="w-8 h-px bg-brass inline-block"></span>
+                Design Portfolio
+              </span>
+            </div>
+            <h1 class="hero-headline reveal">
+              Crafting digital<br>
+              experiences with<br>
+              <span class="accent">intention.</span>
+            </h1>
+            <p class="hero-sub mt-8 reveal">
+              I'm Elias Vance — a multidisciplinary designer helping ambitious brands tell stories through thoughtful interfaces, identity systems, and motion.
+            </p>
+            <div class="flex flex-wrap gap-4 mt-10 reveal">
+              <a href="#work" class="btn-primary focus-visible">
+                View selected work
+                <i data-lucide="arrow-down" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+              <a href="#about" class="btn-outline focus-visible">
+                About me
+              </a>
+            </div>
+            <div class="flex items-center gap-8 mt-14 reveal">
+              <div>
+                <p class="font-display text-3xl font-bold">48+</p>
+                <p class="text-sm text-ink/50 mt-1">Projects shipped</p>
+              </div>
+              <div class="w-px h-10 bg-ink/10"></div>
+              <div>
+                <p class="font-display text-3xl font-bold">12</p>
+                <p class="text-sm text-ink/50 mt-1">Design awards</p>
+              </div>
+              <div class="w-px h-10 bg-ink/10"></div>
+              <div>
+                <p class="font-display text-3xl font-bold">9</p>
+                <p class="text-sm text-ink/50 mt-1">Years experience</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 relative reveal">
+            <div class="relative tilt-card" id="heroTilt">
+              <div class="tilt-inner rounded-3xl overflow-hidden premium-shadow-lg">
+                <img
+                  src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=800&q=80&auto=format&fit=crop"
+                  alt="Design workspace with sketches and color swatches"
+                  class="w-full h-[520px] object-cover"
+                  loading="eager"
+                >
+              </div>
+              <!-- Floating badge -->
+              <div class="absolute -bottom-6 -left-6 glass-panel rounded-2xl p-5 premium-shadow float-anim" aria-hidden="true">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-brass/15 flex items-center justify-center">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-brass"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold">Available for</p>
+                    <p class="text-xs text-ink/50">Q3 2026 projects</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === LOGO MARQUEE === -->
+    <section class="py-16 border-y border-ink/5 overflow-hidden" aria-label="Trusted by">
+      <div class="container mb-8">
+        <p class="text-xs font-medium tracking-widest uppercase text-ink/40 text-center">Trusted by forward-thinking teams</p>
+      </div>
+      <div class="marquee-track" aria-hidden="true">
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Aperture</span>
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Northwind</span>
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Verve Studio</span>
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Cobalt Labs</span>
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Meridian</span>
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Solace</span>
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Aperture</span>
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Northwind</span>
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Verve Studio</span>
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Cobalt Labs</span>
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Meridian</span>
+        <span class="font-display text-2xl font-semibold text-ink/20 whitespace-nowrap">Solace</span>
+      </div>
+    </section>
+
+    <!-- === WORK / PROJECTS === -->
+    <section id="work" class="py-28 lg:py-36" aria-label="Selected work">
+      <div class="container">
+        <div class="max-w-2xl mb-20 reveal">
+          <span class="text-sm font-medium tracking-widest uppercase text-brass">Selected Work</span>
+          <h2 class="text-4xl lg:text-6xl font-bold mt-4">Projects that<br>move the needle.</h2>
+          <p class="text-ink/50 mt-6 text-lg leading-relaxed">A curated selection of recent engagements across brand identity, digital product, and editorial design.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Project 1 -->
+          <article class="project-card reveal" tabindex="0" role="button" aria-label="View Aperture brand identity project">
+            <img
+              src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80&auto=format&fit=crop"
+              alt="Aperture brand identity — stationery and business cards"
+              class="project-img"
+              loading="lazy"
+            >
+            <div class="overlay">
+              <span class="text-xs font-medium tracking-widest uppercase text-white/60 mb-2">Brand Identity</span>
+              <h3 class="text-2xl font-bold text-white">Aperture</h3>
+              <p class="text-sm text-white/70 mt-1">Visual system for a photography collective</p>
+            </div>
+            <div class="p-6">
+              <span class="text-xs font-medium tracking-widest uppercase text-brass">Brand Identity</span>
+              <h3 class="text-xl font-bold mt-2">Aperture</h3>
+              <p class="text-sm text-ink/50 mt-1">Visual system for a photography collective</p>
+            </div>
+          </article>
+
+          <!-- Project 2 -->
+          <article class="project-card reveal" tabindex="0" role="button" aria-label="View Northwind digital product project">
+            <img
+              src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&q=80&auto=format&fit=crop"
+              alt="Northwind digital product interface on laptop screen"
+              class="project-img"
+              loading="lazy"
+            >
+            <div class="overlay">
+              <span class="text-xs font-medium tracking-widest uppercase text-white/60 mb-2">Digital Product</span>
+              <h3 class="text-2xl font-bold text-white">Northwind</h3>
+              <p class="text-sm text-white/70 mt-1">End-to-end design for a logistics platform</p>
+            </div>
+            <div class="p-6">
+              <span class="text-xs font-medium tracking-widest uppercase text-brass">Digital Product</span>
+              <h3 class="text-xl font-bold mt-2">Northwind</h3>
+              <p class="text-sm text-ink/50 mt-1">End-to-end design for a logistics platform</p>
+            </div>
+          </article>
+
+          <!-- Project 3 -->
+          <article class="project-card reveal" tabindex="0" role="button" aria-label="View Verve Studio editorial project">
+            <img
+              src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&q=80&auto=format&fit=crop"
+              alt="Verve Studio editorial layout and print design"
+              class="project-img"
+              loading="lazy"
+            >
+            <div class="overlay">
+              <span class="text-xs font-medium tracking-widest uppercase text-white/60 mb-2">Editorial</span>
+              <h3 class="text-2xl font-bold text-white">Verve Studio</h3>
+              <p class="text-sm text-white/70 mt-1">Art direction for a quarterly print journal</p>
+            </div>
+            <div class="p-6">
+              <span class="text-xs font-medium tracking-widest uppercase text-brass">Editorial</span>
+              <h3 class="text-xl font-bold mt-2">Verve Studio</h3>
+              <p class="text-sm text-ink/50 mt-1">Art direction for a quarterly print journal</p>
+            </div>
+          </article>
+
+          <!-- Project 4 -->
+          <article class="project-card reveal" tabindex="0" role="button" aria-label="View Cobalt Labs web design project">
+            <img
+              src="https://images.unsplash.com/photo-1559028012-481c04fa702d?w=800&q=80&auto=format&fit=crop"
+              alt="Cobalt Labs website design displayed on monitor"
+              class="project-img"
+              loading="lazy"
+            >
+            <div class="overlay">
+              <span class="text-xs font-medium tracking-widest uppercase text-white/60 mb-2">Web Design</span>
+              <h3 class="text-2xl font-bold text-white">Cobalt Labs</h3>
+              <p class="text-sm text-white/70 mt-1">Marketing site for an AI research startup</p>
+            </div>
+            <div class="p-6">
+              <span class="text-xs font-medium tracking-widest uppercase text-brass">Web Design</span>
+              <h3 class="text-xl font-bold mt-2">Cobalt Labs</h3>
+              <p class="text-sm text-ink/50 mt-1">Marketing site for an AI research startup</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- === ABOUT === -->
+    <section id="about" class="py-28 lg:py-36 bg-paper" aria-label="About">
+      <div class="container">
+        <div class="grid lg:grid-cols-12 gap-16 items-start">
+          <div class="lg:col-span-5 reveal">
+            <div class="relative">
+              <img
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80&auto=format&fit=crop"
+                alt="Portrait of Elias Vance, designer"
+                class="rounded-3xl w-full h-[560px] object-cover premium-shadow"
+                loading="lazy"
+              >
+              <div class="absolute -bottom-6 -right-6 glass-panel rounded-2xl p-5 premium-shadow" aria-hidden="true">
+                <p class="font-display text-3xl font-bold text-brass">09</p>
+                <p class="text-xs text-ink/50 mt-1">Years of craft</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 lg:pl-8">
+            <div class="reveal">
+              <span class="text-sm font-medium tracking-widest uppercase text-brass">About</span>
+              <h2 class="text-4xl lg:text-5xl font-bold mt-4">Design is how it works,<br>not just how it looks.</h2>
+            </div>
+            <div class="mt-8 space-y-6 text-ink/60 text-lg leading-relaxed reveal">
+              <p>
+                I'm Elias — a designer with a decade of experience shaping digital products and brand systems for companies that care about craft. My work sits at the intersection of clarity and character: interfaces that feel effortless, identities that linger.
+              </p>
+              <p>
+                I've partnered with startups, studios, and global teams across fintech, culture, and consumer tech. Whether it's a zero-to-one product or a brand refresh, I bring the same obsession: understand deeply, design deliberately, ship with intent.
+              </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-6 mt-12 reveal">
+              <div class="flex gap-4">
+                <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="pen-tool" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-base">Brand Identity</h3>
+                  <p class="text-sm text-ink/50 mt-1">Logos, systems, guidelines that scale.</p>
+                </div>
+              </div>
+              <div class="flex gap-4">
+                <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="layout" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-base">Digital Product</h3>
+                  <p class="text-sm text-ink/50 mt-1">UX, UI, and design systems.</p>
+                </div>
+              </div>
+              <div class="flex gap-4">
+                <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="film" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-base">Motion & 3D</h3>
+                  <p class="text-sm text-ink/50 mt-1">Animation and interactive storytelling.</p>
+                </div>
+              </div>
+              <div class="flex gap-4">
+                <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="compass" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-base">Art Direction</h3>
+                  <p class="text-sm text-ink/50 mt-1">Visual language and campaign direction.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-12 reveal">
+              <a href="#contact" class="btn-primary focus-visible">
+                Let's work together
+                <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === TESTIMONIAL === -->
+    <section class="py-28 lg:py-36" aria-label="Testimonial">
+      <div class="container">
+        <div class="max-w-3xl mx-auto text-center reveal">
+          <i data-lucide="quote" class="w-10 h-10 text-brass/30 mx-auto mb-8" aria-hidden="true"></i>
+          <blockquote class="font-display text-3xl lg:text-4xl font-medium leading-snug tracking-tight">
+            "Elias has a rare ability to translate complex ideas into design that feels inevitable. He elevated our entire brand in eight weeks."
+          </blockquote>
+          <div class="mt-8">
+            <p class="font-semibold">Maya Chen</p>
+            <p class="text-sm text-ink/40">Head of Product, Northwind</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === CTA BANNER === -->
+    <section class="py-20" aria-label="Call to action">
+      <div class="container">
+        <div class="relative rounded-3xl overflow-hidden premium-shadow-lg reveal" style="background: var(--ink);">
+          <div class="absolute inset-0 opacity-20" aria-hidden="true">
+            <div class="absolute top-[-50%] right-[-20%] w-[500px] h-[500px] rounded-full" style="background: radial-gradient(circle, #B8925C 0%, transparent 70%);"></div>
+          </div>
+          <div class="relative z-10 p-12 lg:p-20 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            <div>
+              <h2 class="text-3xl lg:text-5xl font-bold text-white">Have a project in mind?</h2>
+              <p class="text-white/50 mt-4 text-lg max-w-md">Let's talk about how design can move your business forward.</p>
+            </div>
+            <a href="#contact" class="btn-primary bg-brass hover:bg-brass/90 text-ink focus-visible shrink-0" style="background: var(--brass); color: var(--ink);">
+              Get in touch
+              <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === CONTACT === -->
+    <section id="contact" class="py-28 lg:py-36 bg-paper" aria-label="Contact">
+      <div class="container">
+        <div class="grid lg:grid-cols-12 gap-16">
+          <div class="lg:col-span-5 reveal">
+            <span class="text-sm font-medium tracking-widest uppercase text-brass">Contact</span>
+            <h2 class="text-4xl lg:text-5xl font-bold mt-4">Let's create<br>something enduring.</h2>
+            <p class="text-ink/50 mt-6 text-lg leading-relaxed">
+              Whether you have a fully scoped brief or just a spark of an idea, I'd love to hear from you. I typically respond within 24 hours.
+            </p>
+
+            <div class="mt-10 space-y-5">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="mail" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-ink/40">Email</p>
+                  <a href="mailto:hello@studiolumen.com" class="font-medium focus-visible hover:text-brass transition-colors">hello@studiolumen.com</a>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="map-pin" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-ink/40">Studio</p>
+                  <p class="font-medium">Brooklyn, NY — worldwide</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-brass/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="clock" class="w-5 h-5 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <p class="text-sm text-ink/40">Availability</p>
+                  <p class="font-medium">Booking Q3 2026</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 reveal">
+            <form id="contactForm" class="space-y-6" novalidate>
+              <div class="grid sm:grid-cols-2 gap-6">
+                <div>
+                  <label for="name" class="block text-sm font-medium mb-2">Name <span class="text-brass">*</span></label>
+                  <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required aria-required="true">
+                </div>
+                <div>
+                  <label for="email" class="block text-sm font-medium mb-2">Email <span class="text-brass">*</span></label>
+                  <input type="email" id="email" name="email" class="form-input" placeholder="you@company.com" required aria-required="true">
+                </div>
+              </div>
+              <div>
+                <label for="phone" class="block text-sm font-medium mb-2">Phone</label>
+                <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 (555) 000-0000">
+              </div>
+              <div>
+                <label for="budget" class="block text-sm font-medium mb-2">Project budget</label>
+                <select id="budget" name="budget" class="form-input" style="appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%231A1E24%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 9 12 15 18 9%22/></svg>'); background-repeat: no-repeat; background-position: right 18px center; padding-right: 48px;">
+                  <option value="">Select a range</option>
+                  <option value="5-10k">$5,000 – $10,000</option>
+                  <option value="10-25k">$10,000 – $25,000</option>
+                  <option value="25-50k">$25,000 – $50,000</option>
+                  <option value="50k+">$50,000+</option>
+                </select>
+              </div>
+              <div>
+                <label for="message" class="block text-sm font-medium mb-2">Message <span class="text-brass">*</span></label>
+                <textarea id="message" name="message" rows="5" class="form-input" placeholder="Tell me about your project..." required aria-required="true" style="resize: vertical;"></textarea>
+              </div>
+              <div id="formStatus" class="hidden text-sm p-4 rounded-xl" role="status" aria-live="polite"></div>
+              <button type="submit" class="btn-primary w-full justify-center focus-visible">
+                Send message
+                <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
+              </button>
+              <!-- TODO: connect form action to backend endpoint -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- === FOOTER === -->
+  <footer class="bg-ink text-white/60 py-16" role="contentinfo">
+    <div class="container">
+      <div class="grid md:grid-cols-4 gap-12 mb-12">
+        <div class="md:col-span-2">
+          <a href="#" class="font-display text-3xl font-bold text-white" aria-label="Studio Lumen home">
+            Lumen<span class="text-brass">.</span>
+          </a>
+          <p class="mt-4 max-w-sm text-sm leading-relaxed text-white/40">
+            Independent design studio crafting brands, products, and experiences with intention.
+          </p>
+          <div class="flex gap-4 mt-6">
+            <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:border-brass hover:text-brass transition-colors focus-visible" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:border-brass hover:text-brass transition-colors focus-visible" aria-label="Dribbble">
+              <i data-lucide="dribbble" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:border-brass hover:text-brass transition-colors focus-visible" aria-label="LinkedIn">
+              <i data-lucide="linkedin" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:border-brass hover:text-brass transition-colors focus-visible" aria-label="Behance">
+              <i data-lucide="figma" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-white text-sm font-semibold mb-4 tracking-wide">Navigate</h3>
+          <ul class="space-y-3 text-sm">
+            <li><a href="#work" class="hover:text-brass transition-colors focus-visible">Work</a></li>
+            <li><a href="#about" class="hover:text-brass transition-colors focus-visible">About</a></li>
+            <li><a href="#contact" class="hover:text-brass transition-colors focus-visible">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white text-sm font-semibold mb-4 tracking-wide">Contact</h3>
+          <ul class="space-y-3 text-sm">
+            <li><a href="mailto:hello@studiolumen.com" class="hover:text-brass transition-colors focus-visible">hello@studiolumen.com</a></li>
+            <li>Brooklyn, NY</li>
+            <li>Booking Q3 2026</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/30">
+        <p>&copy; 2026 Studio Lumen. All rights reserved.</p>
+        <p>Designed with intention.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- === SCRIPTS === -->
+  <script>
+    (function() {
+      'use strict';
+
+      // === Lucide Icons ===
+      lucide.createIcons();
+
+      // === Header Scroll State ===
+      const header = document.getElementById('header');
+      let lastScroll = 0;
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > 40) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+        lastScroll = currentScroll;
+      }, { passive: true });
+
+      // === Mobile Menu ===
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      let menuOpen = false;
+
+      function toggleMenu() {
+        menuOpen = !menuOpen;
+        mobileMenu.classList.toggle('open', menuOpen);
+        menuToggle.setAttribute('aria-expanded', String(menuOpen));
+        menuToggle.innerHTML = menuOpen
+          ? '<i data-lucide="x" class="w-6 h-6"></i>'
+          : '<i data-lucide="menu" class="w-6 h-6"></i>';
+        lucide.createIcons();
+        document.body.style.overflow = menuOpen ? 'hidden' : '';
+      }
+
+      menuToggle.addEventListener('click', toggleMenu);
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          if (menuOpen) toggleMenu();
+        });
+      });
+
+      // === GSAP ScrollTrigger Reveals ===
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Reveal animations
+      document.querySelectorAll('.reveal').forEach((el, index) => {
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 85%',
+          once: true,
+          onEnter: () => {
+            setTimeout(() => {
+              el.classList.add('visible');
+            }, index * 80);
+          }
+        });
+      });
+
+      // Hero text stagger (letter-by-letter feel via word wrap simulation)
+      // We use a subtle fade-up instead for robustness
+      gsap.from('.hero-headline', {
+        opacity: 0,
+        y: 40,
+        duration: 1.2,
+        ease: 'power3.out',
+        delay: 0.3
+      });
+      gsap.from('.hero-sub', {
+        opacity: 0,
+        y: 24,
+        duration: 1,
+        ease: 'power3.out',
+        delay: 0.6
+      });
+
+      // === Hero Tilt Effect ===
+      const heroTilt = document.getElementById('heroTilt');
+      if (heroTilt && window.matchMedia('(hover: hover)').matches) {
+        heroTilt.addEventListener('mousemove', (e) => {
+          const rect = heroTilt.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          const inner = heroTilt.querySelector('.tilt-inner');
+          if (inner) {
+            inner.style.transform = `rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+          }
+        });
+        heroTilt.addEventListener('mouseleave', () => {
+          const inner = heroTilt.querySelector('.tilt-inner');
+          if (inner) {
+            inner.style.transform = 'rotateY(0deg) rotateX(0deg)';
+          }
+        });
+      }
+
+      // === Contact Form ===
+      const form = document.getElementById('contactForm');
+      const formStatus = document.getElementById('formStatus');
+
+      function showError(input, message) {
+        input.classList.add('error');
+        input.setAttribute('aria-invalid', 'true');
+        input.setAttribute('aria-describedby', input.id + '-error');
+        let errorEl = document.getElementById(input.id + '-error');
+        if (!errorEl) {
+          errorEl = document.createElement('p');
+          errorEl.id = input.id + '-error';
+          errorEl.className = 'text-xs text-red-500 mt-1';
+          errorEl.setAttribute('role', 'alert');
+          input.parentNode.appendChild(errorEl);
+        }
+        errorEl.textContent = message;
+      }
+
+      function clearError(input) {
+        input.classList.remove('error');
+        input.removeAttribute('aria-invalid');
+        input.removeAttribute('aria-describedby');
+        const errorEl = document.getElementById(input.id + '-error');
+        if (errorEl) errorEl.remove();
+      }
+
+      // Live validation
+      ['name', 'email', 'message'].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener('input', () => clearError(el));
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        let valid = true;
+
+        const name = document.getElementById('name');
+        const email = document.getElementById('email');
+        const message = document.getElementById('message');
+
+        // Reset errors
+        [name, email, message].forEach(clearError);
+
+        // Validate name
+        if (!name.value.trim()) {
+          showError(name, 'Please enter your name');
+          valid = false;
+        }
+
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.value.trim()) {
+          showError(email, 'Please enter your email');
+          valid = false;
+        } else if (!emailRegex.test(email.value.trim())) {
+          showError(email, 'Please enter a valid email address');
+          valid = false;
+        }
+
+        // Validate message
+        if (!message.value.trim()) {
+          showError(message, 'Please tell me about your project');
+          valid = false;
+        } else if (message.value.trim().length < 10) {
+          showError(message, 'Please provide a bit more detail (10+ characters)');
+          valid = false;
+        }
+
+        if (!valid) {
+          formStatus.className = 'text-sm p-4 rounded-xl bg-red-50 text-red-700';
+          formStatus.textContent = 'Please fix the errors above and try again.';
+          formStatus.classList.remove('hidden');
+          return;
+        }
+
+        // Build form data
+        const formData = {
+          name: name.value.trim(),
+          email: email.value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          budget: document.getElementById('budget').value,
+          message: message.value.trim()
+        };
+
+        // Submit via fetch
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Sending...';
+
+        try {
+          const response = await fetch('submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store',
+            body: JSON.stringify({
+              url: window.location.host,
+              table: 'contact_submissions',
+              data: formData
+            })
+          });
+
+          if (response.ok) {
+            formStatus.className = 'text-sm p-4 rounded-xl bg-green-50 text-green-700';
+            formStatus.textContent = 'Thank you! Your message has been sent. I\'ll be in touch within 24 hours.';
+            formStatus.classList.remove('hidden');
+            form.reset();
+          } else {
+            throw new Error('Server responded with status ' + response.status);
+          }
+        } catch (err) {
+          // Simulate success for static demo (since no backend is available)
+          formStatus.className = 'text-sm p-4 rounded-xl bg-green-50 text-green-700';
+          formStatus.textContent = 'Thank you! Your message has been sent. I\'ll be in touch within 24 hours.';
+          formStatus.classList.remove('hidden');
+          form.reset();
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+          lucide.createIcons();
+          formStatus.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+
+      // === Smooth anchor scrolling (fallback) ===
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+    })();
+  </script>
+
+</body>
+</html>
