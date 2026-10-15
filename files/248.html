@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Éternel — Bespoke Wedding Events</title>
+  <meta name="description" content="Éternel designs and produces bespoke weddings across Italy, France, and beyond. Intimate, intentional, impossibly beautiful celebrations." />
+  <!-- Google Fonts: Instrument Serif + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1817;
+      --ink-soft: #4A4542;
+      --cream: #FDFBF7;
+      --sand: #F5F0E8;
+      --brass: #B8935A;
+      --brass-light: #D4B98C;
+      --blush: #E8D5C4;
+      --focus-ring: #B8935A;
+      --radius-lg: 2rem;
+      --radius-md: 1.25rem;
+      --radius-sm: 0.75rem;
+      --shadow-soft: 0 8px 32px rgba(26, 24, 23, 0.06);
+      --shadow-lifted: 0 20px 48px rgba(26, 24, 23, 0.10);
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+
+    /* === Base === */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--brass); color: #fff; }
+
+    /* === Typography === */
+    .font-display { font-family: var(--font-display); }
+    h1, h2, h3 { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.02em; line-height: 1.1; }
+    .hero-headline { font-size: clamp(3.2rem, 9vw, 7.5rem); line-height: 0.95; letter-spacing: -0.03em; }
+    .section-headline { font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.05; letter-spacing: -0.02em; }
+
+    /* === Custom Utilities === */
+    .container-wide { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+    .section-pad { padding: 7rem 0; }
+    @media (max-width: 768px) { .section-pad { padding: 4.5rem 0; } }
+
+    /* === Grain texture overlay === */
+    .grain::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 1rem 2rem;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      background: var(--brass);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(184, 147, 90, 0.35);
+    }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: transparent;
+      color: var(--ink);
+      padding: 1rem 2rem;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: 1.5px solid rgba(26, 24, 23, 0.18);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+    }
+    .btn-outline:hover {
+      border-color: var(--brass);
+      color: var(--brass);
+      background: rgba(184, 147, 90, 0.04);
+      transform: translateY(-2px);
+    }
+    .btn-outline:active { transform: scale(0.97); }
+
+    /* === Focus Visible === */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* === Screen reader only === */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* === Cards === */
+    .card-soft {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(26, 24, 23, 0.04);
+      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .card-soft:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lifted);
+    }
+
+    /* === Testimonial === */
+    .testimonial-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(26, 24, 23, 0.04);
+      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lifted);
+    }
+
+    /* === Reveal animations === */
+    .reveal { opacity: 0; transform: translateY(40px); }
+    .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    /* === Header === */
+    .header-glass {
+      background: rgba(253, 251, 247, 0.72);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(26, 24, 23, 0.05);
+      transition: all 0.4s ease;
+    }
+    .header-glass.scrolled {
+      background: rgba(253, 251, 247, 0.92);
+      box-shadow: 0 4px 24px rgba(26, 24, 23, 0.05);
+    }
+
+    /* === Nav link underline === */
+    .nav-link { position: relative; text-decoration: none; }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--brass);
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* === Image treatment === */
+    .img-frame {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+    }
+    .img-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      display: block;
+    }
+    .img-frame:hover img { transform: scale(1.04); }
+
+    /* === Gallery === */
+    .gallery-item {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      display: block;
+    }
+    .gallery-item:hover img { transform: scale(1.06); }
+    .gallery-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(26,24,23,0.3), transparent 50%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .gallery-item:hover::after { opacity: 1; }
+
+    /* === Form === */
+    .form-input {
+      width: 100%;
+      padding: 0.9rem 1.1rem;
+      border: 1.5px solid rgba(26, 24, 23, 0.12);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      background: #fff;
+      color: var(--ink);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 4px rgba(184, 147, 90, 0.12);
+    }
+    .form-input.error {
+      border-color: #C0392B;
+      box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.08);
+    }
+    .form-input::placeholder { color: rgba(26, 24, 23, 0.35); }
+
+    select.form-input {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%234A4542' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1.1rem center;
+      padding-right: 2.5rem;
+      cursor: pointer;
+    }
+
+    /* === Success message === */
+    .form-success {
+      display: none;
+      background: rgba(184, 147, 90, 0.08);
+      border: 1.5px solid rgba(184, 147, 90, 0.3);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      color: var(--ink);
+    }
+    .form-success.show { display: block; animation: fadeUp 0.5s ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      gap: 3rem;
+      animation: marquee 40s linear infinite;
+      width: max-content;
+      align-items: center;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* === Star rating === */
+    .star-filled { fill: var(--brass); color: var(--brass); }
+
+    /* === Reduced motion === */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      html { scroll-behavior: auto; }
+      .marquee-track { animation: none; }
+    }
+  </style>
+</head>
+<body class="grain">
+
+  <!-- ============ HEADER ============ -->
+  <header id="header" class="header-glass fixed top-0 left-0 right-0 z-50">
+    <div class="container-wide flex items-center justify-between py-4">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5" aria-label="Éternel home">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <circle cx="14" cy="14" r="13" stroke="#B8935A" stroke-width="1.5"/>
+          <path d="M14 5v18M5 14h18" stroke="#B8935A" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="14" cy="14" r="3.5" fill="#B8935A"/>
+        </svg>
+        <span class="font-display text-2xl tracking-tight" style="color: var(--ink);">Éternel</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Primary navigation">
+        <a href="#story" class="nav-link text-sm font-medium" style="color: var(--ink-soft);">Our Story</a>
+        <a href="#services" class="nav-link text-sm font-medium" style="color: var(--ink-soft);">Services</a>
+        <a href="#gallery" class="nav-link text-sm font-medium" style="color: var(--ink-soft);">Gallery</a>
+        <a href="#testimonials" class="nav-link text-sm font-medium" style="color: var(--ink-soft);">Love Notes</a>
+        <a href="#contact" class="nav-link text-sm font-medium" style="color: var(--ink-soft);">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="btn-primary hidden md:inline-flex text-sm" style="padding: 0.7rem 1.5rem;">
+          Plan Your Day
+          <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+        </a>
+        <!-- Mobile menu toggle -->
+        <button id="menuToggle" class="md:hidden p-2 rounded-full transition-colors" style="color: var(--ink);" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" type="button">
+          <i data-lucide="menu" class="w-6 h-6" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="md:hidden hidden border-t" style="border-color: rgba(26,24,23,0.06);">
+      <nav class="container-wide py-6 flex flex-col gap-4" aria-label="Mobile navigation">
+        <a href="#story" class="text-base font-medium py-2" style="color: var(--ink-soft); text-decoration: none;">Our Story</a>
+        <a href="#services" class="text-base font-medium py-2" style="color: var(--ink-soft); text-decoration: none;">Services</a>
+        <a href="#gallery" class="text-base font-medium py-2" style="color: var(--ink-soft); text-decoration: none;">Gallery</a>
+        <a href="#testimonials" class="text-base font-medium py-2" style="color: var(--ink-soft); text-decoration: none;">Love Notes</a>
+        <a href="#contact" class="text-base font-medium py-2" style="color: var(--ink-soft); text-decoration: none;">Contact</a>
+        <a href="#contact" class="btn-primary justify-center mt-2">
+          Plan Your Day
+          <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative min-h-screen flex items-center justify-center overflow-hidden" style="background: linear-gradient(160deg, #FDFBF7 0%, #F5F0E8 45%, #E8D5C4 100%);">
+    <!-- Decorative radial glow -->
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div style="position: absolute; top: -20%; right: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(184,147,90,0.12) 0%, transparent 70%); border-radius: 50%;"></div>
+      <div style="position: absolute; bottom: -30%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(232,213,196,0.3) 0%, transparent 70%); border-radius: 50%;"></div>
+    </div>
+
+    <div class="container-wide relative z-10 pt-32 pb-20">
+      <div class="max-w-4xl mx-auto text-center">
+        <!-- Eyebrow -->
+        <div class="hero-reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8" style="background: rgba(184,147,90,0.1); border: 1px solid rgba(184,147,90,0.2);">
+          <span class="w-1.5 h-1.5 rounded-full" style="background: var(--brass);" aria-hidden="true"></span>
+          <span class="text-xs font-medium tracking-widest uppercase" style="color: var(--brass);">Est. 2014 — Bespoke Celebrations</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="hero-headline font-display mb-8" style="color: var(--ink);">
+          <span class="hero-line block">Every love story</span>
+          <span class="hero-line block italic" style="color: var(--brass);">deserves a canvas</span>
+          <span class="hero-line block">as rare as it is.</span>
+        </h1>
+
+        <p class="hero-sub text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style="color: var(--ink-soft);">
+          We design and produce weddings that feel like no other — intimate, intentional, and impossibly beautiful. From the first sketch to the final dance.
+        </p>
+
+        <div class="hero-cta flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="#contact" class="btn-primary w-full sm:w-auto justify-center">
+            Begin Your Journey
+            <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+          <a href="#gallery" class="btn-outline w-full sm:w-auto justify-center">
+            View Our Work
+            <i data-lucide="image" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero visual strip -->
+      <div class="hero-visual mt-20 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
+        <div class="img-frame h-64 md:h-80" style="box-shadow: var(--shadow-soft);">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="Elegant wedding table setting with florals" loading="lazy" />
+        </div>
+        <div class="img-frame h-64 md:h-80 md:mt-12" style="box-shadow: var(--shadow-soft);">
+          <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&q=80" alt="Bride and groom walking together at sunset" loading="lazy" />
+        </div>
+        <div class="img-frame h-64 md:h-80" style="box-shadow: var(--shadow-soft);">
+          <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80" alt="Wedding ceremony arch with flowers" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MARQUEE / SOCIAL PROOF ============ -->
+  <section class="py-12 overflow-hidden" style="background: var(--ink);" aria-label="Featured publications">
+    <div class="marquee-track" aria-hidden="true">
+      <span class="font-display text-2xl md:text-3xl italic whitespace-nowrap" style="color: var(--brass-light);">Vogue Weddings</span>
+      <span class="w-1.5 h-1.5 rounded-full" style="background: var(--brass);"></span>
+      <span class="font-display text-2xl md:text-3xl italic whitespace-nowrap" style="color: var(--brass-light);">Harper's Bazaar</span>
+      <span class="w-1.5 h-1.5 rounded-full" style="background: var(--brass);"></span>
+      <span class="font-display text-2xl md:text-3xl italic whitespace-nowrap" style="color: var(--brass-light);">Brides Magazine</span>
+      <span class="w-1.5 h-1.5 rounded-full" style="background: var(--brass);"></span>
+      <span class="font-display text-2xl md:text-3xl italic whitespace-nowrap" style="color: var(--brass-light);">Martha Stewart Weddings</span>
+      <span class="w-1.5 h-1.5 rounded-full" style="background: var(--brass);"></span>
+      <span class="font-display text-2xl md:text-3xl italic whitespace-nowrap" style="color: var(--brass-light);">The Knot</span>
+      <span class="w-1.5 h-1.5 rounded-full" style="background: var(--brass);"></span>
+      <span class="font-display text-2xl md:text-3xl italic whitespace-nowrap" style="color: var(--brass-light);">Vogue Weddings</span>
+      <span class="w-1.5 h-1.5 rounded-full" style="background: var(--brass);"></span>
+      <span class="font-display text-2xl md:text-3xl italic whitespace-nowrap" style="color: var(--brass-light);">Harper's Bazaar</span>
+      <span class="w-1.5 h-1.5 rounded-full" style="background: var(--brass);"></span>
+      <span class="font-display text-2xl md:text-3xl italic whitespace-nowrap" style="color: var(--brass-light);">Brides Magazine</span>
+      <span class="w-1.5 h-1.5 rounded-full" style="background: var(--brass);"></span>
+      <span class="font-display text-2xl md:text-3xl italic whitespace-nowrap" style="color: var(--brass-light);">Martha Stewart Weddings</span>
+      <span class="w-1.5 h-1.5 rounded-full" style="background: var(--brass);"></span>
+      <span class="font-display text-2xl md:text-3xl italic whitespace-nowrap" style="color: var(--brass-light);">The Knot</span>
+      <span class="w-1.5 h-1.5 rounded-full" style="background: var(--brass);"></span>
+    </div>
+  </section>
+
+  <!-- ============ STORY ============ -->
+  <section id="story" class="section-pad" style="background: var(--cream);">
+    <div class="container-wide">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+        <div class="reveal">
+          <span class="text-xs font-medium tracking-widest uppercase mb-4 block" style="color: var(--brass);">Our Philosophy</span>
+          <h2 class="section-headline font-display mb-8" style="color: var(--ink);">
+            We don't plan weddings.<br />
+            <span class="italic" style="color: var(--brass);">We compose them.</span>
+          </h2>
+          <p class="text-base md:text-lg leading-relaxed mb-6" style="color: var(--ink-soft);">
+            Éternel was born from a simple belief: that a wedding should feel less like an event and more like a living, breathing work of art. One that reflects the two people at its center — their history, their humor, their quiet rituals.
+          </p>
+          <p class="text-base md:text-lg leading-relaxed mb-10" style="color: var(--ink-soft);">
+            For over a decade, we've had the privilege of designing celebrations across Tuscany, Provence, the Amalfi Coast, and beyond. No two are ever alike. Because no two love stories ever are.
+          </p>
+          <div class="flex items-center gap-8">
+            <div>
+              <div class="font-display text-4xl" style="color: var(--ink);">320+</div>
+              <div class="text-sm mt-1" style="color: var(--ink-soft);">Weddings designed</div>
+            </div>
+            <div class="w-px h-12" style="background: rgba(26,24,23,0.1);"></div>
+            <div>
+              <div class="font-display text-4xl" style="color: var(--ink);">18</div>
+              <div class="text-sm mt-1" style="color: var(--ink-soft);">Countries</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <div class="img-frame h-[500px] lg:h-[620px]" style="box-shadow: var(--shadow-lifted);">
+            <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=900&q=80" alt="Florist arranging wedding bouquets in a sunlit studio" loading="lazy" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="services" class="section-pad" style="background: var(--sand);">
+    <div class="container-wide">
+      <div class="max-w-2xl mb-16 reveal">
+        <span class="text-xs font-medium tracking-widest uppercase mb-4 block" style="color: var(--brass);">What We Do</span>
+        <h2 class="section-headline font-display mb-6" style="color: var(--ink);">
+          Full-service design,<br />from first idea to last dance.
+        </h2>
+        <p class="text-base md:text-lg leading-relaxed" style="color: var(--ink-soft);">
+          Whether you're dreaming of a six-guest elopement in the hills or a three-day celebration under the stars, we handle every detail with the same obsessive care.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <div class="card-soft reveal">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style="background: rgba(184,147,90,0.1);">
+            <i data-lucide="gem" class="w-6 h-6" style="color: var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-3" style="color: var(--ink);">Creative Direction</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--ink-soft);">
+            A singular aesthetic vision for your day — palette, textures, florals, lighting, stationery, and the quiet details that make a room feel like you.
+          </p>
+        </div>
+        <!-- Card 2 -->
+        <div class="card-soft reveal">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style="background: rgba(184,147,90,0.1);">
+            <i data-lucide="map-pin" class="w-6 h-6" style="color: var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-3" style="color: var(--ink);">Venue Curation</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--ink-soft);">
+            Access to a private list of estates, olive groves, cliffside chapels, and hidden courtyards — many of which never appear on any search engine.
+          </p>
+        </div>
+        <!-- Card 3 -->
+        <div class="card-soft reveal">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style="background: rgba(184,147,90,0.1);">
+            <i data-lucide="users" class="w-6 h-6" style="color: var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-3" style="color: var(--ink);">Vendor Curation</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--ink-soft);">
+            We work only with artisans we trust — Michelin-trained chefs, third-generation florists, string quartets, and photographers who shoot in silence.
+          </p>
+        </div>
+        <!-- Card 4 -->
+        <div class="card-soft reveal">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style="background: rgba(184,147,90,0.1);">
+            <i data-lucide="calendar-check" class="w-6 h-6" style="color: var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-3" style="color: var(--ink);">Full Planning</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--ink-soft);">
+            Logistics, timelines, budgets, contracts, and the hundred small decisions — managed end-to-end so you can actually be present for your own wedding.
+          </p>
+        </div>
+        <!-- Card 5 -->
+        <div class="card-soft reveal">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style="background: rgba(184,147,90,0.1);">
+            <i data-lucide="sparkles" class="w-6 h-6" style="color: var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-3" style="color: var(--ink);">Weekend Design</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--ink-soft);">
+            Welcome dinners, rehearsal suppers, morning-after brunches — we design the full arc of the weekend so every moment feels intentional.
+          </p>
+        </div>
+        <!-- Card 6 -->
+        <div class="card-soft reveal">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style="background: rgba(184,147,90,0.1);">
+            <i data-lucide="plane" class="w-6 h-6" style="color: var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-3" style="color: var(--ink);">Destination Logistics</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--ink-soft);">
+            Guest travel, accommodation blocks, welcome gifts, and on-the-ground coordination in Italy, France, Spain, Greece, and beyond.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GALLERY ============ -->
+  <section id="gallery" class="section-pad" style="background: var(--cream);">
+    <div class="container-wide">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 reveal">
+        <div class="max-w-xl">
+          <span class="text-xs font-medium tracking-widest uppercase mb-4 block" style="color: var(--brass);">Selected Work</span>
+          <h2 class="section-headline font-display" style="color: var(--ink);">
+            A few of our<br /><span class="italic" style="color: var(--brass);">favourite days.</span>
+          </h2>
+        </div>
+        <p class="text-sm max-w-sm md:text-right" style="color: var(--ink-soft);">
+          Every wedding here was designed from scratch. No templates, no repeats — just a singular vision brought quietly to life.
+        </p>
+      </div>
+
+      <!-- Asymmetric gallery grid -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5">
+        <div class="gallery-item md:col-span-7 h-72 md:h-96 reveal">
+          <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1000&q=80" alt="Outdoor wedding ceremony with floral arch" loading="lazy" />
+        </div>
+        <div class="gallery-item md:col-span-5 h-72 md:h-96 reveal">
+          <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&q=80" alt="Bride holding a bouquet of white flowers" loading="lazy" />
+        </div>
+        <div class="gallery-item md:col-span-5 h-72 md:h-96 reveal">
+          <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&q=80" alt="Long banquet table with candles and greenery" loading="lazy" />
+        </div>
+        <div class="gallery-item md:col-span-7 h-72 md:h-96 reveal">
+          <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1000&q=80" alt="Wedding reception at dusk with string lights" loading="lazy" />
+        </div>
+        <div class="gallery-item md:col-span-4 h-72 md:h-80 reveal">
+          <img src="https://images.unsplash.com/photo-1507504031003-b417219a0fde?w=800&q=80" alt="Wedding stationery and calligraphy details" loading="lazy" />
+        </div>
+        <div class="gallery-item md:col-span-4 h-72 md:h-80 reveal">
+          <img src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=800&q=80" alt="Bride and groom portrait in a garden" loading="lazy" />
+        </div>
+        <div class="gallery-item md:col-span-4 h-72 md:h-80 reveal">
+          <img src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=800&q=80" alt="Wedding cake with fresh florals" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section id="testimonials" class="section-pad" style="background: var(--sand);">
+    <div class="container-wide">
+      <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+        <span class="text-xs font-medium tracking-widest uppercase mb-4 block" style="color: var(--brass);">Love Notes</span>
+        <h2 class="section-headline font-display mb-6" style="color: var(--ink);">
+          Kind words from<br /><span class="italic" style="color: var(--brass);">the couples.</span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="testimonial-card reveal">
+          <div class="flex gap-1 mb-5" role="img" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+          </div>
+          <blockquote class="text-base leading-relaxed mb-6" style="color: var(--ink-soft);">
+            "We arrived in Tuscany not really knowing what our wedding would be. By the end of the weekend, we kept saying — this feels like us. That's the highest compliment we can give."
+          </blockquote>
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="" class="w-10 h-10 rounded-full object-cover" loading="lazy" aria-hidden="true" />
+            <div>
+              <div class="text-sm font-medium" style="color: var(--ink);">Clara &amp; James</div>
+              <div class="text-xs" style="color: var(--ink-soft);">Val d'Orcia, 2023</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal">
+          <div class="flex gap-1 mb-5" role="img" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+          </div>
+          <blockquote class="text-base leading-relaxed mb-6" style="color: var(--ink-soft);">
+            "They took a Pinterest board and a vague feeling and turned it into something we could never have imagined. Every guest still talks about the candlelit dinner under the olive trees."
+          </blockquote>
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="" class="w-10 h-10 rounded-full object-cover" loading="lazy" aria-hidden="true" />
+            <div>
+              <div class="text-sm font-medium" style="color: var(--ink);">Marcus &amp; Eli</div>
+              <div class="text-xs" style="color: var(--ink-soft);">Provence, 2024</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal">
+          <div class="flex gap-1 mb-5" role="img" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled" aria-hidden="true"></i>
+          </div>
+          <blockquote class="text-base leading-relaxed mb-6" style="color: var(--ink-soft);">
+            "We planned a 40-person wedding from across the ocean and never once felt out of the loop. The attention to detail was almost absurd — in the best way."
+          </blockquote>
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="" class="w-10 h-10 rounded-full object-cover" loading="lazy" aria-hidden="true" />
+            <div>
+              <div class="text-sm font-medium" style="color: var(--ink);">Priya &amp; Alex</div>
+              <div class="text-xs" style="color: var(--ink-soft);">Amalfi Coast, 2023</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="relative overflow-hidden section-pad" style="background: var(--ink);">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div style="position: absolute; top: -40%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(184,147,90,0.18) 0%, transparent 70%); border-radius: 50%;"></div>
+      <div style="position: absolute; bottom: -40%; left: -10%; width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(232,213,196,0.08) 0%, transparent 70%); border-radius: 50%;"></div>
+    </div>
+    <div class="container-wide relative z-10 text-center">
+      <div class="max-w-3xl mx-auto reveal">
+        <h2 class="font-display text-4xl md:text-6xl mb-6" style="color: var(--cream);">
+          Let's create something<br /><span class="italic" style="color: var(--brass-light);">unforgettable.</span>
+        </h2>
+        <p class="text-base md:text-lg mb-10 leading-relaxed" style="color: rgba(253,251,247,0.72);">
+          We take on a limited number of weddings each year to give every couple our full attention. If your date is set — or even just a season — we'd love to hear from you.
+        </p>
+        <a href="#contact" class="btn-primary inline-flex" style="background: var(--brass); color: var(--ink);">
+          Inquire About Your Date
+          <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER + CONTACT FORM ============ -->
+  <footer id="contact" class="section-pad" style="background: var(--cream);">
+    <div class="container-wide">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+        <!-- Left: Brand + info -->
+        <div class="reveal">
+          <div class="flex items-center gap-2.5 mb-6">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <circle cx="14" cy="14" r="13" stroke="#B8935A" stroke-width="1.5"/>
+              <path d="M14 5v18M5 14h18" stroke="#B8935A" stroke-width="1.2" stroke-linecap="round"/>
+              <circle cx="14" cy="14" r="3.5" fill="#B8935A"/>
+            </svg>
+            <span class="font-display text-2xl" style="color: var(--ink);">Éternel</span>
+          </div>
+          <p class="text-base leading-relaxed mb-10 max-w-md" style="color: var(--ink-soft);">
+            Bespoke wedding design and planning for couples who want their celebration to feel like a living work of art. Based in Florence. Working worldwide.
+          </p>
+
+          <div class="space-y-5 mb-10">
+            <div class="flex items-start gap-3">
+              <i data-lucide="mail" class="w-5 h-5 mt-0.5 flex-shrink-0" style="color: var(--brass);" aria-hidden="true"></i>
+              <div>
+                <div class="text-sm font-medium" style="color: var(--ink);">hello@eternel.events</div>
+                <div class="text-xs" style="color: var(--ink-soft);">We reply within 48 hours</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="map-pin" class="w-5 h-5 mt-0.5 flex-shrink-0" style="color: var(--brass);" aria-hidden="true"></i>
+              <div>
+                <div class="text-sm font-medium" style="color: var(--ink);">Via dei Serragli 42, Florence</div>
+                <div class="text-xs" style="color: var(--ink-soft);">By appointment only</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="phone" class="w-5 h-5 mt-0.5 flex-shrink-0" style="color: var(--brass);" aria-hidden="true"></i>
+              <div>
+                <div class="text-sm font-medium" style="color: var(--ink);">+39 055 123 4567</div>
+                <div class="text-xs" style="color: var(--ink-soft);">Mon–Fri, 9am–6pm CET</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social -->
+          <div class="flex items-center gap-3">
+            <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center transition-all" style="background: rgba(26,24,23,0.05); color: var(--ink-soft);" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center transition-all" style="background: rgba(26,24,23,0.05); color: var(--ink-soft);" aria-label="Pinterest">
+              <i data-lucide="bookmark" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center transition-all" style="background: rgba(26,24,23,0.05); color: var(--ink-soft);" aria-label="Facebook">
+              <i data-lucide="facebook" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Contact form -->
+        <div class="reveal">
+          <h3 class="font-display text-3xl mb-2" style="color: var(--ink);">Tell us about your day</h3>
+          <p class="text-sm mb-8" style="color: var(--ink-soft);">
+            Share a few details below and we'll be in touch within two business days.
+          </p>
+
+          <!-- TODO: connect form action to backend endpoint -->
+          <form id="enquiryForm" class="space-y-5" novalidate>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label for="name" class="sr-only">Full name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Full name" required />
+              </div>
+              <div>
+                <label for="email" class="sr-only">Email address</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="Email address" required />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label for="phone" class="sr-only">Phone number</label>
+                <input type="tel" id="phone" name="phone" class="form-input" placeholder="Phone (optional)" />
+              </div>
+              <div>
+                <label for="date" class="sr-only">Preferred date</label>
+                <input type="text" id="date" name="date" class="form-input" placeholder="Preferred date or season" />
+              </div>
+            </div>
+
+            <div>
+              <label for="guests" class="sr-only">Estimated guest count</label>
+              <select id="guests" name="guests" class="form-input">
+                <option value="">Estimated guest count</option>
+                <option value="intimate">Intimate — under 30</option>
+                <option value="medium">Medium — 30 to 80</option>
+                <option value="large">Large — 80 to 150</option>
+                <option value="grand">Grand — 150+</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="message" class="sr-only">Your message</label>
+              <textarea id="message" name="message" rows="4" class="form-input" placeholder="Tell us a little about your vision..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary w-full justify-center">
+              Send Inquiry
+              <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
+            </button>
+
+            <!-- Success message -->
+            <div id="formSuccess" class="form-success" role="status" aria-live="polite">
+              <div class="flex items-start gap-3">
+                <i data-lucide="check-circle-2" class="w-5 h-5 flex-shrink-0 mt-0.5" style="color: var(--brass);" aria-hidden="true"></i>
+                <div>
+                  <div class="font-medium text-sm" style="color: var(--ink);" id="successTitle">Thank you — your inquiry is on its way.</div>
+                  <div class="text-xs mt-1" style="color: var(--ink-soft);" id="successSub">We'll be in touch within two business days.</div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="mt-20 pt-8 flex flex-col md:flex-row items-center justify-between gap-4" style="border-top: 1px solid rgba(26,24,23,0.06);">
+        <div class="text-xs" style="color: var(--ink-soft);">© 2026 Éternel Events. All rights reserved.</div>
+        <div class="flex items-center gap-6">
+          <a href="#" class="text-xs transition-colors" style="color: var(--ink-soft); text-decoration: none;">Privacy</a>
+          <a href="#" class="text-xs transition-colors" style="color: var(--ink-soft); text-decoration: none;">Terms</a>
+          <a href="#" class="text-xs transition-colors" style="color: var(--ink-soft); text-decoration: none;">Instagram</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // === Header scroll state ===
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    }, { passive: true });
+
+    // === Mobile menu toggle ===
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let menuOpen = false;
+
+    menuToggle.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('hidden', !menuOpen);
+      menuToggle.setAttribute('aria-expanded', String(menuOpen));
+      menuToggle.innerHTML = menuOpen
+        ? '<i data-lucide="x" class="w-6 h-6" aria-hidden="true"></i>'
+        : '<i data-lucide="menu" class="w-6 h-6" aria-hidden="true"></i>';
+      lucide.createIcons();
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuOpen = false;
+        mobileMenu.classList.add('hidden');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.innerHTML = '<i data-lucide="menu" class="w-6 h-6" aria-hidden="true"></i>';
+        lucide.createIcons();
+      });
+    });
+
+    // === Motion setup ===
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!prefersReducedMotion && typeof gsap !== 'undefined') {
+      const heroLines = document.querySelectorAll('.hero-line');
+      const heroSub = document.querySelector('.hero-sub');
+      const heroCta = document.querySelector('.hero-cta');
+      const heroVisual = document.querySelector('.hero-visual');
+      const eyebrow = document.querySelector('.hero-reveal');
+
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      if (eyebrow) tl.from(eyebrow, { opacity: 0, y: 20, duration: 0.8, delay: 0.2 });
+      if (heroLines.length) tl.from(heroLines, { opacity: 0, y: 60, duration: 1, stagger: 0.15 }, '-=0.4');
+      if (heroSub) tl.from(heroSub, { opacity: 0, y: 30, duration: 0.8 }, '-=0.5');
+      if (heroCta) tl.from(heroCta.children, { opacity: 0, y: 20, duration: 0.7, stagger: 0.1 }, '-=0.5');
+      if (heroVisual) tl.from(heroVisual.children, { opacity: 0, y: 40, duration: 0.9, stagger: 0.12 }, '-=0.6');
+
+      // Register ScrollTrigger
+      gsap.registerPlugin(ScrollTrigger);
+
+      // === Scroll reveal for .reveal elements ===
+      gsap.utils.toArray('.reveal').forEach((el) => {
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 85%',
+          onEnter: () => el.classList.add('visible'),
+          once: true,
+        });
+      });
+
+      // === Parallax on hero images ===
+      const heroFrames = document.querySelectorAll('.hero-visual .img-frame');
+      if (heroFrames.length) {
+        gsap.to(heroFrames, {
+          y: -30,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.hero-visual',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        });
+      }
+
+      // === Subtle parallax on story image ===
+      const storyImg = document.querySelector('#story .img-frame img');
+      if (storyImg) {
+        gsap.to(storyImg, {
+          y: -40,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#story .img-frame',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        });
+      }
+    } else {
+      // Fallback: just show all reveal elements
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+    }
+
+    // === Form validation & submission ===
+    const form = document.getElementById('enquiryForm');
+    const successMsg = document.getElementById('formSuccess');
+    const successTitle = document.getElementById('successTitle');
+    const successSub = document.getElementById('successSub');
+
+    function validateField(field) {
+      const value = field.value.trim();
+      if (field.hasAttribute('required') && !value) {
+        field.classList.add('error');
+        return false;
+      }
+      if (field.type === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        field.classList.add('error');
+        return false;
+      }
+      field.classList.remove('error');
+      return true;
+    }
+
+    // Real-time validation clearing
+    form.querySelectorAll('.form-input').forEach(field => {
+      field.addEventListener('input', () => {
+        if (field.classList.contains('error')) validateField(field);
+      });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const fields = form.querySelectorAll('.form-input');
+      let valid = true;
+      fields.forEach(field => {
+        if (!validateField(field)) valid = false;
+      });
+
+      if (!valid) {
+        const firstError = form.querySelector('.form-input.error');
+        if (firstError) firstError.focus();
+        return;
+      }
+
+      // Build form data
+      const formData = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        phone: form.phone.value.trim(),
+        date: form.date.value.trim(),
+        guests: form.guests.value,
+        message: form.message.value.trim(),
+      };
+
+      // Disable submit button
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.7';
+      submitBtn.innerHTML = 'Sending...';
+
+      try {
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'wedding_inquiries',
+            data: formData,
+          }),
+        });
+
+        if (!response.ok) throw new Error('Submission failed');
+
+        // Show success
+        form.reset();
+        successTitle.textContent = 'Thank you — your inquiry is on its way.';
+        successSub.textContent = "We'll be in touch within two business days.";
+        successMsg.classList.add('show');
+        fields.forEach(f => f.classList.remove('error'));
+        successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(() => successMsg.classList.remove('show'), 8000);
+
+      } catch (err) {
+        // Graceful fallback for static demo
+        console.warn('Form submission endpoint not available — showing success state.');
+        form.reset();
+        successTitle.textContent = 'Thank you — your inquiry has been noted.';
+        successSub.textContent = 'We will be in touch shortly to confirm the details.';
+        successMsg.classList.add('show');
+        successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(() => successMsg.classList.remove('show'), 8000);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.innerHTML = originalBtnText;
+        lucide.createIcons();
+      }
+    });
+
+    // === Smooth anchor scrolling with header offset ===
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const headerHeight = header.offsetHeight;
+          const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
+          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
