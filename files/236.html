@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>ROSÉVA JEWELS — Fine Jewellery</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Instrument Serif + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDFBF7',
+            darkgreen: '#1F3A2E',
+            sage: '#5B7B6A',
+            brass: '#B89B7B',
+            stone: '#E8E3DC',
+            ink: '#1A2A23',
+          },
+          fontFamily: {
+            serif: ['"Instrument Serif"', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 8px 30px rgba(0,0,0,0.04)',
+            'card': '0 4px 20px rgba(0,0,0,0.03)',
+            'brass': '0 8px 24px rgba(184,155,123,0.20)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --cream: #FDFBF7;
+      --darkgreen: #1F3A2E;
+      --sage: #5B7B6A;
+      --brass: #B89B7B;
+      --stone: #E8E3DC;
+      --ink: #1A2A23;
+      --shadow-soft: 0 8px 30px rgba(0,0,0,0.04);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cream);
+      color: var(--darkgreen);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+    h1, h2, h3, h4, .font-serif {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+    /* === Scrollbar === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--sage); border-radius: 8px; }
+
+    /* === Utility === */
+    .text-balance { text-wrap: balance; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    }
+    .focus-ring:focus-visible {
+      outline: 2px solid var(--brass);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    /* === Header === */
+    .header-blur {
+      background: rgba(253, 251, 247, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(31, 58, 46, 0.06);
+    }
+    .nav-link {
+      position: relative;
+      transition: color 0.2s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--brass);
+      transition: width 0.25s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:hover { color: var(--brass); }
+
+    /* === Buttons === */
+    .btn-primary {
+      background: var(--darkgreen);
+      color: var(--cream);
+      transition: all 0.25s ease;
+      border: 1px solid var(--darkgreen);
+    }
+    .btn-primary:hover {
+      background: #2A4F3F;
+      box-shadow: var(--shadow-brass);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-outline {
+      background: transparent;
+      color: var(--darkgreen);
+      border: 1px solid rgba(31, 58, 46, 0.2);
+      transition: all 0.25s ease;
+    }
+    .btn-outline:hover {
+      border-color: var(--brass);
+      background: rgba(184, 155, 123, 0.06);
+    }
+    .btn-whatsapp {
+      background: #25D366;
+      color: #fff;
+      transition: all 0.25s ease;
+    }
+    .btn-whatsapp:hover {
+      background: #1DA851;
+      box-shadow: 0 8px 20px rgba(37, 211, 102, 0.25);
+      transform: translateY(-1px);
+    }
+
+    /* === Product Cards === */
+    .product-card {
+      background: #fff;
+      border: 1px solid rgba(31, 58, 46, 0.06);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.06);
+      border-color: rgba(184, 155, 123, 0.25);
+    }
+    .product-img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      background: var(--stone);
+      transition: transform 0.5s ease;
+    }
+    .product-card:hover .product-img { transform: scale(1.03); }
+
+    /* === Category Pills === */
+    .cat-pill {
+      padding: 8px 20px;
+      border-radius: 100px;
+      border: 1px solid rgba(31, 58, 46, 0.12);
+      background: transparent;
+      color: var(--darkgreen);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .cat-pill:hover {
+      border-color: var(--brass);
+      background: rgba(184, 155, 123, 0.06);
+    }
+    .cat-pill.active {
+      background: var(--darkgreen);
+      color: var(--cream);
+      border-color: var(--darkgreen);
+    }
+
+    /* === Admin Modal === */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 42, 35, 0.4);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-overlay.open { opacity: 1; visibility: visible; }
+    .modal-content {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 480px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+      transform: translateY(12px);
+      transition: transform 0.3s ease;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.12);
+    }
+    .modal-overlay.open .modal-content { transform: translateY(0); }
+
+    /* === Input Fields === */
+    .input-field {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid rgba(31, 58, 46, 0.12);
+      border-radius: 10px;
+      background: var(--cream);
+      font-size: 0.9rem;
+      color: var(--ink);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .input-field:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184, 155, 123, 0.15);
+    }
+    .input-field::placeholder { color: rgba(31, 58, 46, 0.35); }
+
+    /* === Badge === */
+    .stock-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+    .stock-in { background: rgba(91, 123, 106, 0.12); color: var(--sage); }
+    .stock-out { background: rgba(184, 155, 123, 0.15); color: #8B6B4A; }
+
+    /* === Toast === */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--darkgreen);
+      color: var(--cream);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      z-index: 200;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* === Empty State === */
+    .empty-state {
+      text-align: center;
+      padding: 64px 24px;
+      color: rgba(31, 58, 46, 0.4);
+    }
+
+    /* === Responsive === */
+    @media (max-width: 640px) {
+      .modal-content { padding: 24px; }
+    }
+
+    /* === Animations === */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up {
+      animation: fadeUp 0.5s ease forwards;
+    }
+    .stagger-1 { animation-delay: 0.05s; }
+    .stagger-2 { animation-delay: 0.1s; }
+    .stagger-3 { animation-delay: 0.15s; }
+    .stagger-4 { animation-delay: 0.2s; }
+  </style>
+</head>
+<body>
+
+<!-- ===== TOAST ===== -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- ===== HEADER ===== -->
+<header id="header" class="header-blur fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 sm:h-20">
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-2 focus-ring" aria-label="ROSÉVA JEWELS home">
+      <span class="font-serif text-xl sm:text-2xl tracking-tight" style="color: var(--darkgreen);">
+        ROSÉVA <span style="color: var(--brass);">JEWELS</span>
+      </span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+      <a href="#shop" class="nav-link text-sm font-medium tracking-wide" style="color: var(--darkgreen);">Shop</a>
+      <a href="#categories" class="nav-link text-sm font-medium tracking-wide" style="color: var(--darkgreen);">Categories</a>
+      <a href="#about" class="nav-link text-sm font-medium tracking-wide" style="color: var(--darkgreen);">About</a>
+      <button id="adminToggleDesktop" class="btn-outline px-5 py-2 rounded-full text-sm font-medium focus-ring flex items-center gap-2" aria-label="Admin dashboard">
+        <i data-lucide="lock" class="w-3.5 h-3.5"></i> Admin
+      </button>
+    </nav>
+
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuBtn" class="md:hidden p-2 focus-ring" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <i data-lucide="menu" class="w-6 h-6" style="color: var(--darkgreen);"></i>
+    </button>
+  </div>
+</header>
+
+<!-- ===== MOBILE MENU ===== -->
+<div id="mobileMenu" class="fixed inset-0 z-40 bg-cream hidden" role="dialog" aria-label="Mobile navigation">
+  <div class="flex flex-col h-full pt-24 px-8">
+    <button id="closeMobileMenu" class="absolute top-5 right-5 p-2 focus-ring" aria-label="Close menu">
+      <i data-lucide="x" class="w-6 h-6" style="color: var(--darkgreen);"></i>
+    </button>
+    <nav class="flex flex-col gap-6" aria-label="Mobile navigation links">
+      <a href="#shop" class="font-serif text-3xl tracking-tight mobile-nav-link" style="color: var(--darkgreen);">Shop</a>
+      <a href="#categories" class="font-serif text-3xl tracking-tight mobile-nav-link" style="color: var(--darkgreen);">Categories</a>
+      <a href="#about" class="font-serif text-3xl tracking-tight mobile-nav-link" style="color: var(--darkgreen);">About</a>
+      <button id="adminToggleMobile" class="btn-outline px-6 py-3 rounded-full text-sm font-medium focus-ring flex items-center gap-2 w-fit mt-4" aria-label="Admin dashboard">
+        <i data-lucide="lock" class="w-4 h-4"></i> Admin Panel
+      </button>
+    </nav>
+  </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="pt-28 sm:pt-36 pb-12 sm:pb-20 px-5 sm:px-8" style="background: linear-gradient(180deg, #FDFBF7 0%, #F5F0E8 100%);">
+  <div class="max-w-7xl mx-auto">
+    <div class="max-w-3xl">
+      <p class="text-xs font-medium tracking-[0.25em] uppercase mb-4 animate-fade-up" style="color: var(--sage);">Est. 2025 — Fine Jewellery</p>
+      <h1 class="font-serif text-5xl sm:text-7xl lg:text-8xl leading-[1.05] tracking-tight text-balance animate-fade-up stagger-1" style="color: var(--darkgreen);">
+        Timeless pieces,<br>
+        <span style="color: var(--brass);">everyday</span> elegance.
+      </h1>
+      <p class="mt-6 text-base sm:text-lg max-w-xl leading-relaxed animate-fade-up stagger-2" style="color: var(--sage);">
+        Handcrafted chains, necklaces, earrings, rings, and bracelets designed to be worn daily and treasured forever.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4 animate-fade-up stagger-3">
+        <a href="#shop" class="btn-primary px-7 py-3 rounded-full text-sm font-medium focus-ring inline-flex items-center gap-2">
+          Explore Collection <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+        <a href="#categories" class="btn-outline px-7 py-3 rounded-full text-sm font-medium focus-ring inline-flex items-center gap-2">
+          Browse Categories
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS / TRUST BAR ===== -->
+<section class="py-10 px-5 sm:px-8 border-y" style="border-color: rgba(31,58,46,0.06); background: #fff;">
+  <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+    <div>
+      <p class="font-serif text-3xl sm:text-4xl" style="color: var(--darkgreen);">100%</p>
+      <p class="text-xs tracking-wide uppercase mt-1" style="color: var(--sage);">Handcrafted</p>
+    </div>
+    <div>
+      <p class="font-serif text-3xl sm:text-4xl" style="color: var(--darkgreen);">24K</p>
+      <p class="text-xs tracking-wide uppercase mt-1" style="color: var(--sage);">Gold Plated</p>
+    </div>
+    <div>
+      <p class="font-serif text-3xl sm:text-4xl" style="color: var(--darkgreen);">5.0</p>
+      <p class="text-xs tracking-wide uppercase mt-1" style="color: var(--sage);">Customer Rating</p>
+    </div>
+    <div>
+      <p class="font-serif text-3xl sm:text-4xl" style="color: var(--darkgreen);">Free</p>
+      <p class="text-xs tracking-wide uppercase mt-1" style="color: var(--sage);">Shipping Over $150</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SHOP SECTION ===== -->
+<section id="shop" class="py-16 sm:py-24 px-5 sm:px-8" style="background: var(--cream);">
+  <div class="max-w-7xl mx-auto">
+    <!-- Section Header -->
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
+      <div>
+        <p class="text-xs font-medium tracking-[0.25em] uppercase mb-2" style="color: var(--sage);">The Collection</p>
+        <h2 class="font-serif text-4xl sm:text-5xl tracking-tight" style="color: var(--darkgreen);">Shop All Pieces</h2>
+      </div>
+      <!-- Search -->
+      <div class="relative w-full sm:w-72">
+        <i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2" style="color: var(--sage);"></i>
+        <input type="text" id="searchInput" placeholder="Search jewellery..." class="input-field pl-11" aria-label="Search products">
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div id="categories" class="flex gap-2 overflow-x-auto pb-2 mb-10 scrollbar-hide" style="-ms-overflow-style: none; scrollbar-width: none;" role="group" aria-label="Product categories">
+      <button class="cat-pill active focus-ring" data-category="all">All</button>
+      <button class="cat-pill focus-ring" data-category="Chains">Chains</button>
+      <button class="cat-pill focus-ring" data-category="Necklaces">Necklaces</button>
+      <button class="cat-pill focus-ring" data-category="Earrings">Earrings</button>
+      <button class="cat-pill focus-ring" data-category="Rings">Rings</button>
+      <button class="cat-pill focus-ring" data-category="Bracelets">Bracelets</button>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+      <!-- Products rendered by JS -->
+    </div>
+    <div id="emptyState" class="empty-state hidden">
+      <i data-lucide="gem" class="w-12 h-12 mx-auto mb-4 opacity-30"></i>
+      <p class="font-serif text-xl">No pieces found</p>
+      <p class="text-sm mt-1">Try a different search or category.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT / CTA ===== -->
+<section id="about" class="py-16 sm:py-24 px-5 sm:px-8" style="background: #fff;">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <p class="text-xs font-medium tracking-[0.25em] uppercase mb-3" style="color: var(--sage);">Our Promise</p>
+      <h2 class="font-serif text-4xl sm:text-5xl tracking-tight leading-tight" style="color: var(--darkgreen);">
+        Crafted with intention,<br>worn with ease.
+      </h2>
+      <p class="mt-6 text-base leading-relaxed" style="color: var(--sage);">
+        Every ROSÉVA piece is designed in small batches using ethically sourced materials. We believe luxury should feel personal — not precious. Our jewellery is made to be layered, lived in, and loved.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(184,155,123,0.1);">
+            <i data-lucide="leaf" class="w-5 h-5" style="color: var(--brass);"></i>
+          </div>
+          <span class="text-sm font-medium" style="color: var(--darkgreen);">Ethically Sourced</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(184,155,123,0.1);">
+            <i data-lucide="award" class="w-5 h-5" style="color: var(--brass);"></i>
+          </div>
+          <span class="text-sm font-medium" style="color: var(--darkgreen);">Lifetime Warranty</span>
+        </div>
+      </div>
+    </div>
+    <div class="rounded-2xl overflow-hidden aspect-[4/3]" style="background: var(--stone);">
+      <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800&q=80" alt="ROSÉVA jewellery craftsmanship" class="w-full h-full object-cover" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="pt-16 pb-8 px-5 sm:px-8" style="background: var(--darkgreen); color: var(--cream);">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+      <div class="lg:col-span-2">
+        <p class="font-serif text-2xl tracking-tight mb-4">ROSÉVA <span style="color: var(--brass);">JEWELS</span></p>
+        <p class="text-sm leading-relaxed max-w-sm" style="color: rgba(253,251,247,0.6);">
+          Timeless jewellery for the modern woman. Handcrafted, ethically sourced, designed to last.
+        </p>
+        <div class="flex gap-4 mt-6">
+          <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center transition-colors focus-ring" style="background: rgba(253,251,247,0.08);" aria-label="Instagram">
+            <i data-lucide="instagram" class="w-4 h-4"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center transition-colors focus-ring" style="background: rgba(253,251,247,0.08);" aria-label="Facebook">
+            <i data-lucide="facebook" class="w-4 h-4"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center transition-colors focus-ring" style="background: rgba(253,251,247,0.08);" aria-label="Pinterest">
+            <i data-lucide="twitter" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 class="text-xs font-semibold tracking-[0.2em] uppercase mb-4" style="color: var(--brass);">Shop</h4>
+        <ul class="space-y-3 text-sm" style="color: rgba(253,251,247,0.6);">
+          <li><a href="#shop" class="hover:text-white transition-colors focus-ring">All Pieces</a></li>
+          <li><a href="#categories" class="hover:text-white transition-colors focus-ring">Chains</a></li>
+          <li><a href="#categories" class="hover:text-white transition-colors focus-ring">Necklaces</a></li>
+          <li><a href="#categories" class="hover:text-white transition-colors focus-ring">Earrings</a></li>
+          <li><a href="#categories" class="hover:text-white transition-colors focus-ring">Rings</a></li>
+          <li><a href="#categories" class="hover:text-white transition-colors focus-ring">Bracelets</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-xs font-semibold tracking-[0.2em] uppercase mb-4" style="color: var(--brass);">Contact</h4>
+        <ul class="space-y-3 text-sm" style="color: rgba(253,251,247,0.6);">
+          <li class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> hello@rosevajewels.com</li>
+          <li class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> +1 (555) 123-4567</li>
+          <li class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i> New York, NY</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs" style="border-color: rgba(253,251,247,0.1); color: rgba(253,251,247,0.4);">
+      <p>&copy; 2025 ROSÉVA JEWELS. All rights reserved.</p>
+      <p>Crafted with care.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== ADMIN LOGIN MODAL ===== -->
+<div id="loginModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="modal-content">
+    <div class="flex items-center justify-between mb-6">
+      <h3 id="loginTitle" class="font-serif text-2xl" style="color: var(--darkgreen);">Admin Login</h3>
+      <button class="close-modal p-2 focus-ring" aria-label="Close login">
+        <i data-lucide="x" class="w-5 h-5" style="color: var(--sage);"></i>
+      </button>
+    </div>
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label for="loginEmail" class="block text-xs font-medium tracking-wide mb-1.5" style="color: var(--darkgreen);">Email</label>
+        <input type="email" id="loginEmail" class="input-field" placeholder="admin@rosevajewels.com" required autocomplete="username">
+      </div>
+      <div>
+        <label for="loginPassword" class="block text-xs font-medium tracking-wide mb-1.5" style="color: var(--darkgreen);">Password</label>
+        <input type="password" id="loginPassword" class="input-field" placeholder="Enter password" required autocomplete="current-password">
+      </div>
+      <p id="loginError" class="text-xs hidden" style="color: #c0392b;">Invalid credentials. Try again.</p>
+      <button type="submit" class="btn-primary w-full py-3 rounded-xl text-sm font-medium focus-ring">Sign In</button>
+      <p class="text-xs text-center" style="color: var(--sage);">Demo: admin@rosevajewels.com / roseva2025</p>
+    </form>
+  </div>
+</div>
+
+<!-- ===== ADMIN DASHBOARD MODAL ===== -->
+<div id="adminModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+  <div class="modal-content" style="max-width: 640px;">
+    <div class="flex items-center justify-between mb-6">
+      <h3 id="adminTitle" class="font-serif text-2xl" style="color: var(--darkgreen);">Product Dashboard</h3>
+      <div class="flex items-center gap-2">
+        <button id="addProductBtn" class="btn-primary px-4 py-2 rounded-xl text-xs font-medium focus-ring flex items-center gap-1.5">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add
+        </button>
+        <button class="close-modal p-2 focus-ring" aria-label="Close dashboard">
+          <i data-lucide="x" class="w-5 h-5" style="color: var(--sage);"></i>
+        </button>
+      </div>
+    </div>
+    <div id="adminProductList" class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+      <!-- Products rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD/EDIT PRODUCT MODAL ===== -->
+<div id="productFormModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+  <div class="modal-content">
+    <div class="flex items-center justify-between mb-6">
+      <h3 id="formTitle" class="font-serif text-2xl" style="color: var(--darkgreen);">Add Product</h3>
+      <button class="close-modal p-2 focus-ring" aria-label="Close form">
+        <i data-lucide="x" class="w-5 h-5" style="color: var(--sage);"></i>
+      </button>
+    </div>
+    <form id="productForm" class="space-y-4">
+      <input type="hidden" id="productId">
+      <div>
+        <label for="productName" class="block text-xs font-medium tracking-wide mb-1.5" style="color: var(--darkgreen);">Product Name</label>
+        <input type="text" id="productName" class="input-field" placeholder="e.g. Gold Chain Necklace" required>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="productPrice" class="block text-xs font-medium tracking-wide mb-1.5" style="color: var(--darkgreen);">Price ($)</label>
+          <input type="number" id="productPrice" class="input-field" placeholder="0.00" step="0.01" min="0" required>
+        </div>
+        <div>
+          <label for="productStock" class="block text-xs font-medium tracking-wide mb-1.5" style="color: var(--darkgreen);">Stock Qty</label>
+          <input type="number" id="productStock" class="input-field" placeholder="10" min="0" required>
+        </div>
+      </div>
+      <div>
+        <label for="productCategory" class="block text-xs font-medium tracking-wide mb-1.5" style="color: var(--darkgreen);">Category</label>
+        <select id="productCategory" class="input-field" required>
+          <option value="">Select category</option>
+          <option value="Chains">Chains</option>
+          <option value="Necklaces">Necklaces</option>
+          <option value="Earrings">Earrings</option>
+          <option value="Rings">Rings</option>
+          <option value="Bracelets">Bracelets</option>
+        </select>
+      </div>
+      <div>
+        <label for="productDesc" class="block text-xs font-medium tracking-wide mb-1.5" style="color: var(--darkgreen);">Description</label>
+        <textarea id="productDesc" class="input-field" rows="3" placeholder="Describe the piece..."></textarea>
+      </div>
+      <div>
+        <label for="productImage" class="block text-xs font-medium tracking-wide mb-1.5" style="color: var(--darkgreen);">Image URL</label>
+        <input type="url" id="productImage" class="input-field" placeholder="https://images.unsplash.com/...">
+      </div>
+      <div id="imagePreview" class="hidden">
+        <img id="previewImg" src="" alt="Preview" class="w-full h-32 object-cover rounded-xl" style="background: var(--stone);">
+      </div>
+      <button type="submit" class="btn-primary w-full py-3 rounded-xl text-sm font-medium focus-ring">Save Product</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== WHATSAPP FLOATING BUTTON ===== -->
+<a id="whatsappFloat" href="#" target="_blank" rel="noopener noreferrer" class="btn-whatsapp fixed bottom-6 right-5 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-lg focus-ring" aria-label="Chat on WhatsApp">
+  <i data-lucide="message-circle" class="w-6 h-6"></i>
+</a>
+
+<script>
+  // ===== INIT LUCIDE =====
+  lucide.createIcons();
+
+  // ===== DATA LAYER (localStorage) =====
+  const STORAGE_KEY = 'roseva_products';
+
+  function getProducts() {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  }
+
+  function saveProducts(products) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+  }
+
+  // ===== DEFAULT DEMO PRODUCTS (only if empty) =====
+  function seedProducts() {
+    const existing = getProducts();
+    if (existing.length > 0) return;
+    const demos = [
+      { id: 'p1', name: '18K Gold Rope Chain', price: 189, category: 'Chains', stock: 12, description: 'A classic 18K gold-plated rope chain, 18 inches. Perfect for layering or wearing solo.', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80' },
+      { id: 'p2', name: 'Pearl Drop Necklace', price: 145, category: 'Necklaces', stock: 8, description: 'Freshwater pearl pendant on a delicate gold chain. Elegant and timeless.', image: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=600&q=80' },
+      { id: 'p3', name: 'Diamond Huggie Earrings', price: 225, category: 'Earrings', stock: 5, description: 'Petite diamond-encrusted huggies in 14K gold. Sold as a pair.', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80' },
+      { id: 'p4', name: 'Rose Gold Signet Ring', price: 175, category: 'Rings', stock: 15, description: 'Minimal rose gold signet ring. Available in sizes 5-9.', image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80' },
+      { id: 'p5', name: 'Tennis Bracelet', price: 295, category: 'Bracelets', stock: 3, description: 'Cubic zirconia tennis bracelet set in gold. 7 inches.', image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80' },
+      { id: 'p6', name: 'Layered Coin Necklace', price: 165, category: 'Necklaces', stock: 0, description: 'Two-layer coin and chain necklace. Stylish and modern.', image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80' },
+      { id: 'p7', name: 'Gold Hoop Earrings', price: 135, category: 'Earrings', stock: 20, description: 'Classic 30mm gold hoops. Lightweight for all-day wear.', image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=600&q=80' },
+      { id: 'p8', name: 'Twisted Chain Bracelet', price: 155, category: 'Bracelets', stock: 9, description: 'Twisted gold chain bracelet with lobster clasp.', image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=600&q=80' }
+    ];
+    saveProducts(demos);
+  }
+
+  // ===== STATE =====
+  let currentCategory = 'all';
+  let searchQuery = '';
+  let isAdmin = false;
+
+  // ===== DOM REFS =====
+  const productGrid = document.getElementById('productGrid');
+  const emptyState = document.getElementById('emptyState');
+  const searchInput = document.getElementById('searchInput');
+  const catPills = document.querySelectorAll('.cat-pill');
+  const loginModal = document.getElementById('loginModal');
+  const adminModal = document.getElementById('adminModal');
+  const productFormModal = document.getElementById('productFormModal');
+  const loginForm = document.getElementById('loginForm');
+  const productForm = document.getElementById('productForm');
+  const adminProductList = document.getElementById('adminProductList');
+  const toast = document.getElementById('toast');
+
+  // ===== TOAST =====
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // ===== RENDER PRODUCTS =====
+  function renderProducts() {
+    const products = getProducts();
+    let filtered = products;
+
+    if (currentCategory !== 'all') {
+      filtered = filtered.filter(p => p.category === currentCategory);
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+    }
+
+    if (filtered.length === 0) {
+      productGrid.innerHTML = '';
+      emptyState.classList.remove('hidden');
+      return;
+    }
+    emptyState.classList.add('hidden');
+
+    productGrid.innerHTML = filtered.map(p => {
+      const inStock = p.stock > 0;
+      const waMessage = encodeURIComponent(`Hello ROSÉVA JEWELS! I'm interested in: ${p.name} — $${p.price.toFixed(2)}. Is it available?`);
+      const waLink = `https://wa.me/15551234567?text=${waMessage}`;
+      return `
+        <div class="product-card animate-fade-up" data-id="${p.id}">
+          <div class="relative overflow-hidden">
+            <img src="${p.image || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80'}" alt="${p.name}" class="product-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80'">
+            <span class="stock-badge absolute top-3 right-3 ${inStock ? 'stock-in' : 'stock-out'}">
+              ${inStock ? 'In Stock' : 'Sold Out'}
+            </span>
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] font-medium tracking-[0.15em] uppercase mb-1" style="color: var(--sage);">${p.category}</p>
+            <h3 class="font-serif text-lg leading-snug mb-1" style="color: var(--darkgreen);">${p.name}</h3>
+            <p class="text-xs leading-relaxed mb-3 line-clamp-2" style="color: var(--sage);">${p.description || ''}</p>
+            <div class="flex items-center justify-between">
+              <span class="font-serif text-xl" style="color: var(--darkgreen);">$${p.price.toFixed(2)}</span>
+              <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn-whatsapp px-3 py-2 rounded-full text-[11px] font-medium flex items-center gap-1.5 focus-ring" aria-label="Order ${p.name} on WhatsApp">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Order
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    lucide.createIcons();
+  }
+
+  // ===== RENDER ADMIN LIST =====
+  function renderAdminList() {
+    const products = getProducts();
+    if (products.length === 0) {
+      adminProductList.innerHTML = '<p class="text-sm text-center py-8" style="color: var(--sage);">No products yet. Click "Add" to create your first piece.</p>';
+      return;
+    }
+    adminProductList.innerHTML = products.map(p => `
+      <div class="flex items-center gap-3 p-3 rounded-xl" style="background: var(--cream); border: 1px solid rgba(31,58,46,0.06);">
+        <img src="${p.image || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=100&q=80'}" alt="" class="w-12 h-12 rounded-lg object-cover flex-shrink-0" style="background: var(--stone);">
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium truncate" style="color: var(--darkgreen);">${p.name}</p>
+          <p class="text-xs" style="color: var(--sage);">$${p.price.toFixed(2)} · ${p.category} · ${p.stock} in stock</p>
+        </div>
+        <div class="flex gap-1">
+          <button class="edit-product p-2 rounded-lg transition-colors focus-ring" style="background: rgba(184,155,123,0.1);" data-id="${p.id}" aria-label="Edit ${p.name}">
+            <i data-lucide="pencil" class="w-3.5 h-3.5" style="color: var(--brass);"></i>
+          </button>
+          <button class="delete-product p-2 rounded-lg transition-colors focus-ring" style="background: rgba(192,57,43,0.08);" data-id="${p.id}" aria-label="Delete ${p.name}">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5" style="color: #c0392b;"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+    lucide.createIcons();
+  }
+
+  // ===== MODAL HELPERS =====
+  function openModal(modal) {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(modal) {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeAllModals() {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+    document.body.style.overflow = '';
+  }
+
+  // ===== SEARCH =====
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value.trim();
+    renderProducts();
+  });
+
+  // ===== CATEGORY FILTER =====
+  catPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      catPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      currentCategory = pill.dataset.category;
+      renderProducts();
+    });
+  });
+
+  // ===== MOBILE MENU =====
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const closeMobileMenu = document.getElementById('closeMobileMenu');
+
+  mobileMenuBtn.addEventListener('click', () => {
+    mobileMenu.classList.remove('hidden');
+    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  });
+  closeMobileMenu.addEventListener('click', () => {
+    mobileMenu.classList.add('hidden');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  });
+  document.querySelectorAll('.mobile-nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // ===== ADMIN TOGGLE =====
+  function handleAdminToggle() {
+    if (isAdmin) {
+      renderAdminList();
+      openModal(adminModal);
+    } else {
+      openModal(loginModal);
+    }
+  }
+  document.getElementById('adminToggleDesktop').addEventListener('click', handleAdminToggle);
+  document.getElementById('adminToggleMobile').addEventListener('click', () => {
+    mobileMenu.classList.add('hidden');
+    document.body.style.overflow = '';
+    handleAdminToggle();
+  });
+
+  // ===== LOGIN =====
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPassword').value;
+    if (email === 'admin@rosevajewels.com' && pass === 'roseva2025') {
+      isAdmin = true;
+      document.getElementById('loginError').classList.add('hidden');
+      closeModal(loginModal);
+      renderAdminList();
+      openModal(adminModal);
+      showToast('Welcome back, Admin');
+    } else {
+      document.getElementById('loginError').classList.remove('hidden');
+    }
+  });
+
+  // ===== CLOSE MODALS =====
+  document.querySelectorAll('.close-modal').forEach(btn => {
+    btn.addEventListener('click', closeAllModals);
+  });
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeAllModals();
+    });
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAllModals();
+  });
+
+  // ===== ADD PRODUCT =====
+  document.getElementById('addProductBtn').addEventListener('click', () => {
+    document.getElementById('formTitle').textContent = 'Add Product';
+    document.getElementById('productForm').reset();
+    document.getElementById('productId').value = '';
+    document.getElementById('imagePreview').classList.add('hidden');
+    openModal(productFormModal);
+  });
+
+  // ===== EDIT PRODUCT =====
+  adminProductList.addEventListener('click', (e) => {
+    const editBtn = e.target.closest('.edit-product');
+    const deleteBtn = e.target.closest('.delete-product');
+
+    if (editBtn) {
+      const id = editBtn.dataset.id;
+      const products = getProducts();
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      document.getElementById('formTitle').textContent = 'Edit Product';
+      document.getElementById('productId').value = p.id;
+      document.getElementById('productName').value = p.name;
+      document.getElementById('productPrice').value = p.price;
+      document.getElementById('productStock').value = p.stock;
+      document.getElementById('productCategory').value = p.category;
+      document.getElementById('productDesc').value = p.description || '';
+      document.getElementById('productImage').value = p.image || '';
+      if (p.image) {
+        document.getElementById('previewImg').src = p.image;
+        document.getElementById('imagePreview').classList.remove('hidden');
+      } else {
+        document.getElementById('imagePreview').classList.add('hidden');
+      }
+      openModal(productFormModal);
+    }
+
+    if (deleteBtn) {
+      const id = deleteBtn.dataset.id;
+      if (confirm('Delete this product?')) {
+        const products = getProducts().filter(p => p.id !== id);
+        saveProducts(products);
+        renderAdminList();
+        renderProducts();
+        showToast('Product deleted');
+      }
+    }
+  });
+
+  // ===== IMAGE PREVIEW =====
+  document.getElementById('productImage').addEventListener('input', (e) => {
+    const url = e.target.value.trim();
+    if (url) {
+      document.getElementById('previewImg').src = url;
+      document.getElementById('imagePreview').classList.remove('hidden');
+    } else {
+      document.getElementById('imagePreview').classList.add('hidden');
+    }
+  });
+
+  // ===== SAVE PRODUCT =====
+  productForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = document.getElementById('productId').value;
+    const name = document.getElementById('productName').value.trim();
+    const price = parseFloat(document.getElementById('productPrice').value);
+    const stock = parseInt(document.getElementById('productStock').value);
+    const category = document.getElementById('productCategory').value;
+    const description = document.getElementById('productDesc').value.trim();
+    const image = document.getElementById('productImage').value.trim();
+
+    if (!name || isNaN(price) || isNaN(stock) || !category) return;
+
+    let products = getProducts();
+
+    if (id) {
+      const idx = products.findIndex(p => p.id === id);
+      if (idx !== -1) {
+        products[idx] = { ...products[idx], name, price, stock, category, description, image };
+      }
+    } else {
+      products.push({
+        id: 'p' + Date.now(),
+        name, price, stock, category, description, image
+      });
+    }
+
+    saveProducts(products);
+    renderAdminList();
+    renderProducts();
+    closeModal(productFormModal);
+    showToast(id ? 'Product updated' : 'Product added');
+  });
+
+  // ===== FLOATING WHATSAPP =====
+  document.getElementById('whatsappFloat').addEventListener('click', (e) => {
+    e.preventDefault();
+    const msg = encodeURIComponent('Hello ROSÉVA JEWELS! I would like to inquire about your jewellery.');
+    window.open(`https://wa.me/15551234567?text=${msg}`, '_blank');
+  });
+
+  // ===== HEADER SCROLL EFFECT =====
+  window.addEventListener('scroll', () => {
+    const header = document.getElementById('header');
+    if (window.scrollY > 20) {
+      header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.04)';
+    } else {
+      header.style.boxShadow = 'none';
+    }
+  });
+
+  // ===== SMOOTH SCROLL =====
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      if (href === '#') return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ===== INIT =====
+  seedProducts();
+  renderProducts();
+  renderAdminList();
+</script>
+
+</body>
+</html>
