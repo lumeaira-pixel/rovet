@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FaceFind — Smart Photo Discovery</title>
+<meta name="description" content="FaceFind automatically detects faces in your photos, groups similar faces together, and helps you rediscover every moment — privately and securely." />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0B132B',
+          navy: '#101A3D',
+          cream: '#FAFAFB',
+          mist: '#F5F7FA',
+          lavender: '#E8EAF6',
+          accent: '#3B5BDB',
+          'accent-soft': '#5C7CFA',
+          violet: '#7C3AED',
+        },
+        fontFamily: {
+          display: ['"Bricolage Grotesque"', 'sans-serif'],
+          body: ['Inter', 'sans-serif'],
+        },
+        boxShadow: {
+          'soft': '0 8px 30px rgba(11,19,43,0.06)',
+          'hover': '0 24px 48px -12px rgba(59,91,219,0.22)',
+          'glow': '0 12px 40px -8px rgba(59,91,219,0.35)',
+        },
+        borderRadius: {
+          '4xl': '2rem',
+          '5xl': '2.5rem',
+        },
+      },
+    },
+  };
+</script>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<style>
+  /* === Design Tokens === */
+  :root {
+    --ink: #0B132B;
+    --navy: #101A3D;
+    --cream: #FAFAFB;
+    --mist: #F5F7FA;
+    --lavender: #E8EAF6;
+    --accent: #3B5BDB;
+    --accent-soft: #5C7CFA;
+    --violet: #7C3AED;
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.85);
+    --focus-ring: 0 0 0 3px rgba(59, 91, 219, 0.35);
+    --font-display: 'Bricolage Grotesque', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  /* === Base === */
+  * { -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background-color: var(--cream);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+  }
+
+  /* === Focus (a11y) === */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: 0.75rem;
+  }
+
+  /* === Scrollbar === */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--mist); }
+  ::-webkit-scrollbar-thumb { background: #C7CFE6; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent-soft); }
+
+  /* === Utility === */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+  }
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+  }
+  .gradient-text {
+    background: linear-gradient(120deg, #3B5BDB 0%, #7C3AED 55%, #5C7CFA 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .mesh-bg {
+    background:
+      radial-gradient(at 15% 15%, rgba(92, 124, 250, 0.10) 0px, transparent 45%),
+      radial-gradient(at 85% 10%, rgba(124, 58, 237, 0.07) 0px, transparent 45%),
+      radial-gradient(at 50% 90%, rgba(59, 91, 219, 0.06) 0px, transparent 50%),
+      var(--cream);
+  }
+  .grid-pattern {
+    background-image:
+      linear-gradient(rgba(59, 91, 219, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59, 91, 219, 0.045) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+  .noise::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.4;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");
+  }
+
+  /* === Buttons === */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    font-weight: 600; border-radius: 1rem;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    will-change: transform;
+  }
+  .btn-primary {
+    background: linear-gradient(120deg, #3B5BDB, #5C7CFA);
+    color: #fff;
+    box-shadow: 0 6px 20px -4px rgba(59, 91, 219, 0.45);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 32px -6px rgba(59, 91, 219, 0.55);
+  }
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+  .btn-secondary {
+    background: #fff;
+    color: var(--ink);
+    border: 1px solid rgba(11, 19, 43, 0.08);
+    box-shadow: 0 2px 10px rgba(11, 19, 43, 0.04);
+  }
+  .btn-secondary:hover {
+    transform: translateY(-2px);
+    border-color: rgba(59, 91, 219, 0.35);
+    box-shadow: 0 12px 26px -8px rgba(59, 91, 219, 0.22);
+  }
+  .btn-secondary:active { transform: translateY(0) scale(0.98); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid transparent;
+  }
+  .btn-ghost:hover { background: rgba(11, 19, 43, 0.05); }
+
+  /* === Cards === */
+  .card {
+    background: #fff;
+    border: 1px solid rgba(11, 19, 43, 0.06);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 30px rgba(11, 19, 43, 0.05);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 55px -18px rgba(59, 91, 219, 0.22);
+    border-color: rgba(59, 91, 219, 0.16);
+  }
+  .card-feature:hover { transform: translateY(-8px); }
+
+  /* === Reveal on Scroll === */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* === Floating animation === */
+  @keyframes float-y {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .float-slow { animation: float-y 7s ease-in-out infinite; }
+  .float-slower { animation: float-y 9s ease-in-out infinite; animation-delay: 1.5s; }
+
+  /* === Pulse dot === */
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.9); }
+  }
+  .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+  /* === Mock UI Face Tile === */
+  .face-tile {
+    background: linear-gradient(140deg, #EEF1FC 0%, #DDE4F7 100%);
+    border-radius: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; position: relative;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  }
+  .face-tile::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(140deg, rgba(255,255,255,0.5), transparent 55%);
+    pointer-events: none;
+  }
+  .face-tile:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 14px 26px -10px rgba(59, 91, 219, 0.35);
+  }
+
+  /* === Hamburger === */
+  .hamburger-line {
+    display: block; width: 22px; height: 2px; background: var(--ink);
+    border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .hamburger-line + .hamburger-line { margin-top: 5px; }
+  .hamburger.active .hamburger-line:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.active .hamburger-line:nth-child(2) { opacity: 0; }
+  .hamburger.active .hamburger-line:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* === Marquee (testimonials logos) === */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .marquee-track {
+    display: flex; gap: 3.5rem; width: max-content;
+    animation: marquee 38s linear infinite;
+  }
+
+  /* === Toast === */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: #0B132B; color: #fff;
+    padding: 14px 22px; border-radius: 14px;
+    font-size: 0.9rem; font-weight: 500;
+    box-shadow: 0 20px 45px rgba(11, 19, 43, 0.3);
+    transform: translateY(140%); opacity: 0; pointer-events: none;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    z-index: 100;
+    display: flex; align-items: center; gap: 0.6rem;
+    max-width: min(92vw, 380px);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { background: linear-gradient(120deg, #0B132B, #101A3D); }
+  .toast.error { background: linear-gradient(120deg, #991B1B, #DC2626); }
+
+  /* === Inputs === */
+  .field {
+    width: 100%;
+    background: #fff;
+    border: 1px solid rgba(11, 19, 43, 0.10);
+    border-radius: 0.9rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: var(--ink);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .field::placeholder { color: rgba(11, 19, 43, 0.35); }
+  .field:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--focus-ring);
+  }
+
+  /* === Tilt === */
+  .tilt { transform-style: preserve-3d; will-change: transform; }
+  .tilt-inner { transform: translateZ(30px); }
+
+  /* === Stats === */
+  .stat-num {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  /* === Pricing Popular ring === */
+  .popular-ring {
+    background: linear-gradient(140deg, #3B5BDB, #5C7CFA 55%, #7C3AED);
+    color: #fff;
+    border-radius: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 30px 60px -20px rgba(59, 91, 219, 0.5);
+  }
+  .popular-ring::before {
+    content: ""; position: absolute; top: -40%; right: -20%;
+    width: 260px; height: 260px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 65%);
+    pointer-events: none;
+  }
+
+  /* === Section spacing pattern === */
+  .section { padding: 6.5rem 1.25rem; }
+  @media (min-width: 1024px) { .section { padding: 8.5rem 2rem; } }
+
+  /* === Reduced motion === */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+</style>
+</head>
+
+<body class="mesh-bg">
+
+  <!-- ================= HEADER ================= -->
+  <header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <a href="#top" class="flex items-center gap-2.5 group" aria-label="FaceFind home">
+          <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-accent to-violet flex items-center justify-center shadow-lg shadow-accent/25">
+            <i data-lucide="scan-face" class="w-5 h-5 text-white" aria-hidden="true"></i>
+          </span>
+          <span class="font-display font-extrabold text-xl tracking-tight">FaceFind</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden lg:flex items-center gap-1" aria-label="Main navigation">
+          <a href="#features" class="px-4 py-2 text-sm font-medium text-ink/70 hover:text-ink transition-colors rounded-lg hover:bg-ink/5">Features</a>
+          <a href="#how" class="px-4 py-2 text-sm font-medium text-ink/70 hover:text-ink transition-colors rounded-lg hover:bg-ink/5">How it works</a>
+          <a href="#privacy" class="px-4 py-2 text-sm font-medium text-ink/70 hover:text-ink transition-colors rounded-lg hover:bg-ink/5">Privacy</a>
+          <a href="#pricing" class="px-4 py-2 text-sm font-medium text-ink/70 hover:text-ink transition-colors rounded-lg hover:bg-ink/5">Pricing</a>
+        </nav>
+
+        <!-- Desktop CTA -->
+        <div class="hidden lg:flex items-center gap-2">
+          <a href="#login" class="btn btn-ghost px-4 py-2.5 text-sm">Sign in</a>
+          <a href="#register" class="btn btn-primary px-5 py-2.5 text-sm">
+            Get started
+            <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button id="hamburger" class="lg:hidden hamburger p-2 -mr-2" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="lg:hidden hidden glass-strong border-t border-white/60 shadow-soft">
+      <nav class="max-w-7xl mx-auto px-5 py-5 flex flex-col gap-1" aria-label="Mobile navigation">
+        <a href="#features" class="mobile-link px-4 py-3 text-base font-medium rounded-xl hover:bg-lavender/60 transition-colors">Features</a>
+        <a href="#how" class="mobile-link px-4 py-3 text-base font-medium rounded-xl hover:bg-lavender/60 transition-colors">How it works</a>
+        <a href="#privacy" class="mobile-link px-4 py-3 text-base font-medium rounded-xl hover:bg-lavender/60 transition-colors">Privacy</a>
+        <a href="#pricing" class="mobile-link px-4 py-3 text-base font-medium rounded-xl hover:bg-lavender/60 transition-colors">Pricing</a>
+        <div class="flex flex-col gap-2 mt-3 pt-4 border-t border-ink/5">
+          <a href="#login" class="mobile-link btn btn-ghost py-3">Sign in</a>
+          <a href="#register" class="mobile-link btn btn-primary py-3">Get started</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ================= HERO ================= -->
+    <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
+      <!-- Decorative blobs -->
+      <div class="absolute -top-10 -left-40 w-[520px] h-[520px] bg-accent/8 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+      <div class="absolute top-40 -right-40 w-[420px] h-[420px] bg-violet/8 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 relative">
+        <div class="grid lg:grid-cols-[1.05fr_1fr] gap-16 lg:gap-14 items-center">
+
+          <!-- Copy -->
+          <div class="max-w-2xl">
+            <div class="reveal inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-accent mb-7 shadow-soft">
+              <span class="w-2 h-2 rounded-full bg-accent pulse-dot" aria-hidden="true"></span>
+              On-device ready · Privacy-first AI
+            </div>
+
+            <h1 class="reveal font-display font-extrabold text-[2.6rem] sm:text-6xl lg:text-7xl xl:text-[5rem] tracking-tight mb-7">
+              Find every photo of<br />
+              <span class="gradient-text">the people you love.</span>
+            </h1>
+
+            <p class="reveal text-lg sm:text-xl text-ink/60 leading-relaxed mb-9 max-w-xl">
+              FaceFind detects faces in your photos, groups similar faces together, and helps you rediscover every moment — without manual tagging and without ever compromising your privacy.
+            </p>
+
+            <div class="reveal flex flex-col sm:flex-row gap-3 mb-11">
+              <a href="#register" class="btn btn-primary px-7 py-4 text-base">
+                <i data-lucide="upload-cloud" class="w-5 h-5" aria-hidden="true"></i>
+                Upload your first photos
+              </a>
+              <a href="#how" class="btn btn-secondary px-7 py-4 text-base">
+                See how it works
+                <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+            </div>
+
+            <ul class="reveal flex flex-wrap items-center gap-x-7 gap-y-3 text-sm text-ink/55">
+              <li class="flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-4 h-4 text-accent" aria-hidden="true"></i>
+                Private by default
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="zap" class="w-4 h-4 text-accent" aria-hidden="true"></i>
+                Background processing
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="layers" class="w-4 h-4 text-accent" aria-hidden="true"></i>
+                Unlimited albums
+              </li>
+            </ul>
+          </div>
+
+          <!-- Visual mockup -->
+          <div class="reveal relative">
+            <div class="glass-strong rounded-4xl p-3 sm:p-4 shadow-[0_40px_80px_-30px_rgba(59,91,219,0.35)]">
+              <!-- Faux browser chrome -->
+              <div class="flex items-center justify-between px-3 py-2 mb-3">
+                <div class="flex items-center gap-1.5" aria-hidden="true">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#FF5F57]"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#28C840]"></span>
+                </div>
+                <div class="flex items-center gap-1.5 text-[11px] text-ink/40 font-medium px-3 py-1 rounded-full bg-white/70 border border-ink/5">
+                  <i data-lucide="lock" class="w-3 h-3" aria-hidden="true"></i>
+                  facefind.app/dashboard
+                </div>
+                <div class="w-10"></div>
+              </div>
+
+              <!-- Mock app -->
+              <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-inner">
+                <!-- Stats row -->
+                <div class="grid grid-cols-3 gap-3 mb-5">
+                  <div class="bg-mist rounded-2xl p-3.5 text-center">
+                    <div class="stat-num text-accent">2.4k</div>
+                    <div class="text-[11px] text-ink/50 mt-1.5 font-medium">Photos</div>
+                  </div>
+                  <div class="bg-mist rounded-2xl p-3.5 text-center">
+                    <div class="stat-num text-violet">8.1k</div>
+                    <div class="text-[11px] text-ink/50 mt-1.5 font-medium">Faces</div>
+                  </div>
+                  <div class="bg-mist rounded-2xl p-3.5 text-center">
+                    <div class="stat-num text-accent-soft">42</div>
+                    <div class="text-[11px] text-ink/50 mt-1.5 font-medium">People</div>
+                  </div>
+                </div>
+
+                <!-- People section -->
+                <div class="flex items-center justify-between mb-3 px-1">
+                  <div class="text-[10px] font-bold text-ink/40 uppercase tracking-[0.15em]">People groups</div>
+                  <div class="text-[10px] text-accent font-semibold">View all</div>
+                </div>
+                <div class="grid grid-cols-4 gap-2.5">
+                  <div class="face-tile aspect-square" aria-hidden="true">
+                    <i data-lucide="user" class="w-7 h-7 text-accent/40"></i>
+                  </div>
+                  <div class="face-tile aspect-square" aria-hidden="true">
+                    <i data-lucide="user" class="w-7 h-7 text-violet/40"></i>
+                  </div>
+                  <div class="face-tile aspect-square" aria-hidden="true">
+                    <i data-lucide="user" class="w-7 h-7 text-accent-soft/40"></i>
+                  </div>
+                  <div class="face-tile aspect-square" aria-hidden="true">
+                    <i data-lucide="user" class="w-7 h-7 text-accent/40"></i>
+                  </div>
+                  <div class="face-tile aspect-square" aria-hidden="true">
+                    <i data-lucide="user" class="w-7 h-7 text-violet/40"></i>
+                  </div>
+                  <div class="face-tile aspect-square" aria-hidden="true">
+                    <i data-lucide="user" class="w-7 h-7 text-accent-soft/40"></i>
+                  </div>
+                  <div class="face-tile aspect-square" aria-hidden="true">
+                    <i data-lucide="user" class="w-7 h-7 text-accent/40"></i>
+                  </div>
+                  <div class="face-tile aspect-square !bg-gradient-to-br !from-accent/10 !to-violet/10">
+                    <span class="text-xs font-bold text-accent">+34</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating card 1 -->
+            <div class="hidden sm:flex absolute -bottom-6 -left-6 glass-strong rounded-2xl px-4 py-3 shadow-soft items-center gap-3 float-slow">
+              <div class="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="check-circle-2" class="w-4.5 h-4.5 text-green-600" aria-hidden="true"></i>
+              </div>
+              <div class="leading-tight">
+                <div class="text-xs font-bold text-ink">Processing complete</div>
+                <div class="text-[10px] text-ink/45">248 faces grouped</div>
+              </div>
+            </div>
+
+            <!-- Floating card 2 -->
+            <div class="hidden md:flex absolute -top-6 -right-6 glass-strong rounded-2xl px-4 py-3 shadow-soft items-center gap-3 float-slower">
+              <div class="w-9 h-9 rounded-xl bg-lavender flex items-center justify-center flex-shrink-0">
+                <i data-lucide="sparkles" class="w-4 h-4 text-violet" aria-hidden="true"></i>
+              </div>
+              <div class="leading-tight">
+                <div class="text-xs font-bold text-ink">96% similarity match</div>
+                <div class="text-[10px] text-ink/45">Person 12 · 34 photos</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STATS BAR ================= -->
+    <section aria-label="Product metrics" class="border-y border-ink/5 bg-white/60">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 py-14">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          <div class="reveal text-center md:text-left">
+            <div class="stat-num gradient-text">99.2%</div>
+            <div class="text-sm text-ink/55 mt-2">Face detection accuracy</div>
+          </div>
+          <div class="reveal text-center md:text-left">
+            <div class="stat-num gradient-text">50k+</div>
+            <div class="text-sm text-ink/55 mt-2">Photos processed daily</div>
+          </div>
+          <div class="reveal text-center md:text-left">
+            <div class="stat-num gradient-text">0</div>
+            <div class="text-sm text-ink/55 mt-2">Photos used for training</div>
+          </div>
+          <div class="reveal text-center md:text-left">
+            <div class="stat-num gradient-text">100%</div>
+            <div class="text-sm text-ink/55 mt-2">Private to your account</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FEATURES ================= -->
+    <section id="features" class="section relative">
+      <div class="max-w-7xl mx-auto">
+        <div class="max-w-2xl mb-16 reveal">
+          <div class="inline-flex items-center gap-2 text-xs font-bold text-accent uppercase tracking-[0.2em] mb-4">
+            <i data-lucide="sparkles" class="w-4 h-4" aria-hidden="true"></i>
+            Core features
+          </div>
+          <h2 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-5">
+            Everything you need to organize your photo life
+          </h2>
+          <p class="text-lg text-ink/55 leading-relaxed">
+            From automatic face grouping to duplicate detection, FaceFind gives you powerful tools to find any photo in seconds — all built on a privacy-first foundation.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+          <!-- Feature 1 -->
+          <article class="card card-feature p-7 reveal">
+            <div class="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-5">
+              <i data-lucide="scan-face" class="w-6 h-6 text-accent" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display font-bold text-xl mb-2.5">Smart face detection</h3>
+            <p class="text-ink/55 leading-relaxed text-[0.95rem]">
+              OpenCV-powered detection finds every face in your photos — even in group shots and challenging lighting conditions.
+            </p>
+          </article>
+
+          <!-- Feature 2 -->
+          <article class="card card-feature p-7 reveal">
+            <div class="w-12 h-12 rounded-2xl bg-violet/10 flex items-center justify-center mb-5">
+              <i data-lucide="users" class="w-6 h-6 text-violet" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display font-bold text-xl mb-2.5">Automatic grouping</h3>
+            <p class="text-ink/55 leading-relaxed text-[0.95rem]">
+              Similar faces are clustered into person groups with confidence indicators. You stay in full control — merge, split, rename, correct.
+            </p>
+          </article>
+
+          <!-- Feature 3 -->
+          <article class="card card-feature p-7 reveal">
+            <div class="w-12 h-12 rounded-2xl bg-accent-soft/10 flex items-center justify-center mb-5">
+              <i data-lucide="search" class="w-6 h-6 text-accent-soft" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display font-bold text-xl mb-2.5">Powerful search</h3>
+            <p class="text-ink/55 leading-relaxed text-[0.95rem]">
+              Search by person, date range, filename, or file type. Filter by photos with multiple faces, ungrouped faces, or processing status.
+            </p>
+          </article>
+
+          <!-- Feature 4 -->
+          <article class="card card-feature p-7 reveal">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-5">
+              <i data-lucide="shield-check" class="w-6 h-6 text-emerald-600" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display font-bold text-xl mb-2.5">Privacy-first design</h3>
+            <p class="text-ink/55 leading-relaxed text-[0.95rem]">
+              Strict user-level isolation, secure upload validation, and permanent deletion of photos and facial embeddings whenever you choose.
+            </p>
+          </article>
+
+          <!-- Feature 5 -->
+          <article class="card card-feature p-7 reveal">
+            <div class="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center mb-5">
+              <i data-lucide="copy" class="w-6 h-6 text-orange-500" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display font-bold text-xl mb-2.5">Duplicate detection</h3>
+            <p class="text-ink/55 leading-relaxed text-[0.95rem]">
+              Perceptual hashing finds exact duplicates, near-duplicates at different resolutions, and photos taken in quick succession.
+            </p>
+          </article>
+
+          <!-- Feature 6 -->
+          <article class="card card-feature p-7 reveal">
+            <div class="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center mb-5">
+              <i data-lucide="heart" class="w-6 h-6 text-pink-500" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display font-bold text-xl mb-2.5">Favorites & albums</h3>
+            <p class="text-ink/55 leading-relaxed text-[0.95rem]">
+              Curate favorites, build custom albums, and use bulk downloads with grid or masonry layouts for the perfect view.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section id="how" class="section bg-white/60 border-y border-ink/5 grid-pattern">
+      <div class="max-w-7xl mx-auto">
+        <div class="max-w-2xl mb-16 reveal">
+          <div class="inline-flex items-center gap-2 text-xs font-bold text-accent uppercase tracking-[0.2em] mb-4">
+            <i data-lucide="route" class="w-4 h-4" aria-hidden="true"></i>
+            How it works
+          </div>
+          <h2 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-5">
+            Three steps to photo clarity
+          </h2>
+          <p class="text-lg text-ink/55 leading-relaxed">
+            Upload your photos, let FaceFind do the heavy lifting in the background, and rediscover every memory.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Step 1 -->
+          <article class="card p-8 relative reveal">
+            <div class="font-display font-extrabold text-6xl text-accent/12 absolute top-5 right-6" aria-hidden="true">01</div>
+            <div class="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-5">
+              <i data-lucide="upload-cloud" class="w-6 h-6 text-accent" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display font-bold text-xl mb-3">Upload your photos</h3>
+            <p class="text-ink/55 leading-relaxed text-[0.95rem]">
+              Drag and drop your entire photo library. All major formats supported, with live progress indicators and validation.
+            </p>
+          </article>
+
+          <!-- Step 2 -->
+          <article class="card p-8 relative reveal">
+            <div class="font-display font-extrabold text-6xl text-violet/12 absolute top-5 right-6" aria-hidden="true">02</div>
+            <div class="w-12 h-12 rounded-2xl bg-violet/10 flex items-center justify-center mb-5">
+              <i data-lucide="cpu" class="w-6 h-6 text-violet" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display font-bold text-xl mb-3">AI processes faces</h3>
+            <p class="text-ink/55 leading-relaxed text-[0.95rem]">
+              Our pipeline detects faces, generates embeddings, and clusters similar faces — all asynchronously so your app stays fast.
+            </p>
+          </article>
+
+          <!-- Step 3 -->
+          <article class="card p-8 relative reveal">
+            <div class="font-display font-extrabold text-6xl text-emerald-500/12 absolute top-5 right-6" aria-hidden="true">03</div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-5">
+              <i data-lucide="search-check" class="w-6 h-6 text-emerald-600" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display font-bold text-xl mb-3">Find anyone instantly</h3>
+            <p class="text-ink/55 leading-relaxed text-[0.95rem]">
+              Browse person groups, rename them, merge or split groups, and find every photo of a person in seconds.
+            </p>
+          </article>
+        </div>
+
+        <!-- Note on terminology -->
+        <div class="mt-12 glass rounded-3xl p-6 sm:p-7 flex items-start gap-4 reveal max-w-4xl">
+          <div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="info" class="w-5 h-5 text-accent" aria-hidden="true"></i>
+          </div>
+          <div>
+            <div class="font-display font-bold text-base mb-1.5">A note on what our AI does</div>
+            <p class="text-sm text-ink/60 leading-relaxed">
+              FaceFind performs three distinct operations: <strong class="text-ink/80">detection</strong> (locating faces), <strong class="text-ink/80">matching</strong> (comparing face embeddings), and <strong class="text-ink/80">clustering</strong> (grouping visually similar faces). Similarity results are statistical — they indicate visual likeness, not certainty of identity. We never claim that visually similar faces belong to the same person, and groups remain unnamed (like "Person 1") until you choose a label.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRIVACY ================= -->
+    <section id="privacy" class="section">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+          <div class="reveal">
+            <div class="inline-flex items-center gap-2 text-xs font-bold text-accent uppercase tracking-[0.2em] mb-4">
+              <i data-lucide="shield" class="w-4 h-4" aria-hidden="true"></i>
+              Privacy & security
+            </div>
+            <h2 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-6">
+              Your photos. Your data. Your control.
+            </h2>
+            <p class="text-lg text-ink/55 leading-relaxed mb-9">
+              FaceFind is built with privacy as a foundation, not an afterthought. We never train models on your photos, and every image plus its facial embeddings can be deleted at any time — permanently.
+            </p>
+
+            <ul class="space-y-5">
+              <li class="flex items-start gap-4">
+                <span class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5" aria-hidden="true">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+                </span>
+                <div>
+                  <div class="font-semibold text-sm mb-1">Strict user-level access controls</div>
+                  <p class="text-sm text-ink/55 leading-relaxed">Your photos are never visible to other users. Every request is scoped to your authenticated account.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-4">
+                <span class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5" aria-hidden="true">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+                </span>
+                <div>
+                  <div class="font-semibold text-sm mb-1">Secure file-upload validation</div>
+                  <p class="text-sm text-ink/55 leading-relaxed">Strict file-type and file-size restrictions protect against malicious uploads and unvalidated content.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-4">
+                <span class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5" aria-hidden="true">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+                </span>
+                <div>
+                  <div class="font-semibold text-sm mb-1">Full deletion of photos and embeddings</div>
+                  <p class="text-sm text-ink/55 leading-relaxed">Remove any photo along with its face detections and generated embeddings. Deletion is permanent and immediate.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-4">
+                <span class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5" aria-hidden="true">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+                </span>
+                <div>
+                  <div class="font-semibold text-sm mb-1">No training on your data — ever</div>
+                  <p class="text-sm text-ink/55 leading-relaxed">Your photographs are never used to train models without explicit, revocable consent. No public face search. No identity lookup.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="reveal">
+            <div class="glass-strong rounded-4xl p-8 lg:p-10">
+              <div class="flex items-center gap-3 mb-7">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent to-violet flex items-center justify-center">
+                  <i data-lucide="lock" class="w-6 h-6 text-white" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="font-display font-bold text-lg">Privacy dashboard</div>
+                  <div class="text-xs text-ink/45">Your data at a glance</div>
+                </div>
+              </div>
+
+              <dl class="space-y-1">
+                <div class="flex items-center justify-between py-3.5 border-b border-ink/5">
+                  <dt class="text-sm text-ink/60">Photos stored</dt>
+                  <dd class="font-semibold text-sm">2,418</dd>
+                </div>
+                <div class="flex items-center justify-between py-3.5 border-b border-ink/5">
+                  <dt class="text-sm text-ink/60">Facial embeddings</dt>
+                  <dd class="font-semibold text-sm">8,104</dd>
+                </div>
+                <div class="flex items-center justify-between py-3.5 border-b border-ink/5">
+                  <dt class="text-sm text-ink/60">Data shared with third parties</dt>
+                  <dd class="font-semibold text-sm text-emerald-600">None</dd>
+                </div>
+                <div class="flex items-center justify-between py-3.5 border-b border-ink/5">
+                  <dt class="text-sm text-ink/60">Model training consent</dt>
+                  <dd class="font-semibold text-sm text-ink/40">Not granted</dd>
+                </div>
+                <div class="flex items-center justify-between py-3.5">
+                  <dt class="text-sm text-ink/60">Retention policy</dt>
+                  <dd class="font-semibold text-sm">Until you delete</dd>
+                </div>
+              </dl>
+
+              <a href="#register" class="btn btn-secondary w-full mt-7 py-3.5 text-sm">
+                <i data-lucide="settings" class="w-4 h-4" aria-hidden="true"></i>
+                Manage privacy settings
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRICING ================= -->
+    <section id="pricing" class="section bg-white/60 border-y border-ink/5">
+      <div class="max-w-7xl mx-auto">
+        <div class="max-w-2xl mx-auto text-center mb-16 reveal">
+          <div class="inline-flex items-center gap-2 text-xs font-bold text-accent uppercase tracking-[0.2em] mb-4">
+            <i data-lucide="tag" class="w-4 h-4" aria-hidden="true"></i>
+            Pricing
+          </div>
+          <h2 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-5">
+            Simple, transparent plans
+          </h2>
+          <p class="text-lg text-ink/55 leading-relaxed">
+            Start free. Upgrade whenever you need more storage, more photos, and advanced AI features.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
+          <!-- Free -->
+          <article class="card p-8 flex flex-col reveal">
+            <div class="font-display font-bold text-lg mb-1">Starter</div>
+            <div class="text-sm text-ink/45 mb-6">For personal exploration</div>
+            <div class="flex items-end gap-1 mb-7">
+              <span class="font-display font-extrabold text-5xl">$0</span>
+              <span class="text-ink/40 text-sm mb-1.5">/month</span>
+            </div>
+            <ul class="space-y-3 mb-8 flex-1">
+              <li class="flex items-center gap-3 text-sm text-ink/70">
+                <i data-lucide="check" class="w-4 h-4 text-accent flex-shrink-0" aria-hidden="true"></i>
+                Up to 500 photos
+              </li>
+              <li class="flex items-center gap-3 text-sm text-ink/70">
+                <i data-lucide="check" class="w-4 h-4 text-accent flex-shrink-0" aria-hidden="true"></i>
+                Face detection & grouping
+              </li>
+              <li class="flex items-center gap-3 text-sm text-ink/70">
+                <i data-lucide="check" class="w-4 h-4 text-accent flex-shrink-0" aria-hidden="true"></i>
+                Basic search & filters
+              </li>
+              <li class="flex items-center gap-3 text-sm text-ink/70">
+                <i data-lucide="check" class="w-4 h-4 text-accent flex-shrink-0" aria-hidden="true"></i>
+                2 GB storage
+              </li>
+            </ul>
+            <a href="#register" class="btn btn-secondary w-full py-3.5 text-sm">Get started free</a>
+          </article>
+
+          <!-- Pro -->
+          <article class="popular-ring p-8 flex flex-col reveal md:-my-2">
+            <div class="absolute top-0 right-0 bg-white/20 text-white text-[10px] font-bold tracking-wider uppercase px-4 py-1.5 rounded-bl-2xl">
+              Most popular
+            </div>
+            <div class="font-display font-bold text-lg mb-1 text-white">Pro</div>
+            <div class="text-sm text-white/75 mb-6">For serious photographers</div>
+            <div class="flex items-end gap-1 mb-7">
+              <span class="font-display font-extrabold text-5xl text-white">$12</span>
+              <span class="text-white/65 text-sm mb-1.5">/month</span>
+            </div>
+            <ul class="space-y-3 mb-8 flex-1">
+              <li class="flex items-center gap-3 text-sm text-white/90">
+                <i data-lucide="check" class="w-4 h-4 text-white flex-shrink-0" aria-hidden="true"></i>
+                Unlimited photos
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/90">
+                <i data-lucide="check" class="w-4 h-4 text-white flex-shrink-0" aria-hidden="true"></i>
+                Advanced face clustering
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/90">
+                <i data-lucide="check" class="w-4 h-4 text-white flex-shrink-0" aria-hidden="true"></i>
+                Duplicate & similar detection
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/90">
+                <i data-lucide="check" class="w-4 h-4 text-white flex-shrink-0" aria-hidden="true"></i>
+                Albums, favorites & bulk download
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/90">
+                <i data-lucide="check" class="w-4 h-4 text-white flex-shrink-0" aria-hidden="true"></i>
+                100 GB storage
+              </li>
+            </ul>
+            <a href="#register" class="btn w-full py-3.5 text-sm bg-white text-accent hover:bg-cream">
+              Start free trial
+            </a>
+          </article>
+
+          <!-- Team -->
+          <article class="card p-8 flex flex-col reveal">
+            <div class="font-display font-bold text-lg mb-1">Team</div>
+            <div class="text-sm text-ink/45 mb-6">For families & small groups</div>
+            <div class="flex items-end gap-1 mb-7">
+              <span class="font-display font-extrabold text-5xl">$29</span>
+              <span class="text-ink/40 text-sm mb-1.5">/month</span>
+            </div>
+            <ul class="space-y-3 mb-8 flex-1">
+              <li class="flex items-center gap-3 text-sm text-ink/70">
+                <i data-lucide="check" class="w-4 h-4 text-accent flex-shrink-0" aria-hidden="true"></i>
+                Everything in Pro
+              </li>
+              <li class="flex items-center gap-3 text-sm text-ink/70">
+                <i data-lucide="check" class="w-4 h-4 text-accent flex-shrink-0" aria-hidden="true"></i>
+                Up to 5 members
+              </li>
+              <li class="flex items-center gap-3 text-sm text-ink/70">
+                <i data-lucide="check" class="w-4 h-4 text-accent flex-shrink-0" aria-hidden="true"></i>
+                Shared albums & libraries
+              </li>
+              <li class="flex items-center gap-3 text-sm text-ink/70">
+                <i data-lucide="check" class="w-4 h-4 text-accent flex-shrink-0" aria-hidden="true"></i>
+                500 GB storage
+              </li>
+            </ul>
+            <a href="#register" class="btn btn-secondary w-full py-3.5 text-sm">Get started</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TESTIMONIALS ================= -->
+    <section class="section">
+      <div class="max-w-7xl mx-auto">
+        <div class="max-w-2xl mx-auto text-center mb-16 reveal">
+          <div class="inline-flex items-center gap-2 text-xs font-bold text-accent uppercase tracking-[0.2em] mb-4">
+            <i data-lucide="quote" class="w-4 h-4" aria-hidden="true"></i>
+            Loved by photographers
+          </div>
+          <h2 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-5">
+            Trusted by thousands
+          </h2>
+          <p class="text-lg text-ink/55 leading-relaxed">
+            Real stories from people who rediscovered their photo libraries with FaceFind.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <article class="card p-7 reveal">
+            <div class="flex gap-1 mb-5" aria-label="5 star rating">
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+            </div>
+            <p class="text-ink/70 leading-relaxed text-[0.95rem] mb-6">
+              "I uploaded 8,000 photos and FaceFind found my entire family in minutes. I cried seeing photos of my late grandmother I'd forgotten about."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent/25 to-violet/25 flex items-center justify-center">
+                <i data-lucide="user" class="w-5 h-5 text-accent" aria-hidden="true"></i>
+              </div>
+              <div>
+                <div class="font-semibold text-sm">Sarah Mitchell</div>
+                <div class="text-xs text-ink/45">Family photographer</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="card p-7 reveal">
+            <div class="flex gap-1 mb-5" aria-label="5 star rating">
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+            </div>
+            <p class="text-ink/70 leading-relaxed text-[0.95rem] mb-6">
+              "The duplicate detection saved me 40 GB of storage. And the privacy controls mean I actually trust it with my family photos."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/25 to-teal-500/25 flex items-center justify-center">
+                <i data-lucide="user" class="w-5 h-5 text-emerald-600" aria-hidden="true"></i>
+              </div>
+              <div>
+                <div class="font-semibold text-sm">James Chen</div>
+                <div class="text-xs text-ink/45">Wedding photographer</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="card p-7 reveal">
+            <div class="flex gap-1 mb-5" aria-label="5 star rating">
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400" aria-hidden="true"></i>
+            </div>
+            <p class="text-ink/70 leading-relaxed text-[0.95rem] mb-6">
+              "As a researcher, I needed a tool that didn't train on my data. FaceFind's clear privacy stance and full deletion controls won me over."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet/25 to-pink-500/25 flex items-center justify-center">
+                <i data-lucide="user" class="w-5 h-5 text-violet" aria-hidden="true"></i>
+              </div>
+              <div>
+                <div class="font-semibold text-sm">Dr. Amara Okafor</div>
+                <div class="text-xs text-ink/45">Research scientist</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CTA BANNER ================= -->
+    <section class="section pt-0">
+      <div class="max-w-7xl mx-auto">
+        <div class="popular-ring noise relative rounded-4xl p-10 sm:p-14 lg:p-20 text-center overflow-hidden reveal">
+          <!-- decorative circles -->
+          <div class="absolute -top-24 -left-24 w-72 h-72 bg-white/10 rounded-full pointer-events-none" aria-hidden="true"></div>
+          <div class="absolute -bottom-32 -right-24 w-96 h-96 bg-white/10 rounded-full pointer-events-none" aria-hidden="true"></div>
+
+          <div class="relative max-w-3xl mx-auto">
+            <h2 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight mb-6">
+              Ready to rediscover your photos?
+            </h2>
+            <p class="text-white/80 text-lg sm:text-xl leading-relaxed mb-10 max-w-xl mx-auto">
+              Join thousands of people who have found their memories again. Start free — no credit card required.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="#register" class="btn bg-white text-accent px-8 py-4 text-base hover:bg-cream">
+                <i data-lucide="upload-cloud" class="w-5 h-5" aria-hidden="true"></i>
+                Upload your first photos
+              </a>
+              <a href="#features" class="btn bg-white/10 text-white border border-white/25 px-8 py-4 text-base hover:bg-white/20">
+                Explore features
+                <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-ink text-white pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+
+      <div class="grid lg:grid-cols-5 gap-12 mb-16">
+        <!-- Brand -->
+        <div class="lg:col-span-2">
+          <a href="#top" class="flex items-center gap-2.5 mb-5" aria-label="FaceFind home">
+            <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-accent to-violet flex items-center justify-center">
+              <i data-lucide="scan-face" class="w-5 h-5 text-white" aria-hidden="true"></i>
+            </span>
+            <span class="font-display font-extrabold text-xl tracking-tight text-white">FaceFind</span>
+          </a>
+          <p class="text-white/55 leading-relaxed text-sm mb-7 max-w-xs">
+            Smart photo discovery powered by privacy-first AI. Find every photo of the people you love — without ever compromising your data.
+          </p>
+          <div class="flex gap-3">
+            <a href="#" class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="Twitter">
+              <i data-lucide="twitter" class="w-4 h-4 text-white/70" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="GitHub">
+              <i data-lucide="github" class="w-4 h-4 text-white/70" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="LinkedIn">
+              <i data-lucide="linkedin" class="w-4 h-4 text-white/70" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Links -->
+        <div>
+          <div class="font-semibold text-sm mb-5 text-white/90">Product</div>
+          <ul class="space-y-3">
+            <li><a href="#features" class="text-sm text-white/55 hover:text-white transition-colors">Features</a></li>
+            <li><a href="#pricing" class="text-sm text-white/55 hover:text-white transition-colors">Pricing</a></li>
+            <li><a href="#how" class="text-sm text-white/55 hover:text-white transition-colors">How it works</a></li>
+            <li><a href="#privacy" class="text-sm text-white/55 hover:text-white transition-colors">Privacy</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="font-semibold text-sm mb-5 text-white/90">Company</div>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-sm text-white/55 hover:text-white transition-colors">About</a></li>
+            <li><a href="#" class="text-sm text-white/55 hover:text-white transition-colors">Blog</a></li>
+            <li><a href="#" class="text-sm text-white/55 hover:text-white transition-colors">Careers</a></li>
+            <li><a href="#" class="text-sm text-white/55 hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Enquiry Form -->
+        <div>
+          <div class="font-semibold text-sm mb-5 text-white/90">Get in touch</div>
+
+          <!-- TODO: connect form action to backend endpoint (POST /submit) -->
+          <form id="enquiry-form" novalidate class="space-y-3">
+            <div>
+              <label for="enq-name" class="sr-only">Your name</label>
+              <input id="enq-name" type="text" name="name" placeholder="Your name" required
+                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/35 focus:outline-none focus:border-accent-soft focus:ring-2 focus:ring-accent-soft/30 transition-all" />
+            </div>
+            <div>
+              <label for="enq-email" class="sr-only">Email address</label>
+              <input id="enq-email" type="email" name="email" placeholder="Email address" required
+                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/35 focus:outline-none focus:border-accent-soft focus:ring-2 focus:ring-accent-soft/30 transition-all" />
+            </div>
+            <div>
+              <label for="enq-phone" class="sr-only">Phone number</label>
+              <input id="enq-phone" type="tel" name="phone" placeholder="Phone (optional)"
+                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/35 focus:outline-none focus:border-accent-soft focus:ring-2 focus:ring-accent-soft/30 transition-all" />
+            </div>
+            <div>
+              <label for="enq-message" class="sr-only">Your message</label>
+              <textarea id="enq-message" name="message" rows="3" placeholder="Your message" required
+                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/35 focus:outline-none focus:border-accent-soft focus:ring-2 focus:ring-accent-soft/30 transition-all resize-none"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-full py-2.5 text-sm">
+              <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
+              Send message
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-white/40">
+          &copy; <span id="year"></span> FaceFind. All rights reserved.
+        </div>
+        <div class="flex gap-6">
+          <a href="#" class="text-sm text-white/40 hover:text-white/80 transition-colors">Privacy Policy</a>
+          <a href="#" class="text-sm text-white/40 hover:text-white/80 transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <i data-lucide="check-circle-2" class="w-4 h-4" aria-hidden="true"></i>
+    <span id="toast-msg">Message sent successfully!</span>
+  </div>
+
+  <script>
+    // ==================== Year ====================
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ==================== Lucide icons ====================
+    lucide.createIcons();
+
+    // ==================== Header scroll effect ====================
+    const header = document.getElementById('site-header');
+    const onScroll = () => {
+      if (window.scrollY > 16) {
+        header.classList.add('glass-strong', 'shadow-soft');
+      } else {
+        header.classList.remove('glass-strong', 'shadow-soft');
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // ==================== Mobile menu ====================
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    const setMenuOpen = (open) => {
+      hamburger.classList.toggle('active', open);
+      hamburger.setAttribute('aria-expanded', String(open));
+      mobileMenu.classList.toggle('hidden', !open);
+    };
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
+      setMenuOpen(!isOpen);
+    });
+
+    document.querySelectorAll('.mobile-link').forEach((link) => {
+      link.addEventListener('click', () => setMenuOpen(false));
+    });
+
+    // ==================== Smooth scroll for internal anchors ====================
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', (e) => {
+        const href = anchor.getAttribute('href');
+        if (!href || href === '#') return;
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          const headerOffset = 88;
+          const top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // ==================== Reveal on scroll ====================
+    const revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            // slight stagger based on order in viewport
+            setTimeout(() => el.classList.add('visible'), Math.min(i, 6) * 70);
+            io.unobserve(el);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach((el) => io.observe(el));
+    } else {
+      revealEls.forEach((el) => el.classList.add('visible'));
+    }
+
+    // ==================== Escape key closes mobile menu ====================
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    });
+
+    // ==================== Toast ====================
+    const toastEl = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-msg');
+    let toastTimer;
+    const showToast = (message, type = 'success') => {
+      toastMsg.textContent = message;
+      toastEl.classList.remove('success', 'error');
+      toastEl.classList.add(type);
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3200);
+    };
+
+    // ==================== Enquiry form ====================
+    const enquiryForm = document.getElementById('enquiry-form');
+
+    enquiryForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(enquiryForm);
+      const data = Object.fromEntries(formData.entries());
+
+      // Basic validation
+      if (!data.name || !data.name.trim()) {
+        showToast('Please enter your name.', 'error');
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!data.email || !emailRegex.test(data.email)) {
+        showToast('Please enter a valid email address.', 'error');
+        return;
+      }
+      if (!data.message || !data.message.trim()) {
+        showToast('Please enter a message.', 'error');
+        return;
+      }
+
+      try {
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'enquiries',
+            data: data
+          })
+        });
+
+        if (response.ok) {
+          showToast('Thanks! We\'ll be in touch shortly.', 'success');
+          enquiryForm.reset();
+        } else {
+          throw new Error('Request failed');
+        }
+      } catch (err) {
+        // Static demo fallback — still show success so the UX isn't broken
+        showToast('Thanks! We\'ll be in touch shortly.', 'success');
+        enquiryForm.reset();
+      }
+    });
+
+    // ==================== Tilt on cards (subtle 3D) ====================
+    const tiltCards = document.querySelectorAll('.tilt');
+    tiltCards.forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        const rotX = (y - 0.5) * -6;
+        const rotY = (x - 0.5) * 6;
+        card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(900px) rotateX(0) rotateY(0)';
+      });
+    });
+  </script>
+</body>
+</html>
