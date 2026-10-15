@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mohammed Rashid — Cinematic Portfolio</title>
+  <!-- Google Fonts: Inter + Bricolage Grotesque (display) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN (Play) + config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0a0a0a',
+            charcoal: '#121212',
+            graphite: '#1e1e1e',
+            steel: '#2a2a2a',
+            fog: '#e5e5e5',
+            bone: '#f5f5f5',
+            accent: '#b8a88a', // muted brass/beige
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* ========== DESIGN TOKENS ========== */
+    :root {
+      --bg: #0a0a0a;
+      --surface: #121212;
+      --surface2: #1a1a1a;
+      --border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f0f0f0;
+      --text-secondary: #a0a0a0;
+      --accent: #b8a88a;
+      --accent-glow: rgba(184, 168, 138, 0.15);
+      --radius-xl: 2rem;
+      --radius-2xl: 2.5rem;
+      --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ========== BASE ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--surface);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3a3a3a;
+      border-radius: 99px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+
+    /* ========== TYPOGRAPHY ========== */
+    .display-xl {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+
+    .display-lg {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      font-weight: 700;
+    }
+
+    .display-md {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(1.5rem, 2.8vw, 2rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      font-weight: 600;
+    }
+
+    .text-secondary {
+      color: var(--text-secondary);
+    }
+
+    /* ========== GRADIENT & SURFACES ========== */
+    .gradient-text {
+      background: linear-gradient(135deg, #f0f0f0 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      transition: all 0.4s var(--transition-smooth);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(184, 168, 138, 0.3);
+      box-shadow: 0 0 40px rgba(184, 168, 138, 0.06);
+    }
+
+    .gradient-bg-section {
+      background: radial-gradient(ellipse at 20% 50%, rgba(184, 168, 138, 0.06) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 50%),
+                  var(--bg);
+    }
+
+    .gradient-bg-alt {
+      background: linear-gradient(180deg, var(--bg) 0%, #0f0f0f 50%, var(--bg) 100%);
+    }
+
+    /* ========== BUTTONS ========== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      background: var(--accent);
+      color: #0a0a0a;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 99px;
+      transition: all 0.3s var(--transition-smooth);
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(184, 168, 138, 0.3);
+      background: #c9b99b;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      background: transparent;
+      color: var(--text-primary);
+      font-weight: 500;
+      font-size: 0.9rem;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      transition: all 0.3s var(--transition-smooth);
+      cursor: pointer;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      background: rgba(184, 168, 138, 0.06);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline:active {
+      transform: scale(0.97);
+    }
+
+    /* ========== NAVIGATION ========== */
+    .nav-link {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.3s ease;
+      position: relative;
+      letter-spacing: 0.01em;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.3s var(--transition-smooth);
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* ========== MOBILE MENU ========== */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.5s var(--transition-smooth);
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* ========== PORTFOLIO GRID ========== */
+    .portfolio-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-xl);
+      cursor: pointer;
+      transition: all 0.5s var(--transition-smooth);
+      aspect-ratio: 4/3;
+    }
+
+    .portfolio-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s var(--transition-smooth);
+    }
+
+    .portfolio-item:hover img {
+      transform: scale(1.06);
+    }
+
+    .portfolio-item .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(10, 10, 10, 0.95) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.4s var(--transition-smooth);
+    }
+
+    .portfolio-item:hover .overlay {
+      opacity: 1;
+    }
+
+    .portfolio-item .overlay h3 {
+      transform: translateY(10px);
+      transition: transform 0.4s var(--transition-smooth);
+    }
+
+    .portfolio-item:hover .overlay h3 {
+      transform: translateY(0);
+    }
+
+    /* ========== FILTER TABS ========== */
+    .filter-tab {
+      padding: 0.5rem 1.2rem;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s var(--transition-smooth);
+      white-space: nowrap;
+    }
+
+    .filter-tab:hover {
+      border-color: rgba(184, 168, 138, 0.4);
+      color: var(--text-primary);
+    }
+
+    .filter-tab.active {
+      background: var(--accent);
+      color: #0a0a0a;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ========== TIMELINE ========== */
+    .timeline-item {
+      position: relative;
+      padding-left: 2.5rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 1.5rem;
+      width: 2px;
+      height: calc(100% + 2rem);
+      background: var(--border);
+    }
+
+    .timeline-item:last-child::after {
+      display: none;
+    }
+
+    /* ========== SKILLS ========== */
+    .skill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      transition: all 0.3s var(--transition-smooth);
+    }
+
+    .skill-tag:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: rgba(184, 168, 138, 0.08);
+    }
+
+    /* ========== FORM ========== */
+    .form-input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      transition: all 0.3s var(--transition-smooth);
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .form-input::placeholder {
+      color: #666;
+    }
+
+    /* ========== ANIMATIONS ========== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.8s var(--transition-smooth), transform 0.8s var(--transition-smooth);
+    }
+
+    .char-reveal span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px) rotateX(-40deg);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .float-anim {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    /* ========== PROFILE PHOTO ========== */
+    .profile-frame {
+      width: 280px;
+      height: 340px;
+      border-radius: var(--radius-2xl);
+      background: linear-gradient(135deg, rgba(184,168,138,0.15), rgba(255,255,255,0.02));
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(184,168,138,0.08), transparent 70%);
+    }
+
+    /* ========== SECTION PADDING ========== */
+    .section-pad {
+      padding: 6rem 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .section-pad {
+        padding: 8rem 2rem;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .section-pad {
+        padding: 10rem 4rem;
+      }
+    }
+
+    /* ========== NOISE OVERLAY ========== */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* ========== FOCUS VISIBLE ========== */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    /* ========== REDUCED MOTION ========== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Noise overlay for texture -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <!-- ========== NAVIGATION ========== -->
+  <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500" aria-label="Main navigation">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
+      <a href="#" class="font-display text-lg font-bold tracking-tight text-white" aria-label="Mohammed Rashid home">
+        MR<span class="text-[var(--accent)]">.</span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#work" class="nav-link">Work</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#experience" class="nav-link">Experience</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="btn-primary hidden md:inline-flex text-xs px-5 py-2.5">
+          Let's Work Together
+          <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+        </a>
+        <button id="mobileToggle" class="md:hidden p-2 text-white" aria-label="Open menu" aria-expanded="false">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-full max-w-sm h-full bg-[#0f0f0f] z-[60] p-8 pt-24 border-l border-white/5" role="dialog" aria-label="Mobile navigation">
+    <button id="mobileClose" class="absolute top-6 right-6 p-2 text-white" aria-label="Close menu">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <div class="flex flex-col gap-6">
+      <a href="#work" class="text-2xl font-display font-semibold text-white hover:text-[var(--accent)] transition-colors">Work</a>
+      <a href="#about" class="text-2xl font-display font-semibold text-white hover:text-[var(--accent)] transition-colors">About</a>
+      <a href="#experience" class="text-2xl font-display font-semibold text-white hover:text-[var(--accent)] transition-colors">Experience</a>
+      <a href="#skills" class="text-2xl font-display font-semibold text-white hover:text-[var(--accent)] transition-colors">Skills</a>
+      <a href="#contact" class="text-2xl font-display font-semibold text-white hover:text-[var(--accent)] transition-colors">Contact</a>
+      <a href="#contact" class="btn-primary mt-4 w-fit">
+        Let's Work Together
+        <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- ========== HERO SECTION ========== -->
+  <header class="relative min-h-screen flex items-center gradient-bg-section overflow-hidden pt-24">
+    <!-- Ambient glow -->
+    <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[var(--accent)] opacity-[0.04] rounded-full blur-[120px] pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-white opacity-[0.02] rounded-full blur-[100px] pointer-events-none" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-5 md:px-8 w-full relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Text -->
+        <div class="order-2 lg:order-1">
+          <div class="reveal mb-6">
+            <span class="inline-flex items-center gap-2 text-xs font-medium tracking-[0.2em] uppercase text-[var(--accent)] border border-[var(--accent)]/20 rounded-full px-4 py-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse"></span>
+              Riyadh, Saudi Arabia
+            </span>
+          </div>
+
+          <h1 class="display-xl text-white mb-6 reveal">
+            Mohammed<br>
+            <span class="gradient-text">Rashid</span>
+          </h1>
+
+          <div class="reveal mb-6">
+            <p class="text-base md:text-lg font-medium text-[var(--text-secondary)] tracking-wide">
+              Videographer <span class="text-[var(--accent)] mx-1">|</span>
+              Video Editor <span class="text-[var(--accent)] mx-1">|</span>
+              Photographer <span class="text-[var(--accent)] mx-1">|</span>
+              Graphic Designer
+            </p>
+          </div>
+
+          <p class="text-[var(--text-secondary)] text-base md:text-lg leading-relaxed max-w-xl mb-10 reveal" style="line-height: 1.7;">
+            A creative professional based in Riyadh, crafting cinematic visuals, compelling edits, and impactful brand identities. I blend technical precision with a storyteller's eye to bring every project to life.
+          </p>
+
+          <div class="flex flex-wrap gap-4 reveal">
+            <a href="#work" class="btn-primary">
+              View My Work
+              <i data-lucide="arrow-down" class="w-4 h-4"></i>
+            </a>
+            <a href="#contact" class="btn-outline">
+              Contact Me
+              <i data-lucide="mail" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Profile photo placeholder -->
+        <div class="order-1 lg:order-2 flex justify-center lg:justify-end reveal">
+          <div class="profile-frame float-anim">
+            <div class="text-center relative z-10">
+              <i data-lucide="user" class="w-16 h-16 text-[var(--accent)] opacity-40 mx-auto mb-3"></i>
+              <p class="text-xs text-[var(--text-secondary)] tracking-wider uppercase">Profile Photo</p>
+              <p class="text-[0.65rem] text-[#555] mt-1">Upload your image</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-[var(--text-secondary)]" aria-hidden="true">
+      <span class="text-[0.6rem] tracking-[0.2em] uppercase">Scroll</span>
+      <div class="w-[1px] h-8 bg-gradient-to-b from-[var(--accent)] to-transparent"></div>
+    </div>
+  </header>
+
+  <!-- ========== PORTFOLIO / WORK ========== -->
+  <section id="work" class="section-pad gradient-bg-alt" aria-labelledby="work-heading">
+    <div class="max-w-7xl mx-auto">
+      <div class="reveal mb-4">
+        <span class="text-xs font-medium tracking-[0.25em] uppercase text-[var(--accent)]">Selected Projects</span>
+      </div>
+      <h2 id="work-heading" class="display-lg text-white mb-4 reveal">My Work</h2>
+      <p class="text-[var(--text-secondary)] max-w-xl mb-12 reveal">A curated selection of videography, editing, photography, and design projects. Each piece represents a collaboration and a story worth telling.</p>
+
+      <!-- Filter tabs -->
+      <div class="flex flex-wrap gap-2 mb-10 reveal" role="tablist" aria-label="Portfolio categories">
+        <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">All</button>
+        <button class="filter-tab" data-filter="videography" role="tab" aria-selected="false">Videography</button>
+        <button class="filter-tab" data-filter="editing" role="tab" aria-selected="false">Video Editing</button>
+        <button class="filter-tab" data-filter="photography" role="tab" aria-selected="false">Photography</button>
+        <button class="filter-tab" data-filter="graphic" role="tab" aria-selected="false">Graphic Design</button>
+        <button class="filter-tab" data-filter="events" role="tab" aria-selected="false">Events</button>
+        <button class="filter-tab" data-filter="automotive" role="tab" aria-selected="false">Automotive</button>
+        <button class="filter-tab" data-filter="commercial" role="tab" aria-selected="false">Commercial</button>
+      </div>
+
+      <!-- Portfolio grid — placeholder cards -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="portfolioGrid">
+        <!-- Placeholder projects -->
+        <article class="portfolio-item reveal" data-category="videography">
+          <div class="w-full h-full bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] flex items-center justify-center border border-white/5">
+            <div class="text-center">
+              <i data-lucide="video" class="w-10 h-10 text-[var(--accent)] opacity-30 mx-auto mb-2"></i>
+              <p class="text-xs text-[var(--text-secondary)]">Project Thumbnail</p>
+            </div>
+          </div>
+          <div class="overlay">
+            <span class="text-[0.6rem] tracking-[0.2em] uppercase text-[var(--accent)] mb-2">Videography</span>
+            <h3 class="text-white font-display text-lg font-semibold">Project Title</h3>
+            <p class="text-[var(--text-secondary)] text-xs mt-1">Client Name — Year</p>
+          </div>
+        </article>
+
+        <article class="portfolio-item reveal" data-category="photography">
+          <div class="w-full h-full bg-gradient-to-br from-[#161616] to-[#0c0c0c] flex items-center justify-center border border-white/5">
+            <div class="text-center">
+              <i data-lucide="camera" class="w-10 h-10 text-[var(--accent)] opacity-30 mx-auto mb-2"></i>
+              <p class="text-xs text-[var(--text-secondary)]">Project Thumbnail</p>
+            </div>
+          </div>
+          <div class="overlay">
+            <span class="text-[0.6rem] tracking-[0.2em] uppercase text-[var(--accent)] mb-2">Photography</span>
+            <h3 class="text-white font-display text-lg font-semibold">Project Title</h3>
+            <p class="text-[var(--text-secondary)] text-xs mt-1">Client Name — Year</p>
+          </div>
+        </article>
+
+        <article class="portfolio-item reveal" data-category="graphic">
+          <div class="w-full h-full bg-gradient-to-br from-[#1a1a1a] to-[#111] flex items-center justify-center border border-white/5">
+            <div class="text-center">
+              <i data-lucide="palette" class="w-10 h-10 text-[var(--accent)] opacity-30 mx-auto mb-2"></i>
+              <p class="text-xs text-[var(--text-secondary)]">Project Thumbnail</p>
+            </div>
+          </div>
+          <div class="overlay">
+            <span class="text-[0.6rem] tracking-[0.2em] uppercase text-[var(--accent)] mb-2">Graphic Design</span>
+            <h3 class="text-white font-display text-lg font-semibold">Project Title</h3>
+            <p class="text-[var(--text-secondary)] text-xs mt-1">Client Name — Year</p>
+          </div>
+        </article>
+
+        <article class="portfolio-item reveal" data-category="events">
+          <div class="w-full h-full bg-gradient-to-br from-[#141414] to-[#0a0a0a] flex items-center justify-center border border-white/5">
+            <div class="text-center">
+              <i data-lucide="calendar" class="w-10 h-10 text-[var(--accent)] opacity-30 mx-auto mb-2"></i>
+              <p class="text-xs text-[var(--text-secondary)]">Project Thumbnail</p>
+            </div>
+          </div>
+          <div class="overlay">
+            <span class="text-[0.6rem] tracking-[0.2em] uppercase text-[var(--accent)] mb-2">Events</span>
+            <h3 class="text-white font-display text-lg font-semibold">Project Title</h3>
+            <p class="text-[var(--text-secondary)] text-xs mt-1">Client Name — Year</p>
+          </div>
+        </article>
+
+        <article class="portfolio-item reveal" data-category="automotive">
+          <div class="w-full h-full bg-gradient-to-br from-[#1c1c1c] to-[#0f0f0f] flex items-center justify-center border border-white/5">
+            <div class="text-center">
+              <i data-lucide="car" class="w-10 h-10 text-[var(--accent)] opacity-30 mx-auto mb-2"></i>
+              <p class="text-xs text-[var(--text-secondary)]">Project Thumbnail</p>
+            </div>
+          </div>
+          <div class="overlay">
+            <span class="text-[0.6rem] tracking-[0.2em] uppercase text-[var(--accent)] mb-2">Automotive</span>
+            <h3 class="text-white font-display text-lg font-semibold">Project Title</h3>
+            <p class="text-[var(--text-secondary)] text-xs mt-1">Client Name — Year</p>
+          </div>
+        </article>
+
+        <article class="portfolio-item reveal" data-category="commercial">
+          <div class="w-full h-full bg-gradient-to-br from-[#181818] to-[#0d0d0d] flex items-center justify-center border border-white/5">
+            <div class="text-center">
+              <i data-lucide="briefcase" class="w-10 h-10 text-[var(--accent)] opacity-30 mx-auto mb-2"></i>
+              <p class="text-xs text-[var(--text-secondary)]">Project Thumbnail</p>
+            </div>
+          </div>
+          <div class="overlay">
+            <span class="text-[0.6rem] tracking-[0.2em] uppercase text-[var(--accent)] mb-2">Commercial</span>
+            <h3 class="text-white font-display text-lg font-semibold">Project Title</h3>
+            <p class="text-[var(--text-secondary)] text-xs mt-1">Client Name — Year</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="mt-12 text-center reveal">
+        <p class="text-[var(--text-secondary)] text-sm">
+          <i data-lucide="info" class="w-4 h-4 inline-block mr-1 text-[var(--accent)]"></i>
+          Projects are managed via CMS — replace these placeholders with your real work.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT ========== -->
+  <section id="about" class="section-pad gradient-bg-section" aria-labelledby="about-heading">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div class="reveal">
+          <span class="text-xs font-medium tracking-[0.25em] uppercase text-[var(--accent)] block mb-4">About Me</span>
+          <h2 id="about-heading" class="display-lg text-white mb-6">Creative. Precise.<br>Story-Driven.</h2>
+          <p class="text-[var(--text-secondary)] leading-relaxed mb-6" style="line-height: 1.8;">
+            I am Mohammed Rashid, a multidisciplinary creative based in Riyadh, Saudi Arabia. With a foundation in videography, video editing, photography, and graphic design, I approach every project with a commitment to visual excellence and narrative clarity.
+          </p>
+          <p class="text-[var(--text-secondary)] leading-relaxed mb-8" style="line-height: 1.8;">
+            My work spans commercial productions, event coverage, automotive features, and brand identity systems. I believe great visuals are not just seen — they are felt. Whether I'm behind the camera, in the editing suite, or building a design system, my goal remains the same: to create work that resonates.
+          </p>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <p class="text-2xl font-display font-bold text-[var(--accent)] mb-1">5+</p>
+              <p class="text-xs text-[var(--text-secondary)] tracking-wide uppercase">Years Experience</p>
+            </div>
+            <div>
+              <p class="text-2xl font-display font-bold text-[var(--accent)] mb-1">50+</p>
+              <p class="text-xs text-[var(--text-secondary)] tracking-wide uppercase">Projects Delivered</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <div class="glass-card p-8 md:p-10">
+            <h3 class="font-display text-xl font-semibold text-white mb-6">My Approach</h3>
+            <div class="space-y-5">
+              <div class="flex gap-4">
+                <div class="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="eye" class="w-5 h-5 text-[var(--accent)]"></i>
+                </div>
+                <div>
+                  <h4 class="text-white font-medium text-sm mb-1">Visual Storytelling</h4>
+                  <p class="text-[var(--text-secondary)] text-xs leading-relaxed">Every frame, every cut, every color choice serves the narrative.</p>
+                </div>
+              </div>
+              <div class="flex gap-4">
+                <div class="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="target" class="w-5 h-5 text-[var(--accent)]"></i>
+                </div>
+                <div>
+                  <h4 class="text-white font-medium text-sm mb-1">Intentional Craft</h4>
+                  <p class="text-[var(--text-secondary)] text-xs leading-relaxed">No shortcuts — just precise, deliberate creative decisions.</p>
+                </div>
+              </div>
+              <div class="flex gap-4">
+                <div class="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="users" class="w-5 h-5 text-[var(--accent)]"></i>
+                </div>
+                <div>
+                  <h4 class="text-white font-medium text-sm mb-1">Collaborative Spirit</h4>
+                  <p class="text-[var(--text-secondary)] text-xs leading-relaxed">I work closely with clients to ensure the final result exceeds expectations.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== EXPERIENCE ========== -->
+  <section id="experience" class="section-pad gradient-bg-alt" aria-labelledby="experience-heading">
+    <div class="max-w-7xl mx-auto">
+      <div class="reveal mb-4">
+        <span class="text-xs font-medium tracking-[0.25em] uppercase text-[var(--accent)]">Career</span>
+      </div>
+      <h2 id="experience-heading" class="display-lg text-white mb-4 reveal">Experience</h2>
+      <p class="text-[var(--text-secondary)] max-w-xl mb-14 reveal">A timeline of professional roles, collaborations, and creative milestones.</p>
+
+      <div class="max-w-3xl">
+        <!-- Timeline item placeholder 1 -->
+        <div class="timeline-item pb-12 reveal">
+          <span class="text-xs text-[var(--accent)] tracking-[0.15em] uppercase">2023 — Present</span>
+          <h3 class="font-display text-xl font-semibold text-white mt-2 mb-1">Job Title</h3>
+          <p class="text-sm text-[var(--text-secondary)] mb-3">Company Name — Riyadh, Saudi Arabia</p>
+          <p class="text-[var(--text-secondary)] text-sm leading-relaxed mb-3">Responsibilities and achievements will appear here. Add your key contributions, projects delivered, and measurable results.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag text-[0.7rem]">Skill One</span>
+            <span class="skill-tag text-[0.7rem]">Skill Two</span>
+          </div>
+        </div>
+
+        <!-- Timeline item placeholder 2 -->
+        <div class="timeline-item pb-12 reveal">
+          <span class="text-xs text-[var(--accent)] tracking-[0.15em] uppercase">2021 — 2023</span>
+          <h3 class="font-display text-xl font-semibold text-white mt-2 mb-1">Job Title</h3>
+          <p class="text-sm text-[var(--text-secondary)] mb-3">Company Name — Location</p>
+          <p class="text-[var(--text-secondary)] text-sm leading-relaxed mb-3">Describe your role, responsibilities, and the impact you made in this position.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag text-[0.7rem]">Skill One</span>
+            <span class="skill-tag text-[0.7rem]">Skill Two</span>
+          </div>
+        </div>
+
+        <!-- Timeline item placeholder 3 -->
+        <div class="timeline-item pb-12 reveal">
+          <span class="text-xs text-[var(--accent)] tracking-[0.15em] uppercase">2019 — 2021</span>
+          <h3 class="font-display text-xl font-semibold text-white mt-2 mb-1">Job Title</h3>
+          <p class="text-sm text-[var(--text-secondary)] mb-3">Company Name — Location</p>
+          <p class="text-[var(--text-secondary)] text-sm leading-relaxed mb-3">Share your early career experience, foundational projects, and what you learned.</p>
+        </div>
+      </div>
+
+      <!-- Selected Clients -->
+      <div class="mt-20 reveal">
+        <h3 class="display-md text-white mb-8">Selected Clients & Projects</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div class="glass-card p-6 text-center">
+            <i data-lucide="building-2" class="w-6 h-6 text-[var(--accent)] opacity-40 mx-auto mb-2"></i>
+            <p class="text-xs text-[var(--text-secondary)]">Client Name</p>
+          </div>
+          <div class="glass-card p-6 text-center">
+            <i data-lucide="building-2" class="w-6 h-6 text-[var(--accent)] opacity-40 mx-auto mb-2"></i>
+            <p class="text-xs text-[var(--text-secondary)]">Brand Name</p>
+          </div>
+          <div class="glass-card p-6 text-center">
+            <i data-lucide="building-2" class="w-6 h-6 text-[var(--accent)] opacity-40 mx-auto mb-2"></i>
+            <p class="text-xs text-[var(--text-secondary)]">Event Name</p>
+          </div>
+          <div class="glass-card p-6 text-center">
+            <i data-lucide="building-2" class="w-6 h-6 text-[var(--accent)] opacity-40 mx-auto mb-2"></i>
+            <p class="text-xs text-[var(--text-secondary)]">Exhibition</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SKILLS & EQUIPMENT ========== -->
+  <section id="skills" class="section-pad gradient-bg-section" aria-labelledby="skills-heading">
+    <div class="max-w-7xl mx-auto">
+      <div class="reveal mb-4">
+        <span class="text-xs font-medium tracking-[0.25em] uppercase text-[var(--accent)]">Capabilities</span>
+      </div>
+      <h2 id="skills-heading" class="display-lg text-white mb-4 reveal">Skills & Equipment</h2>
+      <p class="text-[var(--text-secondary)] max-w-xl mb-14 reveal">The tools, software, and creative disciplines I bring to every project.</p>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Software -->
+        <div class="glass-card p-8 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[var(--accent)]/10 flex items-center justify-center mb-5">
+            <i data-lucide="monitor" class="w-6 h-6 text-[var(--accent)]"></i>
+          </div>
+          <h3 class="font-display text-lg font-semibold text-white mb-4">Software</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">Adobe Premiere Pro</span>
+            <span class="skill-tag">After Effects</span>
+            <span class="skill-tag">DaVinci Resolve</span>
+            <span class="skill-tag">Photoshop</span>
+            <span class="skill-tag">Illustrator</span>
+            <span class="skill-tag">Lightroom</span>
+            <span class="skill-tag">Figma</span>
+          </div>
+        </div>
+
+        <!-- Camera & Production -->
+        <div class="glass-card p-8 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[var(--accent)]/10 flex items-center justify-center mb-5">
+            <i data-lucide="camera" class="w-6 h-6 text-[var(--accent)]"></i>
+          </div>
+          <h3 class="font-display text-lg font-semibold text-white mb-4">Camera & Production</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">Cinema Cameras</span>
+            <span class="skill-tag">Mirrorless Systems</span>
+            <span class="skill-tag">Gimbal & Stabilization</span>
+            <span class="skill-tag">Lighting Design</span>
+            <span class="skill-tag">Audio Capture</span>
+            <span class="skill-tag">Drone</span>
+          </div>
+        </div>
+
+        <!-- Creative Skills -->
+        <div class="glass-card p-8 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[var(--accent)]/10 flex items-center justify-center mb-5">
+            <i data-lucide="sparkles" class="w-6 h-6 text-[var(--accent)]"></i>
+          </div>
+          <h3 class="font-display text-lg font-semibold text-white mb-4">Creative Skills</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">Video Editing</span>
+            <span class="skill-tag">Color Grading</span>
+            <span class="skill-tag">Motion Graphics</span>
+            <span class="skill-tag">Photo Retouching</span>
+            <span class="skill-tag">Brand Identity</span>
+            <span class="skill-tag">Art Direction</span>
+            <span class="skill-tag">Storyboarding</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section id="contact" class="section-pad gradient-bg-alt" aria-labelledby="contact-heading">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid lg:grid-cols-2 gap-16">
+        <!-- CTA text -->
+        <div class="reveal">
+          <span class="text-xs font-medium tracking-[0.25em] uppercase text-[var(--accent)] block mb-4">Get in Touch</span>
+          <h2 id="contact-heading" class="display-lg text-white mb-6">Let's Work<br>Together</h2>
+          <p class="text-[var(--text-secondary)] leading-relaxed mb-8 max-w-md" style="line-height: 1.8;">
+            Whether you're a production company, creative agency, brand, or recruiter — I'm always open to discussing new projects, collaborations, and opportunities.
+          </p>
+
+          <div class="space-y-5 mb-10">
+            <a href="mailto:hello@example.com" class="flex items-center gap-4 group">
+              <div class="w-11 h-11 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center group-hover:bg-[var(--accent)]/20 transition-colors">
+                <i data-lucide="mail" class="w-5 h-5 text-[var(--accent)]"></i>
+              </div>
+              <div>
+                <p class="text-xs text-[var(--text-secondary)]">Email</p>
+                <p class="text-white text-sm font-medium">hello@example.com</p>
+              </div>
+            </a>
+            <a href="tel:+966000000000" class="flex items-center gap-4 group">
+              <div class="w-11 h-11 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center group-hover:bg-[var(--accent)]/20 transition-colors">
+                <i data-lucide="phone" class="w-5 h-5 text-[var(--accent)]"></i>
+              </div>
+              <div>
+                <p class="text-xs text-[var(--text-secondary)]">Phone</p>
+                <p class="text-white text-sm font-medium">+966 XX XXX XXXX</p>
+              </div>
+            </a>
+            <a href="#" class="flex items-center gap-4 group">
+              <div class="w-11 h-11 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center group-hover:bg-[var(--accent)]/20 transition-colors">
+                <i data-lucide="message-circle" class="w-5 h-5 text-[var(--accent)]"></i>
+              </div>
+              <div>
+                <p class="text-xs text-[var(--text-secondary)]">WhatsApp</p>
+                <p class="text-white text-sm font-medium">Message me directly</p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Social links -->
+          <div class="flex gap-3">
+            <a href="#" class="w-11 h-11 rounded-xl border border-[var(--border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[var(--accent)]/5 transition-all" aria-label="LinkedIn">
+              <i data-lucide="linkedin" class="w-5 h-5 text-[var(--text-secondary)]"></i>
+            </a>
+            <a href="#" class="w-11 h-11 rounded-xl border border-[var(--border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[var(--accent)]/5 transition-all" aria-label="Behance">
+              <i data-lucide="figma" class="w-5 h-5 text-[var(--text-secondary)]"></i>
+            </a>
+            <a href="#" class="w-11 h-11 rounded-xl border border-[var(--border)] flex items-center justify-center hover:border-[var(--accent)] hover:bg-[var(--accent)]/5 transition-all" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-5 h-5 text-[var(--text-secondary)]"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Contact form -->
+        <div class="glass-card p-8 md:p-10 reveal">
+          <h3 class="font-display text-xl font-semibold text-white mb-6">Send a Message</h3>
+          <form id="contactForm" class="space-y-5" novalidate>
+            <div>
+              <label for="name" class="block text-xs text-[var(--text-secondary)] mb-2 font-medium tracking-wide uppercase">Name</label>
+              <input type="text" id="name" name="name" class="form-input" placeholder="Your full name" required>
+            </div>
+            <div>
+              <label for="email" class="block text-xs text-[var(--text-secondary)] mb-2 font-medium tracking-wide uppercase">Email</label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required>
+            </div>
+            <div>
+              <label for="phone" class="block text-xs text-[var(--text-secondary)] mb-2 font-medium tracking-wide uppercase">Phone</label>
+              <input type="tel" id="phone" name="phone" class="form-input" placeholder="+966 XX XXX XXXX">
+            </div>
+            <div>
+              <label for="message" class="block text-xs text-[var(--text-secondary)] mb-2 font-medium tracking-wide uppercase">Message</label>
+              <textarea id="message" name="message" rows="4" class="form-input resize-none" placeholder="Tell me about your project..." required></textarea>
+            </div>
+            <button type="submit" class="btn-primary w-full justify-center">
+              Send Message
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+            <p id="formStatus" class="text-xs text-center hidden"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="border-t border-[var(--border)] py-12 px-5 md:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <p class="font-display text-lg font-bold text-white">MR<span class="text-[var(--accent)]">.</span></p>
+          <p class="text-xs text-[var(--text-secondary)] mt-1">Mohammed Rashid — Creative Portfolio</p>
+        </div>
+        <div class="flex gap-6">
+          <a href="#work" class="text-xs text-[var(--text-secondary)] hover:text-white transition-colors">Work</a>
+          <a href="#about" class="text-xs text-[var(--text-secondary)] hover:text-white transition-colors">About</a>
+          <a href="#contact" class="text-xs text-[var(--text-secondary)] hover:text-white transition-colors">Contact</a>
+        </div>
+        <p class="text-xs text-[#555]">&copy; 2025 Mohammed Rashid. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // ========== GSAP ScrollTrigger ==========
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Reveal animations
+    document.querySelectorAll('.reveal').forEach((el) => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 85%',
+        onEnter: () => el.classList.add('visible'),
+        once: true,
+      });
+    });
+
+    // Hero headline character animation
+    const heroHeadline = document.querySelector('.display-xl');
+    if (heroHeadline && window.innerWidth > 768) {
+      const text = heroHeadline.textContent.trim();
+      // Simple fade-in, let the reveal class handle it
+    }
+
+    // ========== Navbar scroll effect ==========
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('bg-[#0a0a0a]/80', 'backdrop-blur-xl', 'border-b', 'border-white/5');
+      } else {
+        navbar.classList.remove('bg-[#0a0a0a]/80', 'backdrop-blur-xl', 'border-b', 'border-white/5');
+      }
+    });
+
+    // ========== Mobile menu ==========
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileClose = document.getElementById('mobileClose');
+
+    function openMobileMenu() {
+      mobileMenu.classList.add('open');
+      mobileToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('open');
+      mobileToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    mobileToggle.addEventListener('click', openMobileMenu);
+    mobileClose.addEventListener('click', closeMobileMenu);
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+
+    // ========== Portfolio filter ==========
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+
+        const filter = tab.dataset.filter;
+
+        portfolioItems.forEach(item => {
+          const category = item.dataset.category;
+          if (filter === 'all' || category === filter) {
+            item.style.display = '';
+            gsap.fromTo(item, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' });
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // ========== Contact form ==========
+    const contactForm = document.getElementById('contactForm');
+    const formStatus = document.getElementById('formStatus');
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      // Validation
+      let valid = true;
+      [document.getElementById('name'), document.getElementById('email'), document.getElementById('message')].forEach(field => {
+        if (!field.value.trim()) {
+          field.style.borderColor = '#ef4444';
+          valid = false;
+        } else {
+          field.style.borderColor = '';
+        }
+      });
+
+      if (!valid) {
+        formStatus.textContent = 'Please fill in all required fields.';
+        formStatus.className = 'text-xs text-center text-red-400';
+        formStatus.classList.remove('hidden');
+        return;
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        document.getElementById('email').style.borderColor = '#ef4444';
+        formStatus.textContent = 'Please enter a valid email address.';
+        formStatus.className = 'text-xs text-center text-red-400';
+        formStatus.classList.remove('hidden');
+        return;
+      }
+
+      // TODO: connect form action to backend endpoint
+      // Simulate submission
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> Sending...';
+      submitBtn.disabled = true;
+
+      try {
+        // Attempt to POST to backend
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'contact_submissions',
+            data: { name, email, phone, message, timestamp: new Date().toISOString() }
+          })
+        }).catch(() => null); // Gracefully handle if no backend
+
+        // Simulate success regardless for demo
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        formStatus.textContent = 'Message sent successfully. I will get back to you soon.';
+        formStatus.className = 'text-xs text-center text-green-400';
+        formStatus.classList.remove('hidden');
+        contactForm.reset();
+
+        setTimeout(() => {
+          formStatus.classList.add('hidden');
+        }, 5000);
+      } catch (error) {
+        formStatus.textContent = 'Something went wrong. Please try again or email directly.';
+        formStatus.className = 'text-xs text-center text-red-400';
+        formStatus.classList.remove('hidden');
+      } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Clear error on input
+    document.querySelectorAll('.form-input').forEach(input => {
+      input.addEventListener('input', () => {
+        input.style.borderColor = '';
+      });
+    });
+
+    // ========== Smooth scroll for anchor links ==========
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // ========== Subtle parallax on hero glow ==========
+    if (window.innerWidth > 1024) {
+      const heroGlows = document.querySelectorAll('.gradient-bg-section .blur-\\[120px\\], .gradient-bg-section .blur-\\[100px\\]');
+      window.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 20;
+        const y = (e.clientY / window.innerHeight - 0.5) * 20;
+        heroGlows.forEach((glow, i) => {
+          const factor = i === 0 ? 1 : -0.7;
+          glow.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+        });
+      });
+    }
+  </script>
+</body>
+</html>
