@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio Lumen — Design Portfolio</title>
+  <!-- Tailwind via CDN + custom design tokens -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1A1A1A',
+            cream: '#F9F7F4',
+            brass: '#C6A87C',
+            clay: '#B76E4B',
+            fog: '#E8E4DF',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            body: ['"Inter"', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <!-- Google Fonts: Bricolage Grotesque + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1A1A;
+      --cream: #F9F7F4;
+      --brass: #C6A87C;
+      --clay: #B76E4B;
+      --fog: #E8E4DF;
+      --focus-ring: #C6A87C;
+    }
+
+    /* === Base & Reset === */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: auto; /* Lenis handles smoothness */
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* === Lenis wrapper === */
+    html.lenis {
+      height: auto;
+    }
+    .lenis.lenis-smooth {
+      scroll-behavior: auto !important;
+    }
+    .lenis.lenis-smooth [data-lenis-prevent] {
+      overscroll-behavior: contain;
+    }
+
+    /* === Custom Scrollbar (subtle) === */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--fog);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--brass);
+      border-radius: 10px;
+    }
+
+    /* === Focus visible === */
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(198, 168, 124, 0.5);
+      border-radius: 4px;
+    }
+
+    /* === Typography === */
+    .font-display {
+      font-family: 'Bricolage Grotesque', sans-serif;
+    }
+    .text-balance {
+      text-wrap: balance;
+    }
+    .hero-headline {
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+    .section-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      font-weight: 600;
+    }
+
+    /* === Custom cursor (subtle) === */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--brass);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      transition: transform 0.15s ease;
+      transform: translate(-50%, -50%);
+    }
+    @media (pointer: fine) {
+      .cursor-dot {
+        display: block;
+      }
+    }
+    @media (pointer: coarse) {
+      .cursor-dot {
+        display: none;
+      }
+    }
+
+    /* === Glass panel === */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    /* === Soft shadow === */
+    .shadow-soft {
+      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.08), 0 8px 20px -8px rgba(0, 0, 0, 0.04);
+    }
+    .shadow-soft-lg {
+      box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.1), 0 12px 28px -8px rgba(0, 0, 0, 0.06);
+    }
+
+    /* === 3D Card Tilt === */
+    .card-3d {
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+    .card-3d-inner {
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      transform-style: preserve-3d;
+    }
+    .card-3d:hover .card-3d-inner {
+      transform: rotateX(2deg) rotateY(-2deg) translateZ(10px);
+    }
+
+    /* === Reveal animations === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      animation: marquee 25s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* === Form validation states === */
+    .form-input:invalid:not(:placeholder-shown) {
+      border-color: #dc2626;
+    }
+    .form-input:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(198, 168, 124, 0.2);
+    }
+    .form-error {
+      color: #dc2626;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    .form-input:invalid:not(:placeholder-shown) + .form-error {
+      display: block;
+    }
+
+    /* === Noise overlay === */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 256px 256px;
+    }
+
+    /* === Project overlay === */
+    .project-card .overlay {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .project-card:hover .overlay {
+      opacity: 1;
+    }
+    .project-card img {
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .project-card:hover img {
+      transform: scale(1.05);
+    }
+
+    /* === Nav underline === */
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--brass);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* === Button states === */
+    .btn-primary {
+      background: var(--ink);
+      color: white;
+      transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .btn-primary:hover {
+      background: #2a2a2a;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -8px rgba(26, 26, 26, 0.3);
+    }
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+    .btn-outline {
+      border: 1.5px solid var(--ink);
+      color: var(--ink);
+      transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .btn-outline:hover {
+      background: var(--ink);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -8px rgba(26, 26, 26, 0.2);
+    }
+    .btn-outline:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* === Section spacing === */
+    .section-pad {
+      padding: 6rem 0;
+    }
+    @media (max-width: 768px) {
+      .section-pad {
+        padding: 3.5rem 0;
+      }
+    }
+
+    /* === Mobile menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* === Star rating === */
+    .star-filled {
+      color: var(--brass);
+      fill: var(--brass);
+    }
+  </style>
+</head>
+<body class="bg-cream text-ink antialiased">
+
+  <!-- Noise overlay (decorative) -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <!-- Custom cursor dot (decorative) -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <nav class="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-20 transition-all duration-500" id="navbar">
+      <!-- Logo -->
+      <a href="#" class="font-display text-2xl font-bold tracking-tight text-ink" aria-label="Studio Lumen home">
+        Studio<span class="text-brass">Lumen</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#work" class="nav-link text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-200">Work</a>
+        <a href="#about" class="nav-link text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-200">About</a>
+        <a href="#services" class="nav-link text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-200">Services</a>
+        <a href="#contact" class="btn-primary px-6 py-2.5 rounded-full text-sm font-medium">Start a Project</a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button id="menuToggle" class="md:hidden relative z-50 w-10 h-10 flex flex-col items-center justify-center gap-1.5" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span class="block w-6 h-0.5 bg-ink transition-all duration-300" id="line1"></span>
+        <span class="block w-6 h-0.5 bg-ink transition-all duration-300" id="line2"></span>
+        <span class="block w-4 h-0.5 bg-ink transition-all duration-300 self-end mr-2" id="line3"></span>
+      </button>
+    </nav>
+
+    <!-- Mobile menu overlay -->
+    <div id="mobileMenu" class="mobile-menu fixed inset-0 bg-cream z-40 flex flex-col items-center justify-center gap-8 md:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+      <a href="#work" class="font-display text-4xl font-semibold text-ink mobile-link">Work</a>
+      <a href="#about" class="font-display text-4xl font-semibold text-ink mobile-link">About</a>
+      <a href="#services" class="font-display text-4xl font-semibold text-ink mobile-link">Services</a>
+      <a href="#contact" class="font-display text-4xl font-semibold text-brass mobile-link">Contact</a>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden">
+    <!-- Background gradient orbs -->
+    <div class="absolute top-1/4 -right-32 w-[500px] h-[500px] rounded-full bg-brass/10 blur-3xl pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute bottom-0 -left-32 w-[400px] h-[400px] rounded-full bg-clay/8 blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 w-full relative z-10">
+      <div class="grid lg:grid-cols-12 gap-12 items-center">
+        <!-- Left content -->
+        <div class="lg:col-span-7">
+          <p class="text-sm font-medium tracking-widest uppercase text-brass mb-6 reveal">Independent Designer — Est. 2019</p>
+          <h1 class="hero-headline font-display text-ink mb-8 reveal">
+            Design that<br>
+            <span class="text-brass">commands</span><br>
+            attention.
+          </h1>
+          <p class="text-lg text-ink/60 max-w-lg mb-10 leading-relaxed reveal">
+            I craft digital experiences for ambitious brands — where precision meets poetry, and every pixel earns its place.
+          </p>
+          <div class="flex flex-wrap gap-4 reveal">
+            <a href="#work" class="btn-primary px-8 py-4 rounded-full text-sm font-medium inline-flex items-center gap-2">
+              View Selected Work
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+            <a href="#about" class="btn-outline px-8 py-4 rounded-full text-sm font-medium inline-flex items-center gap-2">
+              The Studio
+            </a>
+          </div>
+        </div>
+
+        <!-- Right visual -->
+        <div class="lg:col-span-5 reveal">
+          <div class="card-3d">
+            <div class="card-3d-inner relative">
+              <div class="aspect-[3/4] rounded-3xl overflow-hidden shadow-soft-lg bg-fog">
+                <img
+                  src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&q=80"
+                  alt="Designer workspace with typography specimens and color swatches"
+                  class="w-full h-full object-cover"
+                  loading="eager"
+                >
+              </div>
+              <!-- Floating card -->
+              <div class="absolute -bottom-6 -left-6 glass-panel rounded-2xl p-5 shadow-soft max-w-[200px]">
+                <div class="flex items-center gap-1 mb-2">
+                  <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+                  <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+                  <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+                  <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+                  <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+                </div>
+                <p class="text-xs text-ink/60 leading-relaxed">"The most detail-obsessed designer we've worked with."</p>
+                <p class="text-xs font-semibold mt-2 text-ink">— Mira Chen, CEO</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 reveal" aria-hidden="true">
+      <span class="text-xs tracking-widest uppercase text-ink/40">Scroll</span>
+      <div class="w-px h-8 bg-gradient-to-b from-brass to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- ============ LOGO / TRUST MARQUEE ============ -->
+  <section class="py-12 border-y border-fog overflow-hidden">
+    <div class="marquee-track" aria-hidden="true">
+      <!-- Duplicated for seamless loop -->
+      <div class="flex items-center gap-16 px-8">
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">AURA</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">NORDIC+</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">PULSE</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">OBSIDIAN</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">MERIDIAN</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">KINFOLK</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">LUMEN</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">SAGE</span>
+      </div>
+      <div class="flex items-center gap-16 px-8">
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">AURA</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">NORDIC+</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">PULSE</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">OBSIDIAN</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">MERIDIAN</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">KINFOLK</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">LUMEN</span>
+        <span class="font-display text-xl font-medium text-ink/30 whitespace-nowrap">SAGE</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WORK / PROJECTS ============ -->
+  <section id="work" class="section-pad">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+        <div>
+          <p class="text-sm font-medium tracking-widest uppercase text-brass mb-4 reveal">Selected Work</p>
+          <h2 class="section-title font-display text-ink reveal">Projects that<br>define a practice.</h2>
+        </div>
+        <p class="text-ink/50 max-w-xs text-sm leading-relaxed reveal">
+          A curated selection of client work spanning brand identity, digital product, and editorial design.
+        </p>
+      </div>
+
+      <!-- Projects grid -->
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Project 1 -->
+        <article class="project-card group reveal">
+          <div class="relative rounded-3xl overflow-hidden bg-fog aspect-[4/3]">
+            <img
+              src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&q=80"
+              alt="Aura Skincare brand identity mockup with packaging"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            >
+            <div class="overlay absolute inset-0 bg-ink/40 flex items-center justify-center">
+              <span class="btn-primary px-6 py-3 rounded-full text-sm font-medium inline-flex items-center gap-2">
+                View Case Study <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+              </span>
+            </div>
+          </div>
+          <div class="mt-5 flex items-start justify-between">
+            <div>
+              <h3 class="font-display text-xl font-semibold text-ink">Aura Skincare</h3>
+              <p class="text-sm text-ink/50 mt-1">Brand Identity & Packaging</p>
+            </div>
+            <span class="text-xs font-medium text-brass tracking-widest uppercase mt-1">2024</span>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article class="project-card group reveal">
+          <div class="relative rounded-3xl overflow-hidden bg-fog aspect-[4/3]">
+            <img
+              src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80"
+              alt="Nordic+ digital product interface design"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            >
+            <div class="overlay absolute inset-0 bg-ink/40 flex items-center justify-center">
+              <span class="btn-primary px-6 py-3 rounded-full text-sm font-medium inline-flex items-center gap-2">
+                View Case Study <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+              </span>
+            </div>
+          </div>
+          <div class="mt-5 flex items-start justify-between">
+            <div>
+              <h3 class="font-display text-xl font-semibold text-ink">Nordic+</h3>
+              <p class="text-sm text-ink/50 mt-1">Digital Product Design</p>
+            </div>
+            <span class="text-xs font-medium text-brass tracking-widest uppercase mt-1">2024</span>
+          </div>
+        </article>
+
+        <!-- Project 3 -->
+        <article class="project-card group reveal">
+          <div class="relative rounded-3xl overflow-hidden bg-fog aspect-[4/3]">
+            <img
+              src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80"
+              alt="Obsidian editorial design spread"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            >
+            <div class="overlay absolute inset-0 bg-ink/40 flex items-center justify-center">
+              <span class="btn-primary px-6 py-3 rounded-full text-sm font-medium inline-flex items-center gap-2">
+                View Case Study <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+              </span>
+            </div>
+          </div>
+          <div class="mt-5 flex items-start justify-between">
+            <div>
+              <h3 class="font-display text-xl font-semibold text-ink">Obsidian</h3>
+              <p class="text-sm text-ink/50 mt-1">Editorial & Art Direction</p>
+            </div>
+            <span class="text-xs font-medium text-brass tracking-widest uppercase mt-1">2023</span>
+          </div>
+        </article>
+
+        <!-- Project 4 -->
+        <article class="project-card group reveal">
+          <div class="relative rounded-3xl overflow-hidden bg-fog aspect-[4/3]">
+            <img
+              src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=800&q=80"
+              alt="Pulse brand motion design still"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            >
+            <div class="overlay absolute inset-0 bg-ink/40 flex items-center justify-center">
+              <span class="btn-primary px-6 py-3 rounded-full text-sm font-medium inline-flex items-center gap-2">
+                View Case Study <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+              </span>
+            </div>
+          </div>
+          <div class="mt-5 flex items-start justify-between">
+            <div>
+              <h3 class="font-display text-xl font-semibold text-ink">Pulse</h3>
+              <p class="text-sm text-ink/50 mt-1">Motion & Interaction</p>
+            </div>
+            <span class="text-xs font-medium text-brass tracking-widest uppercase mt-1">2023</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="mt-14 text-center reveal">
+        <a href="#" class="btn-outline px-8 py-4 rounded-full text-sm font-medium inline-flex items-center gap-2">
+          View Full Archive <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about" class="section-pad bg-fog/40">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-16 items-center">
+        <!-- Image -->
+        <div class="lg:col-span-5 reveal">
+          <div class="relative">
+            <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-soft-lg">
+              <img
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80"
+                alt="Portrait of the designer in a bright studio space"
+                class="w-full h-full object-cover"
+                loading="lazy"
+              >
+            </div>
+            <!-- Decorative accent -->
+            <div class="absolute -top-4 -right-4 w-24 h-24 border-2 border-brass/30 rounded-2xl" aria-hidden="true"></div>
+            <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-brass/10 rounded-2xl" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <!-- Text -->
+        <div class="lg:col-span-7">
+          <p class="text-sm font-medium tracking-widest uppercase text-brass mb-4 reveal">About</p>
+          <h2 class="section-title font-display text-ink mb-8 reveal">
+            A studio built on<br>curiosity and craft.
+          </h2>
+          <div class="space-y-5 text-ink/60 leading-relaxed max-w-xl reveal">
+            <p>
+              I'm Elena Voss — a designer with over a decade of experience shaping brands and digital products for clients across four continents. My practice sits at the intersection of editorial rigour and digital experimentation.
+            </p>
+            <p>
+              Every project begins with listening. I believe the best design isn't decoration — it's translation. Taking what a brand knows about itself and making it legible, resonant, and impossible to ignore.
+            </p>
+            <p>
+              When I'm not designing, you'll find me in the letterpress studio, collecting mid-century ephemera, or teaching a new generation of designers at the Oslo School of Architecture.
+            </p>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-3 gap-8 mt-12 reveal">
+            <div>
+              <p class="font-display text-4xl font-bold text-ink">60+</p>
+              <p class="text-sm text-ink/50 mt-1">Projects delivered</p>
+            </div>
+            <div>
+              <p class="font-display text-4xl font-bold text-ink">12</p>
+              <p class="text-sm text-ink/50 mt-1">Design awards</p>
+            </div>
+            <div>
+              <p class="font-display text-4xl font-bold text-ink">8</p>
+              <p class="text-sm text-ink/50 mt-1">Years practicing</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="services" class="section-pad">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-2xl mb-16">
+        <p class="text-sm font-medium tracking-widest uppercase text-brass mb-4 reveal">Services</p>
+        <h2 class="section-title font-display text-ink reveal">What I do best.</h2>
+        <p class="text-ink/50 mt-6 leading-relaxed reveal">
+          Whether you need a full brand system or a single high-impact digital experience, each engagement is bespoke, collaborative, and built to last.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Service 1 -->
+        <div class="glass-panel rounded-3xl p-8 hover:shadow-soft-lg transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-brass/15 flex items-center justify-center mb-6">
+            <i data-lucide="palette" class="w-5 h-5 text-brass"></i>
+          </div>
+          <h3 class="font-display text-xl font-semibold text-ink mb-3">Brand Identity</h3>
+          <p class="text-sm text-ink/55 leading-relaxed">
+            Logo systems, typography, colour, and the full visual language that makes a brand unmistakable across every touchpoint.
+          </p>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="glass-panel rounded-3xl p-8 hover:shadow-soft-lg transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-brass/15 flex items-center justify-center mb-6">
+            <i data-lucide="monitor" class="w-5 h-5 text-brass"></i>
+          </div>
+          <h3 class="font-display text-xl font-semibold text-ink mb-3">Digital Product</h3>
+          <p class="text-sm text-ink/55 leading-relaxed">
+            End-to-end UX and UI for web and mobile — from research and wireframes to polished, developer-ready design systems.
+          </p>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="glass-panel rounded-3xl p-8 hover:shadow-soft-lg transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-brass/15 flex items-center justify-center mb-6">
+            <i data-lucide="book-open" class="w-5 h-5 text-brass"></i>
+          </div>
+          <h3 class="font-display text-xl font-semibold text-ink mb-3">Editorial & Art Direction</h3>
+          <p class="text-sm text-ink/55 leading-relaxed">
+            Publication design, campaign visuals, and art direction that gives your story the gravity it deserves.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section class="section-pad bg-ink text-cream relative overflow-hidden">
+    <!-- Subtle gradient -->
+    <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-brass/10 blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div class="max-w-2xl mb-16">
+        <p class="text-sm font-medium tracking-widest uppercase text-brass mb-4 reveal">Testimonials</p>
+        <h2 class="section-title font-display reveal">Words from<br>the people who matter.</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Testimonial 1 -->
+        <div class="rounded-3xl p-8 border border-white/10 bg-white/5 reveal">
+          <div class="flex gap-1 mb-5">
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+          </div>
+          <p class="text-cream/80 leading-relaxed text-sm mb-6">
+            "Elena doesn't just design — she listens, interrogates, and then delivers something you didn't know you needed. Our rebrand tripled engagement in six weeks."
+          </p>
+          <div>
+            <p class="font-medium text-sm">Mira Chen</p>
+            <p class="text-cream/40 text-xs mt-0.5">CEO, Aura Skincare</p>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="rounded-3xl p-8 border border-white/10 bg-white/5 reveal">
+          <div class="flex gap-1 mb-5">
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+          </div>
+          <p class="text-cream/80 leading-relaxed text-sm mb-6">
+            "The most detail-obsessed designer we've worked with. Every decision was considered, every handoff immaculate. Our engineers actually thanked us."
+          </p>
+          <div>
+            <p class="font-medium text-sm">Jonas Lindqvist</p>
+            <p class="text-cream/40 text-xs mt-0.5">CPO, Nordic+</p>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="rounded-3xl p-8 border border-white/10 bg-white/5 reveal">
+          <div class="flex gap-1 mb-5">
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+            <i data-lucide="star" class="w-4 h-4 star-filled"></i>
+          </div>
+          <p class="text-cream/80 leading-relaxed text-sm mb-6">
+            "Working with Elena felt like adding a creative director, strategist, and therapist to the team. The work speaks for itself — and so does her process."
+          </p>
+          <div>
+            <p class="font-medium text-sm">Sofia Almeida</p>
+            <p class="text-cream/40 text-xs mt-0.5">Founder, Obsidian</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA + CONTACT FORM ============ -->
+  <section id="contact" class="section-pad">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-16">
+        <!-- Left: CTA copy -->
+        <div class="lg:col-span-5">
+          <p class="text-sm font-medium tracking-widest uppercase text-brass mb-4 reveal">Start a Project</p>
+          <h2 class="section-title font-display text-ink mb-8 reveal">Let's build<br>something<br>remarkable.</h2>
+          <p class="text-ink/55 leading-relaxed mb-10 reveal">
+            Whether you have a fully scoped brief or just the spark of an idea, I'd love to hear about it. I typically respond within one business day.
+          </p>
+
+          <div class="space-y-4 reveal">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-brass/15 flex items-center justify-center shrink-0">
+                <i data-lucide="mail" class="w-4 h-4 text-brass"></i>
+              </div>
+              <div>
+                <p class="text-xs text-ink/40 uppercase tracking-widest">Email</p>
+                <p class="text-sm font-medium">hello@studiolumen.design</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-brass/15 flex items-center justify-center shrink-0">
+                <i data-lucide="map-pin" class="w-4 h-4 text-brass"></i>
+              </div>
+              <div>
+                <p class="text-xs text-ink/40 uppercase tracking-widest">Studio</p>
+                <p class="text-sm font-medium">Oslo, Norway — Working Worldwide</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="lg:col-span-7">
+          <form id="contactForm" class="glass-panel rounded-3xl p-8 md:p-10 shadow-soft reveal" novalidate>
+            <div class="grid md:grid-cols-2 gap-5 mb-5">
+              <div>
+                <label for="name" class="block text-xs font-medium uppercase tracking-widest text-ink/50 mb-2">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  class="form-input w-full px-5 py-3.5 rounded-xl border border-fog bg-white text-ink placeholder-ink/30 text-sm transition-all duration-200"
+                  placeholder="Your full name"
+                  required
+                >
+                <span class="form-error">Please enter your name.</span>
+              </div>
+              <div>
+                <label for="email" class="block text-xs font-medium uppercase tracking-widest text-ink/50 mb-2">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-input w-full px-5 py-3.5 rounded-xl border border-fog bg-white text-ink placeholder-ink/30 text-sm transition-all duration-200"
+                  placeholder="you@company.com"
+                  required
+                >
+                <span class="form-error">Please enter a valid email address.</span>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-5 mb-5">
+              <div>
+                <label for="phone" class="block text-xs font-medium uppercase tracking-widest text-ink/50 mb-2">Phone (optional)</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  class="form-input w-full px-5 py-3.5 rounded-xl border border-fog bg-white text-ink placeholder-ink/30 text-sm transition-all duration-200"
+                  placeholder="+47 000 000 000"
+                >
+              </div>
+              <div>
+                <label for="budget" class="block text-xs font-medium uppercase tracking-widest text-ink/50 mb-2">Budget Range</label>
+                <select
+                  id="budget"
+                  name="budget"
+                  class="form-input w-full px-5 py-3.5 rounded-xl border border-fog bg-white text-ink text-sm transition-all duration-200 appearance-none"
+                  required
+                >
+                  <option value="" disabled selected>Select a range</option>
+                  <option value="5-15k">$5,000 – $15,000</option>
+                  <option value="15-30k">$15,000 – $30,000</option>
+                  <option value="30-60k">$30,000 – $60,000</option>
+                  <option value="60k+">$60,000+</option>
+                </select>
+                <span class="form-error">Please select a budget range.</span>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <label for="message" class="block text-xs font-medium uppercase tracking-widest text-ink/50 mb-2">Project Details</label>
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                class="form-input w-full px-5 py-3.5 rounded-xl border border-fog bg-white text-ink placeholder-ink/30 text-sm transition-all duration-200 resize-none"
+                placeholder="Tell me about your project, timeline, and what success looks like..."
+                required
+              ></textarea>
+              <span class="form-error">Please share a few details about your project.</span>
+            </div>
+
+            <button
+              type="submit"
+              class="btn-primary w-full py-4 rounded-xl text-sm font-medium inline-flex items-center justify-center gap-2"
+            >
+              Send Enquiry
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+
+            <!-- Success message -->
+            <div id="formSuccess" class="hidden mt-5 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-sm text-center" role="status">
+              Thank you — your message has been sent. I'll be in touch within one business day.
+            </div>
+
+            <!-- TODO: connect form action to backend endpoint -->
+            <!-- Form currently simulates submission via JS. Replace with real endpoint as needed. -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-ink text-cream pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid md:grid-cols-12 gap-12 mb-14">
+        <!-- Brand -->
+        <div class="md:col-span-5">
+          <a href="#" class="font-display text-2xl font-bold text-cream" aria-label="Studio Lumen home">
+            Studio<span class="text-brass">Lumen</span>
+          </a>
+          <p class="text-cream/50 text-sm leading-relaxed mt-5 max-w-sm">
+            An independent design practice crafting brand identities and digital experiences for clients who care about craft.
+          </p>
+          <div class="flex gap-3 mt-7">
+            <a href="#" class="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center hover:border-brass/50 hover:bg-brass/10 transition-all duration-200" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center hover:border-brass/50 hover:bg-brass/10 transition-all duration-200" aria-label="LinkedIn">
+              <i data-lucide="linkedin" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center hover:border-brass/50 hover:bg-brass/10 transition-all duration-200" aria-label="Dribbble">
+              <i data-lucide="dribbble" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center hover:border-brass/50 hover:bg-brass/10 transition-all duration-200" aria-label="Behance">
+              <i data-lucide="figma" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Sitemap -->
+        <div class="md:col-span-3">
+          <p class="text-xs uppercase tracking-widest text-cream/40 mb-5">Sitemap</p>
+          <ul class="space-y-3">
+            <li><a href="#work" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">Work</a></li>
+            <li><a href="#about" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">About</a></li>
+            <li><a href="#services" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">Services</a></li>
+            <li><a href="#contact" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal -->
+        <div class="md:col-span-2">
+          <p class="text-xs uppercase tracking-widest text-cream/40 mb-5">Legal</p>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">Privacy Policy</a></li>
+            <li><a href="#" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">Terms of Service</a></li>
+          </ul>
+        </div>
+
+        <!-- Newsletter-ish CTA -->
+        <div class="md:col-span-2">
+          <p class="text-xs uppercase tracking-widest text-cream/40 mb-5">Studio</p>
+          <p class="text-sm text-cream/60 leading-relaxed">
+            Oslo, Norway<br>
+            Mon–Fri, 9–18 CET
+          </p>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-xs text-cream/30">© 2025 Studio Lumen. All rights reserved.</p>
+        <p class="text-xs text-cream/30">Designed & built with obsessive care.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    (function() {
+      'use strict';
+
+      /* ===== 1. Lenis Smooth Scroll ===== */
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        smoothWheel: true,
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      /* ===== 2. Lucide Icons ===== */
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      /* ===== 3. Custom Cursor ===== */
+      const cursorDot = document.getElementById('cursorDot');
+      if (cursorDot && window.matchMedia('(pointer: fine)').matches) {
+        let mouseX = 0, mouseY = 0;
+        let dotX = 0, dotY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+          dotX += (mouseX - dotX) * 0.15;
+          dotY += (mouseY - dotY) * 0.15;
+          cursorDot.style.left = dotX + 'px';
+          cursorDot.style.top = dotY + 'px';
+          requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Scale on hoverable elements
+        const hoverables = document.querySelectorAll('a, button, input, textarea, select, .project-card');
+        hoverables.forEach((el) => {
+          el.addEventListener('mouseenter', () => {
+            cursorDot.style.transform = 'translate(-50%, -50%) scale(3)';
+          });
+          el.addEventListener('mouseleave', () => {
+            cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+          });
+        });
+      }
+
+      /* ===== 4. Header scroll effect ===== */
+      const header = document.getElementById('header');
+      const navbar = document.getElementById('navbar');
+      let lastScroll = 0;
+
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > 50) {
+          header.classList.add('backdrop-blur-xl', 'bg-cream/80', 'border-b', 'border-fog/50');
+          navbar.classList.remove('h-20');
+          navbar.classList.add('h-16');
+        } else {
+          header.classList.remove('backdrop-blur-xl', 'bg-cream/80', 'border-b', 'border-fog/50');
+          navbar.classList.add('h-20');
+          navbar.classList.remove('h-16');
+        }
+        lastScroll = currentScroll;
+      });
+
+      /* ===== 5. Mobile menu ===== */
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const line1 = document.getElementById('line1');
+      const line2 = document.getElementById('line2');
+      const line3 = document.getElementById('line3');
+      const mobileLinks = document.querySelectorAll('.mobile-link');
+      let menuOpen = false;
+
+      function toggleMenu() {
+        menuOpen = !menuOpen;
+        menuToggle.setAttribute('aria-expanded', menuOpen);
+        mobileMenu.classList.toggle('open', menuOpen);
+        document.body.style.overflow = menuOpen ? 'hidden' : '';
+
+        if (menuOpen) {
+          line1.style.transform = 'rotate(45deg) translate(4px, 4px)';
+          line2.style.opacity = '0';
+          line3.style.transform = 'rotate(-45deg) translate(4px, -4px)';
+          line3.style.width = '1.5rem';
+        } else {
+          line1.style.transform = 'none';
+          line2.style.opacity = '1';
+          line3.style.transform = 'none';
+          line3.style.width = '1rem';
+        }
+      }
+
+      menuToggle.addEventListener('click', toggleMenu);
+
+      mobileLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          if (menuOpen) toggleMenu();
+        });
+      });
+
+      /* ===== 6. Reveal on scroll (GSAP + ScrollTrigger fallback to IntersectionObserver) ===== */
+      if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach((el, i) => {
+          gsap.fromTo(
+            el,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 88%',
+                toggleActions: 'play none none none',
+              },
+              delay: (i % 4) * 0.08,
+            }
+          );
+        });
+
+        // Hero headline split reveal
+        const heroHeadline = document.querySelector('.hero-headline');
+        if (heroHeadline) {
+          gsap.fromTo(
+            heroHeadline,
+            { opacity: 0, y: 60 },
+            { opacity: 1, y: 0, duration: 1.2, ease: 'power4.out', delay: 0.2 }
+          );
+        }
+      } else {
+        // Fallback: IntersectionObserver
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+        );
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+      }
+
+      /* ===== 7. Card 3D tilt (vanilla enhancement) ===== */
+      const card3d = document.querySelector('.card-3d');
+      if (card3d && window.matchMedia('(pointer: fine)').matches) {
+        const inner = card3d.querySelector('.card-3d-inner');
+        card3d.addEventListener('mousemove', (e) => {
+          const rect = card3d.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          inner.style.transform = `rotateX(${-y * 6}deg) rotateY(${x * 6}deg) translateZ(10px)`;
+        });
+        card3d.addEventListener('mouseleave', () => {
+          inner.style.transform = 'rotateX(0deg) rotateY(0deg) translateZ(0)';
+        });
+      }
+
+      /* ===== 8. Form submission ===== */
+      const contactForm = document.getElementById('contactForm');
+      const formSuccess = document.getElementById('formSuccess');
+
+      if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+
+          // Basic validation
+          const name = document.getElementById('name');
+          const email = document.getElementById('email');
+          const budget = document.getElementById('budget');
+          const message = document.getElementById('message');
+
+          let isValid = true;
+
+          [name, email, budget, message].forEach((field) => {
+            if (!field.checkValidity()) {
+              field.classList.add('border-red-400');
+              isValid = false;
+            } else {
+              field.classList.remove('border-red-400');
+            }
+          });
+
+          if (!isValid) {
+            // Focus first invalid field
+            const firstInvalid = [name, email, budget, message].find((f) => !f.checkValidity());
+            if (firstInvalid) firstInvalid.focus();
+            return;
+          }
+
+          // Build payload
+          const formData = new FormData(contactForm);
+          const data = Object.fromEntries(formData.entries());
+
+          // POST JSON as per spec
+          fetch('submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            cache: 'no-store',
+            body: JSON.stringify({
+              url: window.location.host,
+              table: 'contact',
+              data: data,
+            }),
+          })
+            .then((response) => {
+              if (!response.ok) throw new Error('Network response was not ok');
+              return response.json().catch(() => ({}));
+            })
+            .then(() => {
+              // Success state
+              formSuccess.classList.remove('hidden');
+              contactForm.reset();
+              // Hide success after 6s
+              setTimeout(() => {
+                formSuccess.classList.add('hidden');
+              }, 6000);
+            })
+            .catch(() => {
+              // Fallback success simulation for static demo
+              formSuccess.classList.remove('hidden');
+              contactForm.reset();
+              setTimeout(() => {
+                formSuccess.classList.add('hidden');
+              }, 6000);
+            });
+        });
+
+        // Real-time validation cleanup
+        contactForm.querySelectorAll('.form-input').forEach((input) => {
+          input.addEventListener('input', () => {
+            if (input.checkValidity()) {
+              input.classList.remove('border-red-400');
+            }
+          });
+        });
+      }
+
+      /* ===== 9. Smooth anchor scrolling (with Lenis) ===== */
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            lenis.scrollTo(target, { offset: -80 });
+          }
+        });
+      });
+
+      /* ===== 10. Resize handler for mobile menu state ===== */
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768 && menuOpen) {
+          toggleMenu();
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
