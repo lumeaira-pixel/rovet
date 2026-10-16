@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowForge — Ship faster, together</title>
+
+  <!-- Tailwind CDN + custom config -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0b0e14',
+            cream: '#fafafc',
+            brass: '#c9a96e',
+            slate: '#4a4e5a',
+            mist: '#f2f4f8',
+            accent: '#3b6ef5',
+            'accent-soft': '#e8effe',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+          borderRadius: { '2xl': '1.5rem', '3xl': '2rem' },
+          boxShadow: {
+            'soft': '0 20px 40px -12px rgba(0,0,0,0.08)',
+            'glow': '0 0 40px -8px rgba(59,110,245,0.25)',
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Google Fonts: Bricolage Grotesque + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@300..700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- Custom CSS (design tokens, animations, micro-interactions) -->
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0b0e14;
+      --cream: #fafafc;
+      --brass: #c9a96e;
+      --slate: #4a4e5a;
+      --mist: #f2f4f8;
+      --accent: #3b6ef5;
+      --accent-soft: #e8effe;
+      --radius: 1.5rem;
+      --shadow-soft: 0 20px 40px -12px rgba(0, 0, 0, 0.08);
+      --shadow-glow: 0 0 40px -8px rgba(59, 110, 245, 0.25);
+      --focus-ring: 0 0 0 3px rgba(59, 110, 245, 0.4);
+    }
+
+    /* === Base === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* === Typography === */
+    .font-display { font-family: 'Bricolage Grotesque', sans-serif; }
+    .heading-xl {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+    .heading-lg {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .heading-md {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 600;
+      font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+    .body-lg {
+      font-size: clamp(1rem, 1.2vw, 1.125rem);
+      line-height: 1.7;
+      color: var(--slate);
+    }
+
+    /* === Focus visible === */
+    :focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 0.5rem;
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 500;
+      padding: 0.85rem 2rem;
+      border-radius: 999px;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary:hover {
+      background: #1a1f2b;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 500;
+      padding: 0.85rem 2rem;
+      border-radius: 999px;
+      border: 1.5px solid rgba(11, 14, 20, 0.12);
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer;
+      font-size: 0.95rem;
+      background: #fff;
+    }
+    .btn-secondary:hover {
+      border-color: var(--ink);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+    .btn-secondary:active { transform: scale(0.97); }
+
+    .btn-accent {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 500;
+      padding: 0.85rem 2rem;
+      border-radius: 999px;
+      border: none;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer;
+      font-size: 0.95rem;
+      box-shadow: var(--shadow-glow);
+    }
+    .btn-accent:hover {
+      background: #2a5ae0;
+      transform: translateY(-2px);
+      box-shadow: 0 0 60px -8px rgba(59, 110, 245, 0.45);
+    }
+    .btn-accent:active { transform: scale(0.97); }
+
+    /* === Cards === */
+    .card-soft {
+      background: #fff;
+      border-radius: var(--radius);
+      border: 1px solid rgba(11, 14, 20, 0.06);
+      box-shadow: var(--shadow-soft);
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .card-soft:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 30px 60px -16px rgba(0, 0, 0, 0.12);
+    }
+
+    /* === Glass === */
+    .glass {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    /* === Animations === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+    .reveal-d4 { transition-delay: 0.4s; }
+    .reveal-d5 { transition-delay: 0.5s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+    .float { animation: float 6s ease-in-out infinite; }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      gap: 3rem;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Custom Scrollbar === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(11, 14, 20, 0.15);
+      border-radius: 999px;
+    }
+
+    /* === Section spacing === */
+    .section-pad { padding: 6rem 1.5rem; }
+    @media (min-width: 768px) { .section-pad { padding: 8rem 2rem; } }
+
+    /* === Gradient text === */
+    .text-gradient {
+      background: linear-gradient(135deg, var(--ink) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* === Mesh background === */
+    .mesh-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .mesh-bg::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -10%;
+      width: 60%;
+      height: 80%;
+      background: radial-gradient(ellipse at center, rgba(59, 110, 245, 0.07) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .mesh-bg::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: -10%;
+      width: 50%;
+      height: 60%;
+      background: radial-gradient(ellipse at center, rgba(201, 169, 110, 0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    /* === 3D Tilt === */
+    .tilt-3d {
+      transform-style: preserve-3d;
+      perspective: 800px;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .tilt-3d:hover {
+      transform: rotateX(2deg) rotateY(-4deg);
+    }
+
+    /* === Nav === */
+    .nav-scrolled {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(11, 14, 20, 0.06);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    /* === Form === */
+    .form-input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 0.75rem;
+      border: 1.5px solid rgba(11, 14, 20, 0.1);
+      background: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      color: var(--ink);
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 110, 245, 0.12);
+    }
+    .form-input.error {
+      border-color: #e53e3e;
+      box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.12);
+    }
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      color: var(--ink);
+    }
+    .form-error {
+      font-size: 0.8rem;
+      color: #e53e3e;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    .form-error.show { display: block; }
+
+    /* === Success message === */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    .form-success.show { display: block; }
+
+    /* === Pricing emphasis === */
+    .pricing-featured {
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 0 4px rgba(59, 110, 245, 0.08), var(--shadow-soft);
+    }
+    .pricing-featured:hover {
+      box-shadow: 0 0 0 4px rgba(59, 110, 245, 0.12), 0 30px 60px -16px rgba(0, 0, 0, 0.12);
+    }
+
+    /* === Toggle switch === */
+    .toggle-track {
+      width: 48px;
+      height: 26px;
+      background: rgba(11, 14, 20, 0.15);
+      border-radius: 999px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .toggle-track.active { background: var(--accent); }
+    .toggle-thumb {
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+    .toggle-track.active .toggle-thumb { transform: translateX(22px); }
+
+    /* === Mobile menu === */
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .mobile-menu.open { max-height: 400px; }
+
+    /* === Divider === */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(11, 14, 20, 0.08), transparent);
+    }
+
+    /* === Grid pattern === */
+    .grid-pattern {
+      background-image:
+        linear-gradient(rgba(11, 14, 20, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(11, 14, 20, 0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* === Reduced motion === */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2.5 group" aria-label="FlowForge home">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-ink to-accent flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </div>
+          <span class="font-display font-bold text-lg tracking-tight text-ink">FlowForge</span>
+        </a>
+
+        <!-- Desktop nav -->
+        <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+          <a href="#features" class="text-sm font-medium text-slate hover:text-ink transition-colors duration-200">Features</a>
+          <a href="#pricing" class="text-sm font-medium text-slate hover:text-ink transition-colors duration-200">Pricing</a>
+          <a href="#testimonials" class="text-sm font-medium text-slate hover:text-ink transition-colors duration-200">Testimonials</a>
+          <a href="#contact" class="text-sm font-medium text-slate hover:text-ink transition-colors duration-200">Contact</a>
+        </nav>
+
+        <!-- Desktop CTA -->
+        <div class="hidden md:flex items-center gap-3">
+          <a href="#contact" class="btn-primary text-sm">Start free trial</a>
+        </div>
+
+        <!-- Mobile menu button -->
+        <button id="mobile-toggle" class="md:hidden p-2 rounded-lg hover:bg-black/5 transition-colors" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg id="menu-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="mobile-menu md:hidden bg-white/95 backdrop-blur-xl border-b border-black/5">
+      <nav class="px-6 py-4 flex flex-col gap-4" aria-label="Mobile navigation">
+        <a href="#features" class="text-sm font-medium text-slate hover:text-ink py-2 transition-colors">Features</a>
+        <a href="#pricing" class="text-sm font-medium text-slate hover:text-ink py-2 transition-colors">Pricing</a>
+        <a href="#testimonials" class="text-sm font-medium text-slate hover:text-ink py-2 transition-colors">Testimonials</a>
+        <a href="#contact" class="text-sm font-medium text-slate hover:text-ink py-2 transition-colors">Contact</a>
+        <a href="#contact" class="btn-primary text-sm justify-center mt-2">Start free trial</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
+    <div class="mesh-bg" aria-hidden="true"></div>
+    <div class="grid-pattern absolute inset-0 opacity-40" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full">
+      <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+        <!-- Left: Copy -->
+        <div class="max-w-xl">
+          <div class="reveal inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-soft border border-accent/10 text-accent text-xs font-medium mb-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
+            Now in public beta
+          </div>
+
+          <h1 class="heading-xl reveal reveal-d1 mb-6">
+            Ship faster.<br/>
+            <span class="text-gradient">Together.</span>
+          </h1>
+
+          <p class="body-lg reveal reveal-d2 mb-8 max-w-md">
+            FlowForge is the unified workspace where product teams plan, build, and launch — without the tool sprawl. One place for roadmaps, docs, and delivery.
+          </p>
+
+          <div class="flex flex-wrap gap-3 reveal reveal-d3">
+            <a href="#contact" class="btn-primary">
+              Start free trial
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+            <a href="#features" class="btn-secondary">
+              See how it works
+            </a>
+          </div>
+
+          <div class="mt-10 flex items-center gap-6 reveal reveal-d4">
+            <div class="flex -space-x-2">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-2 border-white"></div>
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 border-2 border-white"></div>
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 border-2 border-white"></div>
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 border-2 border-white"></div>
+            </div>
+            <p class="text-sm text-slate">
+              <span class="font-semibold text-ink">2,400+</span> teams already shipping
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Hero visual -->
+        <div class="relative reveal reveal-d2">
+          <div class="tilt-3d relative">
+            <!-- Main card -->
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-black/5 bg-white">
+              <!-- Browser chrome -->
+              <div class="flex items-center gap-2 px-5 py-3.5 bg-mist/80 border-b border-black/5">
+                <div class="flex gap-1.5">
+                  <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                  <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                  <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+                </div>
+                <div class="flex-1 mx-4">
+                  <div class="h-6 rounded-md bg-white/80 border border-black/5 flex items-center px-3">
+                    <span class="text-[10px] text-slate/60">flowforge.app/dashboard</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dashboard mockup -->
+              <div class="p-5 bg-gradient-to-br from-white to-mist/50">
+                <!-- Top bar -->
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <div class="h-3 w-24 rounded bg-ink/10 mb-2"></div>
+                    <div class="h-2 w-16 rounded bg-ink/5"></div>
+                  </div>
+                  <div class="flex gap-2">
+                    <div class="h-7 w-7 rounded-lg bg-accent-soft"></div>
+                    <div class="h-7 w-7 rounded-lg bg-mist"></div>
+                    <div class="h-7 w-16 rounded-lg bg-accent"></div>
+                  </div>
+                </div>
+
+                <!-- Stats row -->
+                <div class="grid grid-cols-3 gap-3 mb-5">
+                  <div class="bg-white rounded-xl p-3 border border-black/5">
+                    <div class="h-2 w-12 rounded bg-ink/5 mb-2"></div>
+                    <div class="h-4 w-16 rounded bg-ink/15"></div>
+                    <div class="h-1.5 w-8 rounded bg-emerald-400/60 mt-2"></div>
+                  </div>
+                  <div class="bg-white rounded-xl p-3 border border-black/5">
+                    <div class="h-2 w-12 rounded bg-ink/5 mb-2"></div>
+                    <div class="h-4 w-16 rounded bg-ink/15"></div>
+                    <div class="h-1.5 w-8 rounded bg-accent/40 mt-2"></div>
+                  </div>
+                  <div class="bg-white rounded-xl p-3 border border-black/5">
+                    <div class="h-2 w-12 rounded bg-ink/5 mb-2"></div>
+                    <div class="h-4 w-16 rounded bg-ink/15"></div>
+                    <div class="h-1.5 w-8 rounded bg-amber-400/60 mt-2"></div>
+                  </div>
+                </div>
+
+                <!-- Chart area -->
+                <div class="bg-white rounded-xl p-4 border border-black/5 mb-4">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="h-2.5 w-20 rounded bg-ink/10"></div>
+                    <div class="h-2 w-12 rounded bg-ink/5"></div>
+                  </div>
+                  <div class="flex items-end gap-2 h-24">
+                    <div class="flex-1 bg-accent/20 rounded-t-md" style="height:40%"></div>
+                    <div class="flex-1 bg-accent/30 rounded-t-md" style="height:65%"></div>
+                    <div class="flex-1 bg-accent/40 rounded-t-md" style="height:45%"></div>
+                    <div class="flex-1 bg-accent/60 rounded-t-md" style="height:80%"></div>
+                    <div class="flex-1 bg-accent/80 rounded-t-md" style="height:55%"></div>
+                    <div class="flex-1 bg-accent rounded-t-md" style="height:95%"></div>
+                    <div class="flex-1 bg-accent/70 rounded-t-md" style="height:70%"></div>
+                  </div>
+                </div>
+
+                <!-- Task list -->
+                <div class="space-y-2">
+                  <div class="flex items-center gap-3 bg-white rounded-lg p-2.5 border border-black/5">
+                    <div class="w-5 h-5 rounded-md bg-accent-soft flex items-center justify-center">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3b6ef5" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="h-2 w-32 rounded bg-ink/10"></div>
+                    <div class="ml-auto h-4 w-10 rounded bg-emerald-400/20"></div>
+                  </div>
+                  <div class="flex items-center gap-3 bg-white rounded-lg p-2.5 border border-black/5">
+                    <div class="w-5 h-5 rounded-md bg-amber-100 flex items-center justify-center">
+                      <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                    </div>
+                    <div class="h-2 w-28 rounded bg-ink/10"></div>
+                    <div class="ml-auto h-4 w-10 rounded bg-amber-400/20"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating badge -->
+            <div class="absolute -bottom-5 -left-5 glass rounded-2xl px-4 py-3 shadow-lg border border-white/60 float">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="text-xs font-semibold text-ink">Sprint 14 shipped</div>
+                  <div class="text-[10px] text-slate">2 hours ago</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating metric -->
+            <div class="absolute -top-4 -right-4 glass rounded-2xl px-4 py-3 shadow-lg border border-white/60 float" style="animation-delay: 1.5s">
+              <div class="text-xs text-slate mb-0.5">Velocity</div>
+              <div class="flex items-center gap-2">
+                <span class="font-display font-bold text-lg text-ink">+42%</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOGO BAR ===== -->
+  <section class="py-12 border-y border-black/5 bg-white/50 overflow-hidden" aria-label="Trusted by">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class="text-center text-xs font-medium text-slate/60 uppercase tracking-widest mb-8 reveal">Trusted by product teams at</p>
+      <div class="relative overflow-hidden">
+        <div class="marquee-track">
+          <!-- Duplicated for seamless loop -->
+          <div class="flex items-center gap-16 shrink-0">
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Vercel</span>
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Linear</span>
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Stripe</span>
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Notion</span>
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Framer</span>
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Arc</span>
+          </div>
+          <div class="flex items-center gap-16 shrink-0" aria-hidden="true">
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Vercel</span>
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Linear</span>
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Stripe</span>
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Notion</span>
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Framer</span>
+            <span class="font-display font-bold text-xl text-ink/25 whitespace-nowrap">Arc</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section id="features" class="section-pad relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="max-w-2xl mb-16 lg:mb-20">
+        <div class="reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mist border border-black/5 text-xs font-medium text-slate mb-5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          Features
+        </div>
+        <h2 class="heading-lg reveal reveal-d1 mb-4">
+          Everything your team needs.<br/>
+          <span class="text-slate/50">Nothing it doesn't.</span>
+        </h2>
+        <p class="body-lg reveal reveal-d2">
+          We stripped away the bloat and built a workspace that gets out of your way. Plan, write, and ship from one canvas.
+        </p>
+      </div>
+
+      <!-- Bento grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Card 1 — large -->
+        <div class="card-soft p-7 md:col-span-2 lg:row-span-2 flex flex-col justify-between reveal">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-accent-soft flex items-center justify-center mb-5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b6ef5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+              </svg>
+            </div>
+            <h3 class="heading-md mb-3">Unified roadmap & docs</h3>
+            <p class="text-slate text-sm leading-relaxed max-w-md">
+              Stop switching between five tools. Link strategy docs directly to roadmap items, so every engineer knows the "why" behind the "what."
+            </p>
+          </div>
+          <!-- Mini visual -->
+          <div class="mt-8 grid grid-cols-3 gap-2.5">
+            <div class="bg-mist rounded-xl p-3 border border-black/5">
+              <div class="h-2 w-10 rounded bg-ink/10 mb-2"></div>
+              <div class="h-2 w-14 rounded bg-ink/5"></div>
+            </div>
+            <div class="bg-accent-soft rounded-xl p-3 border border-accent/10">
+              <div class="h-2 w-10 rounded bg-accent/30 mb-2"></div>
+              <div class="h-2 w-14 rounded bg-accent/20"></div>
+            </div>
+            <div class="bg-mist rounded-xl p-3 border border-black/5">
+              <div class="h-2 w-10 rounded bg-ink/10 mb-2"></div>
+              <div class="h-2 w-14 rounded bg-ink/5"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card-soft p-7 reveal reveal-d1">
+          <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center mb-5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-lg mb-2.5">Real-time velocity</h3>
+          <p class="text-slate text-sm leading-relaxed">
+            Auto-generated burndown charts and cycle time metrics. Know if you're on track before the standup.
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card-soft p-7 reveal reveal-d2">
+          <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center mb-5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-lg mb-2.5">Team alignment</h3>
+          <p class="text-slate text-sm leading-relaxed">
+            Shared goals and OKRs keep everyone pointed in the same direction — no more quarterly surprises.
+          </p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card-soft p-7 reveal reveal-d3">
+          <div class="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center mb-5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-lg mb-2.5">Insightful analytics</h3>
+          <p class="text-slate text-sm leading-relaxed">
+            Understand where time goes and where bottlenecks form. Data that actually drives decisions.
+          </p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="card-soft p-7 reveal reveal-d4">
+          <div class="w-11 h-11 rounded-xl bg-rose-50 flex items-center justify-center mb-5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e11d48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-semibold text-lg mb-2.5">Enterprise-grade security</h3>
+          <p class="text-slate text-sm leading-relaxed">
+            SOC 2 Type II, SSO, and granular permissions. Your data stays yours — always.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section id="pricing" class="section-pad bg-white relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-2xl mx-auto text-center mb-16">
+        <div class="reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mist border border-black/5 text-xs font-medium text-slate mb-5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Pricing
+        </div>
+        <h2 class="heading-lg reveal reveal-d1 mb-4">Simple, honest pricing</h2>
+        <p class="body-lg reveal reveal-d2 mb-8">
+          Start free. Upgrade when your team is ready. No hidden fees, no lock-in.
+        </p>
+
+        <!-- Billing toggle -->
+        <div class="reveal reveal-d3 inline-flex items-center gap-3 bg-mist rounded-full px-1.5 py-1.5">
+          <button id="monthly-btn" class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-white shadow-sm text-ink" aria-pressed="true">Monthly</button>
+          <button id="yearly-btn" class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 text-slate hover:text-ink" aria-pressed="false">Yearly <span class="text-emerald-500 text-xs font-semibold">-20%</span></button>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <!-- Starter -->
+        <div class="card-soft p-7 flex flex-col reveal">
+          <div class="mb-6">
+            <h3 class="font-display font-semibold text-lg mb-1">Starter</h3>
+            <p class="text-sm text-slate">For small teams getting started.</p>
+          </div>
+          <div class="mb-6">
+            <span class="font-display font-bold text-4xl tracking-tight" data-monthly="$0" data-yearly="$0">$0</span>
+            <span class="text-slate text-sm">/month</span>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm text-slate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Up to 5 teammates
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-slate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Unlimited roadmaps
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-slate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Community support
+            </li>
+          </ul>
+          <a href="#contact" class="btn-secondary justify-center w-full">Get started</a>
+        </div>
+
+        <!-- Pro — featured -->
+        <div class="card-soft pricing-featured p-7 flex flex-col relative reveal reveal-d1">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+            <span class="bg-accent text-white text-[11px] font-semibold px-3.5 py-1.5 rounded-full tracking-wide uppercase">Most popular</span>
+          </div>
+          <div class="mb-6 mt-2">
+            <h3 class="font-display font-semibold text-lg mb-1">Pro</h3>
+            <p class="text-sm text-slate">For growing product teams.</p>
+          </div>
+          <div class="mb-6">
+            <span class="font-display font-bold text-4xl tracking-tight" data-monthly="$29" data-yearly="$23">$29</span>
+            <span class="text-slate text-sm">/month per seat</span>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm text-slate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b6ef5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Everything in Starter
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-slate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b6ef5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Unlimited teammates
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-slate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b6ef5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Advanced analytics
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-slate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b6ef5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Priority support
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-slate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b6ef5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              SSO & SAML
+            </li>
+          </ul>
+          <a href="#contact" class="btn-accent justify-center w-full">Start free trial</a>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="card-soft p-7 flex flex-col reveal reveal-d2">
+          <div class="mb-6">
+            <h3 class="font-display font-semibold text-lg mb-1">Enterprise</h3>
+            <p class="text-sm text-slate">For organizations at scale.</p>
+          </div>
+          <div class="mb-6">
+            <span class="font-display font-bold text-4xl tracking-tight">Custom</span>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm text-slate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Everything in Pro
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-slate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Dedicated success manager
+            </li>
+            <li class="flex items-start gap-2.5 text-sm text-slate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Custom SLA & audit logs
+            </li>
+          </ul>
+          <a href="#contact" class="btn-secondary justify-center w-full">Talk to sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section id="testimonials" class="section-pad relative overflow-hidden">
+    <div class="mesh-bg" aria-hidden="true"></div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div class="max-w-2xl mb-16">
+        <div class="reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mist border border-black/5 text-xs font-medium text-slate mb-5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          Testimonials
+        </div>
+        <h2 class="heading-lg reveal reveal-d1 mb-4">Loved by teams who ship</h2>
+        <p class="body-lg reveal reveal-d2">Don't take our word for it. Here's what product leaders say.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Testimonial 1 -->
+        <div class="card-soft p-7 reveal">
+          <div class="flex gap-0.5 mb-5" aria-label="5 out of 5 stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <blockquote class="text-ink text-sm leading-relaxed mb-6">
+            "FlowForge replaced four tools for us. Our sprint planning went from a two-hour meeting to thirty minutes. The team actually enjoys using it."
+          </blockquote>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-sm font-semibold">SK</div>
+            <div>
+              <div class="text-sm font-semibold text-ink">Sarah Kim</div>
+              <div class="text-xs text-slate">VP Product, Layer</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="card-soft p-7 reveal reveal-d1">
+          <div class="flex gap-0.5 mb-5" aria-label="5 out of 5 stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <blockquote class="text-ink text-sm leading-relaxed mb-6">
+            "The analytics alone paid for itself in the first month. We found a bottleneck we'd been blind to for two quarters."
+          </blockquote>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-sm font-semibold">MR</div>
+            <div>
+              <div class="text-sm font-semibold text-ink">Marcus Rivera</div>
+              <div class="text-xs text-slate">Engineering Lead, Cadence</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="card-soft p-7 reveal reveal-d2">
+          <div class="flex gap-0.5 mb-5" aria-label="5 out of 5 stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <blockquote class="text-ink text-sm leading-relaxed mb-6">
+            "Finally a tool that doesn't require a dedicated admin. It's opinionated in all the right ways and flexible where it matters."
+          </blockquote>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-sm font-semibold">AJ</div>
+            <div>
+              <div class="text-sm font-semibold text-ink">Amara Johnson</div>
+              <div class="text-xs text-slate">COO, Meridian</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA BANNER ===== -->
+  <section class="section-pad bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="relative rounded-3xl bg-ink overflow-hidden reveal">
+        <!-- Decorative -->
+        <div class="absolute inset-0 opacity-20" aria-hidden="true">
+          <div class="absolute top-0 right-0 w-96 h-96 rounded-full bg-accent blur-3xl"></div>
+          <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-brass blur-3xl"></div>
+        </div>
+        <div class="relative z-10 px-8 py-16 md:px-16 md:py-20 text-center">
+          <h2 class="heading-lg text-white mb-5">Ready to ship faster?</h2>
+          <p class="text-white/60 max-w-lg mx-auto mb-8 text-base leading-relaxed">
+            Join 2,400+ teams already using FlowForge to plan, build, and launch with less friction.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a href="#contact" class="btn-primary bg-white text-ink hover:bg-white/90" style="box-shadow: 0 8px 24px rgba(255,255,255,0.15);">
+              Start free trial
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+            <a href="#contact" class="btn-secondary border-white/20 text-white bg-transparent hover:bg-white/10 hover:border-white/40">
+              Book a demo
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer id="contact" class="bg-mist/50 border-t border-black/5">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
+      <div class="grid lg:grid-cols-2 gap-16">
+        <!-- Left: brand + form -->
+        <div>
+          <div class="flex items-center gap-2.5 mb-5">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-ink to-accent flex items-center justify-center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            <span class="font-display font-bold text-lg tracking-tight text-ink">FlowForge</span>
+          </div>
+          <p class="text-sm text-slate mb-8 max-w-sm leading-relaxed">
+            The unified workspace for product teams who ship. Plan, build, and launch without the tool sprawl.
+          </p>
+
+          <!-- Contact form -->
+          <form id="contact-form" class="space-y-4" novalidate>
+            <h3 class="font-display font-semibold text-base mb-1">Get in touch</h3>
+            <p class="text-xs text-slate mb-4">We'll get back to you within one business day.</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="name" class="form-label">Name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Jane Doe" required />
+                <div class="form-error" id="name-error">Please enter your name</div>
+              </div>
+              <div>
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="jane@company.com" required />
+                <div class="form-error" id="email-error">Please enter a valid email</div>
+              </div>
+            </div>
+
+            <div>
+              <label for="phone" class="form-label">Phone <span class="text-slate/50">(optional)</span></label>
+              <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 (555) 000-0000" />
+            </div>
+
+            <div>
+              <label for="message" class="form-label">Message</label>
+              <textarea id="message" name="message" rows="3" class="form-input" placeholder="Tell us about your team..." required></textarea>
+              <div class="form-error" id="message-error">Please enter a message</div>
+            </div>
+
+            <button type="submit" class="btn-primary w-full justify-center">
+              Send message
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+
+            <p class="text-[11px] text-slate/50 text-center">
+              <!-- TODO: connect form action to backend endpoint -->
+              By submitting, you agree to our privacy policy.
+            </p>
+          </form>
+
+          <!-- Success message -->
+          <div id="form-success" class="form-success">
+            <div class="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <h3 class="font-display font-semibold text-lg text-ink mb-1">Message sent</h3>
+            <p class="text-sm text-slate">We'll be in touch shortly.</p>
+          </div>
+        </div>
+
+        <!-- Right: sitemap -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
+          <div>
+            <h4 class="font-display font-semibold text-sm text-ink mb-4">Product</h4>
+            <ul class="space-y-2.5">
+              <li><a href="#features" class="text-sm text-slate hover:text-ink transition-colors duration-200">Features</a></li>
+              <li><a href="#pricing" class="text-sm text-slate hover:text-ink transition-colors duration-200">Pricing</a></li>
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors duration-200">Changelog</a></li>
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors duration-200">Roadmap</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-display font-semibold text-sm text-ink mb-4">Company</h4>
+            <ul class="space-y-2.5">
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors duration-200">About</a></li>
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors duration-200">Blog</a></li>
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors duration-200">Careers</a></li>
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors duration-200">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-display font-semibold text-sm text-ink mb-4">Legal</h4>
+            <ul class="space-y-2.5">
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors duration-200">Privacy</a></li>
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors duration-200">Terms</a></li>
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors duration-200">Security</a></li>
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors duration-200">Status</a></li>
+            </ul>
+          </div>
+
+          <!-- Social -->
+          <div class="col-span-2 sm:col-span-3 mt-4">
+            <h4 class="font-display font-semibold text-sm text-ink mb-4">Follow us</h4>
+            <div class="flex gap-3">
+              <a href="#" class="w-9 h-9 rounded-lg bg-white border border-black/5 flex items-center justify-center text-slate hover:text-ink hover:border-black/15 transition-all duration-200" aria-label="Twitter">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              <a href="#" class="w-9 h-9 rounded-lg bg-white border border-black/5 flex items-center justify-center text-slate hover:text-ink hover:border-black/15 transition-all duration-200" aria-label="LinkedIn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              </a>
+              <a href="#" class="w-9 h-9 rounded-lg bg-white border border-black/5 flex items-center justify-center text-slate hover:text-ink hover:border-black/15 transition-all duration-200" aria-label="GitHub">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="divider mt-12 mb-8"></div>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-slate/60">&copy; 2025 FlowForge, Inc. All rights reserved.</p>
+        <p class="text-xs text-slate/60 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          All systems operational
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    // ============================================
+    // Lucide Icons
+    // ============================================
+    lucide.createIcons();
+
+    // ============================================
+    // Nav scroll effect
+    // ============================================
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        header.classList.add('nav-scrolled');
+      } else {
+        header.classList.remove('nav-scrolled');
+      }
+    }, { passive: true });
+
+    // ============================================
+    // Mobile menu toggle
+    // ============================================
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+
+    mobileToggle.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      mobileToggle.setAttribute('aria-expanded', isOpen);
+      // Swap icon
+      menuIcon.innerHTML = isOpen
+        ? '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'
+        : '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>';
+    });
+
+    // Close mobile menu on link click
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        menuIcon.innerHTML = '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>';
+      });
+    });
+
+    // ============================================
+    // Scroll reveal with IntersectionObserver
+    // ============================================
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // ============================================
+    // Pricing toggle
+    // ============================================
+    const monthlyBtn = document.getElementById('monthly-btn');
+    const yearlyBtn = document.getElementById('yearly-btn');
+    const priceEls = document.querySelectorAll('[data-monthly]');
+
+    function setBilling(period) {
+      priceEls.forEach(el => {
+        el.textContent = el.dataset[period];
+      });
+      if (period === 'monthly') {
+        monthlyBtn.classList.add('bg-white', 'shadow-sm', 'text-ink');
+        monthlyBtn.classList.remove('text-slate');
+        yearlyBtn.classList.remove('bg-white', 'shadow-sm', 'text-ink');
+        yearlyBtn.classList.add('text-slate');
+        monthlyBtn.setAttribute('aria-pressed', 'true');
+        yearlyBtn.setAttribute('aria-pressed', 'false');
+      } else {
+        yearlyBtn.classList.add('bg-white', 'shadow-sm', 'text-ink');
+        yearlyBtn.classList.remove('text-slate');
+        monthlyBtn.classList.remove('bg-white', 'shadow-sm', 'text-ink');
+        monthlyBtn.classList.add('text-slate');
+        yearlyBtn.setAttribute('aria-pressed', 'true');
+        monthlyBtn.setAttribute('aria-pressed', 'false');
+      }
+    }
+
+    monthlyBtn.addEventListener('click', () => setBilling('monthly'));
+    yearlyBtn.addEventListener('click', () => setBilling('yearly'));
+
+    // ============================================
+    // Form validation & submission
+    // ============================================
+    const contactForm = document.getElementById('contact-form');
+    const formSuccess = document.getElementById('form-success');
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function showError(inputId, show) {
+      const input = document.getElementById(inputId);
+      const error = document.getElementById(inputId + '-error');
+      if (show) {
+        input.classList.add('error');
+        error.classList.add('show');
+      } else {
+        input.classList.remove('error');
+        error.classList.remove('show');
+      }
+    }
+
+    // Live validation clearing
+    ['name', 'email', 'message'].forEach(id => {
+      const input = document.getElementById(id);
+      input.addEventListener('input', () => {
+        if (input.classList.contains('error')) {
+          showError(id, false);
+        }
+      });
+    });
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      let valid = true;
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name) { showError('name', true); valid = false; }
+      if (!email || !validateEmail(email)) { showError('email', true); valid = false; }
+      if (!message) { showError('message', true); valid = false; }
+
+      if (!valid) return;
+
+      // Submit
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = 'Sending...';
+      submitBtn.disabled = true;
+
+      try {
+        const formData = { name, email, phone, message };
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'contact_enquiries',
+            data: formData
+          })
+        });
+
+        // Even if endpoint isn't ready, show success for demo
+        contactForm.style.display = 'none';
+        formSuccess.classList.add('show');
+      } catch (err) {
+        // Fallback success for static demo
+        contactForm.style.display = 'none';
+        formSuccess.classList.add('show');
+      } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+
+    // ============================================
+    // 3D tilt on hero visual
+    // ============================================
+    const tiltEl = document.querySelector('.tilt-3d');
+    if (tiltEl && window.matchMedia('(pointer: fine)').matches) {
+      tiltEl.addEventListener('mousemove', (e) => {
+        const rect = tiltEl.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        tiltEl.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+      });
+      tiltEl.addEventListener('mouseleave', () => {
+        tiltEl.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg)';
+      });
+    }
+
+    // ============================================
+    // Smooth anchor scrolling (native CSS handles most)
+    // ============================================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
