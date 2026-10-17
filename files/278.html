@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STYLORA — Drops Everything You Love</title>
+  <!-- Google Fonts + Tailwind + Lucide -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface-2: #181818;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text: #f5f5f5;
+      --text-muted: #a0a0a0;
+      --pink: #ff2d9b;
+      --pink-soft: rgba(255, 45, 155, 0.12);
+      --yellow: #ffd60a;
+      --yellow-soft: rgba(255, 214, 10, 0.12);
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --radius: 1.25rem;
+      --shadow-pink: 0 0 30px -5px rgba(255, 45, 155, 0.35);
+      --shadow-yellow: 0 0 30px -5px rgba(255, 214, 10, 0.35);
+    }
+
+    /* === Global Reset & Base === */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--pink); color: #000; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+    /* === Typography === */
+    h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+    .hero-headline { font-size: clamp(3rem, 8vw, 7rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; }
+    .hero-headline .accent-pink { color: var(--pink); }
+    .hero-headline .accent-yellow { color: var(--yellow); }
+    .section-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--pink); font-family: var(--font-body);
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--pink); color: #000; font-weight: 700;
+      padding: 0.9rem 2rem; border-radius: 3rem; font-size: 0.9rem;
+      transition: all 0.25s ease-out; box-shadow: var(--shadow-pink);
+      border: 2px solid transparent;
+    }
+    .btn-primary:hover { background: #ff5cb0; transform: translateY(-2px); box-shadow: 0 0 45px -5px rgba(255, 45, 155, 0.5); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: transparent; color: var(--yellow); font-weight: 700;
+      padding: 0.9rem 2rem; border-radius: 3rem; font-size: 0.9rem;
+      border: 2px solid var(--yellow); transition: all 0.25s ease-out;
+    }
+    .btn-secondary:hover { background: var(--yellow); color: #000; box-shadow: var(--shadow-yellow); transform: translateY(-2px); }
+    .btn-secondary:active { transform: scale(0.97); }
+
+    /* === Cards & Glass === */
+    .product-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+    .product-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      border-color: rgba(255, 45, 155, 0.4);
+      box-shadow: 0 20px 50px -15px rgba(255, 45, 155, 0.2);
+    }
+    .product-card .img-wrap {
+      aspect-ratio: 1 / 1.05; background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+      display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+    }
+    .product-card .img-wrap svg { width: 55%; height: 55%; opacity: 0.9; transition: transform 0.4s ease; }
+    .product-card:hover .img-wrap svg { transform: scale(1.08) rotate(-3deg); }
+
+    .badge-new {
+      position: absolute; top: 0.75rem; left: 0.75rem; z-index: 2;
+      background: var(--yellow); color: #000; font-size: 0.6rem; font-weight: 800;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 0.5rem;
+    }
+    .badge-hot {
+      position: absolute; top: 0.75rem; left: 0.75rem; z-index: 2;
+      background: var(--pink); color: #000; font-size: 0.6rem; font-weight: 800;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 0.5rem;
+    }
+
+    /* === Category Filter === */
+    .filter-btn {
+      padding: 0.55rem 1.4rem; border-radius: 2rem; font-weight: 600; font-size: 0.85rem;
+      background: transparent; color: var(--text-muted); border: 1px solid var(--border);
+      transition: all 0.25s ease; white-space: nowrap;
+    }
+    .filter-btn:hover { border-color: var(--border-strong); color: #fff; }
+    .filter-btn.active {
+      background: var(--pink); color: #000; border-color: var(--pink);
+      box-shadow: 0 0 20px -5px rgba(255, 45, 155, 0.5);
+    }
+    .filter-btn.active-yellow {
+      background: var(--yellow); color: #000; border-color: var(--yellow);
+      box-shadow: 0 0 20px -5px rgba(255, 214, 10, 0.5);
+    }
+
+    /* === Testimonials === */
+    .testimonial-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 2rem; transition: border-color 0.3s, transform 0.3s;
+    }
+    .testimonial-card:hover { border-color: rgba(255, 214, 10, 0.3); transform: translateY(-4px); }
+
+    /* === Cart Drawer === */
+    .cart-drawer {
+      position: fixed; top: 0; right: 0; height: 100dvh; width: min(420px, 100vw);
+      background: var(--surface); border-left: 1px solid var(--border);
+      transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      z-index: 1000; display: flex; flex-direction: column;
+    }
+    .cart-drawer.open { transform: translateX(0); }
+    .cart-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+      opacity: 0; pointer-events: none; transition: opacity 0.35s; z-index: 999;
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: all; }
+
+    /* === Newsletter / Forms === */
+    .input-dark {
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 0.75rem;
+      padding: 0.85rem 1.1rem; color: var(--text); font-size: 0.9rem; width: 100%;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .input-dark:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-soft); }
+    .input-dark::placeholder { color: #555; }
+
+    /* === Animations === */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; }
+    .reveal.visible { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+    /* === Scrollbar === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 3px; }
+
+    /* === Marquee === */
+    .marquee {
+      overflow: hidden; white-space: nowrap; background: var(--yellow); color: #000;
+      padding: 0.6rem 0; font-weight: 800; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .marquee-inner { display: inline-block; animation: marquee 20s linear infinite; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* === Wishlist Heart === */
+    .wishlist-btn { transition: transform 0.2s ease, color 0.2s; color: #666; }
+    .wishlist-btn:hover { transform: scale(1.15); }
+    .wishlist-btn.active { color: var(--pink); }
+    .wishlist-btn.active svg { fill: var(--pink); }
+
+    /* === Checkout Modal === */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+      z-index: 1100; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: all; }
+    .modal-content {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 1.5rem;
+      padding: 2.5rem; width: min(520px, 92vw); max-height: 90vh; overflow-y: auto;
+    }
+
+    /* === Toast === */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: var(--yellow); color: #000; font-weight: 700; font-size: 0.85rem;
+      padding: 0.8rem 1.8rem; border-radius: 2rem; z-index: 2000;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* === Nav blur === */
+    .nav-scrolled {
+      background: rgba(10,10,10,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* === Focus === */
+    :focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; }
+
+    /* === Responsive Grid === */
+    .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    @media (min-width: 640px) { .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; } }
+    @media (min-width: 1024px) { .product-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; } }
+
+    /* Hide scrollbar for filter pills */
+    .filter-scroll::-webkit-scrollbar { display: none; }
+    .filter-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ====== CART OVERLAY ====== -->
+  <div class="cart-overlay" id="cartOverlay" aria-hidden="true"></div>
+
+  <!-- ====== CART DRAWER ====== -->
+  <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-label="Shopping cart" aria-hidden="true">
+    <div class="flex items-center justify-between p-5 border-b" style="border-color: var(--border);">
+      <div class="flex items-center gap-2">
+        <!-- Pink dotted bag icon -->
+        <svg width="28" height="28" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M12 16h24l-2 24H14L12 16z" stroke="#ff2d9b" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+          <path d="M12 16h24" stroke="#ff2d9b" stroke-width="2.5"/>
+          <path d="M18 16v-4a6 6 0 0112 0v4" stroke="#ff2d9b" stroke-width="2.5" fill="none"/>
+          <circle cx="20" cy="26" r="1.5" fill="#ff2d9b"/><circle cx="28" cy="26" r="1.5" fill="#ff2d9b"/>
+          <circle cx="20" cy="32" r="1.5" fill="#ff2d9b"/><circle cx="28" cy="32" r="1.5" fill="#ff2d9b"/>
+          <circle cx="24" cy="20" r="1.5" fill="#ff2d9b"/>
+        </svg>
+        <h3 class="font-bold text-lg" style="font-family: var(--font-display);">Your Bag</h3>
+        <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background: var(--pink-soft); color: var(--pink);" id="cartCountBadge">0</span>
+      </div>
+      <button id="closeCart" class="p-2 rounded-full hover:bg-white/5 transition" aria-label="Close cart">
+        <i data-lucide="x" class="w-5 h-5" style="color: var(--text-muted);"></i>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-5" id="cartItems">
+      <div class="text-center py-16" id="emptyCartMsg">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" class="mx-auto mb-4 opacity-30" aria-hidden="true">
+          <path d="M12 16h24l-2 24H14L12 16z" stroke="#888" stroke-width="2" stroke-linejoin="round" fill="none"/>
+          <path d="M18 16v-4a6 6 0 0112 0v4" stroke="#888" stroke-width="2" fill="none"/>
+        </svg>
+        <p class="text-sm" style="color: var(--text-muted);">Your bag is empty.<br>Start dropping some love.</p>
+      </div>
+    </div>
+    <div class="p-5 border-t" style="border-color: var(--border);" id="cartFooter" style="display:none;">
+      <div class="flex justify-between mb-3 text-sm">
+        <span style="color: var(--text-muted);">Subtotal</span>
+        <span class="font-bold" id="cartSubtotal">$0.00</span>
+      </div>
+      <button class="btn-primary w-full justify-center" id="checkoutBtn" style="border-radius: 0.9rem;">
+        <i data-lucide="credit-card" class="w-4 h-4"></i> Checkout
+      </button>
+    </div>
+  </aside>
+
+  <!-- ====== CHECKOUT MODAL ====== -->
+  <div class="modal-backdrop" id="checkoutModal" role="dialog" aria-modal="true" aria-label="Checkout">
+    <div class="modal-content">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold" style="font-family: var(--font-display);">Checkout</h3>
+        <button id="closeCheckout" class="p-2 rounded-full hover:bg-white/5 transition" aria-label="Close checkout">
+          <i data-lucide="x" class="w-5 h-5" style="color: var(--text-muted);"></i>
+        </button>
+      </div>
+      <form id="checkoutForm" class="space-y-4" novalidate>
+        <div>
+          <label for="coName" class="block text-xs font-semibold mb-1.5" style="color: var(--text-muted);">Full Name</label>
+          <input type="text" id="coName" class="input-dark" placeholder="Alex Rivera" required />
+        </div>
+        <div>
+          <label for="coEmail" class="block text-xs font-semibold mb-1.5" style="color: var(--text-muted);">Email</label>
+          <input type="email" id="coEmail" class="input-dark" placeholder="alex@email.com" required />
+        </div>
+        <div>
+          <label for="coAddress" class="block text-xs font-semibold mb-1.5" style="color: var(--text-muted);">Shipping Address</label>
+          <input type="text" id="coAddress" class="input-dark" placeholder="123 Hype Street, NYC" required />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="coCity" class="block text-xs font-semibold mb-1.5" style="color: var(--text-muted);">City</label>
+            <input type="text" id="coCity" class="input-dark" placeholder="New York" required />
+          </div>
+          <div>
+            <label for="coZip" class="block text-xs font-semibold mb-1.5" style="color: var(--text-muted);">ZIP</label>
+            <input type="text" id="coZip" class="input-dark" placeholder="10001" required />
+          </div>
+        </div>
+        <div class="pt-2">
+          <div class="flex justify-between mb-4 text-sm">
+            <span style="color: var(--text-muted);">Total</span>
+            <span class="font-bold text-lg" id="checkoutTotal" style="color: var(--yellow);">$0.00</span>
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center" style="border-radius: 0.9rem;">
+            <i data-lucide="lock" class="w-4 h-4"></i> Place Order
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====== TOAST ====== -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ====== HEADER ====== -->
+  <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="mainHeader">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 sm:h-20">
+      <!-- Logo: two bags -->
+      <a href="#" class="flex items-center gap-2 group" aria-label="STYLORA home">
+        <!-- Pink dotted bag -->
+        <svg width="30" height="30" viewBox="0 0 48 48" fill="none" aria-hidden="true" class="transition-transform group-hover:rotate-[-8deg]">
+          <path d="M10 16h20l-1.5 22H11.5L10 16z" stroke="#ff2d9b" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+          <path d="M10 16h20" stroke="#ff2d9b" stroke-width="2.2"/>
+          <path d="M15 16v-4a5 5 0 0110 0v4" stroke="#ff2d9b" stroke-width="2.2" fill="none"/>
+          <circle cx="16" cy="25" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="25" r="1.2" fill="#ff2d9b"/>
+          <circle cx="16" cy="31" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="31" r="1.2" fill="#ff2d9b"/>
+          <circle cx="20" cy="20" r="1.2" fill="#ff2d9b"/>
+        </svg>
+        <!-- Yellow striped bag -->
+        <svg width="30" height="30" viewBox="0 0 48 48" fill="none" aria-hidden="true" class="transition-transform group-hover:rotate-[8deg] -ml-2">
+          <path d="M16 16h20l-1.5 22H17.5L16 16z" stroke="#ffd60a" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+          <path d="M16 16h20" stroke="#ffd60a" stroke-width="2.2"/>
+          <path d="M21 16v-4a5 5 0 0110 0v4" stroke="#ffd60a" stroke-width="2.2" fill="none"/>
+          <path d="M20 22l8 14M26 22l-6 14" stroke="#ffd60a" stroke-width="1.5" opacity="0.6"/>
+        </svg>
+        <span class="text-lg font-bold tracking-tight ml-1" style="font-family: var(--font-display);">STYLORA</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#shop" class="text-sm font-medium transition hover:opacity-70" style="color: var(--text-muted);">Shop</a>
+        <a href="#categories" class="text-sm font-medium transition hover:opacity-70" style="color: var(--text-muted);">Categories</a>
+        <a href="#testimonials" class="text-sm font-medium transition hover:opacity-70" style="color: var(--text-muted);">Reviews</a>
+        <a href="#newsletter" class="text-sm font-medium transition hover:opacity-70" style="color: var(--text-muted);">Newsletter</a>
+      </nav>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Wishlist indicator -->
+        <button class="relative p-2 rounded-full transition hover:bg-white/5" id="wishlistIndicator" aria-label="View wishlist">
+          <i data-lucide="heart" class="w-5 h-5" style="color: var(--text-muted);"></i>
+          <span class="absolute -top-0.5 -right-0.5 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center" style="background: var(--pink); color:#000; display:none;" id="wishlistCount">0</span>
+        </button>
+        <!-- Cart -->
+        <button class="relative p-2 rounded-full transition hover:bg-white/5" id="cartToggle" aria-label="Open shopping cart">
+          <i data-lucide="shopping-bag" class="w-5 h-5" style="color: var(--text);"></i>
+          <span class="absolute -top-0.5 -right-0.5 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center" style="background: var(--yellow); color:#000; display:none;" id="cartCount">0</span>
+        </button>
+        <!-- Mobile menu -->
+        <button class="md:hidden p-2 rounded-full transition hover:bg-white/5" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="md:hidden hidden" id="mobileMenu" style="background: var(--surface); border-top: 1px solid var(--border);">
+      <nav class="flex flex-col p-5 gap-4" aria-label="Mobile navigation">
+        <a href="#shop" class="text-sm font-medium" style="color: var(--text-muted);">Shop</a>
+        <a href="#categories" class="text-sm font-medium" style="color: var(--text-muted);">Categories</a>
+        <a href="#testimonials" class="text-sm font-medium" style="color: var(--text-muted);">Reviews</a>
+        <a href="#newsletter" class="text-sm font-medium" style="color: var(--text-muted);">Newsletter</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ====== HERO ====== -->
+  <section class="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-16" id="hero">
+    <!-- Background glows -->
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute top-[15%] left-[10%] w-[400px] h-[400px] rounded-full opacity-20" style="background: radial-gradient(circle, var(--pink), transparent 70%); filter: blur(80px);"></div>
+      <div class="absolute bottom-[20%] right-[10%] w-[350px] h-[350px] rounded-full opacity-15" style="background: radial-gradient(circle, var(--yellow), transparent 70%); filter: blur(80px);"></div>
+    </div>
+
+    <div class="relative z-10 text-center px-5 max-w-5xl mx-auto">
+      <div class="reveal visible">
+        <span class="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-8" style="background: var(--pink-soft); color: var(--pink); border: 1px solid rgba(255,45,155,0.3);">
+          <span class="w-2 h-2 rounded-full animate-pulse" style="background: var(--pink);"></span>
+          Dropping Soon
+        </span>
+      </div>
+      <h1 class="hero-headline reveal visible" style="animation-delay: 0.1s;">
+        WE'RE<br><span class="accent-pink">COMING</span> <span class="accent-yellow">SOON</span>
+      </h1>
+      <p class="mt-6 text-base sm:text-lg max-w-xl mx-auto reveal visible" style="color: var(--text-muted); animation-delay: 0.25s;">
+        Stay tuned for something beautiful. The hottest drops in fashion, beauty, tech & lifestyle — curated for your feed.
+      </p>
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 reveal visible" style="animation-delay: 0.4s;">
+        <a href="#shop" class="btn-primary">
+          <i data-lucide="zap" class="w-4 h-4"></i> Browse Drops
+        </a>
+        <a href="#newsletter" class="btn-secondary">
+          <i data-lucide="bell" class="w-4 h-4"></i> Get Notified
+        </a>
+      </div>
+
+      <!-- Floating bag icons -->
+      <div class="mt-16 flex items-center justify-center gap-8 opacity-60" aria-hidden="true">
+        <svg width="44" height="44" viewBox="0 0 48 48" fill="none" style="animation: float 4s ease-in-out infinite;">
+          <path d="M10 16h20l-1.5 22H11.5L10 16z" stroke="#ff2d9b" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+          <path d="M10 16h20" stroke="#ff2d9b" stroke-width="2.2"/>
+          <path d="M15 16v-4a5 5 0 0110 0v4" stroke="#ff2d9b" stroke-width="2.2" fill="none"/>
+          <circle cx="16" cy="25" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="25" r="1.2" fill="#ff2d9b"/>
+          <circle cx="16" cy="31" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="31" r="1.2" fill="#ff2d9b"/>
+        </svg>
+        <svg width="44" height="44" viewBox="0 0 48 48" fill="none" style="animation: float 4s ease-in-out infinite 1s;">
+          <path d="M16 16h20l-1.5 22H17.5L16 16z" stroke="#ffd60a" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+          <path d="M16 16h20" stroke="#ffd60a" stroke-width="2.2"/>
+          <path d="M21 16v-4a5 5 0 0110 0v4" stroke="#ffd60a" stroke-width="2.2" fill="none"/>
+          <path d="M20 22l8 14M26 22l-6 14" stroke="#ffd60a" stroke-width="1.5" opacity="0.6"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== MARQUEE ====== -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-inner">
+      FREE SHIPPING OVER $50 &nbsp;&nbsp;•&nbsp;&nbsp; NEW DROPS WEEKLY &nbsp;&nbsp;•&nbsp;&nbsp; 10% OFF FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp; FREE SHIPPING OVER $50 &nbsp;&nbsp;•&nbsp;&nbsp; NEW DROPS WEEKLY &nbsp;&nbsp;•&nbsp;&nbsp; 10% OFF FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp;
+      FREE SHIPPING OVER $50 &nbsp;&nbsp;•&nbsp;&nbsp; NEW DROPS WEEKLY &nbsp;&nbsp;•&nbsp;&nbsp; 10% OFF FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp; FREE SHIPPING OVER $50 &nbsp;&nbsp;•&nbsp;&nbsp; NEW DROPS WEEKLY &nbsp;&nbsp;•&nbsp;&nbsp; 10% OFF FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp;
+    </div>
+  </div>
+
+  <!-- ====== SHOP / FEATURED PRODUCTS ====== -->
+  <section class="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-28" id="shop">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
+      <div>
+        <span class="section-label">Fresh Drops</span>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mt-3" style="font-family: var(--font-display);">Featured Products</h2>
+      </div>
+      <p class="text-sm max-w-xs" style="color: var(--text-muted);">Hand-picked heat from the feed. Limited stock, unlimited vibes.</p>
+    </div>
+
+    <!-- Category filter -->
+    <div class="flex gap-2 overflow-x-auto filter-scroll pb-2 mb-8" id="categoryFilter" role="tablist" aria-label="Filter products by category">
+      <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All</button>
+      <button class="filter-btn" data-filter="fashion" role="tab" aria-selected="false">Fashion</button>
+      <button class="filter-btn" data-filter="beauty" role="tab" aria-selected="false">Beauty</button>
+      <button class="filter-btn" data-filter="tech" role="tab" aria-selected="false">Tech</button>
+      <button class="filter-btn" data-filter="lifestyle" role="tab" aria-selected="false">Lifestyle</button>
+    </div>
+
+    <!-- Product grid -->
+    <div class="product-grid" id="productGrid">
+      <!-- Products injected by JS -->
+    </div>
+  </section>
+
+  <!-- ====== CATEGORIES ====== -->
+  <section class="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-20" id="categories">
+    <span class="section-label">Shop by Vibe</span>
+    <h2 class="text-3xl sm:text-4xl font-bold mt-3 mb-10" style="font-family: var(--font-display);">Categories</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <a href="#shop" class="group relative rounded-2xl overflow-hidden p-6 sm:p-8 flex flex-col justify-end min-h-[180px] sm:min-h-[220px] transition-transform hover:-translate-y-1" style="background: linear-gradient(135deg, #1a0f14, #0f0a0c); border: 1px solid var(--border);" data-cat="fashion">
+        <i data-lucide="shirt" class="w-8 h-8 mb-4" style="color: var(--pink);"></i>
+        <h3 class="text-xl font-bold" style="font-family: var(--font-display);">Fashion</h3>
+        <p class="text-xs mt-1" style="color: var(--text-muted);">Hoodies · Streetwear · Sneakers</p>
+        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition"><i data-lucide="arrow-up-right" class="w-5 h-5" style="color: var(--pink);"></i></div>
+      </a>
+      <a href="#shop" class="group relative rounded-2xl overflow-hidden p-6 sm:p-8 flex flex-col justify-end min-h-[180px] sm:min-h-[220px] transition-transform hover:-translate-y-1" style="background: linear-gradient(135deg, #1a160f, #0f0e0a); border: 1px solid var(--border);" data-cat="beauty">
+        <i data-lucide="sparkles" class="w-8 h-8 mb-4" style="color: var(--yellow);"></i>
+        <h3 class="text-xl font-bold" style="font-family: var(--font-display);">Beauty</h3>
+        <p class="text-xs mt-1" style="color: var(--text-muted);">Makeup · Lipsticks · Skincare</p>
+        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition"><i data-lucide="arrow-up-right" class="w-5 h-5" style="color: var(--yellow);"></i></div>
+      </a>
+      <a href="#shop" class="group relative rounded-2xl overflow-hidden p-6 sm:p-8 flex flex-col justify-end min-h-[180px] sm:min-h-[220px] transition-transform hover:-translate-y-1" style="background: linear-gradient(135deg, #0f141a, #0a0d0f); border: 1px solid var(--border);" data-cat="tech">
+        <i data-lucide="headphones" class="w-8 h-8 mb-4" style="color: #60a5fa;"></i>
+        <h3 class="text-xl font-bold" style="font-family: var(--font-display);">Tech & Gadgets</h3>
+        <p class="text-xs mt-1" style="color: var(--text-muted);">Cases · Earbuds · Smartwatches</p>
+        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition"><i data-lucide="arrow-up-right" class="w-5 h-5" style="color: #60a5fa;"></i></div>
+      </a>
+      <a href="#shop" class="group relative rounded-2xl overflow-hidden p-6 sm:p-8 flex flex-col justify-end min-h-[180px] sm:min-h-[220px] transition-transform hover:-translate-y-1" style="background: linear-gradient(135deg, #14101a, #0d0a0f); border: 1px solid var(--border);" data-cat="lifestyle">
+        <i data-lucide="sun" class="w-8 h-8 mb-4" style="color: #c084fc;"></i>
+        <h3 class="text-xl font-bold" style="font-family: var(--font-display);">Lifestyle</h3>
+        <p class="text-xs mt-1" style="color: var(--text-muted);">Tote Bags · Sunglasses</p>
+        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition"><i data-lucide="arrow-up-right" class="w-5 h-5" style="color: #c084fc;"></i></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ====== TESTIMONIALS ====== -->
+  <section class="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-28" id="testimonials">
+    <div class="text-center mb-12">
+      <span class="section-label">Real Talk</span>
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mt-3" style="font-family: var(--font-display);">What the Squad Says</h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="testimonial-card">
+        <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+        </div>
+        <p class="text-sm leading-relaxed mb-5" style="color: var(--text-muted);">"Ordered the neon hoodie and it's literally my entire personality now. Quality is insane for the price. Already eyeing my next cop."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold" style="background: var(--pink-soft); color: var(--pink);">MJ</div>
+          <div>
+            <p class="text-sm font-semibold">Maya J.</p>
+            <p class="text-xs" style="color: #555;">Verified Buyer</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+        </div>
+        <p class="text-sm leading-relaxed mb-5" style="color: var(--text-muted);">"The LED lights transformed my room from 'meh' to 'main character energy.' Shipping was fast and packaging was cute AF."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold" style="background: var(--yellow-soft); color: var(--yellow);">TK</div>
+          <div>
+            <p class="text-sm font-semibold">Tyler K.</p>
+            <p class="text-xs" style="color: #555;">Verified Buyer</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card sm:col-span-2 lg:col-span-1">
+        <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
+        </div>
+        <p class="text-sm leading-relaxed mb-5" style="color: var(--text-muted);">"I've ordered from STYLORA three times this month. The lipstick shades are unmatched and the tote bag goes with everything. Obsessed."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold" style="background: rgba(192,132,252,0.15); color: #c084fc;">LR</div>
+          <div>
+            <p class="text-sm font-semibold">Lena R.</p>
+            <p class="text-xs" style="color: #555;">Verified Buyer</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== NEWSLETTER ====== -->
+  <section class="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-28" id="newsletter">
+    <div class="rounded-3xl p-8 sm:p-14 text-center relative overflow-hidden" style="background: linear-gradient(135deg, #1a0f14 0%, #0f0a0c 100%); border: 1px solid var(--border);">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-0 left-1/4 w-64 h-64 rounded-full opacity-20" style="background: radial-gradient(circle, var(--pink), transparent 70%); filter: blur(60px);"></div>
+        <div class="absolute bottom-0 right-1/4 w-64 h-64 rounded-full opacity-15" style="background: radial-gradient(circle, var(--yellow), transparent 70%); filter: blur(60px);"></div>
+      </div>
+      <div class="relative z-10">
+        <i data-lucide="mail" class="w-10 h-10 mx-auto mb-4" style="color: var(--pink);"></i>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold" style="font-family: var(--font-display);">Get Ready for the Drop</h2>
+        <p class="mt-4 text-sm sm:text-base max-w-md mx-auto" style="color: var(--text-muted);">Be first to know when we launch. Early access, exclusive discounts, and behind-the-scenes drops — straight to your inbox.</p>
+        <form class="mt-8 flex flex-col sm:flex-row gap-3 max-w-md mx-auto" id="newsletterForm" novalidate>
+          <input type="email" id="newsletterEmail" class="input-dark flex-1" placeholder="your@email.com" required aria-label="Email address" />
+          <button type="submit" class="btn-primary justify-center whitespace-nowrap" style="border-radius: 0.75rem;">
+            <i data-lucide="send" class="w-4 h-4"></i> Notify Me
+          </button>
+        </form>
+        <p class="mt-3 text-xs" style="color: #555;">No spam. Unsubscribe anytime.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="border-t" style="border-color: var(--border); background: var(--surface);">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-14">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <!-- Brand -->
+        <div class="lg:col-span-1">
+          <div class="flex items-center gap-2 mb-4">
+            <svg width="26" height="26" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+              <path d="M10 16h20l-1.5 22H11.5L10 16z" stroke="#ff2d9b" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+              <path d="M10 16h20" stroke="#ff2d9b" stroke-width="2.2"/>
+              <path d="M15 16v-4a5 5 0 0110 0v4" stroke="#ff2d9b" stroke-width="2.2" fill="none"/>
+              <circle cx="16" cy="25" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="25" r="1.2" fill="#ff2d9b"/>
+              <circle cx="16" cy="31" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="31" r="1.2" fill="#ff2d9b"/>
+            </svg>
+            <svg width="26" height="26" viewBox="0 0 48 48" fill="none" aria-hidden="true" class="-ml-1">
+              <path d="M16 16h20l-1.5 22H17.5L16 16z" stroke="#ffd60a" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+              <path d="M16 16h20" stroke="#ffd60a" stroke-width="2.2"/>
+              <path d="M21 16v-4a5 5 0 0110 0v4" stroke="#ffd60a" stroke-width="2.2" fill="none"/>
+              <path d="M20 22l8 14M26 22l-6 14" stroke="#ffd60a" stroke-width="1.5" opacity="0.6"/>
+            </svg>
+            <span class="text-lg font-bold" style="font-family: var(--font-display);">STYLORA</span>
+          </div>
+          <p class="text-sm mb-5" style="color: var(--text-muted);">Drops Everything You Love.<br>Curated heat for the next generation.</p>
+          <div class="flex items-center gap-3">
+            <a href="https://instagram.com/stylora_" target="_blank" rel="noopener" class="p-2 rounded-full transition hover:bg-white/5" aria-label="Instagram @stylora_">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a href="https://tiktok.com/@stylora_" target="_blank" rel="noopener" class="p-2 rounded-full transition hover:bg-white/5" aria-label="TikTok">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+            </a>
+            <a href="mailto:hello@stylora.com" class="p-2 rounded-full transition hover:bg-white/5" aria-label="Email us">
+              <i data-lucide="mail" class="w-[18px] h-[18px]" style="color: var(--text-muted);"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Shop links -->
+        <div>
+          <h4 class="text-sm font-bold mb-4">Shop</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#shop" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Fashion</a></li>
+            <li><a href="#shop" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Beauty</a></li>
+            <li><a href="#shop" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Tech & Gadgets</a></li>
+            <li><a href="#shop" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Lifestyle</a></li>
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div>
+          <h4 class="text-sm font-bold mb-4">Support</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Shipping Info</a></li>
+            <li><a href="#" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Returns & Exchanges</a></li>
+            <li><a href="#" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Track Your Order</a></li>
+            <li><a href="#" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h4 class="text-sm font-bold mb-4">Get in Touch</h4>
+          <p class="text-sm mb-2" style="color: var(--text-muted);">hello@stylora.com</p>
+          <p class="text-sm" style="color: var(--text-muted);">@stylora_</p>
+          <p class="text-xs mt-4" style="color: #555;">We reply within 24 hours, 7 days a week.</p>
+        </div>
+      </div>
+
+      <div class="mt-12 pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-4" style="border-color: var(--border);">
+        <p class="text-xs" style="color: #555;">&copy; 2025 STYLORA. All rights reserved.</p>
+        <div class="flex items-center gap-5">
+          <a href="#" class="text-xs transition hover:opacity-70" style="color: #555;">Privacy Policy</a>
+          <a href="#" class="text-xs transition hover:opacity-70" style="color: #555;">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ====== SCRIPTS ====== -->
+  <script>
+    // ============================================================
+    // DATA: Products
+    // ============================================================
+    const products = [
+      { id: 1, name: 'Neon Dreams Hoodie', category: 'fashion', price: 49.99, badge: 'hot', badgeLabel: 'Hot', icon: 'shirt', iconColor: '#ff2d9b', desc: 'Oversized heavyweight hoodie' },
+      { id: 2, name: 'Street King Sneakers', category: 'fashion', price: 89.99, badge: 'new', badgeLabel: 'New', icon: 'footprints', iconColor: '#ff2d9b', desc: 'Chunky sole, all-day comfort' },
+      { id: 3, name: 'Velvet Matte Lipstick', category: 'beauty', price: 19.99, badge: 'hot', badgeLabel: 'Bestseller', icon: 'sparkles', iconColor: '#ffd60a', desc: '8-hour wear, 12 shades' },
+      { id: 4, name: 'Glow Serum 2.0', category: 'beauty', price: 29.99, badge: null, badgeLabel: '', icon: 'droplets', iconColor: '#ffd60a', desc: 'Vitamin C + hyaluronic acid' },
+      { id: 5, name: 'AirPod Pro Case', category: 'tech', price: 24.99, badge: 'new', badgeLabel: 'New', icon: 'headphones', iconColor: '#60a5fa', desc: 'Shockproof, glossy finish' },
+      { id: 6, name: 'LED Strip Lights', category: 'tech', price: 34.99, badge: 'hot', badgeLabel: 'Trending', icon: 'lightbulb', iconColor: '#60a5fa', desc: '16M colors, app controlled' },
+      { id: 7, name: 'Canvas Tote Bag', category: 'lifestyle', price: 22.99, badge: null, badgeLabel: '', icon: 'shopping-bag', iconColor: '#c084fc', desc: 'Heavy duty, zip closure' },
+      { id: 8, name: 'Retro Sunglasses', category: 'lifestyle', price: 27.99, badge: 'new', badgeLabel: 'New', icon: 'glasses', iconColor: '#c084fc', desc: 'UV400, unisex fit' }
+    ];
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let cart = [];
+    let wishlist = new Set();
+    let activeFilter = 'all';
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    function formatPrice(p) { return '$' + p.toFixed(2); }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._timeout);
+      t._timeout = setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    // ============================================================
+    // RENDER PRODUCTS
+    // ============================================================
+    function renderProducts() {
+      const grid = document.getElementById('productGrid');
+      const filtered = activeFilter === 'all' ? products : products.filter(p => p.category === activeFilter);
+      grid.innerHTML = filtered.map(p => `
+        <div class="product-card reveal visible" data-id="${p.id}">
+          ${p.badge === 'hot' ? `<span class="badge-hot">${p.badgeLabel}</span>` : p.badge === 'new' ? `<span class="badge-new">${p.badgeLabel}</span>` : ''}
+          <div class="img-wrap">
+            <i data-lucide="${p.icon}" class="w-16 h-16" style="color: ${p.iconColor}; opacity: 0.85;"></i>
+            <button class="wishlist-btn absolute top-3 right-3 p-2 rounded-full bg-black/40 backdrop-blur-sm ${wishlist.has(p.id) ? 'active' : ''}" 
+              data-wishlist="${p.id}" aria-label="Add ${p.name} to wishlist">
+              <i data-lucide="heart" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color: ${p.iconColor}; opacity: 0.7;">${p.category}</p>
+            <h3 class="text-sm font-semibold leading-tight mb-0.5">${p.name}</h3>
+            <p class="text-xs mb-3" style="color: var(--text-muted);">${p.desc}</p>
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-base" style="color: var(--yellow);">${formatPrice(p.price)}</span>
+              <button class="add-to-cart p-2 rounded-full transition hover:scale-110 active:scale-95" 
+                style="background: var(--pink-soft);" data-add="${p.id}" aria-label="Add ${p.name} to cart">
+                <i data-lucide="plus" class="w-4 h-4" style="color: var(--pink);"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    // ============================================================
+    // CART
+    // ============================================================
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      const existing = cart.find(item => item.id === id);
+      if (existing) existing.qty += 1;
+      else cart.push({ ...product, qty: 1 });
+      updateCartUI();
+      showToast(product.name + ' added to bag');
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(item => item.id !== id);
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const count = cart.reduce((s, i) => s + i.qty, 0);
+      const countEl = document.getElementById('cartCount');
+      const badge = document.getElementById('cartCountBadge');
+      if (count > 0) { countEl.style.display = 'flex'; countEl.textContent = count; }
+      else { countEl.style.display = 'none'; }
+      badge.textContent = count;
+
+      const itemsEl = document.getElementById('cartItems');
+      const emptyMsg = document.getElementById('emptyCartMsg');
+      const footer = document.getElementById('cartFooter');
+
+      if (cart.length === 0) {
+        itemsEl.innerHTML = `<div class="text-center py-16" id="emptyCartMsg">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" class="mx-auto mb-4 opacity-30" aria-hidden="true">
+            <path d="M12 16h24l-2 24H14L12 16z" stroke="#888" stroke-width="2" stroke-linejoin="round" fill="none"/>
+            <path d="M18 16v-4a6 6 0 0112 0v4" stroke="#888" stroke-width="2" fill="none"/>
+          </svg>
+          <p class="text-sm" style="color: var(--text-muted);">Your bag is empty.<br>Start dropping some love.</p>
+        </div>`;
+        footer.style.display = 'none';
+      } else {
+        itemsEl.innerHTML = cart.map(item => `
+          <div class="flex items-center gap-3 py-3 border-b" style="border-color: var(--border);">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background: var(--surface-2);">
+              <i data-lucide="${item.icon}" class="w-5 h-5" style="color: ${item.iconColor};"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">${item.name}</p>
+              <p class="text-xs" style="color: var(--text-muted);">${formatPrice(item.price)} × ${item.qty}</p>
+            </div>
+            <button class="p-1.5 rounded-full hover:bg-white/5 transition" data-remove="${item.id}" aria-label="Remove ${item.name}">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5" style="color: #666;"></i>
+            </button>
+          </div>
+        `).join('');
+        footer.style.display = 'block';
+        const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+        document.getElementById('cartSubtotal').textContent = formatPrice(subtotal);
+        document.getElementById('checkoutTotal').textContent = formatPrice(subtotal);
+      }
+      lucide.createIcons();
+    }
+
+    // ============================================================
+    // WISHLIST
+    // ============================================================
+    function toggleWishlist(id) {
+      if (wishlist.has(id)) { wishlist.delete(id); showToast('Removed from wishlist'); }
+      else { wishlist.add(id); showToast('Saved to wishlist'); }
+      const badge = document.getElementById('wishlistCount');
+      badge.textContent = wishlist.size;
+      badge.style.display = wishlist.size > 0 ? 'flex' : 'none';
+      renderProducts();
+    }
+
+    // ============================================================
+    // CART DRAWER CONTROLS
+    // ============================================================
+    const drawer = document.getElementById('cartDrawer');
+    const overlay = document.getElementById('cartOverlay');
+
+    function openCart() {
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+    }
+    function closeCart() {
+      drawer.classList.remove('open');
+      overlay.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+    }
+
+    document.getElementById('cartToggle').addEventListener('click', openCart);
+    document.getElementById('closeCart').addEventListener('click', closeCart);
+    overlay.addEventListener('click', closeCart);
+
+    // ============================================================
+    // CHECKOUT
+    // ============================================================
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      closeCart();
+      document.getElementById('checkoutModal').classList.add('open');
+    });
+    document.getElementById('closeCheckout').addEventListener('click', () => {
+      document.getElementById('checkoutModal').classList.remove('open');
+    });
+    document.getElementById('checkoutModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+    });
+
+    document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Processing...';
+      btn.disabled = true;
+      lucide.createIcons();
+
+      const formData = {
+        name: document.getElementById('coName').value,
+        email: document.getElementById('coEmail').value,
+        address: document.getElementById('coAddress').value,
+        city: document.getElementById('coCity').value,
+        zip: document.getElementById('coZip').value,
+        items: cart.map(i => ({ id: i.id, name: i.name, qty: i.qty, price: i.price })),
+        total: cart.reduce((s, i) => s + i.price * i.qty, 0)
+      };
+
+      // TODO: connect form action to backend endpoint
+      try {
+        await fetch('/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'orders',
+            data: formData
+          })
+        });
+      } catch (_) { /* graceful offline fallback */ }
+
+      setTimeout(() => {
+        cart = [];
+        updateCartUI();
+        document.getElementById('checkoutModal').classList.remove('open');
+        e.target.reset();
+        btn.innerHTML = orig;
+        btn.disabled = false;
+        showToast('Order placed! Check your email for confirmation.');
+        lucide.createIcons();
+      }, 800);
+    });
+
+    // ============================================================
+    // NEWSLETTER
+    // ============================================================
+    document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('newsletterEmail').value;
+      if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return; }
+      const btn = e.target.querySelector('button[type="submit"]');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Sending...';
+      btn.disabled = true;
+      lucide.createIcons();
+
+      // TODO: connect form action to backend endpoint
+      try {
+        await fetch('/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'newsletter',
+            data: { email }
+          })
+        });
+      } catch (_) { /* graceful offline fallback */ }
+
+      setTimeout(() => {
+        btn.innerHTML = orig;
+        btn.disabled = false;
+        e.target.reset();
+        showToast('You\'re on the list. Get ready for the drop!');
+        lucide.createIcons();
+      }, 700);
+    });
+
+    // ============================================================
+    // EVENT DELEGATION: CART + WISHLIST
+    // ============================================================
+    document.addEventListener('click', (e) => {
+      const addBtn = e.target.closest('[data-add]');
+      if (addBtn) { addToCart(parseInt(addBtn.dataset.add)); return; }
+
+      const removeBtn = e.target.closest('[data-remove]');
+      if (removeBtn) { removeFromCart(parseInt(removeBtn.dataset.remove)); return; }
+
+      const wishBtn = e.target.closest('[data-wishlist]');
+      if (wishBtn) { toggleWishlist(parseInt(wishBtn.dataset.wishlist)); return; }
+    });
+
+    // ============================================================
+    // CATEGORY FILTER
+    // ============================================================
+    document.getElementById('categoryFilter').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-filter]');
+      if (!btn) return;
+      document.querySelectorAll('#categoryFilter .filter-btn').forEach(b => {
+        b.classList.remove('active', 'active-yellow');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      activeFilter = btn.dataset.filter;
+      renderProducts();
+    });
+
+    // ============================================================
+    // CATEGORY CARD -> FILTER SHORTCUT
+    // ============================================================
+    document.querySelectorAll('[data-cat]').forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        const cat = card.dataset.cat;
+        activeFilter = cat;
+        document.querySelectorAll('#categoryFilter .filter-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.filter === cat);
+          b.setAttribute('aria-selected', b.dataset.filter === cat ? 'true' : 'false');
+        });
+        renderProducts();
+        document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // ============================================================
+    // HEADER SCROLL EFFECT
+    // ============================================================
+    const header = document.getElementById('mainHeader');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) header.classList.add('nav-scrolled');
+      else header.classList.remove('nav-scrolled');
+    }, { passive: true });
+
+    // ============================================================
+    // MOBILE MENU
+    // ============================================================
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileBtn.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden');
+      mobileBtn.setAttribute('aria-expanded', !isOpen);
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        mobileBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // ============================================================
+    // WISHLIST INDICATOR CLICK -> filter to wishlist
+    // ============================================================
+    document.getElementById('wishlistIndicator').addEventListener('click', () => {
+      if (wishlist.size === 0) { showToast('Your wishlist is empty'); return; }
+      activeFilter = 'wishlist';
+      document.querySelectorAll('#categoryFilter .filter-btn').forEach(b => {
+        b.classList.remove('active'); b.setAttribute('aria-selected', 'false');
+      });
+      const grid = document.getElementById('productGrid');
+      const wishItems = products.filter(p => wishlist.has(p.id));
+      grid.innerHTML = wishItems.map(p => `
+        <div class="product-card reveal visible" data-id="${p.id}">
+          ${p.badge === 'hot' ? `<span class="badge-hot">${p.badgeLabel}</span>` : p.badge === 'new' ? `<span class="badge-new">${p.badgeLabel}</span>` : ''}
+          <div class="img-wrap">
+            <i data-lucide="${p.icon}" class="w-16 h-16" style="color: ${p.iconColor}; opacity: 0.85;"></i>
+            <button class="wishlist-btn absolute top-3 right-3 p-2 rounded-full bg-black/40 backdrop-blur-sm active" 
+              data-wishlist="${p.id}" aria-label="Remove ${p.name} from wishlist">
+              <i data-lucide="heart" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div class="p-4">
+            <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color: ${p.iconColor}; opacity: 0.7;">${p.category}</p>
+            <h3 class="text-sm font-semibold leading-tight mb-0.5">${p.name}</h3>
+            <p class="text-xs mb-3" style="color: var(--text-muted);">${p.desc}</p>
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-base" style="color: var(--yellow);">${formatPrice(p.price)}</span>
+              <button class="add-to-cart p-2 rounded-full transition hover:scale-110 active:scale-95" 
+                style="background: var(--pink-soft);" data-add="${p.id}" aria-label="Add ${p.name} to cart">
+                <i data-lucide="plus" class="w-4 h-4" style="color: var(--pink);"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    renderProducts();
+    updateCartUI();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
