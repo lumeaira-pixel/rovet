@@ -1,1032 +1,1521 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>STYLORA — Drops Everything You Love</title>
-  <!-- Google Fonts + Tailwind + Lucide -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <meta name="description" content="STYLORA — We're coming soon. Stay tuned for something beautiful. The hype drop for fashion, beauty, tech & lifestyle.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            ink: '#0a0a0c',
+            surface: '#121216',
+            surface2: '#1a1a20',
+            neon: '#ff3d8b',       // hot pink
+            lemon: '#f5e663',      // soft lemon
+            lilac: '#b18cff',
+            mint: '#7affc9',
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
     /* === Design Tokens === */
     :root {
-      --bg: #0a0a0a;
-      --surface: #111111;
-      --surface-2: #181818;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.18);
-      --text: #f5f5f5;
-      --text-muted: #a0a0a0;
-      --pink: #ff2d9b;
-      --pink-soft: rgba(255, 45, 155, 0.12);
-      --yellow: #ffd60a;
-      --yellow-soft: rgba(255, 214, 10, 0.12);
-      --font-display: 'Space Grotesk', sans-serif;
-      --font-body: 'Inter', sans-serif;
-      --radius: 1.25rem;
-      --shadow-pink: 0 0 30px -5px rgba(255, 45, 155, 0.35);
-      --shadow-yellow: 0 0 30px -5px rgba(255, 214, 10, 0.35);
+      --ink: #0a0a0c;
+      --surface: #121216;
+      --surface-2: #1a1a20;
+      --border: rgba(255,255,255,0.08);
+      --text: #f4f4f6;
+      --muted: #9a9aa8;
+      --neon: #ff3d8b;
+      --lemon: #f5e663;
+      --lilac: #b18cff;
+      --mint: #7affc9;
+      --shadow-glow: 0 0 60px rgba(255,61,139,0.25);
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      --focus-ring: 0 0 0 3px rgba(255,61,139,0.55);
     }
 
-    /* === Global Reset & Base === */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* === Base === */
+    * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
-      background-color: var(--bg);
+      margin: 0;
+      background: var(--ink);
       color: var(--text);
-      font-family: var(--font-body);
-      font-size: 16px;
-      line-height: 1.6;
+      font-family: 'Inter', sans-serif;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
-    ::selection { background: var(--pink); color: #000; }
-    img { max-width: 100%; display: block; }
+    ::selection { background: var(--neon); color: #fff; }
+    h1,h2,h3,h4 { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; }
     a { text-decoration: none; color: inherit; }
-    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    button { font-family: inherit; cursor: pointer; }
+    img { max-width: 100%; display: block; }
 
-    /* === Typography === */
-    h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
-    .hero-headline { font-size: clamp(3rem, 8vw, 7rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; }
-    .hero-headline .accent-pink { color: var(--pink); }
-    .hero-headline .accent-yellow { color: var(--yellow); }
-    .section-label {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--pink); font-family: var(--font-body);
+    /* Focus visibility */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 8px;
     }
+
+    /* === Scrollbar === */
+    ::-webkit-scrollbar { width: 9px; }
+    ::-webkit-scrollbar-track { background: var(--ink); }
+    ::-webkit-scrollbar-thumb { background: #2c2c36; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--neon); }
+
+    /* === Utility === */
+    .glass {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+    }
+    .text-muted { color: var(--muted); }
+    .section-pad { padding: 88px 0; }
+    @media (min-width: 768px) { .section-pad { padding: 120px 0; } }
+
+    .tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 99px;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      border: 1px solid var(--border); color: var(--muted);
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* === Nav === */
+    .nav-shell {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      transition: background 0.35s ease, border-color 0.35s ease, padding 0.3s ease;
+      padding: 16px 0; border-bottom: 1px solid transparent;
+    }
+    .nav-shell.scrolled {
+      background: rgba(10,10,12,0.82);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom-color: var(--border);
+      padding: 10px 0;
+    }
+
+    /* === Brand mark (dotted pink bag + striped yellow bag) === */
+    .brand-icon { display: inline-flex; align-items: flex-end; gap: 5px; }
+    .bag {
+      position: relative; width: 22px; height: 20px; border-radius: 3px 3px 5px 5px;
+    }
+    .bag::before {
+      content: ''; position: absolute; top: -7px; left: 50%; transform: translateX(-50%);
+      width: 11px; height: 9px; border: 2px solid currentColor; border-bottom: none;
+      border-radius: 8px 8px 0 0;
+    }
+    .bag-pink { color: #ff3d8b; background: radial-gradient(circle at 3px 3px, #ff3d8b 1.6px, transparent 1.7px) 0 0/7px 7px; }
+    .bag-pink::before { color: #ff3d8b; }
+    .bag-yellow { color: #f5e663; background: repeating-linear-gradient(90deg, #f5e663 0 4px, transparent 4px 8px); }
+    .bag-yellow::before { color: #f5e663; }
 
     /* === Buttons === */
     .btn-primary {
-      display: inline-flex; align-items: center; gap: 0.6rem;
-      background: var(--pink); color: #000; font-weight: 700;
-      padding: 0.9rem 2rem; border-radius: 3rem; font-size: 0.9rem;
-      transition: all 0.25s ease-out; box-shadow: var(--shadow-pink);
-      border: 2px solid transparent;
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      background: var(--neon); color: #fff; font-weight: 600;
+      padding: 15px 30px; border-radius: 99px; border: 1px solid transparent;
+      transition: transform .18s ease, box-shadow .25s ease, background .2s ease;
+      box-shadow: 0 8px 30px rgba(255,61,139,0.35);
+      font-size: 0.95rem;
     }
-    .btn-primary:hover { background: #ff5cb0; transform: translateY(-2px); box-shadow: 0 0 45px -5px rgba(255, 45, 155, 0.5); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 42px rgba(255,61,139,0.5); background: #ff54a0; }
     .btn-primary:active { transform: scale(0.97); }
-    .btn-secondary {
-      display: inline-flex; align-items: center; gap: 0.6rem;
-      background: transparent; color: var(--yellow); font-weight: 700;
-      padding: 0.9rem 2rem; border-radius: 3rem; font-size: 0.9rem;
-      border: 2px solid var(--yellow); transition: all 0.25s ease-out;
-    }
-    .btn-secondary:hover { background: var(--yellow); color: #000; box-shadow: var(--shadow-yellow); transform: translateY(-2px); }
-    .btn-secondary:active { transform: scale(0.97); }
 
-    /* === Cards & Glass === */
+    .btn-ghost {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      background: transparent; color: var(--text); font-weight: 500;
+      padding: 14px 28px; border-radius: 99px;
+      border: 1px solid rgba(255,255,255,0.18);
+      transition: all .2s ease; font-size: 0.95rem;
+    }
+    .btn-ghost:hover { border-color: var(--neon); color: var(--neon); background: rgba(255,61,139,0.07); }
+
+    /* === Hero === */
+    .hero {
+      position: relative; min-height: 100svh; display: flex; align-items: center;
+      padding-top: 110px; overflow: hidden;
+      background:
+        radial-gradient(ellipse 70% 55% at 20% 10%, rgba(255,61,139,0.16), transparent 60%),
+        radial-gradient(ellipse 60% 50% at 85% 25%, rgba(177,140,255,0.13), transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 100%, rgba(245,230,99,0.07), transparent 65%),
+        var(--ink);
+    }
+    .grain {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.35;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.28'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
+    .hero-title {
+      font-size: clamp(2.9rem, 9vw, 7.4rem);
+      line-height: 0.94; font-weight: 800; letter-spacing: -0.045em;
+    }
+    .hero-title .accent {
+      background: linear-gradient(100deg, var(--neon), var(--lilac) 55%, var(--mint));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .letter {
+      display: inline-block; opacity: 0; transform: translateY(0.55em) rotate(4deg);
+      animation: letterIn .75s cubic-bezier(.2,.9,.25,1) forwards;
+    }
+    @keyframes letterIn { to { opacity: 1; transform: translateY(0) rotate(0); } }
+
+    .float-slow { animation: floaty 7s ease-in-out infinite; }
+    @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+
+    .marquee {
+      display: flex; gap: 0; width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+    .marquee-wrap { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+
+    /* === Product cards === */
     .product-card {
+      position: relative; border-radius: var(--radius-lg); overflow: hidden;
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
-      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), border-color 0.3s, box-shadow 0.3s;
-      position: relative;
+      transition: transform .35s cubic-bezier(.2,.9,.25,1), box-shadow .35s ease, border-color .3s ease;
+      transform-style: preserve-3d;
     }
     .product-card:hover {
-      transform: translateY(-6px) scale(1.01);
-      border-color: rgba(255, 45, 155, 0.4);
-      box-shadow: 0 20px 50px -15px rgba(255, 45, 155, 0.2);
+      transform: translateY(-8px) rotateX(2.5deg) rotateY(-2deg);
+      border-color: rgba(255,61,139,0.4);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 50px rgba(255,61,139,0.12);
     }
-    .product-card .img-wrap {
-      aspect-ratio: 1 / 1.05; background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
-      display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+    .product-media {
+      aspect-ratio: 1/1; display: grid; place-items: center; overflow: hidden; position: relative;
     }
-    .product-card .img-wrap svg { width: 55%; height: 55%; opacity: 0.9; transition: transform 0.4s ease; }
-    .product-card:hover .img-wrap svg { transform: scale(1.08) rotate(-3deg); }
+    .product-media .art {
+      width: 100%; height: 100%; display: grid; place-items: center;
+      transition: transform .5s cubic-bezier(.2,.9,.25,1);
+    }
+    .product-card:hover .art { transform: scale(1.07) rotate(-1.5deg); }
+    .wish-btn {
+      position: absolute; top: 12px; right: 12px; z-index: 3;
+      width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(10,10,12,0.55); border: 1px solid var(--border); color: #fff;
+      transition: all .2s ease; backdrop-filter: blur(8px);
+    }
+    .wish-btn:hover { transform: scale(1.12); color: var(--neon); border-color: var(--neon); }
+    .wish-btn.active { color: var(--neon); border-color: var(--neon); background: rgba(255,61,139,0.15); }
+    .wish-btn.active svg { fill: var(--neon); }
 
-    .badge-new {
-      position: absolute; top: 0.75rem; left: 0.75rem; z-index: 2;
-      background: var(--yellow); color: #000; font-size: 0.6rem; font-weight: 800;
-      letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 0.5rem;
+    .add-btn {
+      position: absolute; bottom: 12px; left: 12px; right: 12px; z-index: 3;
+      padding: 11px; border-radius: 99px; font-size: .82rem; font-weight: 600; letter-spacing: .02em;
+      background: rgba(10,10,12,0.62); border: 1px solid rgba(255,255,255,0.16); color: #fff;
+      backdrop-filter: blur(10px);
+      opacity: 0; transform: translateY(10px);
+      transition: all .28s cubic-bezier(.2,.9,.25,1);
     }
-    .badge-hot {
-      position: absolute; top: 0.75rem; left: 0.75rem; z-index: 2;
-      background: var(--pink); color: #000; font-size: 0.6rem; font-weight: 800;
-      letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 0.5rem;
-    }
+    .product-card:hover .add-btn, .product-card:focus-within .add-btn { opacity: 1; transform: translateY(0); }
+    .add-btn:hover { background: var(--neon); border-color: var(--neon); }
+    @media (max-width: 768px) { .add-btn { opacity: 1; transform: none; } }
 
-    /* === Category Filter === */
+    /* === Category filter === */
     .filter-btn {
-      padding: 0.55rem 1.4rem; border-radius: 2rem; font-weight: 600; font-size: 0.85rem;
-      background: transparent; color: var(--text-muted); border: 1px solid var(--border);
-      transition: all 0.25s ease; white-space: nowrap;
+      padding: 10px 22px; border-radius: 99px; font-size: .85rem; font-weight: 600;
+      border: 1px solid var(--border); color: var(--muted); background: transparent;
+      transition: all .22s ease; white-space: nowrap;
     }
-    .filter-btn:hover { border-color: var(--border-strong); color: #fff; }
+    .filter-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
     .filter-btn.active {
-      background: var(--pink); color: #000; border-color: var(--pink);
-      box-shadow: 0 0 20px -5px rgba(255, 45, 155, 0.5);
-    }
-    .filter-btn.active-yellow {
-      background: var(--yellow); color: #000; border-color: var(--yellow);
-      box-shadow: 0 0 20px -5px rgba(255, 214, 10, 0.5);
+      background: var(--neon); color: #fff; border-color: var(--neon);
+      box-shadow: 0 6px 22px rgba(255,61,139,0.4);
     }
 
-    /* === Testimonials === */
+    /* === Testimonial === */
     .testimonial-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 2rem; transition: border-color 0.3s, transform 0.3s;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 30px; transition: transform .3s ease, border-color .3s ease;
     }
-    .testimonial-card:hover { border-color: rgba(255, 214, 10, 0.3); transform: translateY(-4px); }
+    .testimonial-card:hover { transform: translateY(-6px); border-color: rgba(177,140,255,0.4); }
 
-    /* === Cart Drawer === */
-    .cart-drawer {
-      position: fixed; top: 0; right: 0; height: 100dvh; width: min(420px, 100vw);
-      background: var(--surface); border-left: 1px solid var(--border);
-      transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-      z-index: 1000; display: flex; flex-direction: column;
+    /* === Newsletter === */
+    .newsletter-shell {
+      border-radius: var(--radius-xl); padding: 56px 28px;
+      background:
+        radial-gradient(ellipse 60% 90% at 15% 10%, rgba(255,61,139,0.22), transparent 60%),
+        radial-gradient(ellipse 55% 80% at 90% 90%, rgba(177,140,255,0.18), transparent 60%),
+        var(--surface);
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
     }
-    .cart-drawer.open { transform: translateX(0); }
-    .cart-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
-      opacity: 0; pointer-events: none; transition: opacity 0.35s; z-index: 999;
-    }
-    .cart-overlay.open { opacity: 1; pointer-events: all; }
 
-    /* === Newsletter / Forms === */
-    .input-dark {
-      background: var(--surface-2); border: 1px solid var(--border); border-radius: 0.75rem;
-      padding: 0.85rem 1.1rem; color: var(--text); font-size: 0.9rem; width: 100%;
-      transition: border-color 0.25s, box-shadow 0.25s;
+    /* === Cart drawer === */
+    .drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100%);
+      background: var(--surface); z-index: 300; border-left: 1px solid var(--border);
+      transform: translateX(100%); transition: transform .42s cubic-bezier(.2,.9,.25,1);
+      display: flex; flex-direction: column;
+      box-shadow: -30px 0 80px rgba(0,0,0,0.6);
     }
-    .input-dark:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-soft); }
-    .input-dark::placeholder { color: #555; }
+    .drawer.open { transform: translateX(0); }
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 250;
+      opacity: 0; pointer-events: none; transition: opacity .35s ease;
+      backdrop-filter: blur(4px);
+    }
+    .overlay.show { opacity: 1; pointer-events: auto; }
 
-    /* === Animations === */
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-12px); }
+    .qty-btn {
+      width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center;
+      border: 1px solid var(--border); background: transparent; color: #fff;
+      transition: all .15s ease; font-size: 15px; line-height: 1;
     }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .reveal { opacity: 0; }
-    .reveal.visible { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .qty-btn:hover { border-color: var(--neon); color: var(--neon); }
 
-    /* === Scrollbar === */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 3px; }
-
-    /* === Marquee === */
-    .marquee {
-      overflow: hidden; white-space: nowrap; background: var(--yellow); color: #000;
-      padding: 0.6rem 0; font-weight: 800; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase;
+    /* === Checkout modal === */
+    .modal {
+      position: fixed; inset: 0; z-index: 400; display: none;
+      align-items: center; justify-content: center; padding: 20px;
+      background: rgba(5,5,8,0.85); backdrop-filter: blur(8px);
     }
-    .marquee-inner { display: inline-block; animation: marquee 20s linear infinite; }
-    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-    /* === Wishlist Heart === */
-    .wishlist-btn { transition: transform 0.2s ease, color 0.2s; color: #666; }
-    .wishlist-btn:hover { transform: scale(1.15); }
-    .wishlist-btn.active { color: var(--pink); }
-    .wishlist-btn.active svg { fill: var(--pink); }
-
-    /* === Checkout Modal === */
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
-      z-index: 1100; display: flex; align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    .modal.open { display: flex; }
+    .modal-card {
+      width: min(560px, 100%); max-height: 92vh; overflow-y: auto;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); padding: 34px 28px;
+      animation: modalIn .35s cubic-bezier(.2,.9,.25,1);
     }
-    .modal-backdrop.open { opacity: 1; pointer-events: all; }
-    .modal-content {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 1.5rem;
-      padding: 2.5rem; width: min(520px, 92vw); max-height: 90vh; overflow-y: auto;
+    @keyframes modalIn { from { opacity: 0; transform: translateY(24px) scale(.97); } }
+
+    .field {
+      width: 100%; padding: 13px 16px; border-radius: 14px; font-size: .92rem;
+      background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+      transition: border-color .2s ease, box-shadow .2s ease;
     }
+    .field:focus { border-color: var(--neon); box-shadow: 0 0 0 3px rgba(255,61,139,0.2); outline: none; }
+    .field::placeholder { color: #6d6d7c; }
 
     /* === Toast === */
     .toast {
-      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
-      background: var(--yellow); color: #000; font-weight: 700; font-size: 0.85rem;
-      padding: 0.8rem 1.8rem; border-radius: 2rem; z-index: 2000;
-      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none;
+      position: fixed; bottom: 26px; left: 50%; transform: translate(-50%, 30px);
+      background: var(--surface-2); border: 1px solid var(--neon); color: #fff;
+      padding: 13px 22px; border-radius: 99px; font-size: .88rem; font-weight: 500;
+      z-index: 500; opacity: 0; pointer-events: none;
+      transition: all .35s cubic-bezier(.2,.9,.25,1);
+      display: flex; align-items: center; gap: 10px; white-space: nowrap;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
     }
-    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-    /* === Nav blur === */
-    .nav-scrolled {
-      background: rgba(10,10,10,0.85); backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
+    /* === Badge === */
+    .cart-count {
+      position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px;
+      border-radius: 99px; background: var(--neon); color: #fff; font-size: 10px; font-weight: 700;
+      display: grid; place-items: center; padding: 0 4px;
+      border: 2px solid var(--ink);
     }
 
-    /* === Focus === */
-    :focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; }
+    /* === Reveal animation === */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .75s cubic-bezier(.2,.9,.25,1), transform .75s cubic-bezier(.2,.9,.25,1); }
+    .reveal.in { opacity: 1; transform: none; }
 
-    /* === Responsive Grid === */
-    .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-    @media (min-width: 640px) { .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; } }
-    @media (min-width: 1024px) { .product-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; } }
+    /* === Mobile nav === */
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: 200; background: rgba(10,10,12,0.97);
+      backdrop-filter: blur(24px); display: flex; flex-direction: column;
+      opacity: 0; pointer-events: none; transition: opacity .3s ease;
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: auto; }
 
-    /* Hide scrollbar for filter pills */
-    .filter-scroll::-webkit-scrollbar { display: none; }
-    .filter-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    /* === Accordion / misc === */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
   </style>
 </head>
-<body>
 
-  <!-- ====== CART OVERLAY ====== -->
-  <div class="cart-overlay" id="cartOverlay" aria-hidden="true"></div>
+<body class="bg-ink text-[#f4f4f6] antialiased">
+  <!-- grain overlay -->
+  <div class="grain" aria-hidden="true"></div>
 
-  <!-- ====== CART DRAWER ====== -->
-  <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-label="Shopping cart" aria-hidden="true">
-    <div class="flex items-center justify-between p-5 border-b" style="border-color: var(--border);">
-      <div class="flex items-center gap-2">
-        <!-- Pink dotted bag icon -->
-        <svg width="28" height="28" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-          <path d="M12 16h24l-2 24H14L12 16z" stroke="#ff2d9b" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
-          <path d="M12 16h24" stroke="#ff2d9b" stroke-width="2.5"/>
-          <path d="M18 16v-4a6 6 0 0112 0v4" stroke="#ff2d9b" stroke-width="2.5" fill="none"/>
-          <circle cx="20" cy="26" r="1.5" fill="#ff2d9b"/><circle cx="28" cy="26" r="1.5" fill="#ff2d9b"/>
-          <circle cx="20" cy="32" r="1.5" fill="#ff2d9b"/><circle cx="28" cy="32" r="1.5" fill="#ff2d9b"/>
-          <circle cx="24" cy="20" r="1.5" fill="#ff2d9b"/>
-        </svg>
-        <h3 class="font-bold text-lg" style="font-family: var(--font-display);">Your Bag</h3>
-        <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background: var(--pink-soft); color: var(--pink);" id="cartCountBadge">0</span>
-      </div>
-      <button id="closeCart" class="p-2 rounded-full hover:bg-white/5 transition" aria-label="Close cart">
-        <i data-lucide="x" class="w-5 h-5" style="color: var(--text-muted);"></i>
-      </button>
-    </div>
-    <div class="flex-1 overflow-y-auto p-5" id="cartItems">
-      <div class="text-center py-16" id="emptyCartMsg">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" class="mx-auto mb-4 opacity-30" aria-hidden="true">
-          <path d="M12 16h24l-2 24H14L12 16z" stroke="#888" stroke-width="2" stroke-linejoin="round" fill="none"/>
-          <path d="M18 16v-4a6 6 0 0112 0v4" stroke="#888" stroke-width="2" fill="none"/>
-        </svg>
-        <p class="text-sm" style="color: var(--text-muted);">Your bag is empty.<br>Start dropping some love.</p>
-      </div>
-    </div>
-    <div class="p-5 border-t" style="border-color: var(--border);" id="cartFooter" style="display:none;">
-      <div class="flex justify-between mb-3 text-sm">
-        <span style="color: var(--text-muted);">Subtotal</span>
-        <span class="font-bold" id="cartSubtotal">$0.00</span>
-      </div>
-      <button class="btn-primary w-full justify-center" id="checkoutBtn" style="border-radius: 0.9rem;">
-        <i data-lucide="credit-card" class="w-4 h-4"></i> Checkout
-      </button>
-    </div>
-  </aside>
-
-  <!-- ====== CHECKOUT MODAL ====== -->
-  <div class="modal-backdrop" id="checkoutModal" role="dialog" aria-modal="true" aria-label="Checkout">
-    <div class="modal-content">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="text-2xl font-bold" style="font-family: var(--font-display);">Checkout</h3>
-        <button id="closeCheckout" class="p-2 rounded-full hover:bg-white/5 transition" aria-label="Close checkout">
-          <i data-lucide="x" class="w-5 h-5" style="color: var(--text-muted);"></i>
-        </button>
-      </div>
-      <form id="checkoutForm" class="space-y-4" novalidate>
-        <div>
-          <label for="coName" class="block text-xs font-semibold mb-1.5" style="color: var(--text-muted);">Full Name</label>
-          <input type="text" id="coName" class="input-dark" placeholder="Alex Rivera" required />
-        </div>
-        <div>
-          <label for="coEmail" class="block text-xs font-semibold mb-1.5" style="color: var(--text-muted);">Email</label>
-          <input type="email" id="coEmail" class="input-dark" placeholder="alex@email.com" required />
-        </div>
-        <div>
-          <label for="coAddress" class="block text-xs font-semibold mb-1.5" style="color: var(--text-muted);">Shipping Address</label>
-          <input type="text" id="coAddress" class="input-dark" placeholder="123 Hype Street, NYC" required />
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label for="coCity" class="block text-xs font-semibold mb-1.5" style="color: var(--text-muted);">City</label>
-            <input type="text" id="coCity" class="input-dark" placeholder="New York" required />
-          </div>
-          <div>
-            <label for="coZip" class="block text-xs font-semibold mb-1.5" style="color: var(--text-muted);">ZIP</label>
-            <input type="text" id="coZip" class="input-dark" placeholder="10001" required />
-          </div>
-        </div>
-        <div class="pt-2">
-          <div class="flex justify-between mb-4 text-sm">
-            <span style="color: var(--text-muted);">Total</span>
-            <span class="font-bold text-lg" id="checkoutTotal" style="color: var(--yellow);">$0.00</span>
-          </div>
-          <button type="submit" class="btn-primary w-full justify-center" style="border-radius: 0.9rem;">
-            <i data-lucide="lock" class="w-4 h-4"></i> Place Order
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ====== TOAST ====== -->
-  <div class="toast" id="toast"></div>
-
-  <!-- ====== HEADER ====== -->
-  <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="mainHeader">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 sm:h-20">
-      <!-- Logo: two bags -->
-      <a href="#" class="flex items-center gap-2 group" aria-label="STYLORA home">
-        <!-- Pink dotted bag -->
-        <svg width="30" height="30" viewBox="0 0 48 48" fill="none" aria-hidden="true" class="transition-transform group-hover:rotate-[-8deg]">
-          <path d="M10 16h20l-1.5 22H11.5L10 16z" stroke="#ff2d9b" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
-          <path d="M10 16h20" stroke="#ff2d9b" stroke-width="2.2"/>
-          <path d="M15 16v-4a5 5 0 0110 0v4" stroke="#ff2d9b" stroke-width="2.2" fill="none"/>
-          <circle cx="16" cy="25" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="25" r="1.2" fill="#ff2d9b"/>
-          <circle cx="16" cy="31" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="31" r="1.2" fill="#ff2d9b"/>
-          <circle cx="20" cy="20" r="1.2" fill="#ff2d9b"/>
-        </svg>
-        <!-- Yellow striped bag -->
-        <svg width="30" height="30" viewBox="0 0 48 48" fill="none" aria-hidden="true" class="transition-transform group-hover:rotate-[8deg] -ml-2">
-          <path d="M16 16h20l-1.5 22H17.5L16 16z" stroke="#ffd60a" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
-          <path d="M16 16h20" stroke="#ffd60a" stroke-width="2.2"/>
-          <path d="M21 16v-4a5 5 0 0110 0v4" stroke="#ffd60a" stroke-width="2.2" fill="none"/>
-          <path d="M20 22l8 14M26 22l-6 14" stroke="#ffd60a" stroke-width="1.5" opacity="0.6"/>
-        </svg>
-        <span class="text-lg font-bold tracking-tight ml-1" style="font-family: var(--font-display);">STYLORA</span>
+  <!-- ================= NAV ================= -->
+  <header class="nav-shell" id="navbar">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between gap-4">
+      <!-- Brand -->
+      <a href="#top" class="flex items-center gap-3 shrink-0" aria-label="STYLORA home">
+        <span class="brand-icon" aria-hidden="true">
+          <span class="bag bag-pink"></span>
+          <span class="bag bag-yellow"></span>
+        </span>
+        <span class="font-display text-[1.35rem] font-extrabold tracking-tight">STYLORA</span>
       </a>
 
-      <!-- Desktop Nav -->
-      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
-        <a href="#shop" class="text-sm font-medium transition hover:opacity-70" style="color: var(--text-muted);">Shop</a>
-        <a href="#categories" class="text-sm font-medium transition hover:opacity-70" style="color: var(--text-muted);">Categories</a>
-        <a href="#testimonials" class="text-sm font-medium transition hover:opacity-70" style="color: var(--text-muted);">Reviews</a>
-        <a href="#newsletter" class="text-sm font-medium transition hover:opacity-70" style="color: var(--text-muted);">Newsletter</a>
+      <!-- Desktop links -->
+      <nav class="hidden lg:flex items-center gap-8 text-[0.82rem] font-medium tracking-wide" aria-label="Main navigation">
+        <a href="#shop" class="text-muted hover:text-white transition-colors duration-200">Shop</a>
+        <a href="#categories" class="text-muted hover:text-white transition-colors duration-200">Categories</a>
+        <a href="#reviews" class="text-muted hover:text-white transition-colors duration-200">Reviews</a>
+        <a href="#drop" class="text-muted hover:text-white transition-colors duration-200">The Drop</a>
       </nav>
 
-      <!-- Actions -->
+      <!-- Right cluster -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Wishlist indicator -->
-        <button class="relative p-2 rounded-full transition hover:bg-white/5" id="wishlistIndicator" aria-label="View wishlist">
-          <i data-lucide="heart" class="w-5 h-5" style="color: var(--text-muted);"></i>
-          <span class="absolute -top-0.5 -right-0.5 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center" style="background: var(--pink); color:#000; display:none;" id="wishlistCount">0</span>
+        <button id="wishlistBtn" class="relative w-10 h-10 rounded-full grid place-items-center border border-[var(--border)] hover:border-neon hover:text-neon transition-all duration-200" aria-label="Open wishlist">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="cart-count" id="wishCount" style="display:none">0</span>
         </button>
-        <!-- Cart -->
-        <button class="relative p-2 rounded-full transition hover:bg-white/5" id="cartToggle" aria-label="Open shopping cart">
-          <i data-lucide="shopping-bag" class="w-5 h-5" style="color: var(--text);"></i>
-          <span class="absolute -top-0.5 -right-0.5 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center" style="background: var(--yellow); color:#000; display:none;" id="cartCount">0</span>
+
+        <button id="cartBtn" class="relative w-10 h-10 rounded-full grid place-items-center border border-[var(--border)] hover:border-neon hover:text-neon transition-all duration-200" aria-label="Open shopping bag">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-count" id="cartCount" style="display:none">0</span>
         </button>
-        <!-- Mobile menu -->
-        <button class="md:hidden p-2 rounded-full transition hover:bg-white/5" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false">
-          <i data-lucide="menu" class="w-5 h-5"></i>
+
+        <a href="#drop" class="hidden sm:inline-flex btn-primary !py-2.5 !px-5 !text-[0.8rem]">Get the drop</a>
+
+        <button id="menuToggle" class="lg:hidden w-10 h-10 rounded-full grid place-items-center border border-[var(--border)] hover:border-neon transition-all duration-200" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
         </button>
       </div>
-    </div>
-
-    <!-- Mobile menu -->
-    <div class="md:hidden hidden" id="mobileMenu" style="background: var(--surface); border-top: 1px solid var(--border);">
-      <nav class="flex flex-col p-5 gap-4" aria-label="Mobile navigation">
-        <a href="#shop" class="text-sm font-medium" style="color: var(--text-muted);">Shop</a>
-        <a href="#categories" class="text-sm font-medium" style="color: var(--text-muted);">Categories</a>
-        <a href="#testimonials" class="text-sm font-medium" style="color: var(--text-muted);">Reviews</a>
-        <a href="#newsletter" class="text-sm font-medium" style="color: var(--text-muted);">Newsletter</a>
-      </nav>
     </div>
   </header>
 
-  <!-- ====== HERO ====== -->
-  <section class="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-16" id="hero">
-    <!-- Background glows -->
-    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-      <div class="absolute top-[15%] left-[10%] w-[400px] h-[400px] rounded-full opacity-20" style="background: radial-gradient(circle, var(--pink), transparent 70%); filter: blur(80px);"></div>
-      <div class="absolute bottom-[20%] right-[10%] w-[350px] h-[350px] rounded-full opacity-15" style="background: radial-gradient(circle, var(--yellow), transparent 70%); filter: blur(80px);"></div>
+  <!-- Mobile menu -->
+  <div class="mobile-menu lg:hidden" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex items-center justify-between px-5 py-5 border-b border-[var(--border)]">
+      <a href="#top" class="flex items-center gap-3" aria-label="STYLORA home">
+        <span class="brand-icon" aria-hidden="true"><span class="bag bag-pink"></span><span class="bag bag-yellow"></span></span>
+        <span class="font-display text-xl font-extrabold">STYLORA</span>
+      </a>
+      <button id="menuClose" class="w-10 h-10 rounded-full grid place-items-center border border-[var(--border)]" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
-
-    <div class="relative z-10 text-center px-5 max-w-5xl mx-auto">
-      <div class="reveal visible">
-        <span class="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-8" style="background: var(--pink-soft); color: var(--pink); border: 1px solid rgba(255,45,155,0.3);">
-          <span class="w-2 h-2 rounded-full animate-pulse" style="background: var(--pink);"></span>
-          Dropping Soon
-        </span>
-      </div>
-      <h1 class="hero-headline reveal visible" style="animation-delay: 0.1s;">
-        WE'RE<br><span class="accent-pink">COMING</span> <span class="accent-yellow">SOON</span>
-      </h1>
-      <p class="mt-6 text-base sm:text-lg max-w-xl mx-auto reveal visible" style="color: var(--text-muted); animation-delay: 0.25s;">
-        Stay tuned for something beautiful. The hottest drops in fashion, beauty, tech & lifestyle — curated for your feed.
-      </p>
-      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 reveal visible" style="animation-delay: 0.4s;">
-        <a href="#shop" class="btn-primary">
-          <i data-lucide="zap" class="w-4 h-4"></i> Browse Drops
-        </a>
-        <a href="#newsletter" class="btn-secondary">
-          <i data-lucide="bell" class="w-4 h-4"></i> Get Notified
-        </a>
-      </div>
-
-      <!-- Floating bag icons -->
-      <div class="mt-16 flex items-center justify-center gap-8 opacity-60" aria-hidden="true">
-        <svg width="44" height="44" viewBox="0 0 48 48" fill="none" style="animation: float 4s ease-in-out infinite;">
-          <path d="M10 16h20l-1.5 22H11.5L10 16z" stroke="#ff2d9b" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
-          <path d="M10 16h20" stroke="#ff2d9b" stroke-width="2.2"/>
-          <path d="M15 16v-4a5 5 0 0110 0v4" stroke="#ff2d9b" stroke-width="2.2" fill="none"/>
-          <circle cx="16" cy="25" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="25" r="1.2" fill="#ff2d9b"/>
-          <circle cx="16" cy="31" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="31" r="1.2" fill="#ff2d9b"/>
-        </svg>
-        <svg width="44" height="44" viewBox="0 0 48 48" fill="none" style="animation: float 4s ease-in-out infinite 1s;">
-          <path d="M16 16h20l-1.5 22H17.5L16 16z" stroke="#ffd60a" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
-          <path d="M16 16h20" stroke="#ffd60a" stroke-width="2.2"/>
-          <path d="M21 16v-4a5 5 0 0110 0v4" stroke="#ffd60a" stroke-width="2.2" fill="none"/>
-          <path d="M20 22l8 14M26 22l-6 14" stroke="#ffd60a" stroke-width="1.5" opacity="0.6"/>
-        </svg>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====== MARQUEE ====== -->
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-inner">
-      FREE SHIPPING OVER $50 &nbsp;&nbsp;•&nbsp;&nbsp; NEW DROPS WEEKLY &nbsp;&nbsp;•&nbsp;&nbsp; 10% OFF FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp; FREE SHIPPING OVER $50 &nbsp;&nbsp;•&nbsp;&nbsp; NEW DROPS WEEKLY &nbsp;&nbsp;•&nbsp;&nbsp; 10% OFF FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp;
-      FREE SHIPPING OVER $50 &nbsp;&nbsp;•&nbsp;&nbsp; NEW DROPS WEEKLY &nbsp;&nbsp;•&nbsp;&nbsp; 10% OFF FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp; FREE SHIPPING OVER $50 &nbsp;&nbsp;•&nbsp;&nbsp; NEW DROPS WEEKLY &nbsp;&nbsp;•&nbsp;&nbsp; 10% OFF FIRST ORDER &nbsp;&nbsp;•&nbsp;&nbsp;
+    <nav class="flex flex-col gap-2 px-5 py-8 text-2xl font-display font-bold" aria-label="Mobile links">
+      <a href="#shop" class="py-3 border-b border-[var(--border)] hover:text-neon transition-colors">Shop</a>
+      <a href="#categories" class="py-3 border-b border-[var(--border)] hover:text-neon transition-colors">Categories</a>
+      <a href="#reviews" class="py-3 border-b border-[var(--border)] hover:text-neon transition-colors">Reviews</a>
+      <a href="#drop" class="py-3 border-b border-[var(--border)] hover:text-neon transition-colors">The Drop</a>
+    </nav>
+    <div class="mt-auto px-5 pb-10">
+      <a href="#drop" class="btn-primary w-full">Get ready for the drop</a>
     </div>
   </div>
 
-  <!-- ====== SHOP / FEATURED PRODUCTS ====== -->
-  <section class="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-28" id="shop">
-    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
-      <div>
-        <span class="section-label">Fresh Drops</span>
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mt-3" style="font-family: var(--font-display);">Featured Products</h2>
-      </div>
-      <p class="text-sm max-w-xs" style="color: var(--text-muted);">Hand-picked heat from the feed. Limited stock, unlimited vibes.</p>
-    </div>
+  <main id="top">
+    <!-- ================= HERO ================= -->
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 w-full relative z-10">
+        <div class="grid lg:grid-cols-12 gap-12 items-center">
+          <!-- Copy -->
+          <div class="lg:col-span-7 text-center lg:text-left">
+            <span class="tag mb-7" style="animation: letterIn .6s .1s both">
+              <span class="w-1.5 h-1.5 rounded-full bg-neon animate-pulse" aria-hidden="true"></span>
+              Drop 01 — Loading
+            </span>
 
-    <!-- Category filter -->
-    <div class="flex gap-2 overflow-x-auto filter-scroll pb-2 mb-8" id="categoryFilter" role="tablist" aria-label="Filter products by category">
-      <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All</button>
-      <button class="filter-btn" data-filter="fashion" role="tab" aria-selected="false">Fashion</button>
-      <button class="filter-btn" data-filter="beauty" role="tab" aria-selected="false">Beauty</button>
-      <button class="filter-btn" data-filter="tech" role="tab" aria-selected="false">Tech</button>
-      <button class="filter-btn" data-filter="lifestyle" role="tab" aria-selected="false">Lifestyle</button>
-    </div>
+            <h1 class="hero-title" id="heroTitle">
+              <span class="block" aria-label="We're coming soon">
+                <span id="line1"></span>
+              </span>
+              <span class="block accent" aria-label="Stay tuned for something beautiful">
+                <span id="line2"></span>
+              </span>
+            </h1>
 
-    <!-- Product grid -->
-    <div class="product-grid" id="productGrid">
-      <!-- Products injected by JS -->
-    </div>
-  </section>
+            <p class="mt-7 text-[var(--muted)] text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed" style="animation: letterIn .7s .9s both">
+              A curated universe of fashion, beauty, tech and lifestyle — dropped straight to your door.
+              <span class="text-white font-medium">Drops everything you love.</span>
+            </p>
 
-  <!-- ====== CATEGORIES ====== -->
-  <section class="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-20" id="categories">
-    <span class="section-label">Shop by Vibe</span>
-    <h2 class="text-3xl sm:text-4xl font-bold mt-3 mb-10" style="font-family: var(--font-display);">Categories</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <a href="#shop" class="group relative rounded-2xl overflow-hidden p-6 sm:p-8 flex flex-col justify-end min-h-[180px] sm:min-h-[220px] transition-transform hover:-translate-y-1" style="background: linear-gradient(135deg, #1a0f14, #0f0a0c); border: 1px solid var(--border);" data-cat="fashion">
-        <i data-lucide="shirt" class="w-8 h-8 mb-4" style="color: var(--pink);"></i>
-        <h3 class="text-xl font-bold" style="font-family: var(--font-display);">Fashion</h3>
-        <p class="text-xs mt-1" style="color: var(--text-muted);">Hoodies · Streetwear · Sneakers</p>
-        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition"><i data-lucide="arrow-up-right" class="w-5 h-5" style="color: var(--pink);"></i></div>
-      </a>
-      <a href="#shop" class="group relative rounded-2xl overflow-hidden p-6 sm:p-8 flex flex-col justify-end min-h-[180px] sm:min-h-[220px] transition-transform hover:-translate-y-1" style="background: linear-gradient(135deg, #1a160f, #0f0e0a); border: 1px solid var(--border);" data-cat="beauty">
-        <i data-lucide="sparkles" class="w-8 h-8 mb-4" style="color: var(--yellow);"></i>
-        <h3 class="text-xl font-bold" style="font-family: var(--font-display);">Beauty</h3>
-        <p class="text-xs mt-1" style="color: var(--text-muted);">Makeup · Lipsticks · Skincare</p>
-        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition"><i data-lucide="arrow-up-right" class="w-5 h-5" style="color: var(--yellow);"></i></div>
-      </a>
-      <a href="#shop" class="group relative rounded-2xl overflow-hidden p-6 sm:p-8 flex flex-col justify-end min-h-[180px] sm:min-h-[220px] transition-transform hover:-translate-y-1" style="background: linear-gradient(135deg, #0f141a, #0a0d0f); border: 1px solid var(--border);" data-cat="tech">
-        <i data-lucide="headphones" class="w-8 h-8 mb-4" style="color: #60a5fa;"></i>
-        <h3 class="text-xl font-bold" style="font-family: var(--font-display);">Tech & Gadgets</h3>
-        <p class="text-xs mt-1" style="color: var(--text-muted);">Cases · Earbuds · Smartwatches</p>
-        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition"><i data-lucide="arrow-up-right" class="w-5 h-5" style="color: #60a5fa;"></i></div>
-      </a>
-      <a href="#shop" class="group relative rounded-2xl overflow-hidden p-6 sm:p-8 flex flex-col justify-end min-h-[180px] sm:min-h-[220px] transition-transform hover:-translate-y-1" style="background: linear-gradient(135deg, #14101a, #0d0a0f); border: 1px solid var(--border);" data-cat="lifestyle">
-        <i data-lucide="sun" class="w-8 h-8 mb-4" style="color: #c084fc;"></i>
-        <h3 class="text-xl font-bold" style="font-family: var(--font-display);">Lifestyle</h3>
-        <p class="text-xs mt-1" style="color: var(--text-muted);">Tote Bags · Sunglasses</p>
-        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition"><i data-lucide="arrow-up-right" class="w-5 h-5" style="color: #c084fc;"></i></div>
-      </a>
-    </div>
-  </section>
+            <div class="mt-9 flex flex-wrap items-center justify-center lg:justify-start gap-3" style="animation: letterIn .7s 1.05s both">
+              <a href="#shop" class="btn-primary">
+                Shop the preview
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+              <a href="#drop" class="btn-ghost">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Get ready for the drop
+              </a>
+            </div>
 
-  <!-- ====== TESTIMONIALS ====== -->
-  <section class="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-28" id="testimonials">
-    <div class="text-center mb-12">
-      <span class="section-label">Real Talk</span>
-      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mt-3" style="font-family: var(--font-display);">What the Squad Says</h2>
-    </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div class="testimonial-card">
-        <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-        </div>
-        <p class="text-sm leading-relaxed mb-5" style="color: var(--text-muted);">"Ordered the neon hoodie and it's literally my entire personality now. Quality is insane for the price. Already eyeing my next cop."</p>
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold" style="background: var(--pink-soft); color: var(--pink);">MJ</div>
-          <div>
-            <p class="text-sm font-semibold">Maya J.</p>
-            <p class="text-xs" style="color: #555;">Verified Buyer</p>
+            <!-- mini social proof -->
+            <div class="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-x-8 gap-y-4" style="animation: letterIn .7s 1.2s both">
+              <div class="flex items-center gap-3">
+                <div class="flex -space-x-2.5" aria-hidden="true">
+                  <span class="w-8 h-8 rounded-full bg-gradient-to-br from-neon to-lilac border-2 border-ink"></span>
+                  <span class="w-8 h-8 rounded-full bg-gradient-to-br from-lemon to-neon border-2 border-ink"></span>
+                  <span class="w-8 h-8 rounded-full bg-gradient-to-br from-mint to-lilac border-2 border-ink"></span>
+                  <span class="w-8 h-8 rounded-full bg-surface2 border-2 border-ink grid place-items-center text-[9px] font-bold text-white">+2k</span>
+                </div>
+                <span class="text-xs text-muted">joined the waitlist</span>
+              </div>
+              <div class="flex items-center gap-1.5" aria-label="Rated 4.9 out of 5">
+                <span class="text-lemon text-sm tracking-wider" aria-hidden="true">★★★★★</span>
+                <span class="text-xs text-muted">4.9 hype score</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual: stacked shopping bags -->
+          <div class="lg:col-span-5 relative flex justify-center" style="animation: letterIn .9s .5s both" aria-hidden="true">
+            <div class="relative w-[280px] sm:w-[340px] h-[340px] sm:h-[400px]">
+              <!-- glow -->
+              <div class="absolute inset-0 rounded-full blur-[80px] opacity-50" style="background: radial-gradient(circle, var(--neon), var(--lilac) 50%, transparent 75%);"></div>
+
+              <!-- big pink dotted bag -->
+              <div class="absolute top-4 left-2 w-[190px] sm:w-[230px] aspect-square rounded-[28px] float-slow shadow-2xl"
+                   style="background: radial-gradient(circle at 6px 6px, #ff3d8b 3px, transparent 3.6px) 0 0 / 16px 16px, #1c1220; border: 1px solid rgba(255,61,139,0.45); transform: rotate(-6deg);">
+                <div class="absolute -top-5 left-1/2 -translate-x-1/2 w-[52%] h-12 border-[6px] border-b-0 rounded-t-full" style="border-color:#ff3d8b;"></div>
+                <div class="absolute bottom-5 left-5 right-5 h-1 rounded-full bg-white/10"></div>
+              </div>
+
+              <!-- yellow striped bag -->
+              <div class="absolute bottom-2 right-0 w-[160px] sm:w-[195px] aspect-square rounded-[24px] float-slow shadow-2xl"
+                   style="background: repeating-linear-gradient(90deg, #f5e663 0 10px, #1c1a10 10px 20px); border: 1px solid rgba(245,230,99,0.45); transform: rotate(7deg); animation-delay: .8s;">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-[48%] h-10 border-[5px] border-b-0 rounded-t-full" style="border-color:#f5e663;"></div>
+                <div class="absolute bottom-4 left-4 right-4 h-1 rounded-full bg-black/25"></div>
+              </div>
+
+              <!-- floating chips -->
+              <div class="absolute top-0 right-2 glass rounded-2xl px-3.5 py-2.5 flex items-center gap-2 shadow-xl float-slow" style="animation-delay:.4s">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7affc9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span class="text-[11px] font-semibold">Free shipping</span>
+              </div>
+              <div class="absolute bottom-8 -left-3 glass rounded-2xl px-3.5 py-2.5 flex items-center gap-2 shadow-xl float-slow" style="animation-delay:1.2s">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f5e663" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-2 10h7L9 22l2-10H5Z"/></svg>
+                <span class="text-[11px] font-semibold">Dropping weekly</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="testimonial-card">
-        <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-        </div>
-        <p class="text-sm leading-relaxed mb-5" style="color: var(--text-muted);">"The LED lights transformed my room from 'meh' to 'main character energy.' Shipping was fast and packaging was cute AF."</p>
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold" style="background: var(--yellow-soft); color: var(--yellow);">TK</div>
-          <div>
-            <p class="text-sm font-semibold">Tyler K.</p>
-            <p class="text-xs" style="color: #555;">Verified Buyer</p>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-card sm:col-span-2 lg:col-span-1">
-        <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-          <i data-lucide="star" class="w-4 h-4" style="color: var(--yellow); fill: var(--yellow);"></i>
-        </div>
-        <p class="text-sm leading-relaxed mb-5" style="color: var(--text-muted);">"I've ordered from STYLORA three times this month. The lipstick shades are unmatched and the tote bag goes with everything. Obsessed."</p>
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold" style="background: rgba(192,132,252,0.15); color: #c084fc;">LR</div>
-          <div>
-            <p class="text-sm font-semibold">Lena R.</p>
-            <p class="text-xs" style="color: #555;">Verified Buyer</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ====== NEWSLETTER ====== -->
-  <section class="max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-28" id="newsletter">
-    <div class="rounded-3xl p-8 sm:p-14 text-center relative overflow-hidden" style="background: linear-gradient(135deg, #1a0f14 0%, #0f0a0c 100%); border: 1px solid var(--border);">
-      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div class="absolute top-0 left-1/4 w-64 h-64 rounded-full opacity-20" style="background: radial-gradient(circle, var(--pink), transparent 70%); filter: blur(60px);"></div>
-        <div class="absolute bottom-0 right-1/4 w-64 h-64 rounded-full opacity-15" style="background: radial-gradient(circle, var(--yellow), transparent 70%); filter: blur(60px);"></div>
+      <!-- Marquee strip -->
+      <div class="absolute bottom-0 left-0 right-0 border-t border-[var(--border)] bg-black/40 backdrop-blur-sm py-3.5 z-10">
+        <div class="marquee-wrap">
+          <div class="marquee gap-0" aria-hidden="true">
+            <span class="flex items-center gap-8 pr-8 text-[0.72rem] font-semibold tracking-[0.28em] uppercase text-[var(--muted)]">
+              <span>Hoodies</span><span class="text-neon">✦</span><span>Sneakers</span><span class="text-lemon">✦</span><span>Lipsticks</span><span class="text-mint">✦</span><span>Earbuds</span><span class="text-lilac">✦</span><span>Smartwatches</span><span class="text-neon">✦</span><span>Tote Bags</span><span class="text-lemon">✦</span><span>Sunglasses</span><span class="text-mint">✦</span><span>LED Lights</span><span class="text-lilac">✦</span>
+            </span>
+            <span class="flex items-center gap-8 pr-8 text-[0.72rem] font-semibold tracking-[0.28em] uppercase text-[var(--muted)]">
+              <span>Hoodies</span><span class="text-neon">✦</span><span>Sneakers</span><span class="text-lemon">✦</span><span>Lipsticks</span><span class="text-mint">✦</span><span>Earbuds</span><span class="text-lilac">✦</span><span>Smartwatches</span><span class="text-neon">✦</span><span>Tote Bags</span><span class="text-lemon">✦</span><span>Sunglasses</span><span class="text-mint">✦</span><span>LED Lights</span><span class="text-lilac">✦</span>
+            </span>
+          </div>
+        </div>
       </div>
-      <div class="relative z-10">
-        <i data-lucide="mail" class="w-10 h-10 mx-auto mb-4" style="color: var(--pink);"></i>
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold" style="font-family: var(--font-display);">Get Ready for the Drop</h2>
-        <p class="mt-4 text-sm sm:text-base max-w-md mx-auto" style="color: var(--text-muted);">Be first to know when we launch. Early access, exclusive discounts, and behind-the-scenes drops — straight to your inbox.</p>
-        <form class="mt-8 flex flex-col sm:flex-row gap-3 max-w-md mx-auto" id="newsletterForm" novalidate>
-          <input type="email" id="newsletterEmail" class="input-dark flex-1" placeholder="your@email.com" required aria-label="Email address" />
-          <button type="submit" class="btn-primary justify-center whitespace-nowrap" style="border-radius: 0.75rem;">
-            <i data-lucide="send" class="w-4 h-4"></i> Notify Me
+    </section>
+
+    <!-- ================= CATEGORIES ================= -->
+    <section class="section-pad" id="categories" aria-labelledby="catTitle">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 reveal">
+          <div>
+            <span class="tag mb-4">Categories</span>
+            <h2 id="catTitle" class="text-4xl sm:text-5xl font-extrabold leading-[1.02]">Four worlds.<br><span class="text-muted">One drop.</span></h2>
+          </div>
+          <p class="text-[var(--muted)] text-sm max-w-sm leading-relaxed">Fashion, beauty, tech and lifestyle — hand-picked, hype-tested, and ready to ship to your door.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          <!-- Fashion -->
+          <button class="group relative rounded-[24px] p-6 sm:p-7 text-left border border-[var(--border)] overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-neon reveal" data-jump-filter="Fashion" aria-label="Browse Fashion category">
+            <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full blur-[46px] opacity-40 transition-opacity duration-300 group-hover:opacity-70" style="background: var(--neon)"></div>
+            <div class="relative">
+              <div class="w-12 h-12 rounded-2xl grid place-items-center mb-5" style="background: rgba(255,61,139,0.15); color: var(--neon)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+              </div>
+              <h3 class="text-xl font-bold mb-1.5">Fashion</h3>
+              <p class="text-xs text-muted leading-relaxed">Hoodies · Streetwear · Sneakers</p>
+              <span class="inline-flex items-center gap-1.5 mt-5 text-[0.7rem] font-bold tracking-[0.16em] uppercase text-white/70 group-hover:text-neon transition-colors">Explore <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
           </button>
-        </form>
-        <p class="mt-3 text-xs" style="color: #555;">No spam. Unsubscribe anytime.</p>
-      </div>
-    </div>
-  </section>
 
-  <!-- ====== FOOTER ====== -->
-  <footer class="border-t" style="border-color: var(--border); background: var(--surface);">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-14">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-        <!-- Brand -->
-        <div class="lg:col-span-1">
-          <div class="flex items-center gap-2 mb-4">
-            <svg width="26" height="26" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-              <path d="M10 16h20l-1.5 22H11.5L10 16z" stroke="#ff2d9b" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
-              <path d="M10 16h20" stroke="#ff2d9b" stroke-width="2.2"/>
-              <path d="M15 16v-4a5 5 0 0110 0v4" stroke="#ff2d9b" stroke-width="2.2" fill="none"/>
-              <circle cx="16" cy="25" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="25" r="1.2" fill="#ff2d9b"/>
-              <circle cx="16" cy="31" r="1.2" fill="#ff2d9b"/><circle cx="24" cy="31" r="1.2" fill="#ff2d9b"/>
-            </svg>
-            <svg width="26" height="26" viewBox="0 0 48 48" fill="none" aria-hidden="true" class="-ml-1">
-              <path d="M16 16h20l-1.5 22H17.5L16 16z" stroke="#ffd60a" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
-              <path d="M16 16h20" stroke="#ffd60a" stroke-width="2.2"/>
-              <path d="M21 16v-4a5 5 0 0110 0v4" stroke="#ffd60a" stroke-width="2.2" fill="none"/>
-              <path d="M20 22l8 14M26 22l-6 14" stroke="#ffd60a" stroke-width="1.5" opacity="0.6"/>
-            </svg>
-            <span class="text-lg font-bold" style="font-family: var(--font-display);">STYLORA</span>
-          </div>
-          <p class="text-sm mb-5" style="color: var(--text-muted);">Drops Everything You Love.<br>Curated heat for the next generation.</p>
-          <div class="flex items-center gap-3">
-            <a href="https://instagram.com/stylora_" target="_blank" rel="noopener" class="p-2 rounded-full transition hover:bg-white/5" aria-label="Instagram @stylora_">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-            </a>
-            <a href="https://tiktok.com/@stylora_" target="_blank" rel="noopener" class="p-2 rounded-full transition hover:bg-white/5" aria-label="TikTok">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
-            </a>
-            <a href="mailto:hello@stylora.com" class="p-2 rounded-full transition hover:bg-white/5" aria-label="Email us">
-              <i data-lucide="mail" class="w-[18px] h-[18px]" style="color: var(--text-muted);"></i>
-            </a>
-          </div>
-        </div>
+          <!-- Beauty -->
+          <button class="group relative rounded-[24px] p-6 sm:p-7 text-left border border-[var(--border)] overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-lilac reveal" data-jump-filter="Beauty" aria-label="Browse Beauty category">
+            <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full blur-[46px] opacity-40 transition-opacity duration-300 group-hover:opacity-70" style="background: var(--lilac)"></div>
+            <div class="relative">
+              <div class="w-12 h-12 rounded-2xl grid place-items-center mb-5" style="background: rgba(177,140,255,0.15); color: var(--lilac)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l1 5H8l1-5z"/><path d="M8 8h8l1.5 11a2 2 0 0 1-2 2.2H8.5a2 2 0 0 1-2-2.2L8 8z"/><path d="M12 13v4"/></svg>
+              </div>
+              <h3 class="text-xl font-bold mb-1.5">Beauty</h3>
+              <p class="text-xs text-muted leading-relaxed">Makeup · Lipsticks · Skincare</p>
+              <span class="inline-flex items-center gap-1.5 mt-5 text-[0.7rem] font-bold tracking-[0.16em] uppercase text-white/70 group-hover:text-lilac transition-colors">Explore <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </button>
 
-        <!-- Shop links -->
-        <div>
-          <h4 class="text-sm font-bold mb-4">Shop</h4>
-          <ul class="space-y-2.5">
-            <li><a href="#shop" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Fashion</a></li>
-            <li><a href="#shop" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Beauty</a></li>
-            <li><a href="#shop" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Tech & Gadgets</a></li>
-            <li><a href="#shop" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Lifestyle</a></li>
-          </ul>
-        </div>
+          <!-- Tech -->
+          <button class="group relative rounded-[24px] p-6 sm:p-7 text-left border border-[var(--border)] overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-mint reveal" data-jump-filter="Tech" aria-label="Browse Tech category">
+            <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full blur-[46px] opacity-40 transition-opacity duration-300 group-hover:opacity-70" style="background: var(--mint)"></div>
+            <div class="relative">
+              <div class="w-12 h-12 rounded-2xl grid place-items-center mb-5" style="background: rgba(122,255,201,0.12); color: var(--mint)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><circle cx="12" cy="14" r="2.5"/></svg>
+              </div>
+              <h3 class="text-xl font-bold mb-1.5">Tech &amp; Gadgets</h3>
+              <p class="text-xs text-muted leading-relaxed">Cases · Earbuds · Watches · LED</p>
+              <span class="inline-flex items-center gap-1.5 mt-5 text-[0.7rem] font-bold tracking-[0.16em] uppercase text-white/70 group-hover:text-mint transition-colors">Explore <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </button>
 
-        <!-- Support -->
-        <div>
-          <h4 class="text-sm font-bold mb-4">Support</h4>
-          <ul class="space-y-2.5">
-            <li><a href="#" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Shipping Info</a></li>
-            <li><a href="#" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Returns & Exchanges</a></li>
-            <li><a href="#" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Track Your Order</a></li>
-            <li><a href="#" class="text-sm transition hover:opacity-70" style="color: var(--text-muted);">Contact Us</a></li>
-          </ul>
-        </div>
-
-        <!-- Contact -->
-        <div>
-          <h4 class="text-sm font-bold mb-4">Get in Touch</h4>
-          <p class="text-sm mb-2" style="color: var(--text-muted);">hello@stylora.com</p>
-          <p class="text-sm" style="color: var(--text-muted);">@stylora_</p>
-          <p class="text-xs mt-4" style="color: #555;">We reply within 24 hours, 7 days a week.</p>
+          <!-- Lifestyle -->
+          <button class="group relative rounded-[24px] p-6 sm:p-7 text-left border border-[var(--border)] overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-lemon reveal" data-jump-filter="Lifestyle" aria-label="Browse Lifestyle category">
+            <div class="absolute -right-8 -top-8 w-32 h-32 rounded-full blur-[46px] opacity-40 transition-opacity duration-300 group-hover:opacity-70" style="background: var(--lemon)"></div>
+            <div class="relative">
+              <div class="w-12 h-12 rounded-2xl grid place-items-center mb-5" style="background: rgba(245,230,99,0.12); color: var(--lemon)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              </div>
+              <h3 class="text-xl font-bold mb-1.5">Lifestyle</h3>
+              <p class="text-xs text-muted leading-relaxed">Tote Bags · Sunglasses</p>
+              <span class="inline-flex items-center gap-1.5 mt-5 text-[0.7rem] font-bold tracking-[0.16em] uppercase text-white/70 group-hover:text-lemon transition-colors">Explore <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </button>
         </div>
       </div>
+    </section>
 
-      <div class="mt-12 pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-4" style="border-color: var(--border);">
-        <p class="text-xs" style="color: #555;">&copy; 2025 STYLORA. All rights reserved.</p>
-        <div class="flex items-center gap-5">
-          <a href="#" class="text-xs transition hover:opacity-70" style="color: #555;">Privacy Policy</a>
-          <a href="#" class="text-xs transition hover:opacity-70" style="color: #555;">Terms of Service</a>
+    <!-- ================= SHOP / FEATURED PRODUCTS ================= -->
+    <section class="section-pad pt-0" id="shop" aria-labelledby="shopTitle">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 reveal">
+          <div>
+            <span class="tag mb-4">Featured</span>
+            <h2 id="shopTitle" class="text-4xl sm:text-5xl font-extrabold leading-[1.02]">The hype shelf</h2>
+          </div>
+          <p class="text-[var(--muted)] text-sm max-w-sm leading-relaxed">Preview drop 01. Tap the heart to save, tap the bag to add — checkout is live now.</p>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="flex items-center gap-2.5 overflow-x-auto pb-2 mb-9 reveal" role="group" aria-label="Filter products by category">
+          <button class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+          <button class="filter-btn" data-filter="Fashion" aria-pressed="false">Fashion</button>
+          <button class="filter-btn" data-filter="Beauty" aria-pressed="false">Beauty</button>
+          <button class="filter-btn" data-filter="Tech" aria-pressed="false">Tech</button>
+          <button class="filter-btn" data-filter="Lifestyle" aria-pressed="false">Lifestyle</button>
+        </div>
+
+        <!-- Product grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="productGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ================= WHY / STATS ================= -->
+    <section class="section-pad pt-0" aria-labelledby="whyTitle">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="grid md:grid-cols-3 gap-4 sm:gap-5">
+          <div class="glass rounded-[24px] p-7 sm:p-8 reveal">
+            <div class="w-11 h-11 rounded-xl grid place-items-center mb-5" style="background: rgba(255,61,139,0.14); color: var(--neon)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+            </div>
+            <h3 class="text-lg font-bold mb-2">Global drops</h3>
+            <p class="text-sm text-muted leading-relaxed">Sourced from the coolest suppliers worldwide, curated into one drop each week.</p>
+          </div>
+          <div class="glass rounded-[24px] p-7 sm:p-8 reveal">
+            <div class="w-11 h-11 rounded-xl grid place-items-center mb-5" style="background: rgba(122,255,201,0.12); color: var(--mint)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+            <h3 class="text-lg font-bold mb-2">Fast shipping</h3>
+            <p class="text-sm text-muted leading-relaxed">Tracked delivery in 5–9 days. Free over $50. Every order, every time.</p>
+          </div>
+          <div class="glass rounded-[24px] p-7 sm:p-8 reveal">
+            <div class="w-11 h-11 rounded-xl grid place-items-center mb-5" style="background: rgba(245,230,99,0.12); color: var(--lemon)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <h3 class="text-lg font-bold mb-2">Hype-approved</h3>
+            <p class="text-sm text-muted leading-relaxed">Community-tested picks only. If it doesn't get saved to a thousand wishlists, it doesn't drop.</p>
+          </div>
         </div>
       </div>
-    </div>
-  </footer>
+    </section>
 
-  <!-- ====== SCRIPTS ====== -->
-  <script>
-    // ============================================================
-    // DATA: Products
-    // ============================================================
-    const products = [
-      { id: 1, name: 'Neon Dreams Hoodie', category: 'fashion', price: 49.99, badge: 'hot', badgeLabel: 'Hot', icon: 'shirt', iconColor: '#ff2d9b', desc: 'Oversized heavyweight hoodie' },
-      { id: 2, name: 'Street King Sneakers', category: 'fashion', price: 89.99, badge: 'new', badgeLabel: 'New', icon: 'footprints', iconColor: '#ff2d9b', desc: 'Chunky sole, all-day comfort' },
-      { id: 3, name: 'Velvet Matte Lipstick', category: 'beauty', price: 19.99, badge: 'hot', badgeLabel: 'Bestseller', icon: 'sparkles', iconColor: '#ffd60a', desc: '8-hour wear, 12 shades' },
-      { id: 4, name: 'Glow Serum 2.0', category: 'beauty', price: 29.99, badge: null, badgeLabel: '', icon: 'droplets', iconColor: '#ffd60a', desc: 'Vitamin C + hyaluronic acid' },
-      { id: 5, name: 'AirPod Pro Case', category: 'tech', price: 24.99, badge: 'new', badgeLabel: 'New', icon: 'headphones', iconColor: '#60a5fa', desc: 'Shockproof, glossy finish' },
-      { id: 6, name: 'LED Strip Lights', category: 'tech', price: 34.99, badge: 'hot', badgeLabel: 'Trending', icon: 'lightbulb', iconColor: '#60a5fa', desc: '16M colors, app controlled' },
-      { id: 7, name: 'Canvas Tote Bag', category: 'lifestyle', price: 22.99, badge: null, badgeLabel: '', icon: 'shopping-bag', iconColor: '#c084fc', desc: 'Heavy duty, zip closure' },
-      { id: 8, name: 'Retro Sunglasses', category: 'lifestyle', price: 27.99, badge: 'new', badgeLabel: 'New', icon: 'glasses', iconColor: '#c084fc', desc: 'UV400, unisex fit' }
-    ];
-
-    // ============================================================
-    // STATE
-    // ============================================================
-    let cart = [];
-    let wishlist = new Set();
-    let activeFilter = 'all';
-
-    // ============================================================
-    // HELPERS
-    // ============================================================
-    function formatPrice(p) { return '$' + p.toFixed(2); }
-
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      clearTimeout(t._timeout);
-      t._timeout = setTimeout(() => t.classList.remove('show'), 2200);
-    }
-
-    // ============================================================
-    // RENDER PRODUCTS
-    // ============================================================
-    function renderProducts() {
-      const grid = document.getElementById('productGrid');
-      const filtered = activeFilter === 'all' ? products : products.filter(p => p.category === activeFilter);
-      grid.innerHTML = filtered.map(p => `
-        <div class="product-card reveal visible" data-id="${p.id}">
-          ${p.badge === 'hot' ? `<span class="badge-hot">${p.badgeLabel}</span>` : p.badge === 'new' ? `<span class="badge-new">${p.badgeLabel}</span>` : ''}
-          <div class="img-wrap">
-            <i data-lucide="${p.icon}" class="w-16 h-16" style="color: ${p.iconColor}; opacity: 0.85;"></i>
-            <button class="wishlist-btn absolute top-3 right-3 p-2 rounded-full bg-black/40 backdrop-blur-sm ${wishlist.has(p.id) ? 'active' : ''}" 
-              data-wishlist="${p.id}" aria-label="Add ${p.name} to wishlist">
-              <i data-lucide="heart" class="w-4 h-4"></i>
-            </button>
+    <!-- ================= TESTIMONIALS ================= -->
+    <section class="section-pad" id="reviews" aria-labelledby="revTitle">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 reveal">
+          <div>
+            <span class="tag mb-4">Reviews</span>
+            <h2 id="revTitle" class="text-4xl sm:text-5xl font-extrabold leading-[1.02]">Hype is<br><span class="text-muted">real.</span></h2>
           </div>
-          <div class="p-4">
-            <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color: ${p.iconColor}; opacity: 0.7;">${p.category}</p>
-            <h3 class="text-sm font-semibold leading-tight mb-0.5">${p.name}</h3>
-            <p class="text-xs mb-3" style="color: var(--text-muted);">${p.desc}</p>
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-base" style="color: var(--yellow);">${formatPrice(p.price)}</span>
-              <button class="add-to-cart p-2 rounded-full transition hover:scale-110 active:scale-95" 
-                style="background: var(--pink-soft);" data-add="${p.id}" aria-label="Add ${p.name} to cart">
-                <i data-lucide="plus" class="w-4 h-4" style="color: var(--pink);"></i>
+          <div class="flex items-center gap-1.5">
+            <span class="text-lemon text-lg tracking-wider" aria-hidden="true">★★★★★</span>
+            <span class="text-sm text-muted">4.9 from 2,100+ reviews</span>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5">
+          <figure class="testimonial-card reveal">
+            <div class="text-lemon text-sm tracking-wider mb-4" aria-label="5 out of 5 stars">★★★★★</div>
+            <blockquote class="text-sm leading-relaxed text-white/90">"Ordered the pink dot bag and a hoodie — both arrived in a week and look even better in person. My feed is literally all STYLORA now."</blockquote>
+            <figcaption class="mt-6 flex items-center gap-3">
+              <span class="w-9 h-9 rounded-full bg-gradient-to-br from-neon to-lilac grid place-items-center text-xs font-bold text-white" aria-hidden="true">MJ</span>
+              <div><p class="text-sm font-semibold">Maya J.</p><p class="text-[11px] text-muted">@mayaonmars</p></div>
+            </figcaption>
+          </figure>
+
+          <figure class="testimonial-card reveal">
+            <div class="text-lemon text-sm tracking-wider mb-4" aria-label="5 out of 5 stars">★★★★★</div>
+            <blockquote class="text-sm leading-relaxed text-white/90">"The earbuds and LED strip completely upgraded my setup. Checkout was smooth, the packaging was cute, and the prices are actually insane."</blockquote>
+            <figcaption class="mt-6 flex items-center gap-3">
+              <span class="w-9 h-9 rounded-full bg-gradient-to-br from-mint to-lilac grid place-items-center text-xs font-bold text-white" aria-hidden="true">RT</span>
+              <div><p class="text-sm font-semibold">Ravi T.</p><p class="text-[11px] text-muted">@ravi.tech</p></div>
+            </figcaption>
+          </figure>
+
+          <figure class="testimonial-card reveal">
+            <div class="text-lemon text-sm tracking-wider mb-4" aria-label="5 out of 5 stars">★★★★★</div>
+            <blockquote class="text-sm leading-relaxed text-white/90">"Finally a drop store that gets it. The lipstick shade is my new everyday and the tote is huge. Already waiting for drop 02."</blockquote>
+            <figcaption class="mt-6 flex items-center gap-3">
+              <span class="w-9 h-9 rounded-full bg-gradient-to-br from-lemon to-neon grid place-items-center text-xs font-bold text-black" aria-hidden="true">SL</span>
+              <div><p class="text-sm font-semibold">Sofia L.</p><p class="text-[11px] text-muted">@sofiaglow</p></div>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= NEWSLETTER / DROP ================= -->
+    <section class="section-pad pt-0" id="drop" aria-labelledby="dropTitle">
+      <div class="max-w-5xl mx-auto px-5 sm:px-8">
+        <div class="newsletter-shell reveal">
+          <div class="relative z-10 max-w-xl">
+            <span class="tag mb-5" style="border-color: rgba(255,61,139,0.35); color: var(--neon)">Newsletter</span>
+            <h2 id="dropTitle" class="text-4xl sm:text-5xl font-extrabold leading-[1.03] mb-4">Get ready<br><span class="accent">for the drop.</span></h2>
+            <p class="text-[var(--muted)] text-sm leading-relaxed mb-8 max-w-md">First access to every STYLORA drop, early-bird discounts, and behind-the-scenes picks. No spam — just the good stuff, straight to your inbox.</p>
+
+            <form id="newsletterForm" novalidate class="flex flex-col sm:flex-row gap-3">
+              <div class="flex-1">
+                <label for="nlEmail" class="sr-only">Email address</label>
+                <input id="nlEmail" name="email" type="email" required placeholder="you@email.com" autocomplete="email" class="field" />
+                <p id="nlError" class="text-xs mt-1.5 hidden" style="color:#ff6b9d" role="alert"></p>
+              </div>
+              <button type="submit" class="btn-primary shrink-0">
+                Notify me
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </button>
+            </form>
+            <p id="nlSuccess" class="text-sm font-medium mt-4 hidden" style="color: var(--mint)">You're on the list. Watch your inbox for drop 01.</p>
+
+            <div class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[11px] text-muted">
+              <span class="flex items-center gap-1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Early access</span>
+              <span class="flex items-center gap-1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Member discounts</span>
+              <span class="flex items-center gap-1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Zero spam</span>
             </div>
           </div>
         </div>
-      `).join('');
-      lucide.createIcons();
-    }
+      </div>
+    </section>
 
-    // ============================================================
-    // CART
-    // ============================================================
-    function addToCart(id) {
-      const product = products.find(p => p.id === id);
-      const existing = cart.find(item => item.id === id);
-      if (existing) existing.qty += 1;
-      else cart.push({ ...product, qty: 1 });
-      updateCartUI();
-      showToast(product.name + ' added to bag');
-    }
-
-    function removeFromCart(id) {
-      cart = cart.filter(item => item.id !== id);
-      updateCartUI();
-    }
-
-    function updateCartUI() {
-      const count = cart.reduce((s, i) => s + i.qty, 0);
-      const countEl = document.getElementById('cartCount');
-      const badge = document.getElementById('cartCountBadge');
-      if (count > 0) { countEl.style.display = 'flex'; countEl.textContent = count; }
-      else { countEl.style.display = 'none'; }
-      badge.textContent = count;
-
-      const itemsEl = document.getElementById('cartItems');
-      const emptyMsg = document.getElementById('emptyCartMsg');
-      const footer = document.getElementById('cartFooter');
-
-      if (cart.length === 0) {
-        itemsEl.innerHTML = `<div class="text-center py-16" id="emptyCartMsg">
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" class="mx-auto mb-4 opacity-30" aria-hidden="true">
-            <path d="M12 16h24l-2 24H14L12 16z" stroke="#888" stroke-width="2" stroke-linejoin="round" fill="none"/>
-            <path d="M18 16v-4a6 6 0 0112 0v4" stroke="#888" stroke-width="2" fill="none"/>
-          </svg>
-          <p class="text-sm" style="color: var(--text-muted);">Your bag is empty.<br>Start dropping some love.</p>
-        </div>`;
-        footer.style.display = 'none';
-      } else {
-        itemsEl.innerHTML = cart.map(item => `
-          <div class="flex items-center gap-3 py-3 border-b" style="border-color: var(--border);">
-            <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background: var(--surface-2);">
-              <i data-lucide="${item.icon}" class="w-5 h-5" style="color: ${item.iconColor};"></i>
+    <!-- ================= FOOTER ================= -->
+    <footer class="border-t border-[var(--border)] pt-16 pb-8" aria-labelledby="footerHeading">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-10 md:gap-8 mb-14">
+          <!-- Brand col -->
+          <div class="col-span-2 md:col-span-2">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="brand-icon" aria-hidden="true"><span class="bag bag-pink"></span><span class="bag bag-yellow"></span></span>
+              <span class="font-display text-xl font-extrabold">STYLORA</span>
             </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-semibold truncate">${item.name}</p>
-              <p class="text-xs" style="color: var(--text-muted);">${formatPrice(item.price)} × ${item.qty}</p>
-            </div>
-            <button class="p-1.5 rounded-full hover:bg-white/5 transition" data-remove="${item.id}" aria-label="Remove ${item.name}">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5" style="color: #666;"></i>
-            </button>
+            <p id="footerHeading" class="text-sm text-muted leading-relaxed max-w-xs mb-6">Drops everything you love. Fashion, beauty, tech and lifestyle — curated for the next generation.</p>
+
+            <a href="https://instagram.com/stylora_" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2.5 text-sm font-medium hover:text-neon transition-colors duration-200" aria-label="STYLORA on Instagram, @stylora_">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.9" fill="currentColor" stroke="none"/></svg>
+              @stylora_
+            </a>
+            <p class="mt-3 text-sm text-muted">
+              <a href="mailto:hello@stylora.store" class="hover:text-white transition-colors">hello@stylora.store</a>
+            </p>
           </div>
-        `).join('');
-        footer.style.display = 'block';
-        const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-        document.getElementById('cartSubtotal').textContent = formatPrice(subtotal);
-        document.getElementById('checkoutTotal').textContent = formatPrice(subtotal);
+
+          <!-- Shop -->
+          <div>
+            <h3 class="text-[0.7rem] font-bold tracking-[0.18em] uppercase text-white/50 mb-4">Shop</h3>
+            <ul class="space-y-2.5 text-sm text-muted">
+              <li><a href="#shop" class="hover:text-white transition-colors">All products</a></li>
+              <li><a href="#shop" data-footer-filter="Fashion" class="hover:text-white transition-colors">Fashion</a></li>
+              <li><a href="#shop" data-footer-filter="Beauty" class="hover:text-white transition-colors">Beauty</a></li>
+              <li><a href="#shop" data-footer-filter="Tech" class="hover:text-white transition-colors">Tech &amp; Gadgets</a></li>
+              <li><a href="#shop" data-footer-filter="Lifestyle" class="hover:text-white transition-colors">Lifestyle</a></li>
+            </ul>
+          </div>
+
+          <!-- Help -->
+          <div>
+            <h3 class="text-[0.7rem] font-bold tracking-[0.18em] uppercase text-white/50 mb-4">Help</h3>
+            <ul class="space-y-2.5 text-sm text-muted">
+              <li><a href="#drop" class="hover:text-white transition-colors">Shipping</a></li>
+              <li><a href="#drop" class="hover:text-white transition-colors">Returns</a></li>
+              <li><a href="#drop" class="hover:text-white transition-colors">Track order</a></li>
+              <li><a href="#drop" class="hover:text-white transition-colors">Contact us</a></li>
+            </ul>
+          </div>
+
+          <!-- Socials -->
+          <div>
+            <h3 class="text-[0.7rem] font-bold tracking-[0.18em] uppercase text-white/50 mb-4">Socials</h3>
+            <ul class="space-y-2.5 text-sm text-muted">
+              <li><a href="https://instagram.com/stylora_" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Instagram</a></li>
+              <li><a href="https://tiktok.com/@stylora_" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">TikTok</a></li>
+              <li><a href="https://pinterest.com/stylora_" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">Pinterest</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pt-8 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p class="text-xs text-muted">© <span id="year"></span> STYLORA. All rights reserved. Drops everything you love.</p>
+          <div class="flex items-center gap-5 text-xs text-muted">
+            <a href="#" class="hover:text-white transition-colors">Privacy</a>
+            <a href="#" class="hover:text-white transition-colors">Terms</a>
+            <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-mint animate-pulse" aria-hidden="true"></span>Drop 01 loading</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ================= CART DRAWER ================= -->
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Shopping bag" aria-hidden="true">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-[var(--border)]">
+      <h2 class="font-display text-lg font-bold flex items-center gap-2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Your bag
+      </h2>
+      <button id="cartClose" class="w-9 h-9 rounded-full grid place-items-center border border-[var(--border)] hover:border-neon transition-colors" aria-label="Close shopping bag">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-6 py-5" id="cartItems">
+      <!-- filled by JS -->
+    </div>
+
+    <div class="border-t border-[var(--border)] px-6 py-5">
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-sm text-muted">Subtotal</span>
+        <span class="font-bold text-lg" id="cartSubtotal">$0.00</span>
+      </div>
+      <p class="text-[11px] text-muted mb-4">Shipping calculated at checkout. Free over $50.</p>
+      <button id="checkoutBtn" class="btn-primary w-full">Checkout</button>
+      <button id="continueShopping" class="w-full mt-2.5 py-3 text-[0.8rem] font-medium text-muted hover:text-white transition-colors">Continue shopping</button>
+    </div>
+  </aside>
+
+  <!-- ================= WISHLIST DRAWER ================= -->
+  <aside class="drawer" id="wishDrawer" role="dialog" aria-modal="true" aria-label="Wishlist" aria-hidden="true">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-[var(--border)]">
+      <h2 class="font-display text-lg font-bold flex items-center gap-2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Wishlist
+      </h2>
+      <button id="wishClose" class="w-9 h-9 rounded-full grid place-items-center border border-[var(--border)] hover:border-neon transition-colors" aria-label="Close wishlist">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto px-6 py-5" id="wishItems">
+      <!-- filled by JS -->
+    </div>
+  </aside>
+
+  <!-- ================= CHECKOUT MODAL ================= -->
+  <div class="modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+    <div class="modal-card">
+      <div class="flex items-center justify-between mb-6">
+        <h2 id="checkoutTitle" class="font-display text-2xl font-bold">Checkout</h2>
+        <button id="checkoutClose" class="w-9 h-9 rounded-full grid place-items-center border border-[var(--border)] hover:border-neon transition-colors" aria-label="Close checkout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="rounded-2xl border border-[var(--border)] p-4 mb-6 bg-surface2">
+        <p class="text-[11px] font-bold tracking-[0.16em] uppercase text-white/50 mb-2">Order summary</p>
+        <div id="checkoutSummary" class="text-sm space-y-1.5"></div>
+      </div>
+
+      <form id="checkoutForm" novalidate>
+        <div class="space-y-3.5">
+          <div>
+            <label for="coName" class="block text-xs font-medium text-muted mb-1.5">Full name</label>
+            <input id="coName" name="name" type="text" required autocomplete="name" placeholder="Alex Rivera" class="field" />
+            <p class="err text-xs mt-1 hidden" style="color:#ff6b9d"></p>
+          </div>
+          <div>
+            <label for="coEmail" class="block text-xs font-medium text-muted mb-1.5">Email</label>
+            <input id="coEmail" name="email" type="email" required autocomplete="email" placeholder="you@email.com" class="field" />
+            <p class="err text-xs mt-1 hidden" style="color:#ff6b9d"></p>
+          </div>
+          <div>
+            <label for="coAddress" class="block text-xs font-medium text-muted mb-1.5">Shipping address</label>
+            <input id="coAddress" name="address" type="text" required autocomplete="street-address" placeholder="123 Hype Street, Apt 4" class="field" />
+            <p class="err text-xs mt-1 hidden" style="color:#ff6b9d"></p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="coCity" class="block text-xs font-medium text-muted mb-1.5">City</label>
+              <input id="coCity" name="city" type="text" required placeholder="Brooklyn" class="field" />
+              <p class="err text-xs mt-1 hidden" style="color:#ff6b9d"></p>
+            </div>
+            <div>
+              <label for="coZip" class="block text-xs font-medium text-muted mb-1.5">ZIP</label>
+              <input id="coZip" name="zip" type="text" required placeholder="11201" class="field" />
+              <p class="err text-xs mt-1 hidden" style="color:#ff6b9d"></p>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary w-full mt-6">Place order</button>
+        <p class="text-[11px] text-muted text-center mt-3">Demo checkout — no real payment is processed.</p>
+      </form>
+
+      <!-- success state -->
+      <div id="checkoutSuccess" class="hidden text-center py-8">
+        <div class="w-16 h-16 rounded-full mx-auto grid place-items-center mb-5" style="background: rgba(122,255,201,0.14); color: var(--mint)">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <h3 class="font-display text-2xl font-bold mb-2">Order placed</h3>
+        <p class="text-sm text-muted max-w-xs mx-auto leading-relaxed mb-6">You're officially part of the drop. A confirmation is heading to your inbox — see you at drop 01.</p>
+        <button id="successClose" class="btn-primary">Back to shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+    <span id="toastText">Added to bag</span>
+  </div>
+
+  <script>
+    /* =========================================================
+       STYLORA — single-file store logic
+       ========================================================= */
+    (function () {
+      'use strict';
+
+      /* ---------- Product data ---------- */
+      const products = [
+        {
+          id: 'p1', name: 'Cloud Nine Hoodie', category: 'Fashion', price: 48,
+          tag: 'Bestseller', colors: ['#ff3d8b', '#2a1a2e'], art: 'hoodie'
+        },
+        {
+          id: 'p2', name: 'Static Streetwear Tee', category: 'Fashion', price: 29,
+          tag: 'New', colors: ['#b18cff', '#1a1a20'], art: 'tee'
+        },
+        {
+          id: 'p3', name: 'Retro Court Sneakers', category: 'Fashion', price: 79,
+          tag: 'Hype', colors: ['#f5e663', '#1a1a20'], art: 'sneaker'
+        },
+        {
+          id: 'p4', name: 'Gloss Bomb Lipstick', category: 'Beauty', price: 18,
+          tag: 'Viral', colors: ['#ff3d8b', '#ff8fb8'], art: 'lipstick'
+        },
+        {
+          id: 'p5', name: 'Dew Drop Skincare Kit', category: 'Beauty', price: 42,
+          tag: 'New', colors: ['#7affc9', '#1a1a20'], art: 'skincare'
+        },
+        {
+          id: 'p6', name: 'Bubble Pop Phone Case', category: 'Tech', price: 22,
+          tag: 'Trending', colors: ['#ff3d8b', '#f5e663'], art: 'phonecase'
+        },
+        {
+          id: 'p7', name: 'Pulse Wireless Earbuds', category: 'Tech', price: 55,
+          tag: 'Bestseller', colors: ['#b18cff', '#1a1a20'], art: 'earbuds'
+        },
+        {
+          id: 'p8', name: 'Halo Smartwatch', category: 'Tech', price: 89,
+          tag: 'Hype', colors: ['#7affc9', '#121216'], art: 'watch'
+        },
+        {
+          id: 'p9', name: 'Neon Strip LED Lights', category: 'Tech', price: 26,
+          tag: 'New', colors: ['#ff3d8b', '#b18cff'], art: 'led'
+        },
+        {
+          id: 'p10', name: 'Everyday Tote Bag', category: 'Lifestyle', price: 32,
+          tag: 'Bestseller', colors: ['#f5e663', '#1a1a20'], art: 'tote'
+        },
+        {
+          id: 'p11', name: 'Shade Retro Sunglasses', category: 'Lifestyle', price: 24,
+          tag: 'Trending', colors: ['#b18cff', '#0a0a0c'], art: 'sunglasses'
+        },
+        {
+          id: 'p12', name: 'Mini Dot Crossbody', category: 'Lifestyle', price: 38,
+          tag: 'Viral', colors: ['#ff3d8b', '#ffb3d1'], art: 'bag'
+        }
+      ];
+
+      /* ---------- SVG art generator (product visuals) ---------- */
+      function productArt(kind, c1, c2) {
+        const base = `<svg viewBox="0 0 200 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">`;
+        const bg = `<defs><radialGradient id="g_${kind}" cx="35%" cy="25%" r="80%">
+            <stop offset="0%" stop-color="${c1}" stop-opacity="0.28"/>
+            <stop offset="100%" stop-color="${c2}" stop-opacity="0"/>
+          </radialGradient></defs>
+          <rect width="200" height="200" fill="${c2}"/>
+          <rect width="200" height="200" fill="url(#g_${kind})"/>`;
+
+        const shapes = {
+          hoodie: `
+            <path d="M65 78 L80 62 Q100 50 120 62 L135 78 L150 92 L140 108 L132 98 L132 140 Q100 152 68 140 L68 98 L60 108 L50 92 Z"
+              fill="${c1}" fill-opacity="0.85"/>
+            <path d="M84 74 Q100 64 116 74 L110 92 Q100 86 90 92 Z" fill="${c2}" fill-opacity="0.6"/>
+            <path d="M88 96 L88 118 M112 96 L112 118" stroke="${c2}" stroke-opacity="0.5" stroke-width="3" stroke-linecap="round"/>`,
+          tee: `
+            <path d="M66 70 L84 58 Q100 52 116 58 L134 70 L146 88 L132 96 L126 88 L126 140 Q100 150 74 140 L74 88 L68 96 L54 88 Z"
+              fill="${c1}" fill-opacity="0.85"/>
+            <circle cx="100" cy="104" r="14" fill="none" stroke="${c2}" stroke-opacity="0.65" stroke-width="3"/>
+            <path d="M94 104 L106 104 M100 98 L100 110" stroke="${c2}" stroke-opacity="0.65" stroke-width="3" stroke-linecap="round"/>`,
+          sneaker: `
+            <path d="M42 122 Q42 106 58 102 L92 96 Q104 94 112 102 L146 112 Q160 116 160 128 L160 136 L44 136 Z"
+              fill="${c1}" fill-opacity="0.9"/>
+            <path d="M44 136 L160 136 L160 144 L44 144 Z" fill="${c2}" fill-opacity="0.7"/>
+            <path d="M76 104 L84 96 M88 108 L96 100 M100 112 L108 104" stroke="${c2}" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="130" cy="124" r="5" fill="${c2}" fill-opacity="0.4"/>`,
+          lipstick: `
+            <rect x="88" y="96" width="24" height="52" rx="5" fill="${c2}" fill-opacity="0.85"/>
+            <rect x="90" y="70" width="20" height="30" rx="3" fill="${c1}"/>
+            <path d="M90 70 L110 70 L110 60 Q100 50 90 60 Z" fill="${c1}"/>
+            <rect x="86" y="80" width="28" height="7" rx="2" fill="${c2}" fill-opacity="0.7"/>
+            <rect x="86" y="146" width="28" height="7" rx="2" fill="${c2}" fill-opacity="0.7"/>`,
+          skincare: `
+            <rect x="76" y="86" width="48" height="64" rx="10" fill="${c1}" fill-opacity="0.85"/>
+            <rect x="88" y="66" width="24" height="24" rx="5" fill="${c2}" fill-opacity="0.8"/>
+            <circle cx="100" cy="118" r="14" fill="none" stroke="${c2}" stroke-opacity="0.7" stroke-width="3"/>
+            <path d="M94 118 Q100 108 106 118" fill="none" stroke="${c2}" stroke-opacity="0.7" stroke-width="3" stroke-linecap="round"/>`,
+          phonecase: `
+            <rect x="74" y="46" width="52" height="108" rx="14" fill="${c1}" fill-opacity="0.9"/>
+            <rect x="82" y="58" width="36" height="60" rx="8" fill="${c2}" fill-opacity="0.35"/>
+            <circle cx="100" cy="138" r="7" fill="${c2}" fill-opacity="0.6"/>
+            <circle cx="112" cy="70" r="6" fill="${c2}" fill-opacity="0.4"/>
+            <circle cx="96" cy="88" r="4" fill="${c1}" fill-opacity="0.9"/>`,
+          earbuds: `
+            <rect x="58" y="96" width="84" height="56" rx="18" fill="${c1}" fill-opacity="0.85"/>
+            <circle cx="82" cy="124" r="12" fill="${c2}" fill-opacity="0.8"/>
+            <circle cx="118" cy="124" r="12" fill="${c2}" fill-opacity="0.8"/>
+            <rect x="94" y="70" width="12" height="26" rx="6" fill="${c1}" fill-opacity="0.9"/>
+            <path d="M100 70 L100 60" stroke="${c1}" stroke-width="4" stroke-linecap="round"/>`,
+          watch: `
+            <rect x="86" y="48" width="28" height="104" rx="10" fill="${c2}" fill-opacity="0.7"/>
+            <rect x="76" y="82" width="48" height="44" rx="14" fill="${c1}" fill-opacity="0.9"/>
+            <circle cx="100" cy="104" r="14" fill="none" stroke="${c2}" stroke-opacity="0.8" stroke-width="3"/>
+            <path d="M100 96 L100 104 L107 108" stroke="${c2}" stroke-opacity="0.85" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
+          led: `
+            <rect x="52" y="92" width="96" height="22" rx="11" fill="${c2}" fill-opacity="0.55"/>
+            <circle cx="66" cy="103" r="5" fill="${c1}"/>
+            <circle cx="88" cy="103" r="5" fill="${c1}" fill-opacity="0.85"/>
+            <circle cx="110" cy="103" r="5" fill="${c1}" fill-opacity="0.7"/>
+            <circle cx="132" cy="103" r="5" fill="${c1}" fill-opacity="0.55"/>
+            <path d="M52 128 Q100 150 148 128" stroke="${c1}" stroke-opacity="0.35" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+          tote: `
+            <path d="M68 78 L132 78 L140 152 L60 152 Z" fill="${c1}" fill-opacity="0.9"/>
+            <path d="M82 78 Q82 52 100 52 Q118 52 118 78" fill="none" stroke="${c2}" stroke-opacity="0.7" stroke-width="5"/>
+            <circle cx="100" cy="116" r="16" fill="${c2}" fill-opacity="0.45"/>`,
+          sunglasses: `
+            <path d="M44 96 Q44 82 62 82 L84 82 Q92 82 92 94 L92 104 Q92 118 72 118 Q52 118 48 106 Z"
+              fill="${c1}" fill-opacity="0.9"/>
+            <path d="M156 96 Q156 82 138 82 L116 82 Q108 82 108 94 L108 104 Q108 118 128 118 Q148 118 152 106 Z"
+              fill="${c1}" fill-opacity="0.9"/>
+            <path d="M92 90 L108 90" stroke="${c2}" stroke-width="5" stroke-linecap="round"/>
+            <path d="M44 96 L28 88 M156 96 L172 88" stroke="${c1}" stroke-width="4" stroke-linecap="round"/>`,
+          bag: `
+            <rect x="64" y="82" width="72" height="64" rx="12" fill="${c1}"/>
+            <path d="M82 82 Q82 58 100 58 Q118 58 118 82" fill="none" stroke="${c2}" stroke-opacity="0.8" stroke-width="5"/>
+            <circle cx="76" cy="98" r="3" fill="${c2}" fill-opacity="0.7"/>
+            <circle cx="88" cy="110" r="3" fill="${c2}" fill-opacity="0.7"/>
+            <circle cx="104" cy="96" r="3" fill="${c2}" fill-opacity="0.7"/>
+            <circle cx="120" cy="112" r="3" fill="${c2}" fill-opacity="0.7"/>
+            <circle cx="96" cy="126" r="3" fill="${c2}" fill-opacity="0.7"/>`
+        };
+
+        return base + bg + (shapes[kind] || '') + '</svg>';
       }
-      lucide.createIcons();
-    }
 
-    // ============================================================
-    // WISHLIST
-    // ============================================================
-    function toggleWishlist(id) {
-      if (wishlist.has(id)) { wishlist.delete(id); showToast('Removed from wishlist'); }
-      else { wishlist.add(id); showToast('Saved to wishlist'); }
-      const badge = document.getElementById('wishlistCount');
-      badge.textContent = wishlist.size;
-      badge.style.display = wishlist.size > 0 ? 'flex' : 'none';
-      renderProducts();
-    }
+      /* ---------- DOM refs ---------- */
+      const $ = (s, ctx = document) => ctx.querySelector(s);
+      const $$ = (s, ctx = document) => [...ctx.querySelectorAll(s)];
 
-    // ============================================================
-    // CART DRAWER CONTROLS
-    // ============================================================
-    const drawer = document.getElementById('cartDrawer');
-    const overlay = document.getElementById('cartOverlay');
+      const productGrid = $('#productGrid');
+      const cartDrawer = $('#cartDrawer');
+      const wishDrawer = $('#wishDrawer');
+      const overlay = $('#overlay');
+      const cartItemsEl = $('#cartItems');
+      const wishItemsEl = $('#wishItems');
+      const cartCountEl = $('#cartCount');
+      const wishCountEl = $('#wishCount');
+      const cartSubtotalEl = $('#cartSubtotal');
+      const checkoutModal = $('#checkoutModal');
+      const checkoutSummary = $('#checkoutSummary');
+      const toast = $('#toast');
+      const toastText = $('#toastText');
 
-    function openCart() {
-      drawer.classList.add('open');
-      overlay.classList.add('open');
-      drawer.setAttribute('aria-hidden', 'false');
-    }
-    function closeCart() {
-      drawer.classList.remove('open');
-      overlay.classList.remove('open');
-      drawer.setAttribute('aria-hidden', 'true');
-    }
-
-    document.getElementById('cartToggle').addEventListener('click', openCart);
-    document.getElementById('closeCart').addEventListener('click', closeCart);
-    overlay.addEventListener('click', closeCart);
-
-    // ============================================================
-    // CHECKOUT
-    // ============================================================
-    document.getElementById('checkoutBtn').addEventListener('click', () => {
-      closeCart();
-      document.getElementById('checkoutModal').classList.add('open');
-    });
-    document.getElementById('closeCheckout').addEventListener('click', () => {
-      document.getElementById('checkoutModal').classList.remove('open');
-    });
-    document.getElementById('checkoutModal').addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
-    });
-
-    document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = e.target.querySelector('button[type="submit"]');
-      const orig = btn.innerHTML;
-      btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Processing...';
-      btn.disabled = true;
-      lucide.createIcons();
-
-      const formData = {
-        name: document.getElementById('coName').value,
-        email: document.getElementById('coEmail').value,
-        address: document.getElementById('coAddress').value,
-        city: document.getElementById('coCity').value,
-        zip: document.getElementById('coZip').value,
-        items: cart.map(i => ({ id: i.id, name: i.name, qty: i.qty, price: i.price })),
-        total: cart.reduce((s, i) => s + i.price * i.qty, 0)
+      /* ---------- State (persisted) ---------- */
+      const load = (k, fallback) => {
+        try { const v = JSON.parse(localStorage.getItem(k)); return v ?? fallback; }
+        catch { return fallback; }
       };
+      const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 
-      // TODO: connect form action to backend endpoint
-      try {
-        await fetch('/submit', {
+      let cart = load('stylora_cart', {});       // { id: qty }
+      let wishlist = load('stylora_wishlist', []); // [id]
+
+      /* ---------- Toast ---------- */
+      let toastTimer;
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+      }
+
+      /* ---------- Render products ---------- */
+      function renderProducts(filter = 'all') {
+        const list = filter === 'all' ? products : products.filter(p => p.category === filter);
+        productGrid.innerHTML = list.map(p => `
+          <article class="product-card reveal in" data-id="${p.id}">
+            <div class="product-media" style="background: ${p.colors[1]}">
+              <div class="art">${productArt(p.art, p.colors[0], p.colors[1])}</div>
+              <button class="wish-btn ${wishlist.includes(p.id) ? 'active' : ''}" data-wish="${p.id}" aria-label="${wishlist.includes(p.id) ? 'Remove from wishlist' : 'Add to wishlist'}" aria-pressed="${wishlist.includes(p.id)}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="${wishlist.includes(p.id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
+              <button class="add-btn" data-add="${p.id}" aria-label="Add ${p.name} to bag">Add to bag</button>
+            </div>
+            <div class="p-4">
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <span class="text-[0.62rem] font-bold tracking-[0.14em] uppercase" style="color: ${p.colors[0]}">${p.tag}</span>
+                <span class="text-[0.62rem] text-muted uppercase tracking-[0.1em]">${p.category}</span>
+              </div>
+              <h3 class="font-semibold text-[0.95rem] leading-snug mb-1">${p.name}</h3>
+              <p class="font-display font-bold text-lg">$${p.price.toFixed(2)}</p>
+            </div>
+          </article>
+        `).join('');
+
+        // re-bind wish buttons
+        $$('[data-wish]', productGrid).forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleWish(btn.dataset.wish);
+          });
+        });
+        $$('[data-add]', productGrid).forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            addToCart(btn.dataset.add);
+          });
+        });
+      }
+
+      /* ---------- Cart logic ---------- */
+      function addToCart(id) {
+        cart[id] = (cart[id] || 0) + 1;
+        save('stylora_cart', cart);
+        renderCart();
+        updateCounts();
+        showToast('Added to your bag');
+      }
+
+      function removeFromCart(id) {
+        delete cart[id];
+        save('stylora_cart', cart);
+        renderCart();
+        updateCounts();
+      }
+
+      function changeQty(id, delta) {
+        const next = (cart[id] || 0) + delta;
+        if (next <= 0) { removeFromCart(id); return; }
+        cart[id] = next;
+        save('stylora_cart', cart);
+        renderCart();
+        updateCounts();
+      }
+
+      function cartEntries() {
+        return Object.entries(cart)
+          .map(([id, qty]) => ({ product: products.find(p => p.id === id), qty }))
+          .filter(e => e.product);
+      }
+
+      function subtotal() {
+        return cartEntries().reduce((s, e) => s + e.product.price * e.qty, 0);
+      }
+
+      function updateCounts() {
+        const cartN = Object.values(cart).reduce((a, b) => a + b, 0);
+        const wishN = wishlist.length;
+        cartCountEl.textContent = cartN;
+        cartCountEl.style.display = cartN ? 'grid' : 'none';
+        wishCountEl.textContent = wishN;
+        wishCountEl.style.display = wishN ? 'grid' : 'none';
+      }
+
+      function renderCart() {
+        const entries = cartEntries();
+        if (!entries.length) {
+          cartItemsEl.innerHTML = `
+            <div class="h-full flex flex-col items-center justify-center text-center py-16">
+              <div class="w-14 h-14 rounded-full grid place-items-center mb-4 border border-[var(--border)] text-muted">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              </div>
+              <p class="font-semibold mb-1">Your bag is empty</p>
+              <p class="text-xs text-muted max-w-[200px] leading-relaxed">Fill it with something you love from the hype shelf.</p>
+            </div>`;
+        } else {
+          cartItemsEl.innerHTML = entries.map(({ product, qty }) => `
+            <div class="flex gap-3.5 py-4 border-b border-[var(--border)] last:border-0">
+              <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0" style="background:${product.colors[1]}">
+                ${productArt(product.art, product.colors[0], product.colors[1])}
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="min-w-0">
+                    <p class="font-semibold text-[0.85rem] leading-tight truncate">${product.name}</p>
+                    <p class="text-[0.65rem] text-muted mt-0.5 uppercase tracking-[0.1em]">${product.category}</p>
+                  </div>
+                  <button class="text-muted hover:text-neon transition-colors shrink-0" data-remove="${product.id}" aria-label="Remove ${product.name} from bag">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+                <div class="flex items-center justify-between mt-2.5">
+                  <div class="flex items-center gap-2">
+                    <button class="qty-btn" data-minus="${product.id}" aria-label="Decrease quantity">−</button>
+                    <span class="text-sm font-semibold w-5 text-center" aria-live="polite">${qty}</span>
+                    <button class="qty-btn" data-plus="${product.id}" aria-label="Increase quantity">+</button>
+                  </div>
+                  <span class="font-semibold text-sm">$${(product.price * qty).toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          `).join('');
+
+          $$('[data-remove]', cartItemsEl).forEach(b => b.addEventListener('click', () => removeFromCart(b.dataset.remove)));
+          $$('[data-minus]', cartItemsEl).forEach(b => b.addEventListener('click', () => changeQty(b.dataset.minus, -1)));
+          $$('[data-plus]', cartItemsEl).forEach(b => b.addEventListener('click', () => changeQty(b.dataset.plus, 1)));
+        }
+        cartSubtotalEl.textContent = '$' + subtotal().toFixed(2);
+      }
+
+      /* ---------- Wishlist ---------- */
+      function toggleWish(id) {
+        const idx = wishlist.indexOf(id);
+        if (idx > -1) { wishlist.splice(idx, 1); showToast('Removed from wishlist'); }
+        else { wishlist.push(id); showToast('Saved to wishlist'); }
+        save('stylora_wishlist', wishlist);
+        updateCounts();
+        renderWishlist();
+        // update button states in grid
+        $$('[data-wish]', productGrid).forEach(btn => {
+          const active = wishlist.includes(btn.dataset.wish);
+          btn.classList.toggle('active', active);
+          btn.setAttribute('aria-pressed', active);
+          btn.setAttribute('aria-label', active ? 'Remove from wishlist' : 'Add to wishlist');
+          const svgPath = btn.querySelector('svg');
+          if (svgPath) svgPath.setAttribute('fill', active ? 'currentColor' : 'none');
+        });
+      }
+
+      function renderWishlist() {
+        const items = wishlist.map(id => products.find(p => p.id === id)).filter(Boolean);
+        if (!items.length) {
+          wishItemsEl.innerHTML = `
+            <div class="h-full flex flex-col items-center justify-center text-center py-16">
+              <div class="w-14 h-14 rounded-full grid place-items-center mb-4 border border-[var(--border)] text-muted">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+              <p class="font-semibold mb-1">No saves yet</p>
+              <p class="text-xs text-muted max-w-[200px] leading-relaxed">Tap the heart on anything you love to keep it here.</p>
+            </div>`;
+        } else {
+          wishItemsEl.innerHTML = items.map(product => `
+            <div class="flex gap-3.5 py-4 border-b border-[var(--border)] last:border-0">
+              <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0" style="background:${product.colors[1]}">
+                ${productArt(product.art, product.colors[0], product.colors[1])}
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="min-w-0">
+                    <p class="font-semibold text-[0.85rem] leading-tight truncate">${product.name}</p>
+                    <p class="text-[0.65rem] text-muted mt-0.5 uppercase tracking-[0.1em]">${product.category}</p>
+                  </div>
+                  <button class="text-muted hover:text-neon transition-colors shrink-0" data-wish-remove="${product.id}" aria-label="Remove ${product.name} from wishlist">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+                <div class="flex items-center justify-between mt-2.5">
+                  <span class="font-semibold text-sm">$${product.price.toFixed(2)}</span>
+                  <button class="text-[0.7rem] font-bold tracking-[0.1em] uppercase text-neon hover:text-white transition-colors" data-wish-add="${product.id}">Add to bag</button>
+                </div>
+              </div>
+            </div>
+          `).join('');
+
+          $$('[data-wish-remove]', wishItemsEl).forEach(b => b.addEventListener('click', () => toggleWish(b.dataset.wishRemove)));
+          $$('[data-wish-add]', wishItemsEl).forEach(b => b.addEventListener('click', () => {
+            addToCart(b.dataset.wishAdd);
+            toggleWish(b.dataset.wishAdd);
+          }));
+        }
+      }
+
+      /* ---------- Drawers ---------- */
+      function openDrawer(drawer) {
+        drawer.classList.add('open');
+        drawer.setAttribute('aria-hidden', 'false');
+        overlay.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeDrawers() {
+        cartDrawer.classList.remove('open');
+        wishDrawer.classList.remove('open');
+        cartDrawer.setAttribute('aria-hidden', 'true');
+        wishDrawer.setAttribute('aria-hidden', 'true');
+        overlay.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+
+      $('#cartBtn').addEventListener('click', () => { renderCart(); openDrawer(cartDrawer); });
+      $('#wishlistBtn').addEventListener('click', () => { renderWishlist(); openDrawer(wishDrawer); });
+      $('#cartClose').addEventListener('click', closeDrawers);
+      $('#wishClose').addEventListener('click', closeDrawers);
+      $('#continueShopping').addEventListener('click', closeDrawers);
+      overlay.addEventListener('click', closeDrawers);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { closeDrawers(); closeCheckout(); closeMobile(); }
+      });
+
+      /* ---------- Checkout ---------- */
+      function openCheckout() {
+        if (!Object.keys(cart).length) { showToast('Your bag is empty'); return; }
+        renderCheckoutSummary();
+        $('#checkoutForm').classList.remove('hidden');
+        $('#checkoutSuccess').classList.add('hidden');
+        checkoutModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeCheckout() {
+        checkoutModal.classList.remove('open');
+        if (!cartDrawer.classList.contains('open') && !wishDrawer.classList.contains('open')) {
+          document.body.style.overflow = '';
+        }
+      }
+      function renderCheckoutSummary() {
+        const entries = cartEntries();
+        checkoutSummary.innerHTML = entries.map(({ product, qty }) => `
+          <div class="flex justify-between items-center gap-2">
+            <span class="text-muted truncate">${product.name} × ${qty}</span>
+            <span class="font-medium shrink-0">$${(product.price * qty).toFixed(2)}</span>
+          </div>
+        `).join('') + `
+          <div class="flex justify-between items-center gap-2 pt-2 mt-2 border-t border-[var(--border)]">
+            <span class="font-semibold">Subtotal</span>
+            <span class="font-bold">$${subtotal().toFixed(2)}</span>
+          </div>`;
+      }
+
+      $('#checkoutBtn').addEventListener('click', openCheckout);
+      $('#checkoutClose').addEventListener('click', closeCheckout);
+      $('#successClose').addEventListener('click', () => {
+        closeCheckout();
+        closeDrawers();
+        renderProducts(currentFilter);
+      });
+
+      /* validation helper */
+      function setErr(input, msg) {
+        const err = input.parentElement.querySelector('.err');
+        if (msg) {
+          input.style.borderColor = '#ff3d8b';
+          if (err) { err.textContent = msg; err.classList.remove('hidden'); }
+          return false;
+        } else {
+          input.style.borderColor = '';
+          if (err) err.classList.add('hidden');
+          return true;
+        }
+      }
+
+      $('#checkoutForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = $('#coName'), email = $('#coEmail'), address = $('#coAddress'), city = $('#coCity'), zip = $('#coZip');
+        let ok = true;
+
+        if (!name.value.trim()) ok = setErr(name, 'Please enter your name') && ok; else setErr(name, '');
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) ok = setErr(email, 'Enter a valid email') && ok; else setErr(email, '');
+        if (!address.value.trim()) ok = setErr(address, 'Enter your address') && ok; else setErr(address, '');
+        if (!city.value.trim()) ok = setErr(city, 'Enter your city') && ok; else setErr(city, '');
+        if (!zip.value.trim()) ok = setErr(zip, 'Enter your ZIP') && ok; else setErr(zip, '');
+
+        if (!ok) return;
+
+        // TODO: connect form action to backend endpoint
+        const payload = {
+          url: window.location.host,
+          table: 'orders',
+          data: {
+            name: name.value.trim(),
+            email: email.value.trim(),
+            address: address.value.trim(),
+            city: city.value.trim(),
+            zip: zip.value.trim(),
+            items: cartEntries().map(({ product, qty }) => ({ id: product.id, name: product.name, qty, price: product.price })),
+            subtotal: subtotal()
+          }
+        };
+        fetch('submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           cache: 'no-store',
-          body: JSON.stringify({
-            url: window.location.host,
-            table: 'orders',
-            data: formData
-          })
-        });
-      } catch (_) { /* graceful offline fallback */ }
+          body: JSON.stringify(payload)
+        }).catch(() => {}); // demo: ignore network errors
 
-      setTimeout(() => {
-        cart = [];
-        updateCartUI();
-        document.getElementById('checkoutModal').classList.remove('open');
-        e.target.reset();
-        btn.innerHTML = orig;
-        btn.disabled = false;
-        showToast('Order placed! Check your email for confirmation.');
-        lucide.createIcons();
-      }, 800);
-    });
+        // success UI
+        $('#checkoutForm').classList.add('hidden');
+        $('#checkoutSuccess').classList.remove('hidden');
 
-    // ============================================================
-    // NEWSLETTER
-    // ============================================================
-    document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('newsletterEmail').value;
-      if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return; }
-      const btn = e.target.querySelector('button[type="submit"]');
-      const orig = btn.innerHTML;
-      btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Sending...';
-      btn.disabled = true;
-      lucide.createIcons();
+        // reset cart
+        cart = {};
+        save('stylora_cart', cart);
+        renderCart();
+        updateCounts();
+        renderProducts(currentFilter);
+      });
 
-      // TODO: connect form action to backend endpoint
-      try {
-        await fetch('/submit', {
+      /* ---------- Newsletter ---------- */
+      $('#newsletterForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = $('#nlEmail');
+        const err = $('#nlError');
+        const ok = $('#nlSuccess');
+        const val = input.value.trim();
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+          input.style.borderColor = '#ff3d8b';
+          err.textContent = 'Please enter a valid email address.';
+          err.classList.remove('hidden');
+          ok.classList.add('hidden');
+          return;
+        }
+        input.style.borderColor = '';
+        err.classList.add('hidden');
+        ok.classList.remove('hidden');
+        input.value = '';
+
+        // TODO: connect form action to backend endpoint
+        fetch('submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           cache: 'no-store',
           body: JSON.stringify({
             url: window.location.host,
             table: 'newsletter',
-            data: { email }
+            data: { email: val }
           })
+        }).catch(() => {});
+
+        setTimeout(() => ok.classList.add('hidden'), 5000);
+      });
+
+      /* ---------- Category filter ---------- */
+      let currentFilter = 'all';
+      $$('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentFilter = btn.dataset.filter;
+          $$('.filter-btn').forEach(b => {
+            const active = b === btn;
+            b.classList.toggle('active', active);
+            b.setAttribute('aria-pressed', active);
+          });
+          renderProducts(currentFilter);
         });
-      } catch (_) { /* graceful offline fallback */ }
-
-      setTimeout(() => {
-        btn.innerHTML = orig;
-        btn.disabled = false;
-        e.target.reset();
-        showToast('You\'re on the list. Get ready for the drop!');
-        lucide.createIcons();
-      }, 700);
-    });
-
-    // ============================================================
-    // EVENT DELEGATION: CART + WISHLIST
-    // ============================================================
-    document.addEventListener('click', (e) => {
-      const addBtn = e.target.closest('[data-add]');
-      if (addBtn) { addToCart(parseInt(addBtn.dataset.add)); return; }
-
-      const removeBtn = e.target.closest('[data-remove]');
-      if (removeBtn) { removeFromCart(parseInt(removeBtn.dataset.remove)); return; }
-
-      const wishBtn = e.target.closest('[data-wishlist]');
-      if (wishBtn) { toggleWishlist(parseInt(wishBtn.dataset.wishlist)); return; }
-    });
-
-    // ============================================================
-    // CATEGORY FILTER
-    // ============================================================
-    document.getElementById('categoryFilter').addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-filter]');
-      if (!btn) return;
-      document.querySelectorAll('#categoryFilter .filter-btn').forEach(b => {
-        b.classList.remove('active', 'active-yellow');
-        b.setAttribute('aria-selected', 'false');
       });
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
-      activeFilter = btn.dataset.filter;
-      renderProducts();
-    });
 
-    // ============================================================
-    // CATEGORY CARD -> FILTER SHORTCUT
-    // ============================================================
-    document.querySelectorAll('[data-cat]').forEach(card => {
-      card.addEventListener('click', (e) => {
-        e.preventDefault();
-        const cat = card.dataset.cat;
-        activeFilter = cat;
-        document.querySelectorAll('#categoryFilter .filter-btn').forEach(b => {
-          b.classList.toggle('active', b.dataset.filter === cat);
-          b.setAttribute('aria-selected', b.dataset.filter === cat ? 'true' : 'false');
+      // category cards + footer links jump to shop & filter
+      $$('[data-jump-filter]').forEach(el => {
+        el.addEventListener('click', () => {
+          const cat = el.dataset.jumpFilter;
+          const target = $$('.filter-btn').find(b => b.dataset.filter === cat);
+          if (target) target.click();
+          document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
         });
-        renderProducts();
-        document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
       });
-    });
-
-    // ============================================================
-    // HEADER SCROLL EFFECT
-    // ============================================================
-    const header = document.getElementById('mainHeader');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 40) header.classList.add('nav-scrolled');
-      else header.classList.remove('nav-scrolled');
-    }, { passive: true });
-
-    // ============================================================
-    // MOBILE MENU
-    // ============================================================
-    const mobileBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    mobileBtn.addEventListener('click', () => {
-      const isOpen = !mobileMenu.classList.contains('hidden');
-      mobileMenu.classList.toggle('hidden');
-      mobileBtn.setAttribute('aria-expanded', !isOpen);
-    });
-    mobileMenu.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
-        mobileBtn.setAttribute('aria-expanded', 'false');
+      $$('[data-footer-filter]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          const cat = el.dataset.footerFilter;
+          const target = $$('.filter-btn').find(b => b.dataset.filter === cat);
+          if (target) target.click();
+          document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+        });
       });
-    });
 
-    // ============================================================
-    // WISHLIST INDICATOR CLICK -> filter to wishlist
-    // ============================================================
-    document.getElementById('wishlistIndicator').addEventListener('click', () => {
-      if (wishlist.size === 0) { showToast('Your wishlist is empty'); return; }
-      activeFilter = 'wishlist';
-      document.querySelectorAll('#categoryFilter .filter-btn').forEach(b => {
-        b.classList.remove('active'); b.setAttribute('aria-selected', 'false');
+      /* ---------- Mobile menu ---------- */
+      const mobileMenu = $('#mobileMenu');
+      function closeMobile() {
+        mobileMenu.classList.remove('open');
+        $('#menuToggle').setAttribute('aria-expanded', 'false');
+      }
+      $('#menuToggle').addEventListener('click', () => {
+        mobileMenu.classList.add('open');
+        $('#menuToggle').setAttribute('aria-expanded', 'true');
       });
-      const grid = document.getElementById('productGrid');
-      const wishItems = products.filter(p => wishlist.has(p.id));
-      grid.innerHTML = wishItems.map(p => `
-        <div class="product-card reveal visible" data-id="${p.id}">
-          ${p.badge === 'hot' ? `<span class="badge-hot">${p.badgeLabel}</span>` : p.badge === 'new' ? `<span class="badge-new">${p.badgeLabel}</span>` : ''}
-          <div class="img-wrap">
-            <i data-lucide="${p.icon}" class="w-16 h-16" style="color: ${p.iconColor}; opacity: 0.85;"></i>
-            <button class="wishlist-btn absolute top-3 right-3 p-2 rounded-full bg-black/40 backdrop-blur-sm active" 
-              data-wishlist="${p.id}" aria-label="Remove ${p.name} from wishlist">
-              <i data-lucide="heart" class="w-4 h-4"></i>
-            </button>
-          </div>
-          <div class="p-4">
-            <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color: ${p.iconColor}; opacity: 0.7;">${p.category}</p>
-            <h3 class="text-sm font-semibold leading-tight mb-0.5">${p.name}</h3>
-            <p class="text-xs mb-3" style="color: var(--text-muted);">${p.desc}</p>
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-base" style="color: var(--yellow);">${formatPrice(p.price)}</span>
-              <button class="add-to-cart p-2 rounded-full transition hover:scale-110 active:scale-95" 
-                style="background: var(--pink-soft);" data-add="${p.id}" aria-label="Add ${p.name} to cart">
-                <i data-lucide="plus" class="w-4 h-4" style="color: var(--pink);"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      `).join('');
-      lucide.createIcons();
-    });
+      $('#menuClose').addEventListener('click', closeMobile);
+      $$('#mobileMenu a').forEach(a => a.addEventListener('click', closeMobile));
 
-    // ============================================================
-    // INIT
-    // ============================================================
-    renderProducts();
-    updateCartUI();
-    lucide.createIcons();
+      /* ---------- Navbar scroll ---------- */
+      const navbar = $('#navbar');
+      window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 30);
+      }, { passive: true });
+
+      /* ---------- Hero letter animation ---------- */
+      function animateLine(el, text, delayBase) {
+        el.innerHTML = '';
+        [...text].forEach((ch, i) => {
+          const span = document.createElement('span');
+          span.className = 'letter';
+          span.textContent = ch === ' ' ? '\u00A0' : ch;
+          span.style.animationDelay = (delayBase + i * 0.028) + 's';
+          el.appendChild(span);
+        });
+      }
+      animateLine($('#line1'), "WE'RE COMING", 0.15);
+      animateLine($('#line2'), 'SOON', 0.55);
+
+      /* ---------- Scroll reveal ---------- */
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      function observeReveals() {
+        $$('.reveal:not(.in)').forEach(el => io.observe(el));
+      }
+
+      /* ---------- Init ---------- */
+      renderProducts('all');
+      renderCart();
+      renderWishlist();
+      updateCounts();
+      observeReveals();
+      $('#year').textContent = new Date().getFullYear();
+    })();
   </script>
 </body>
 </html>
