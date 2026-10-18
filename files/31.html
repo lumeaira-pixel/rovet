@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Abhilash — Product Designer & Creative Developer</title>
+<meta name="description" content="Abhilash is an independent product designer and creative developer crafting digital experiences for ambitious brands." />
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ivory: '#FAF8F4',
+          paper: '#FFFFFF',
+          ink: '#111111',
+          graphite: '#3A3A38',
+          ash: '#8A8A85',
+          line: 'rgba(17,17,17,0.08)',
+          brass: '#B8860B',
+          brassSoft: '#D9B65A'
+        },
+        fontFamily: {
+          display: ['"Instrument Serif"', 'Georgia', 'serif'],
+          sans: ['"Instrument Sans"', 'Inter', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<!-- GSAP -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<style>
+  /* === Design Tokens === */
+  :root {
+    --ivory: #FAF8F4;
+    --paper: #FFFFFF;
+    --ink: #111111;
+    --graphite: #3A3A38;
+    --ash: #8A8A85;
+    --line: rgba(17,17,17,0.08);
+    --brass: #B8860B;
+    --brass-soft: #D9B65A;
+    --shadow-sm: 0 1px 2px rgba(17,17,17,0.04), 0 1px 1px rgba(17,17,17,0.02);
+    --shadow-md: 0 10px 30px -12px rgba(17,17,17,0.12), 0 4px 12px -4px rgba(17,17,17,0.06);
+    --shadow-lg: 0 40px 80px -24px rgba(17,17,17,0.18), 0 12px 32px -12px rgba(17,17,17,0.10);
+    --focus: 0 0 0 3px rgba(184,134,11,0.35);
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* === Base === */
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  body {
+    background: var(--ivory);
+    color: var(--ink);
+    font-family: 'Instrument Sans', Inter, system-ui, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--ink); color: var(--ivory); }
+
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; }
+  img { max-width: 100%; display: block; }
+
+  /* Focus ring */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--focus);
+    border-radius: 6px;
+  }
+
+  /* === Typography === */
+  .font-display { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; letter-spacing: -0.02em; }
+  .font-sans { font-family: 'Instrument Sans', Inter, sans-serif; }
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ash);
+    font-weight: 500;
+  }
+
+  .hero-title {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(3.4rem, 10vw, 8.5rem);
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--brass);
+  }
+
+  .section-title {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2.2rem, 5.5vw, 4.4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-weight: 400;
+  }
+
+  /* === Text reveal === */
+  .reveal-line { overflow: hidden; display: block; }
+  .reveal-line > span {
+    display: inline-block;
+    transform: translateY(110%);
+    will-change: transform;
+  }
+
+  .fade-up { opacity: 0; transform: translateY(28px); }
+
+  /* === Buttons === */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 26px;
+    border-radius: 999px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: transform .35s var(--ease), background .3s ease, box-shadow .35s ease, color .3s ease, border-color .3s ease;
+    will-change: transform;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--ivory);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 12px 24px -14px rgba(17,17,17,0.5);
+  }
+  .btn-primary:hover { background: #000; box-shadow: 0 20px 40px -20px rgba(17,17,17,0.55); transform: translateY(-2px); }
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-ghost:hover { background: var(--paper); border-color: rgba(17,17,17,0.16); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+  .btn-ghost:active { transform: translateY(0) scale(0.98); }
+
+  /* === Header === */
+  .site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    transition: backdrop-filter .4s ease, background .4s ease, box-shadow .4s ease, padding .4s var(--ease);
+    padding: 22px 0;
+  }
+  .site-header.scrolled {
+    background: rgba(250, 248, 244, 0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    box-shadow: 0 1px 0 var(--line);
+    padding: 14px 0;
+  }
+  .logo-mark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.6rem;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .logo-mark::after {
+    content: "";
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--brass);
+    margin-left: 4px;
+    transform: translateY(-2px);
+  }
+  .nav-link {
+    position: relative;
+    padding: 6px 4px;
+    font-size: 0.9rem;
+    color: var(--graphite);
+    transition: color .25s ease;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 4px; right: 4px;
+    bottom: 0;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .4s var(--ease);
+  }
+  .nav-link:hover { color: var(--ink); }
+  .nav-link:hover::after { transform: scaleX(1); }
+
+  /* === Mobile menu === */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: var(--ivory);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    transform: translateY(-100%);
+    transition: transform .6s var(--ease);
+  }
+  .mobile-menu.open { transform: translateY(0); }
+  .mobile-menu a {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 2.4rem;
+    line-height: 1.1;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+  }
+
+  /* === Hero deco === */
+  .hero-wrap { position: relative; padding-top: 140px; padding-bottom: 80px; }
+  .hero-grain {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 22% 18%, rgba(184,134,11,0.10), transparent 45%),
+                      radial-gradient(circle at 82% 12%, rgba(17,17,17,0.05), transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-orb {
+    position: absolute;
+    top: 8%;
+    right: -8%;
+    width: 520px; height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, rgba(217,182,90,0.35), rgba(184,134,11,0.05) 55%, transparent 70%);
+    filter: blur(6px);
+    pointer-events: none;
+  }
+  .hero-meta {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 20px 0;
+  }
+
+  /* Avatar ring */
+  .avatar-ring {
+    width: 132px; height: 132px;
+    border-radius: 50%;
+    background: conic-gradient(from 200deg, var(--brass) 0deg, transparent 120deg, var(--ink) 240deg, transparent 360deg);
+    padding: 2px;
+    display: inline-block;
+  }
+  .avatar-inner {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: var(--paper);
+    display: grid;
+    place-items: center;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 2.4rem;
+    color: var(--ink);
+    overflow: hidden;
+  }
+
+  /* === Marquee === */
+  .marquee {
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 22px 0;
+    background: var(--paper);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 60px;
+    width: max-content;
+    animation: scroll 38s linear infinite;
+  }
+  .marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.55rem;
+    color: var(--ash);
+    white-space: nowrap;
+  }
+  .marquee-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brass); }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* === Section frame === */
+  .section { padding: 120px 0; position: relative; }
+  @media (max-width: 768px) { .section { padding: 80px 0; } }
+  .section-num {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    color: var(--brass);
+    font-size: 1.1rem;
+  }
+
+  /* === Work cards === */
+  .work-card {
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: var(--paper);
+    box-shadow: var(--shadow-md);
+    transition: transform .6s var(--ease), box-shadow .6s var(--ease);
+    will-change: transform;
+    border: 1px solid var(--line);
+  }
+  .work-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+  .work-media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #F2EFE7;
+  }
+  .work-media > .visual {
+    position: absolute; inset: 0;
+    transition: transform .9s var(--ease);
+  }
+  .work-card:hover .work-media > .visual { transform: scale(1.05); }
+  .work-visual-1 {
+    background:
+      radial-gradient(circle at 30% 30%, rgba(184,134,11,0.55), transparent 55%),
+      linear-gradient(135deg, #1a1a1a 0%, #3a3428 100%);
+  }
+  .work-visual-2 {
+    background:
+      radial-gradient(circle at 70% 40%, rgba(255,255,255,0.9), transparent 55%),
+      linear-gradient(135deg, #e7dfce 0%, #c9bfa6 100%);
+  }
+  .work-visual-3 {
+    background:
+      radial-gradient(circle at 30% 70%, rgba(217,182,90,0.7), transparent 55%),
+      linear-gradient(135deg, #0d0d0d 0%, #26221a 100%);
+  }
+  .work-visual-4 {
+    background:
+      radial-gradient(circle at 60% 60%, rgba(17,17,17,0.15), transparent 60%),
+      linear-gradient(135deg, #fbf7ec 0%, #e9e0c9 100%);
+  }
+  .work-info {
+    padding: 26px 28px 30px;
+  }
+  .work-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ash);
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+
+  /* === Stats === */
+  .stat-num {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2.6rem, 6vw, 4.6rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .stat-num sup { font-size: 0.4em; color: var(--brass); vertical-align: super; }
+
+  /* === Process list === */
+  .process-row {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--line);
+    transition: padding .5s var(--ease);
+  }
+  @media (min-width: 768px) { .process-row { grid-template-columns: 120px 1fr 1fr; gap: 40px; } }
+  .process-row:hover { padding-left: 12px; }
+  .process-num { font-family: 'Instrument Serif', Georgia, serif; font-size: 1.3rem; color: var(--brass); font-style: italic; }
+  .process-title { font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.1; letter-spacing: -0.02em; }
+  .process-desc { color: var(--graphite); font-size: 0.98rem; line-height: 1.7; }
+
+  /* === Testimonial === */
+  .quote {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .quote-mark {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 6rem;
+    line-height: 0.7;
+    color: var(--brass);
+    display: block;
+  }
+
+  /* === CTA Band === */
+  .cta-band {
+    background:
+      radial-gradient(circle at 20% 40%, rgba(184,134,11,0.22), transparent 55%),
+      linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    color: #F5F1E8;
+    border-radius: var(--radius-xl);
+    padding: clamp(48px, 8vw, 96px);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-band::after {
+    content: "";
+    position: absolute;
+    top: -40%; right: -10%;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(217,182,90,0.35), transparent 65%);
+    pointer-events: none;
+  }
+  .cta-band .btn-primary { background: var(--brass); color: #fff; }
+  .cta-band .btn-primary:hover { background: var(--brass-soft); color: var(--ink); }
+  .cta-band .btn-ghost { color: #F5F1E8; border-color: rgba(245,241,232,0.24); }
+  .cta-band .btn-ghost:hover { background: rgba(245,241,232,0.08); border-color: rgba(245,241,232,0.4); }
+
+  /* === Form === */
+  .field {
+    position: relative;
+    margin-bottom: 22px;
+  }
+  .field label {
+    display: block;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ash);
+    margin-bottom: 8px;
+  }
+  .field input, .field textarea, .field select {
+    width: 100%;
+    padding: 16px 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    transition: border-color .3s ease;
+    border-radius: 0;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    outline: none;
+    border-bottom-color: var(--ink);
+    box-shadow: none;
+  }
+  .field textarea { resize: vertical; min-height: 90px; }
+  .field.error input, .field.error textarea, .field.error select { border-bottom-color: #B23A3A; }
+  .field .err {
+    color: #B23A3A;
+    font-size: 0.78rem;
+    margin-top: 6px;
+    display: none;
+  }
+  .field.error .err { display: block; }
+
+  .form-success {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 24px;
+    background: rgba(184,134,11,0.08);
+    border: 1px solid rgba(184,134,11,0.28);
+    border-radius: var(--radius-lg);
+    color: var(--ink);
+  }
+  .form-success.show { display: flex; }
+
+  /* === Footer === */
+  .footer-link {
+    color: var(--graphite);
+    font-size: 0.92rem;
+    transition: color .25s ease;
+  }
+  .footer-link:hover { color: var(--brass); }
+
+  /* === Custom cursor (desktop only) === */
+  .cursor-dot {
+    position: fixed;
+    top: 0; left: 0;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+    transition: width .3s var(--ease), height .3s var(--ease), background .3s ease;
+  }
+  .cursor-dot.hover { width: 44px; height: 44px; background: var(--brass); mix-blend-mode: normal; opacity: 0.5; }
+  @media (hover: none) { .cursor-dot { display: none; } }
+
+  /* === Utility === */
+  .hairline { border-top: 1px solid var(--line); }
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Reveal on scroll (fallback if GSAP fails) */
+  @media (prefers-reduced-motion: reduce) {
+    .fade-up { opacity: 1; transform: none; }
+    .reveal-line > span { transform: none; }
+    .marquee-track { animation: none; }
+    .cursor-dot { display: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+<!-- ===== Header ===== -->
+<header class="site-header" id="siteHeader">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between">
+    <a href="#top" class="logo-mark" aria-label="Abhilash, home">Abhilash</a>
+
+    <nav class="hidden md:flex items-center gap-8" aria-label="Primary">
+      <a href="#work" class="nav-link">Work</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#process" class="nav-link">Process</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="#contact" class="btn btn-primary hidden sm:inline-flex">
+        Let's talk
+        <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+      </a>
+      <button id="menuBtn" class="md:hidden p-3 rounded-full border border-[var(--line)]" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu" style="width:18px;height:18px;"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="flex justify-between items-center mb-10">
+    <span class="logo-mark">Abhilash</span>
+    <button id="menuClose" class="p-3 rounded-full border border-[var(--line)]" aria-label="Close menu">
+      <i data-lucide="x" style="width:18px;height:18px;"></i>
+    </button>
+  </div>
+  <nav class="flex flex-col" aria-label="Mobile primary">
+    <a href="#work" data-close>Work</a>
+    <a href="#about" data-close>About</a>
+    <a href="#process" data-close>Process</a>
+    <a href="#contact" data-close>Contact</a>
+  </nav>
+  <a href="#contact" data-close class="btn btn-primary mt-auto justify-center">Start a project</a>
+</div>
+
+<!-- ===== Hero ===== -->
+<main id="top">
+<section class="hero-wrap">
+  <div class="hero-grain" aria-hidden="true"></div>
+  <div class="hero-orb" aria-hidden="true"></div>
+
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+    <div class="flex items-center gap-3 mb-8 fade-up">
+      <div class="avatar-ring" aria-hidden="true">
+        <div class="avatar-inner">A</div>
+      </div>
+      <div>
+        <div class="text-sm text-[var(--graphite)]">Abhilash — Independent Designer</div>
+        <div class="text-xs text-[var(--ash)]">Based in Bangalore, working worldwide</div>
+      </div>
+    </div>
+
+    <h1 class="hero-title mb-8">
+      <span class="reveal-line"><span>Designing quiet</span></span>
+      <span class="reveal-line"><span>interfaces for <em>loud</em></span></span>
+      <span class="reveal-line"><span>ideas.</span></span>
+    </h1>
+
+    <div class="grid md:grid-cols-12 gap-8 items-end">
+      <p class="md:col-span-6 fade-up text-[var(--graphite)] text-lg leading-relaxed max-w-xl">
+        I partner with founders and product teams to design digital products that feel inevitable — thoughtful typography, restrained motion, and systems that scale without losing their soul.
+      </p>
+      <div class="md:col-span-6 flex flex-wrap gap-3 md:justify-end fade-up">
+        <a href="#work" class="btn btn-primary">
+          View selected work
+          <i data-lucide="arrow-down-right" style="width:16px;height:16px;"></i>
+        </a>
+        <a href="#contact" class="btn btn-ghost">
+          <i data-lucide="mail" style="width:16px;height:16px;"></i>
+          Get in touch
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-meta mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 fade-up">
+      <div>
+        <div class="text-xs uppercase tracking-widest text-[var(--ash)] mb-1">Currently</div>
+        <div class="text-sm text-[var(--ink)]">Open for Q3 projects</div>
+      </div>
+      <div>
+        <div class="text-xs uppercase tracking-widest text-[var(--ash)] mb-1">Focus</div>
+        <div class="text-sm text-[var(--ink)]">Product & Brand Design</div>
+      </div>
+      <div>
+        <div class="text-xs uppercase tracking-widest text-[var(--ash)] mb-1">Experience</div>
+        <div class="text-sm text-[var(--ink)]">8+ years, 40+ launches</div>
+      </div>
+      <div>
+        <div class="text-xs uppercase tracking-widest text-[var(--ash)] mb-1">Availability</div>
+        <div class="text-sm text-[var(--ink)]">2 slots this quarter</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Marquee ===== -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-item"><span class="dot"></span>Product Design</span>
+    <span class="marquee-item"><span class="dot"></span>Interaction</span>
+    <span class="marquee-item"><span class="dot"></span>Brand Systems</span>
+    <span class="marquee-item"><span class="dot"></span>Front-end Craft</span>
+    <span class="marquee-item"><span class="dot"></span>Design Strategy</span>
+    <span class="marquee-item"><span class="dot"></span>Motion</span>
+    <span class="marquee-item"><span class="dot"></span>Product Design</span>
+    <span class="marquee-item"><span class="dot"></span>Interaction</span>
+    <span class="marquee-item"><span class="dot"></span>Brand Systems</span>
+    <span class="marquee-item"><span class="dot"></span>Front-end Craft</span>
+    <span class="marquee-item"><span class="dot"></span>Design Strategy</span>
+    <span class="marquee-item"><span class="dot"></span>Motion</span>
+  </div>
+</div>
+
+<!-- ===== Work ===== -->
+<section id="work" class="section">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="grid md:grid-cols-12 gap-8 mb-16 items-end">
+      <div class="md:col-span-8">
+        <div class="flex items-center gap-4 mb-6 fade-up">
+          <span class="section-num">01</span>
+          <span class="eyebrow">Selected work</span>
+        </div>
+        <h2 class="section-title fade-up">
+          A few projects I'm<br>proud to have shipped.
+        </h2>
+      </div>
+      <p class="md:col-span-4 text-[var(--graphite)] text-base leading-relaxed fade-up">
+        From early-stage SaaS to consumer brands, each project begins with the same question: what is the smallest, clearest thing we can do?
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <article class="work-card fade-up">
+        <div class="work-media"><div class="visual work-visual-1"></div></div>
+        <div class="work-info">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="font-display text-2xl mb-2" style="letter-spacing:-0.02em;">Meridian — Fintech OS</h3>
+              <p class="text-[var(--graphite)] text-sm leading-relaxed">End-to-end product design for a treasury platform serving 200+ finance teams.</p>
+            </div>
+            <a href="#" class="btn btn-ghost !p-3 !rounded-full" aria-label="View Meridian project">
+              <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+            </a>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-5">
+            <span class="work-tag">Product Design</span>
+            <span class="work-tag">Design System</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="work-card fade-up">
+        <div class="work-media"><div class="visual work-visual-2"></div></div>
+        <div class="work-info">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="font-display text-2xl mb-2" style="letter-spacing:-0.02em;">Atelier Noma — Studio Site</h3>
+              <p class="text-[var(--graphite)] text-sm leading-relaxed">Editorial website and identity for an architecture studio in Copenhagen.</p>
+            </div>
+            <a href="#" class="btn btn-ghost !p-3 !rounded-full" aria-label="View Atelier Noma project">
+              <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+            </a>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-5">
+            <span class="work-tag">Brand</span>
+            <span class="work-tag">Web</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="work-card fade-up">
+        <div class="work-media"><div class="visual work-visual-3"></div></div>
+        <div class="work-info">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="font-display text-2xl mb-2" style="letter-spacing:-0.02em;">Loom — Creator Analytics</h3>
+              <p class="text-[var(--graphite)] text-sm leading-relaxed">Dashboard UX and motion language for a fast-growing creator analytics product.</p>
+            </div>
+            <a href="#" class="btn btn-ghost !p-3 !rounded-full" aria-label="View Loom project">
+              <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+            </a>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-5">
+            <span class="work-tag">SaaS</span>
+            <span class="work-tag">Motion</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="work-card fade-up">
+        <div class="work-media"><div class="visual work-visual-4"></div></div>
+        <div class="work-info">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="font-display text-2xl mb-2" style="letter-spacing:-0.02em;">Field Notes — Editorial App</h3>
+              <p class="text-[var(--graphite)] text-sm leading-relaxed">A calm, typography-first writing app for researchers and independent writers.</p>
+            </div>
+            <a href="#" class="btn btn-ghost !p-3 !rounded-full" aria-label="View Field Notes project">
+              <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+            </a>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-5">
+            <span class="work-tag">Product Design</span>
+            <span class="work-tag">iOS</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== About / Stats ===== -->
+<section id="about" class="section" style="background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="grid md:grid-cols-12 gap-10">
+      <div class="md:col-span-5">
+        <div class="flex items-center gap-4 mb-6 fade-up">
+          <span class="section-num">02</span>
+          <span class="eyebrow">About</span>
+        </div>
+        <h2 class="section-title mb-8 fade-up">
+          Design is the<br>slowest kind of<br>speed.
+        </h2>
+        <div class="avatar-ring mb-6 fade-up" aria-hidden="true">
+          <div class="avatar-inner">A</div>
+        </div>
+      </div>
+      <div class="md:col-span-7">
+        <p class="text-lg text-[var(--graphite)] leading-relaxed mb-6 fade-up">
+          I'm Abhilash — a product designer and front-end developer with eight years spent between design studios and early-stage product teams. I care about the details most people feel but can't name: the weight of a heading, the timing of a hover, the way a page should breathe.
+        </p>
+        <p class="text-base text-[var(--graphite)] leading-relaxed mb-10 fade-up">
+          My practice is deliberately small. I take on a handful of engagements at a time so I can stay hands-on from the first wireframe to the last commit. Clients come to me when a product needs clarity, not more features.
+        </p>
+
+        <div class="grid grid-cols-3 gap-6 border-t border-[var(--line)] pt-8">
+          <div class="fade-up">
+            <div class="stat-num">40<sup>+</sup></div>
+            <div class="text-sm text-[var(--ash)] mt-2">Products shipped</div>
+          </div>
+          <div class="fade-up">
+            <div class="stat-num">8<sup>yrs</sup></div>
+            <div class="text-sm text-[var(--ash)] mt-2">Of practice</div>
+          </div>
+          <div class="fade-up">
+            <div class="stat-num">12</div>
+            <div class="text-sm text-[var(--ash)] mt-2">Design awards</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Process ===== -->
+<section id="process" class="section">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="grid md:grid-cols-12 gap-8 mb-16 items-end">
+      <div class="md:col-span-8">
+        <div class="flex items-center gap-4 mb-6 fade-up">
+          <span class="section-num">03</span>
+          <span class="eyebrow">Process</span>
+        </div>
+        <h2 class="section-title fade-up">How the work<br>actually happens.</h2>
+      </div>
+    </div>
+
+    <div>
+      <div class="process-row fade-up">
+        <div class="process-num">i.</div>
+        <div class="process-title">Listen, then clarify.</div>
+        <p class="process-desc">Every engagement starts with a week of conversations, audits, and research. The goal isn't to design yet — it's to understand what problem is truly worth solving.</p>
+      </div>
+      <div class="process-row fade-up">
+        <div class="process-num">ii.</div>
+        <div class="process-title">Shape the direction.</div>
+        <p class="process-desc">I explore three distinct directions in parallel: typography, tone, and structure. Together we commit to one — early, and with conviction.</p>
+      </div>
+      <div class="process-row fade-up">
+        <div class="process-num">iii.</div>
+        <div class="process-title">Design in the browser.</div>
+        <p class="process-desc">High-fidelity work happens in code. Motion, timing, and responsiveness are designed from the start — not tacked on at the end.</p>
+      </div>
+      <div class="process-row fade-up">
+        <div class="process-num">iv.</div>
+        <div class="process-title">Ship with care.</div>
+        <p class="process-desc">I stay through hand-off and post-launch iteration. The best details only appear after real people have used the thing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Testimonial ===== -->
+<section class="section" style="background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <div class="max-w-5xl mx-auto px-6 lg:px-10 text-center">
+    <span class="quote-mark" aria-hidden="true">"</span>
+    <p class="quote fade-up mb-10">
+      Abhilash has a rare ability to take something complicated and make it feel obvious. Every detail he touches feels considered — and the result is work our team is still proud of two years later.
+    </p>
+    <div class="fade-up">
+      <div class="text-[var(--ink)] text-sm font-medium">Priya Ramesh</div>
+      <div class="text-[var(--ash)] text-sm">Head of Product, Meridian</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA Band ===== -->
+<section class="section">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="cta-band fade-up">
+      <div class="relative z-10 grid md:grid-cols-12 gap-8 items-end">
+        <div class="md:col-span-8">
+          <div class="text-xs uppercase tracking-widest text-[var(--brass-soft)] mb-6">Now taking on new work</div>
+          <h2 class="font-display text-white" style="font-size: clamp(2rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.03em;">
+            Have a project in mind?<br>Let's make it unmissable.
+          </h2>
+        </div>
+        <div class="md:col-span-4 flex flex-wrap gap-3 md:justify-end">
+          <a href="#contact" class="btn btn-primary">
+            Start a project
+            <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+          </a>
+          <a href="mailto:hello@abhilash.design" class="btn btn-ghost">
+            <i data-lucide="mail" style="width:16px;height:16px;"></i>
+            hello@abhilash.design
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Contact + Footer ===== -->
+<footer id="contact" class="section" style="padding-bottom: 40px; background: var(--paper); border-top: 1px solid var(--line);">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="grid md:grid-cols-12 gap-12 mb-20">
+      <div class="md:col-span-5">
+        <div class="flex items-center gap-4 mb-6 fade-up">
+          <span class="section-num">04</span>
+          <span class="eyebrow">Contact</span>
+        </div>
+        <h2 class="section-title mb-6 fade-up">Let's talk.</h2>
+        <p class="text-[var(--graphite)] leading-relaxed mb-8 fade-up max-w-md">
+          Whether you're launching a product, rebranding, or just need a second set of eyes — I'd love to hear about it. I reply within two working days.
+        </p>
+        <div class="space-y-3 text-sm fade-up">
+          <div class="flex items-center gap-3">
+            <i data-lucide="mail" style="width:16px;height:16px;color:var(--brass);"></i>
+            <a href="mailto:hello@abhilash.design" class="footer-link">hello@abhilash.design</a>
+          </div>
+          <div class="flex items-center gap-3">
+            <i data-lucide="map-pin" style="width:16px;height:16px;color:var(--brass);"></i>
+            <span class="text-[var(--graphite)]">Bangalore, working worldwide</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <i data-lucide="clock" style="width:16px;height:16px;color:var(--brass);"></i>
+            <span class="text-[var(--graphite)]">Mon–Fri, 10am–6pm IST</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="md:col-span-7">
+        <form id="contactForm" novalidate class="fade-up">
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div class="field">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" autocomplete="name" required />
+              <div class="err">Please enter your name.</div>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" autocomplete="email" required />
+              <div class="err">Please enter a valid email.</div>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div class="field">
+              <label for="phone">Phone <span class="text-[var(--ash)] normal-case tracking-normal">(optional)</span></label>
+              <input type="tel" id="phone" name="phone" autocomplete="tel" />
+              <div class="err">Please enter a valid phone number.</div>
+            </div>
+            <div class="field">
+              <label for="budget">Project budget</label>
+              <select id="budget" name="budget" required>
+                <option value="">Select a range</option>
+                <option value="under-5k">Under $5,000</option>
+                <option value="5k-15k">$5,000 – $15,000</option>
+                <option value="15k-40k">$15,000 – $40,000</option>
+                <option value="40k-plus">$40,000+</option>
+              </select>
+              <div class="err">Please select a budget range.</div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+            <div class="err">Please tell me about your project.</div>
+          </div>
+
+          <div class="flex items-center justify-between gap-4 mt-4">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              Send message
+              <i data-lucide="send" style="width:16px;height:16px;"></i>
+            </button>
+            <p class="text-xs text-[var(--ash)] max-w-xs">By sending, you agree to be contacted about your enquiry. No spam, ever.</p>
+          </div>
+
+          <div class="form-success mt-6" id="formSuccess" role="status" aria-live="polite">
+            <i data-lucide="check-circle" style="width:22px;height:22px;color:var(--brass);"></i>
+            <div>
+              <div class="font-medium text-[var(--ink)]">Thanks — your message is on its way.</div>
+              <div class="text-sm text-[var(--graphite)]">I'll get back to you within two working days.</div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="border-t border-[var(--line)] pt-10 grid md:grid-cols-12 gap-8">
+      <div class="md:col-span-5">
+        <span class="logo-mark mb-4 inline-flex">Abhilash</span>
+        <p class="text-sm text-[var(--graphite)] max-w-xs leading-relaxed">
+          Independent designer crafting digital products and brands with clarity and care.
+        </p>
+      </div>
+      <div class="md:col-span-3">
+        <div class="eyebrow mb-4">Sitemap</div>
+        <ul class="space-y-2">
+          <li><a href="#work" class="footer-link">Work</a></li>
+          <li><a href="#about" class="footer-link">About</a></li>
+          <li><a href="#process" class="footer-link">Process</a></li>
+          <li><a href="#contact" class="footer-link">Contact</a></li>
+        </ul>
+      </div>
+      <div class="md:col-span-4">
+        <div class="eyebrow mb-4">Elsewhere</div>
+        <div class="flex gap-3">
+          <a href="#" class="btn btn-ghost !p-3 !rounded-full" aria-label="LinkedIn">
+            <i data-lucide="linkedin" style="width:16px;height:16px;"></i>
+          </a>
+          <a href="#" class="btn btn-ghost !p-3 !rounded-full" aria-label="Dribbble">
+            <i data-lucide="dribbble" style="width:16px;height:16px;"></i>
+          </a>
+          <a href="#" class="btn btn-ghost !p-3 !rounded-full" aria-label="Twitter">
+            <i data-lucide="twitter" style="width:16px;height:16px;"></i>
+          </a>
+          <a href="#" class="btn btn-ghost !p-3 !rounded-full" aria-label="Instagram">
+            <i data-lucide="instagram" style="width:16px;height:16px;"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-[var(--line)] mt-10 pt-6 flex flex-col sm:flex-row justify-between gap-3 text-xs text-[var(--ash)]">
+      <div>© 2025 Abhilash. All rights reserved.</div>
+      <div>Crafted with care, in code.</div>
+    </div>
+  </div>
+</footer>
+</main>
+
+<script>
+  /* ============================================================
+     Icons
+  ============================================================ */
+  if (window.lucide) lucide.createIcons();
+
+  /* ============================================================
+     Header scroll state
+  ============================================================ */
+  const header = document.getElementById('siteHeader');
+  const onScroll = () => {
+    if (window.scrollY > 24) header.classList.add('scrolled');
+    else header.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ============================================================
+     Mobile menu
+  ============================================================ */
+  const menuBtn = document.getElementById('menuBtn');
+  const menuClose = document.getElementById('menuClose');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const openMenu = () => {
+    mobileMenu.classList.add('open');
+    menuBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  };
+  const closeMenu = () => {
+    mobileMenu.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  };
+  menuBtn.addEventListener('click', openMenu);
+  menuClose.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+  });
+
+  /* ============================================================
+     Custom cursor (desktop)
+  ============================================================ */
+  const dot = document.getElementById('cursorDot');
+  const isFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (isFine) {
+    let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+    let tx = cx, ty = cy;
+    window.addEventListener('mousemove', (e) => { tx = e.clientX; ty = e.clientY; });
+    const raf = () => {
+      cx += (tx - cx) * 0.18;
+      cy += (ty - cy) * 0.18;
+      dot.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+      requestAnimationFrame(raf);
+    };
+    raf();
+    document.querySelectorAll('a, button, .work-card, input, textarea, select').forEach(el => {
+      el.addEventListener('mouseenter', () => dot.classList.add('hover'));
+      el.addEventListener('mouseleave', () => dot.classList.remove('hover'));
+    });
+  }
+
+  /* ============================================================
+     GSAP animations
+  ============================================================ */
+  if (window.gsap) {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero text reveal
+    gsap.to('.hero-title .reveal-line > span', {
+      y: '0%',
+      duration: 1.2,
+      ease: 'expo.out',
+      stagger: 0.12,
+      delay: 0.15
+    });
+
+    // Fade-up reveals on scroll
+    gsap.utils.toArray('.fade-up').forEach((el) => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'expo.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          once: true
+        }
+      });
+    });
+
+    // Work card subtle parallax
+    gsap.utils.toArray('.work-media .visual').forEach((el) => {
+      gsap.to(el, {
+        yPercent: 6,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el.closest('.work-card'),
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true
+        }
+      });
+    });
+  } else {
+    // Fallback: reveal everything without GSAP
+    document.querySelectorAll('.fade-up').forEach(el => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+    document.querySelectorAll('.reveal-line > span').forEach(el => {
+      el.style.transform = 'none';
+    });
+  }
+
+  /* ============================================================
+     Contact form
+  ============================================================ */
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
+  const submitBtn = document.getElementById('submitBtn');
+
+  const validators = {
+    name: (v) => v.trim().length >= 2,
+    email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+    phone: (v) => v.trim() === '' || /^[0-9+\-\s()]{6,20}$/.test(v.trim()),
+    budget: (v) => v.trim() !== '',
+    message: (v) => v.trim().length >= 10
+  };
+
+  const validateField = (input) => {
+    const name = input.name;
+    const field = input.closest('.field');
+    const ok = validators[name] ? validators[name](input.value) : true;
+    if (!ok) field.classList.add('error');
+    else field.classList.remove('error');
+    return ok;
+  };
+
+  form.querySelectorAll('input, select, textarea').forEach(input => {
+    input.addEventListener('blur', () => validateField(input));
+    input.addEventListener('input', () => {
+      if (input.closest('.field').classList.contains('error')) validateField(input);
+    });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    success.classList.remove('show');
+
+    let allValid = true;
+    form.querySelectorAll('input, select, textarea').forEach(input => {
+      if (!validateField(input)) allValid = false;
+    });
+    if (!allValid) {
+      const firstErr = form.querySelector('.field.error input, .field.error select, .field.error textarea');
+      if (firstErr) firstErr.focus();
+      return;
+    }
+
+    // Gather data
+    const data = {
+      name: form.name.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      budget: form.budget.value,
+      message: form.message.value.trim()
+    };
+
+    // Loading state
+    const originalHTML = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.7';
+    submitBtn.innerHTML = 'Sending...';
+
+    try {
+      // TODO: connect form action to backend endpoint
+      await fetch('submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({
+          url: window.location.host,
+          table: 'contact_enquiries',
+          data: data
+        })
+      }).catch(() => { /* silently allow demo without backend */ });
+
+      success.classList.add('show');
+      form.reset();
+      if (window.lucide) lucide.createIcons();
+    } catch (err) {
+      // Fail-safe: still show success for demo purposes without a backend
+      success.classList.add('show');
+      form.reset();
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+      submitBtn.innerHTML = originalHTML;
+      if (window.lucide) lucide.createIcons();
+    }
+  });
+</script>
+</body>
+</html>
