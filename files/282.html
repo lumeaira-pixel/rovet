@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hammus · Mediterranean Fine Dining</title>
+  <!-- Palette: Cream #FCFAF6 · Charcoal #1C1B19 · Saffron #C8912A · Olive #7A7B58 · Sand #EAE3D6 -->
+  <!-- Fonts: Instrument Serif (display) + Inter (body) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --cream: #fcfaf6;
+      --cream-2: #f7f3ec;
+      --sand: #eae3d6;
+      --ink: #1c1b19;
+      --ink-soft: #4a4741;
+      --saffron: #c8912a;
+      --saffron-deep: #a3731c;
+      --olive: #7a7b58;
+      --focus-ring: 0 0 0 3px rgba(200, 145, 42, 0.5);
+      --shadow-sm: 0 2px 10px rgba(28, 27, 25, 0.04);
+      --shadow-md: 0 14px 40px rgba(28, 27, 25, 0.07);
+      --shadow-lg: 0 28px 70px rgba(28, 27, 25, 0.1);
+    }
+
+    /* === Base === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4 { font-family: 'Instrument Serif', serif; font-weight: 400; line-height: 1.05; letter-spacing: -0.02em; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; }
+    :focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 6px; }
+
+    /* === Layout === */
+    .container-wide { width: 100%; max-width: 1320px; margin-inline: auto; padding-inline: 1.5rem; }
+    @media (min-width: 768px) { .container-wide { padding-inline: 2.5rem; } }
+    @media (min-width: 1280px) { .container-wide { padding-inline: 4rem; } }
+    .section-pad { padding-block: 5rem; }
+    @media (min-width: 768px) { .section-pad { padding-block: 7rem; } }
+
+    /* === Typography === */
+    .display-xl { font-size: clamp(3rem, 8vw, 6.4rem); line-height: 0.94; letter-spacing: -0.03em; }
+    .display-lg { font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1.05; letter-spacing: -0.025em; }
+    .display-md { font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1.15; }
+    .eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--saffron-deep);
+    }
+
+    /* === Buttons === */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.01em;
+      padding: 0.9rem 1.8rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .btn-primary { background-color: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .btn-primary:hover { background-color: #2c2a26; transform: translateY(-2px); box-shadow: 0 14px 30px rgba(28, 27, 25, 0.2); }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn-outline { background: transparent; color: var(--ink); border-color: rgba(28, 27, 25, 0.2); }
+    .btn-outline:hover { background: rgba(28, 27, 25, 0.04); border-color: rgba(28, 27, 25, 0.35); transform: translateY(-2px); }
+    .btn-outline:active { transform: translateY(0) scale(0.98); }
+    .btn-saffron { background: var(--saffron); color: #1c1b19; border-color: var(--saffron); }
+    .btn-saffron:hover { background: var(--saffron-deep); border-color: var(--saffron-deep); color: var(--cream); transform: translateY(-2px); box-shadow: 0 14px 30px rgba(200, 145, 42, 0.3); }
+    .btn-saffron:active { transform: translateY(0) scale(0.98); }
+
+    /* === Header === */
+    .site-header {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+      padding-block: 1.2rem; transition: all 0.35s ease; background: transparent;
+    }
+    .site-header.scrolled {
+      padding-block: 0.7rem;
+      background: rgba(252, 250, 246, 0.82);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(28, 27, 25, 0.06);
+      box-shadow: 0 4px 24px rgba(28, 27, 25, 0.03);
+    }
+    .nav-link { font-size: 0.88rem; font-weight: 400; color: var(--ink-soft); position: relative; transition: color 0.2s ease; }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link::after { content: ''; position: absolute; left: 0; bottom: -4px; width: 0; height: 1px; background-color: var(--saffron); transition: width 0.3s ease; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      position: fixed; inset: 0; background: var(--cream); z-index: 99;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      gap: 2rem; opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: all; }
+    .mobile-menu a { font-family: 'Instrument Serif', serif; font-size: 2.2rem; color: var(--ink); transition: color 0.2s ease; }
+    .mobile-menu a:hover { color: var(--saffron-deep); }
+
+    /* === Hero === */
+    .hero { min-height: 100vh; display: flex; align-items: center; position: relative; padding-top: 6rem; overflow: hidden; }
+    .hero-glow-1 {
+      position: absolute; top: -20%; right: -10%; width: 60vw; height: 60vw;
+      max-width: 780px; max-height: 780px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(200, 145, 42, 0.14), transparent 70%);
+      pointer-events: none;
+    }
+    .hero-glow-2 {
+      position: absolute; bottom: -18%; left: -12%; width: 42vw; height: 42vw;
+      max-width: 560px; max-height: 560px; border-radius: 50%;
+      background: radial-gradient(circle at 70% 70%, rgba(122, 123, 88, 0.09), transparent 70%);
+      pointer-events: none;
+    }
+    .hero-image-wrap { border-radius: 2rem; overflow: hidden; box-shadow: var(--shadow-lg); position: relative; perspective: 1200px; }
+    .hero-image-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s cubic-bezier(0.2, 0.9, 0.3, 1); }
+    .hero-image-wrap:hover img { transform: scale(1.04); }
+
+    /* === Marquee === */
+    .marquee { overflow: hidden; white-space: nowrap; border-top: 1px solid rgba(28,27,25,0.07); border-bottom: 1px solid rgba(28,27,25,0.07); padding-block: 1.2rem; background: var(--cream-2); }
+    .marquee-inner { display: inline-flex; gap: 2.5rem; animation: marquee-scroll 34s linear infinite; }
+    .marquee-inner span { font-size: 0.78rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-soft); display: inline-flex; align-items: center; gap: 0.6rem; }
+    .marquee-inner span i { color: var(--saffron); }
+    @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* === Menu === */
+    .menu-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .menu-tab {
+      font-size: 0.85rem; font-weight: 500; padding: 0.6rem 1.4rem; border-radius: 999px;
+      border: 1px solid rgba(28, 27, 25, 0.12); background: transparent; color: var(--ink-soft);
+      cursor: pointer; transition: all 0.25s ease;
+    }
+    .menu-tab:hover { border-color: var(--saffron); color: var(--ink); }
+    .menu-tab.active { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+    .menu-card {
+      background: #ffffff; border: 1px solid rgba(28, 27, 25, 0.06); border-radius: 1.5rem;
+      padding: 1.8rem; transition: all 0.3s ease; box-shadow: var(--shadow-sm);
+    }
+    .menu-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(200, 145, 42, 0.3); }
+    .menu-price { font-family: 'Instrument Serif', serif; font-size: 1.4rem; color: var(--saffron-deep); }
+
+    /* === Gallery === */
+    .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 210px; gap: 1rem; }
+    @media (max-width: 767px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 160px; gap: 0.75rem; } }
+    .gallery-item { border-radius: 1.2rem; overflow: hidden; position: relative; cursor: pointer; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1); }
+    .gallery-item:hover img { transform: scale(1.06); }
+    .gallery-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(28,27,25,0.2), transparent 55%); opacity: 0; transition: opacity 0.3s ease; }
+    .gallery-item:hover::after { opacity: 1; }
+    .gallery-item.tall { grid-row: span 2; }
+    .gallery-item.wide { grid-column: span 2; }
+
+    /* === Reviews === */
+    .review-card { background: #ffffff; border: 1px solid rgba(28, 27, 25, 0.06); border-radius: 1.5rem; padding: 2rem; box-shadow: var(--shadow-sm); transition: all 0.3s ease; }
+    .review-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .star-rating { display: flex; gap: 0.2rem; color: var(--saffron); }
+
+    /* === Location === */
+    .map-container { border-radius: 1.5rem; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid rgba(28,27,25,0.06); background: var(--cream-2); min-height: 420px; position: relative; }
+    .map-placeholder { width: 100%; height: 100%; min-height: 420px; background: url('https://images.pexels.com/photos/1105766/pexels-photo-1105766.jpeg?auto=compress&cs=tinysrgb&w=1200') center/cover; position: relative; }
+    .map-placeholder::after { content: ''; position: absolute; inset: 0; background: rgba(252, 250, 246, 0.3); }
+
+    /* === Forms === */
+    .form-input {
+      width: 100%; font-family: 'Inter', sans-serif; font-size: 0.9rem; padding: 0.9rem 1.2rem;
+      border-radius: 0.9rem; border: 1px solid rgba(28, 27, 25, 0.12); background: #ffffff;
+      color: var(--ink); transition: all 0.25s ease;
+    }
+    .form-input:focus { border-color: var(--saffron); box-shadow: 0 0 0 3px rgba(200, 145, 42, 0.18); outline: none; }
+    .form-input::placeholder { color: #9a9a9a; }
+    .form-label { font-size: 0.8rem; font-weight: 500; color: var(--ink-soft); margin-bottom: 0.4rem; display: block; }
+    .error-message { font-size: 0.75rem; color: #b3392c; margin-top: 0.3rem; display: none; }
+    .form-input.invalid { border-color: #b3392c; }
+    .form-input.invalid + .error-message { display: block; }
+    .success-message {
+      display: none; background: rgba(200, 145, 42, 0.1); border: 1px solid var(--saffron);
+      border-radius: 0.9rem; padding: 1rem 1.4rem; color: var(--saffron-deep); font-size: 0.9rem; text-align: center;
+    }
+    .success-message.show { display: block; }
+
+    /* === Footer === */
+    .footer { background: var(--ink); color: var(--cream); }
+    .footer a { color: rgba(252, 250, 246, 0.65); transition: color 0.2s ease; }
+    .footer a:hover { color: var(--saffron); }
+    .footer .form-input { background: rgba(252, 250, 246, 0.06); border-color: rgba(252, 250, 246, 0.12); color: var(--cream); }
+    .footer .form-input:focus { border-color: var(--saffron); background: rgba(252, 250, 246, 0.1); }
+    .footer .form-input::placeholder { color: rgba(252, 250, 246, 0.4); }
+    .footer .form-label { color: rgba(252, 250, 246, 0.55); }
+    .footer .error-message { color: #e8a08e; }
+
+    /* === Reveal === */
+    .reveal-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.8s cubic-bezier(0.2, 0.9, 0.3, 1); }
+    .reveal-up.visible { opacity: 1; transform: translateY(0); }
+    .stagger-1 { transition-delay: 0.08s; }
+    .stagger-2 { transition-delay: 0.16s; }
+    .stagger-3 { transition-delay: 0.24s; }
+    .stagger-4 { transition-delay: 0.32s; }
+
+    /* === Noise === */
+    .noise-overlay {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* === Accessibility === */
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
+  </style>
+</head>
+<body>
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header" id="siteHeader">
+    <div class="container-wide flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-2" aria-label="Hammus home">
+        <span style="font-family:'Instrument Serif',serif;font-size:1.9rem;letter-spacing:-0.02em;color:var(--ink);">Hammus</span>
+        <span style="width:5px;height:5px;border-radius:50%;background:var(--saffron);display:inline-block;margin-top:8px;"></span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#menu" class="nav-link">Menu</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#reviews" class="nav-link">Reviews</a>
+        <a href="#location" class="nav-link">Location</a>
+        <a href="#reserve" class="btn btn-primary" style="padding:0.7rem 1.5rem;font-size:0.82rem;">Reserve</a>
+      </nav>
+
+      <button class="md:hidden flex items-center justify-center" id="mobileToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" style="width:40px;height:40px;background:transparent;border:none;cursor:pointer;">
+        <i data-lucide="menu" style="width:22px;height:22px;color:var(--ink);"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true" role="dialog" aria-label="Mobile navigation">
+    <button id="mobileClose" aria-label="Close menu" style="position:absolute;top:1.5rem;right:1.5rem;width:44px;height:44px;background:transparent;border:none;cursor:pointer;">
+      <i data-lucide="x" style="width:26px;height:26px;color:var(--ink);"></i>
+    </button>
+    <a href="#menu">Menu</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#location">Location</a>
+    <a href="#reserve" style="font-size:1.2rem;padding:0.8rem 2rem;border-radius:999px;background:var(--ink);color:var(--cream);font-family:'Inter',sans-serif;font-weight:500;">Reserve a Table</a>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="top">
+    <div class="hero-glow-1" aria-hidden="true"></div>
+    <div class="hero-glow-2" aria-hidden="true"></div>
+    <div class="container-wide w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+        <div class="lg:col-span-6 xl:col-span-5">
+          <p class="eyebrow mb-5 reveal-up">Mediterranean kitchen · Est. 2016</p>
+          <h1 class="display-xl reveal-up stagger-1" style="color:var(--ink);">
+            Slow fire,<br>
+            warm bread,<br>
+            <em style="font-style:italic;color:var(--saffron-deep);">good company.</em>
+          </h1>
+          <p class="mt-7 text-base md:text-lg reveal-up stagger-2" style="color:var(--ink-soft);max-width:430px;line-height:1.75;">
+            Hammus is a tribute to the generous table — charcoal-grilled meats, hand-pressed mezze, and olive oil poured like it matters. Because it does.
+          </p>
+          <div class="mt-9 flex flex-wrap gap-4 reveal-up stagger-3">
+            <a href="#reserve" class="btn btn-primary">
+              Reserve a table
+              <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+            </a>
+            <a href="#menu" class="btn btn-outline">Explore the menu</a>
+          </div>
+          <div class="mt-12 flex items-center gap-8 reveal-up stagger-4">
+            <div>
+              <p style="font-family:'Instrument Serif',serif;font-size:1.8rem;line-height:1;color:var(--ink);">4.9</p>
+              <p style="font-size:0.72rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.12em;margin-top:4px;">Guest rating</p>
+            </div>
+            <div style="width:1px;height:32px;background:rgba(28,27,25,0.12);"></div>
+            <div>
+              <p style="font-family:'Instrument Serif',serif;font-size:1.8rem;line-height:1;color:var(--ink);">32</p>
+              <p style="font-size:0.72rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.12em;margin-top:4px;">Mezze dishes</p>
+            </div>
+            <div style="width:1px;height:32px;background:rgba(28,27,25,0.12);"></div>
+            <div>
+              <p style="font-family:'Instrument Serif',serif;font-size:1.8rem;line-height:1;color:var(--ink);">9</p>
+              <p style="font-size:0.72rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.12em;margin-top:4px;">Years of fire</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 xl:col-span-7 reveal-up stagger-2">
+          <div class="hero-image-wrap" style="aspect-ratio: 4/3;">
+            <img
+              src="https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=1400"
+              alt="Warm, candlelit dining room at Hammus with mezze plates on the table"
+              loading="eager" width="1400" height="1050"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-inner">
+      <span><i data-lucide="flame" style="width:14px;height:14px;"></i> Charcoal grill</span>
+      <span><i data-lucide="wheat" style="width:14px;height:14px;"></i> Hand-pressed mezze</span>
+      <span><i data-lucide="droplet" style="width:14px;height:14px;"></i> Single-estate olive oil</span>
+      <span><i data-lucide="leaf" style="width:14px;height:14px;"></i> Market vegetables</span>
+      <span><i data-lucide="wine" style="width:14px;height:14px;"></i> Levantine wines</span>
+      <span><i data-lucide="star" style="width:14px;height:14px;"></i> Best Mediterranean 2024</span>
+      <span><i data-lucide="flame" style="width:14px;height:14px;"></i> Charcoal grill</span>
+      <span><i data-lucide="wheat" style="width:14px;height:14px;"></i> Hand-pressed mezze</span>
+      <span><i data-lucide="droplet" style="width:14px;height:14px;"></i> Single-estate olive oil</span>
+      <span><i data-lucide="leaf" style="width:14px;height:14px;"></i> Market vegetables</span>
+      <span><i data-lucide="wine" style="width:14px;height:14px;"></i> Levantine wines</span>
+      <span><i data-lucide="star" style="width:14px;height:14px;"></i> Best Mediterranean 2024</span>
+    </div>
+  </div>
+
+  <!-- ============ MENU ============ -->
+  <section class="section-pad" id="menu">
+    <div class="container-wide">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
+        <div class="reveal-up">
+          <p class="eyebrow mb-4">The menu</p>
+          <h2 class="display-lg">Made to be<br>shared — or not</h2>
+        </div>
+        <p class="reveal-up stagger-1" style="max-width:360px;color:var(--ink-soft);font-size:0.95rem;line-height:1.7;">
+          Our kitchen is built around the charcoal grill and the mezze counter. Every dish is meant for the middle of the table, the way it should be.
+        </p>
+      </div>
+
+      <div class="menu-tabs mb-10 reveal-up stagger-1" role="tablist" aria-label="Menu categories">
+        <button class="menu-tab active" role="tab" aria-selected="true" data-category="mezze">Mezze</button>
+        <button class="menu-tab" role="tab" aria-selected="false" data-category="grill">From the Grill</button>
+        <button class="menu-tab" role="tab" aria-selected="false" data-category="sweets">Sweets</button>
+        <button class="menu-tab" role="tab" aria-selected="false" data-category="drinks">Drinks</button>
+      </div>
+
+      <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- ============ GALLERY ============ -->
+  <section class="section-pad" id="gallery" style="background:var(--cream-2);">
+    <div class="container-wide">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+        <div class="reveal-up">
+          <p class="eyebrow mb-4">The room</p>
+          <h2 class="display-lg">Terracotta,<br>linen, low light</h2>
+        </div>
+        <p class="reveal-up stagger-1" style="max-width:360px;color:var(--ink-soft);font-size:0.95rem;line-height:1.7;">
+          A long room with a long table in the middle of it. A charcoal grill you can see from every seat. The smell of bread, always.
+        </p>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="gallery-item tall reveal-up">
+          <img src="https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Long communal table with warm pendant lighting" loading="lazy" width="900" height="1100" />
+        </div>
+        <div class="gallery-item reveal-up stagger-1">
+          <img src="https://images.pexels.com/photos/5410400/pexels-photo-5410400.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Freshly made hummus with olive oil and pine nuts" loading="lazy" width="900" height="700" />
+        </div>
+        <div class="gallery-item wide reveal-up stagger-2">
+          <img src="https://images.pexels.com/photos/2696064/pexels-photo-2696064.jpeg?auto=compress&cs=tinysrgb&w=1300" alt="Charcoal grill with skewers of meat" loading="lazy" width="1300" height="700" />
+        </div>
+        <div class="gallery-item reveal-up stagger-1">
+          <img src="https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Mezze spread with olives and warm bread" loading="lazy" width="900" height="700" />
+        </div>
+        <div class="gallery-item reveal-up stagger-2">
+          <img src="https://images.pexels.com/photos/1058277/pexels-photo-1058277.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Chef plating a dish with hands" loading="lazy" width="900" height="700" />
+        </div>
+        <div class="gallery-item tall reveal-up stagger-3">
+          <img src="https://images.pexels.com/photos/260922/pexels-photo-260922.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Dining room wall with terracotta tiles" loading="lazy" width="900" height="1100" />
+        </div>
+        <div class="gallery-item wide reveal-up stagger-3">
+          <img src="https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg?auto=compress&cs=tinysrgb&w=1300" alt="Wine bottles lined against a warm wall" loading="lazy" width="1300" height="700" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REVIEWS ============ -->
+  <section class="section-pad" id="reviews">
+    <div class="container-wide">
+      <div class="text-center mb-14 reveal-up">
+        <p class="eyebrow mb-4">Guest voices</p>
+        <h2 class="display-lg">From the<br>people at our tables</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="review-card reveal-up">
+          <div class="star-rating mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+          </div>
+          <p style="font-size:0.95rem;line-height:1.75;color:var(--ink-soft);">"The hummus alone is worth the trip — silky, smoky, with a pool of green olive oil. We ordered it three times. No regrets."</p>
+          <div class="mt-6 flex items-center gap-3">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--sand);display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:1rem;color:var(--saffron-deep);">N</div>
+            <div>
+              <p style="font-size:0.85rem;font-weight:500;">Nadia Ferreira</p>
+              <p style="font-size:0.72rem;color:var(--ink-soft);">Local food writer</p>
+            </div>
+          </div>
+        </div>
+        <div class="review-card reveal-up stagger-1">
+          <div class="star-rating mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+          </div>
+          <p style="font-size:0.95rem;line-height:1.75;color:var(--ink-soft);">"We came for a birthday and left feeling like family. The lamb was perfect, the wine list is full of surprises, and the staff genuinely care."</p>
+          <div class="mt-6 flex items-center gap-3">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--sand);display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:1rem;color:var(--saffron-deep);">D</div>
+            <div>
+              <p style="font-size:0.85rem;font-weight:500;">Daniel Okafor</p>
+              <p style="font-size:0.72rem;color:var(--ink-soft);">Birthday dinner</p>
+            </div>
+          </div>
+        </div>
+        <div class="review-card reveal-up stagger-2">
+          <div class="star-rating mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+          </div>
+          <p style="font-size:0.95rem;line-height:1.75;color:var(--ink-soft);">"Hammus has become our Friday ritual. Warm bread, a bottle of something orange, and the mezze platter. The room smells like fire and lemon."</p>
+          <div class="mt-6 flex items-center gap-3">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--sand);display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:1rem;color:var(--saffron-deep);">S</div>
+            <div>
+              <p style="font-size:0.85rem;font-weight:500;">Sofia & Eli</p>
+              <p style="font-size:0.72rem;color:var(--ink-soft);">Regular guests</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LOCATION ============ -->
+  <section class="section-pad" id="location" style="background:var(--cream-2);">
+    <div class="container-wide">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="reveal-up">
+          <p class="eyebrow mb-4">Find us</p>
+          <h2 class="display-lg mb-6">Tucked into<br>the old market lane</h2>
+          <p style="color:var(--ink-soft);font-size:0.95rem;line-height:1.75;max-width:410px;margin-bottom:2rem;">
+            A short walk from the river, on the quiet side of the market. Look for the terracotta wall, the brass lantern, and the smell of charcoal.
+          </p>
+          <div class="flex flex-col gap-4">
+            <div class="flex items-start gap-3">
+              <i data-lucide="map-pin" style="width:18px;height:18px;color:var(--saffron-deep);margin-top:2px;"></i>
+              <div>
+                <p style="font-size:0.9rem;font-weight:500;">14 Market Lane</p>
+                <p style="font-size:0.82rem;color:var(--ink-soft);">Old Town, Bristol BS1 4QA</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="clock" style="width:18px;height:18px;color:var(--saffron-deep);margin-top:2px;"></i>
+              <div>
+                <p style="font-size:0.9rem;font-weight:500;">Wednesday – Sunday</p>
+                <p style="font-size:0.82rem;color:var(--ink-soft);">Lunch 12:00 – 15:00 · Dinner 17:30 – 22:00</p>
+                <p style="font-size:0.82rem;color:var(--ink-soft);">Closed Monday & Tuesday</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="phone" style="width:18px;height:18px;color:var(--saffron-deep);margin-top:2px;"></i>
+              <div>
+                <p style="font-size:0.9rem;font-weight:500;">+44 (0)117 496 2200</p>
+                <p style="font-size:0.82rem;color:var(--ink-soft);">hello@hammus.co.uk</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="map-container reveal-up stagger-1" role="img" aria-label="Map showing Hammus restaurant location near the old market">
+          <div class="map-placeholder"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESERVATION ============ -->
+  <section class="section-pad" id="reserve">
+    <div class="container-wide">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
+        <div class="lg:col-span-2 reveal-up">
+          <p class="eyebrow mb-4">Reservations</p>
+          <h2 class="display-lg mb-6">Pull up<br>a chair</h2>
+          <p style="color:var(--ink-soft);font-size:0.95rem;line-height:1.75;max-width:380px;">
+            We keep a handful of seats for walk-ins, but the good nights fill up fast — especially for the counter by the grill.
+          </p>
+          <div class="mt-8 flex items-center gap-3" style="color:var(--ink-soft);font-size:0.85rem;">
+            <i data-lucide="info" style="width:16px;height:16px;color:var(--saffron-deep);"></i>
+            <span>For groups of 7 or more, please email us directly.</span>
+          </div>
+        </div>
+
+        <div class="lg:col-span-3 reveal-up stagger-1">
+          <form id="reservationForm" novalidate>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="form-label" for="resName">Full name</label>
+                <input class="form-input" type="text" id="resName" name="name" placeholder="Your name" required autocomplete="name" />
+                <p class="error-message" id="resNameError">Please enter your full name.</p>
+              </div>
+              <div>
+                <label class="form-label" for="resEmail">Email address</label>
+                <input class="form-input" type="email" id="resEmail" name="email" placeholder="you@example.com" required autocomplete="email" />
+                <p class="error-message" id="resEmailError">Please enter a valid email.</p>
+              </div>
+              <div>
+                <label class="form-label" for="resPhone">Phone number</label>
+                <input class="form-input" type="tel" id="resPhone" name="phone" placeholder="+44 7700 900000" required autocomplete="tel" />
+                <p class="error-message" id="resPhoneError">Please enter your phone number.</p>
+              </div>
+              <div>
+                <label class="form-label" for="resDate">Preferred date</label>
+                <input class="form-input" type="date" id="resDate" name="date" required />
+                <p class="error-message" id="resDateError">Please choose a date.</p>
+              </div>
+              <div>
+                <label class="form-label" for="resGuests">Guests</label>
+                <select class="form-input" id="resGuests" name="guests" required>
+                  <option value="">Select party size</option>
+                  <option value="1">1 guest</option>
+                  <option value="2">2 guests</option>
+                  <option value="3">3 guests</option>
+                  <option value="4">4 guests</option>
+                  <option value="5">5 guests</option>
+                  <option value="6">6 guests</option>
+                </select>
+                <p class="error-message" id="resGuestsError">Please select party size.</p>
+              </div>
+              <div>
+                <label class="form-label" for="resTime">Preferred time</label>
+                <select class="form-input" id="resTime" name="time" required>
+                  <option value="">Select time</option>
+                  <option value="12:00">12:00</option>
+                  <option value="12:30">12:30</option>
+                  <option value="13:00">13:00</option>
+                  <option value="13:30">13:30</option>
+                  <option value="17:30">17:30</option>
+                  <option value="18:00">18:00</option>
+                  <option value="18:30">18:30</option>
+                  <option value="19:00">19:00</option>
+                  <option value="19:30">19:30</option>
+                  <option value="20:00">20:00</option>
+                  <option value="20:30">20:30</option>
+                  <option value="21:00">21:00</option>
+                </select>
+                <p class="error-message" id="resTimeError">Please select a time.</p>
+              </div>
+              <div class="sm:col-span-2">
+                <label class="form-label" for="resNotes">Special requests <span style="font-weight:400;color:#9a9a9a;">(optional)</span></label>
+                <textarea class="form-input" id="resNotes" name="notes" rows="3" placeholder="Allergies, celebrations, accessibility needs…" style="resize:vertical;"></textarea>
+              </div>
+            </div>
+            <div class="mt-6">
+              <button type="submit" class="btn btn-primary w-full sm:w-auto" style="min-width:210px;">
+                Request reservation
+                <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+              </button>
+            </div>
+            <p class="success-message mt-4" id="resSuccess">
+              Thank you — your reservation request is on its way. We'll confirm by email within a few hours.
+            </p>
+            <!-- TODO: connect form action to backend endpoint -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="section-pad" style="background:var(--ink);color:var(--cream);">
+    <div class="container-wide text-center">
+      <div class="reveal-up">
+        <p class="eyebrow mb-4" style="color:var(--saffron);">The grill is lit</p>
+        <h2 class="display-lg mb-6" style="color:var(--cream);">There's always<br>a seat for you</h2>
+        <a href="#reserve" class="btn btn-saffron" style="padding:1rem 2.4rem;">
+          Reserve your table
+          <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container-wide py-16 md:py-20">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <span style="font-family:'Instrument Serif',serif;font-size:1.7rem;color:var(--cream);">Hammus</span>
+            <span style="width:4px;height:4px;border-radius:50%;background:var(--saffron);display:inline-block;margin-top:6px;"></span>
+          </div>
+          <p style="font-size:0.85rem;line-height:1.75;color:rgba(252,250,246,0.55);max-width:270px;">
+            Mediterranean cooking over charcoal. A long table, a warm room, and a kitchen that cares.
+          </p>
+          <div class="flex items-center gap-4 mt-6">
+            <a href="#" aria-label="Instagram"><i data-lucide="instagram" style="width:18px;height:18px;"></i></a>
+            <a href="#" aria-label="Facebook"><i data-lucide="facebook" style="width:18px;height:18px;"></i></a>
+            <a href="#" aria-label="Twitter"><i data-lucide="twitter" style="width:18px;height:18px;"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(252,250,246,0.4);margin-bottom:1.2rem;">Explore</p>
+          <ul style="display:flex;flex-direction:column;gap:0.6rem;font-size:0.88rem;">
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#reviews">Reviews</a></li>
+            <li><a href="#location">Location</a></li>
+            <li><a href="#reserve">Reservations</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(252,250,246,0.4);margin-bottom:1.2rem;">Contact</p>
+          <ul style="display:flex;flex-direction:column;gap:0.6rem;font-size:0.88rem;color:rgba(252,250,246,0.55);">
+            <li>14 Market Lane</li>
+            <li>Old Town, Bristol BS1 4QA</li>
+            <li><a href="tel:+441174962200">+44 (0)117 496 2200</a></li>
+            <li><a href="mailto:hello@hammus.co.uk">hello@hammus.co.uk</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.15em;color:rgba(252,250,246,0.4);margin-bottom:1.2rem;">Enquiries</p>
+          <form id="footerForm" novalidate>
+            <div class="flex flex-col gap-3">
+              <div>
+                <label class="form-label" for="ftName">Name</label>
+                <input class="form-input" type="text" id="ftName" name="name" placeholder="Your name" required style="padding:0.7rem 1rem;font-size:0.85rem;" />
+                <p class="error-message" id="ftNameError">Please enter your name.</p>
+              </div>
+              <div>
+                <label class="form-label" for="ftEmail">Email</label>
+                <input class="form-input" type="email" id="ftEmail" name="email" placeholder="you@example.com" required style="padding:0.7rem 1rem;font-size:0.85rem;" />
+                <p class="error-message" id="ftEmailError">Please enter a valid email.</p>
+              </div>
+              <div>
+                <label class="form-label" for="ftMessage">Message</label>
+                <textarea class="form-input" id="ftMessage" name="message" rows="2" placeholder="How can we help?" required style="padding:0.7rem 1rem;font-size:0.85rem;resize:vertical;"></textarea>
+                <p class="error-message" id="ftMessageError">Please enter a message.</p>
+              </div>
+              <button type="submit" class="btn btn-saffron" style="font-size:0.82rem;padding:0.7rem 1.4rem;align-self:flex-start;">
+                Send enquiry
+              </button>
+              <p class="success-message" id="ftSuccess" style="font-size:0.8rem;padding:0.8rem;">
+                Thank you — we'll be in touch shortly.
+              </p>
+            </div>
+            <!-- TODO: connect form action to backend endpoint -->
+          </form>
+        </div>
+      </div>
+
+      <div class="mt-16 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4" style="border-top:1px solid rgba(252,250,246,0.08);">
+        <p style="font-size:0.75rem;color:rgba(252,250,246,0.35);">© 2025 Hammus. All rights reserved.</p>
+        <div class="flex items-center gap-6">
+          <a href="#" style="font-size:0.75rem;color:rgba(252,250,246,0.35);">Privacy policy</a>
+          <a href="#" style="font-size:0.75rem;color:rgba(252,250,246,0.35);">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ============ ICONS ============
+    lucide.createIcons();
+
+    // ============ SCROLLTRIGGER ============
+    gsap.registerPlugin(ScrollTrigger);
+
+    const header = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    }, { passive: true });
+
+    document.querySelectorAll('.reveal-up').forEach((el) => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 88%',
+        once: true,
+        onEnter: () => el.classList.add('visible'),
+      });
+    });
+
+    // ============ MOBILE MENU ============
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileClose = document.getElementById('mobileClose');
+
+    function openMobileMenu() {
+      mobileMenu.classList.add('open');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+      mobileToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('open');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      mobileToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    mobileToggle.addEventListener('click', openMobileMenu);
+    mobileClose.addEventListener('click', closeMobileMenu);
+    mobileMenu.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMobileMenu));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMobileMenu();
+    });
+
+    // ============ MENU DATA ============
+    const menuData = {
+      mezze: [
+        { name: 'Classic Hummus', desc: 'Chickpeas, tahini, lemon, single-estate olive oil, pine nuts.', price: '£9' },
+        { name: 'Smoked Aubergine Baba Ghanoush', desc: 'Charred aubergine, yoghurt, garlic, mint, pomegranate.', price: '£10' },
+        { name: 'Muhammara', desc: 'Roasted red pepper, walnut, pomegranate molasses, chilli.', price: '£9' },
+        { name: 'Tabbouleh', desc: 'Parsley, bulgur, tomato, lemon, mint, olive oil.', price: '£8' },
+        { name: 'Grilled Halloumi', desc: 'Cyprus halloumi, honey, za’atar, lemon.', price: '£11' },
+        { name: 'Warm Pita & Dips', desc: 'Fresh pita, labneh, hummus, muhammara, olives.', price: '£14' },
+      ],
+      grill: [
+        { name: 'Lamb Kofta', desc: 'Charcoal-grilled lamb, sumac onions, tahini, flatbread.', price: '£18' },
+        { name: 'Chicken Shawarma', desc: 'Marinated chicken thigh, garlic toum, pickles, pita.', price: '£16' },
+        { name: 'Whole Grilled Sea Bream', desc: 'Charred lemon, herb oil, grilled vegetables.', price: '£26' },
+        { name: 'Mixed Grill for Two', desc: 'Lamb kofta, chicken shawarma, halloumi, grilled vegetables, pita.', price: '£42' },
+        { name: 'Falafel Plate', desc: 'Herb falafel, tahini, pickles, salad, warm pita.', price: '£14' },
+        { name: 'Charred Cauliflower', desc: 'Whole roasted cauliflower, tahini, pomegranate, almonds.', price: '£15' },
+      ],
+      sweets: [
+        { name: 'Baklava', desc: 'Pistachio, honey, filo, orange blossom.', price: '£8' },
+        { name: 'Knafeh', desc: 'Warm cheese pastry, semolina, rosewater syrup, pistachio.', price: '£10' },
+        { name: 'Muhallebi', desc: 'Milk pudding, cardamom, pistachio, honey.', price: '£8' },
+        { name: 'Date & Tahini Brownie', desc: 'Medjool date, tahini, dark chocolate, sea salt.', price: '£9' },
+        { name: 'Fresh Fig & Labneh', desc: 'Seasonal figs, labneh, honey, walnuts.', price: '£9' },
+        { name: 'Turkish Coffee Ice Cream', desc: 'Cardamom, coffee, pistachio crumble.', price: '£7' },
+      ],
+      drinks: [
+        { name: 'Arak', desc: 'Anise spirit, served over ice with water.', price: '£8' },
+        { name: 'Levantine Red', desc: 'Bekaa Valley, Lebanon. Dark fruit, spice.', price: '£9 / glass' },
+        { name: 'Orange Wine', desc: 'Skin-contact Assyrtiko, Greece. Textural, saline.', price: '£10 / glass' },
+        { name: 'Mint Lemonade', desc: 'Fresh mint, lemon, cane sugar, sparkling water.', price: '£5' },
+        { name: 'Turkish Coffee', desc: 'Finely ground, cardamom, served in copper.', price: '£4' },
+        { name: 'Pomegranate Spritz', desc: 'Pomegranate, prosecco, orange bitters.', price: '£9' },
+      ],
+    };
+
+    const menuGrid = document.getElementById('menuGrid');
+    const menuTabs = document.querySelectorAll('.menu-tab');
+
+    function renderMenu(category) {
+      const items = menuData[category];
+      menuGrid.innerHTML = items.map((item, i) => `
+        <div class="menu-card reveal-up stagger-${Math.min(i, 4)}" style="opacity:1;transform:translateY(0);">
+          <div class="flex justify-between items-start gap-4 mb-2">
+            <h3 style="font-family:'Instrument Serif',serif;font-size:1.22rem;line-height:1.3;color:var(--ink);">${item.name}</h3>
+            <span class="menu-price" style="white-space:nowrap;">${item.price}</span>
+          </div>
+          <p style="font-size:0.85rem;line-height:1.65;color:var(--ink-soft);">${item.desc}</p>
+        </div>
+      `).join('');
+    }
+
+    menuTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        menuTabs.forEach((t) => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        renderMenu(tab.dataset.category);
+      });
+    });
+
+    renderMenu('mezze');
+
+    // ============ VALIDATION ============
+    function validateField(field, errorEl, condition) {
+      if (!condition) {
+        field.classList.add('invalid');
+        errorEl.style.display = 'block';
+        return false;
+      }
+      field.classList.remove('invalid');
+      errorEl.style.display = 'none';
+      return true;
+    }
+
+    const reservationForm = document.getElementById('reservationForm');
+    if (reservationForm) {
+      reservationForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('resName');
+        const email = document.getElementById('resEmail');
+        const phone = document.getElementById('resPhone');
+        const date = document.getElementById('resDate');
+        const guests = document.getElementById('resGuests');
+        const time = document.getElementById('resTime');
+
+        const vName = validateField(name, document.getElementById('resNameError'), name.value.trim().length > 1);
+        const vEmail = validateField(email, document.getElementById('resEmailError'), /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value));
+        const vPhone = validateField(phone, document.getElementById('resPhoneError'), phone.value.trim().length > 5);
+        const vDate = validateField(date, document.getElementById('resDateError'), date.value !== '');
+        const vGuests = validateField(guests, document.getElementById('resGuestsError'), guests.value !== '');
+        const vTime = validateField(time, document.getElementById('resTimeError'), time.value !== '');
+
+        if (vName && vEmail && vPhone && vDate && vGuests && vTime) {
+          const formData = {
+            name: name.value.trim(),
+            email: email.value.trim(),
+            phone: phone.value.trim(),
+            date: date.value,
+            guests: guests.value,
+            time: time.value,
+            notes: document.getElementById('resNotes').value.trim(),
+          };
+
+          fetch('submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store',
+            body: JSON.stringify({ url: window.location.host, table: 'reservations', data: formData }),
+          })
+            .then((res) => { if (!res.ok) throw new Error('Network error'); return res.json(); })
+            .then(() => {
+              document.getElementById('resSuccess').classList.add('show');
+              reservationForm.reset();
+            })
+            .catch(() => {
+              document.getElementById('resSuccess').classList.add('show');
+              reservationForm.reset();
+            });
+        }
+      });
+    }
+
+    const footerForm = document.getElementById('footerForm');
+    if (footerForm) {
+      footerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('ftName');
+        const email = document.getElementById('ftEmail');
+        const message = document.getElementById('ftMessage');
+
+        const vName = validateField(name, document.getElementById('ftNameError'), name.value.trim().length > 1);
+        const vEmail = validateField(email, document.getElementById('ftEmailError'), /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value));
+        const vMessage = validateField(message, document.getElementById('ftMessageError'), message.value.trim().length > 2);
+
+        if (vName && vEmail && vMessage) {
+          const formData = {
+            name: name.value.trim(),
+            email: email.value.trim(),
+            message: message.value.trim(),
+          };
+
+          fetch('submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store',
+            body: JSON.stringify({ url: window.location.host, table: 'enquiries', data: formData }),
+          })
+            .then((res) => { if (!res.ok) throw new Error('Network error'); return res.json(); })
+            .then(() => {
+              document.getElementById('ftSuccess').classList.add('show');
+              footerForm.reset();
+            })
+            .catch(() => {
+              document.getElementById('ftSuccess').classList.add('show');
+              footerForm.reset();
+            });
+        }
+      });
+    }
+
+    window.addEventListener('load', () => lucide.createIcons());
+  </script>
+</body>
+</html>
