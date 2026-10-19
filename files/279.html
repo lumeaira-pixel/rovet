@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nova Reed — Digital Marketing Strategist</title>
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<!-- Tailwind CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<!-- GSAP -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+
+<style>
+/* ============================================
+   DESIGN TOKENS
+   Palette: warm ivory surfaces, deep evergreen accent, ink-black type
+   ============================================ */
+:root {
+  --ink: #101418;
+  --ink-soft: #3a4149;
+  --muted: #6b7280;
+  --paper: #ffffff;
+  --cream: #fafaf7;
+  --cream-deep: #f3f2ec;
+  --line: #e8e6dd;
+  --accent: #1f4f3f;
+  --accent-bright: #2e6b53;
+  --accent-soft: #e8f0eb;
+  --amber: #b98a3f;
+  --shadow-sm: 0 1px 2px rgba(16,20,24,.04), 0 2px 6px rgba(16,20,24,.03);
+  --shadow-md: 0 12px 30px -12px rgba(16,20,24,.10), 0 6px 14px -8px rgba(16,20,24,.06);
+  --shadow-lg: 0 40px 80px -30px rgba(16,20,24,.18), 0 18px 40px -20px rgba(16,20,24,.10);
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 32px;
+  --radius-xl: 44px;
+  --focus-ring: 0 0 0 3px rgba(31,79,63,.35);
+  --ease: cubic-bezier(.22,1,.36,1);
+}
+
+/* ============================================
+   BASE
+   ============================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--cream);
+  line-height: 1.6;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+h1, h2, h3, h4, .display {
+  font-family: 'Bricolage Grotesque', 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  color: var(--ink);
+}
+
+/* ============================================
+   FOCUS / A11Y
+   ============================================ */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 8px;
+}
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ============================================
+   LAYOUT UTILITIES
+   ============================================ */
+.container {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+@media (min-width: 768px) { .container { padding: 0 40px; } }
+@media (min-width: 1200px) { .container { padding: 0 56px; } }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent);
+}
+.eyebrow::before {
+  content: ""; width: 22px; height: 1px;
+  background: var(--accent); opacity: .6;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 14px 26px;
+  font-size: 14px; font-weight: 500;
+  border-radius: 999px;
+  transition: transform .25s var(--ease), background .25s var(--ease), color .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease);
+  will-change: transform;
+  border: 1px solid transparent;
+  line-height: 1;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(.97); }
+.btn-primary {
+  background: var(--ink); color: #fff;
+  box-shadow: 0 6px 16px -6px rgba(16,20,24,.4);
+}
+.btn-primary:hover {
+  background: var(--accent);
+  box-shadow: 0 10px 26px -8px rgba(31,79,63,.5);
+  transform: translateY(-1px);
+}
+.btn-ghost {
+  background: transparent; color: var(--ink);
+  border-color: var(--line);
+}
+.btn-ghost:hover {
+  background: #fff; border-color: var(--ink);
+  transform: translateY(-1px);
+}
+.btn svg { flex-shrink: 0; }
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  transition: background .35s var(--ease), backdrop-filter .35s var(--ease), border-color .35s var(--ease), padding .35s var(--ease);
+  padding: 20px 0;
+  border-bottom: 1px solid transparent;
+}
+.nav.scrolled {
+  background: rgba(250,250,247,.78);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom-color: var(--line);
+  padding: 14px 0;
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px;
+}
+.brand {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700; font-size: 18px; letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.brand-mark {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--accent-bright), var(--accent));
+  position: relative;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.15), 0 4px 10px -4px rgba(31,79,63,.5);
+}
+.brand-mark::after {
+  content: ""; position: absolute; inset: 8px;
+  border-radius: 50%; background: rgba(255,255,255,.9);
+  mix-blend-mode: soft-light;
+}
+.nav-links {
+  display: none; gap: 36px; align-items: center;
+  font-size: 14px; font-weight: 500; color: var(--ink-soft);
+}
+.nav-links a {
+  position: relative; padding: 6px 0;
+  transition: color .2s var(--ease);
+}
+.nav-links a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+  height: 1px; background: var(--ink);
+  transform: scaleX(0); transform-origin: right;
+  transition: transform .35s var(--ease);
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+.menu-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line); background: transparent;
+  color: var(--ink);
+  transition: background .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease);
+}
+.menu-btn:hover { background: #fff; border-color: var(--ink); }
+.menu-btn:active { transform: scale(.95); }
+
+@media (min-width: 900px) {
+  .nav-links { display: flex; }
+  .menu-btn { display: none; }
+}
+
+/* ============================================
+   MOBILE MENU
+   ============================================ */
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 99;
+  background: rgba(250,250,247,.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex; flex-direction: column;
+  padding: 100px 32px 40px;
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .5s var(--ease), opacity .4s var(--ease);
+}
+.mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.mobile-menu nav { display: flex; flex-direction: column; gap: 8px; }
+.mobile-menu nav a {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(28px, 8vw, 40px);
+  font-weight: 600; letter-spacing: -0.03em;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between;
+  transition: color .2s var(--ease), padding-left .3s var(--ease);
+}
+.mobile-menu nav a:hover { color: var(--accent); padding-left: 8px; }
+.mobile-menu .mm-footer { margin-top: auto; padding-top: 24px; }
+.mobile-menu .mm-footer .btn { width: 100%; }
+
+/* ============================================
+   HERO
+   ============================================ */
+.hero {
+  position: relative;
+  padding-top: 140px;
+  padding-bottom: 40px;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(900px 500px at 78% 8%, rgba(232,240,235,.9), transparent 60%),
+    radial-gradient(700px 400px at 12% 92%, rgba(243,242,236,.9), transparent 65%);
+}
+.hero-grid {
+  position: relative; z-index: 1;
+  display: grid; gap: 56px;
+  align-items: center;
+}
+@media (min-width: 1024px) {
+  .hero-grid { grid-template-columns: 1.15fr 1fr; gap: 64px; }
+}
+.hero-title {
+  font-size: clamp(44px, 8vw, 108px);
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+  margin-top: 24px;
+}
+.hero-title .line { display: block; overflow: hidden; }
+.hero-title .line > span {
+  display: inline-block;
+  transform: translateY(110%);
+  animation: lineUp .9s var(--ease) forwards;
+}
+.hero-title .line:nth-child(2) > span { animation-delay: .12s; }
+.hero-title .line:nth-child(3) > span { animation-delay: .24s; }
+@keyframes lineUp { to { transform: translateY(0); } }
+.hero-title em {
+  font-style: normal;
+  color: var(--accent);
+  position: relative;
+  white-space: nowrap;
+}
+.hero-title em::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 6%;
+  height: 12%; background: var(--accent-soft); z-index: -1;
+  border-radius: 4px;
+}
+.hero-sub {
+  margin-top: 28px; max-width: 520px;
+  font-size: clamp(16px, 1.4vw, 18px);
+  color: var(--ink-soft); line-height: 1.65;
+}
+.hero-cta {
+  margin-top: 40px;
+  display: flex; flex-wrap: wrap; gap: 12px;
+}
+.hero-trust {
+  margin-top: 56px;
+  display: flex; align-items: center; gap: 18px;
+  font-size: 13px; color: var(--muted);
+}
+.hero-trust .avatars { display: flex; }
+.hero-trust .avatars span {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: var(--ink);
+  background: var(--cream-deep);
+  border: 2px solid var(--cream);
+  margin-left: -8px;
+}
+.hero-trust .avatars span:first-child { margin-left: 0; }
+.hero-trust .avatars span:nth-child(2) { background: #e0e7e1; }
+.hero-trust .avatars span:nth-child(3) { background: #e7e2d7; }
+.hero-trust .avatars span:nth-child(4) { background: #dde3ea; }
+
+/* Hero visual card */
+.hero-visual {
+  position: relative;
+  perspective: 1200px;
+}
+.visual-card {
+  position: relative;
+  background: linear-gradient(160deg, #ffffff 0%, #f8f8f4 100%);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-lg);
+  transform-style: preserve-3d;
+  transition: transform .6s var(--ease);
+}
+.hero-visual:hover .visual-card {
+  transform: rotateY(-3deg) rotateX(2deg) translateY(-4px);
+}
+.visual-head {
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: 20px; margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.visual-badge {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: var(--accent-soft);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+}
+.visual-head h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.visual-head p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.visual-live {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 500; color: var(--accent);
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--accent-soft);
+}
+.visual-live::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); animation: pulse 1.8s ease infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.4;transform:scale(1.3);} }
+.visual-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat-tile {
+  background: #fff; border: 1px solid var(--line);
+  border-radius: 16px; padding: 16px;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.stat-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.stat-tile .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.stat-tile .val {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 26px; font-weight: 700; letter-spacing: -0.03em;
+  color: var(--ink); margin-top: 6px; line-height: 1;
+}
+.stat-tile .val span { color: var(--accent); }
+.stat-tile .delta { font-size: 11px; color: var(--accent); font-weight: 500; margin-top: 4px; }
+
+.visual-chart {
+  margin-top: 16px; padding: 16px;
+  background: #fff; border: 1px solid var(--line); border-radius: 16px;
+}
+.visual-chart .ch-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.visual-chart .ch-head span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.visual-chart .ch-head strong { font-size: 12px; color: var(--accent); }
+.ch-bars { display: flex; align-items: flex-end; gap: 6px; height: 60px; }
+.ch-bars i {
+  flex: 1; background: var(--cream-deep); border-radius: 4px;
+  height: 30%; transition: height .6s var(--ease), background .3s var(--ease);
+}
+.ch-bars i:nth-child(1) { height: 35%; background: #dfe7e0; }
+.ch-bars i:nth-child(2) { height: 50%; background: #cddcd2; }
+.ch-bars i:nth-child(3) { height: 42%; background: #dfe7e0; }
+.ch-bars i:nth-child(4) { height: 66%; background: #b6cabb; }
+.ch-bars i:nth-child(5) { height: 58%; background: #cddcd2; }
+.ch-bars i:nth-child(6) { height: 78%; background: #94b3a0; }
+.ch-bars i:nth-child(7) { height: 88%; background: var(--accent); }
+
+.hero-float {
+  position: absolute;
+  background: #fff; border: 1px solid var(--line);
+  border-radius: 14px; padding: 12px 14px;
+  box-shadow: var(--shadow-md);
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 500;
+  z-index: 2;
+}
+.hero-float .ico {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent-soft); color: var(--accent);
+}
+.hero-float.f1 { top: -16px; right: 12px; animation: float1 6s ease-in-out infinite; }
+.hero-float.f2 { bottom: 32px; left: -24px; animation: float2 7s ease-in-out infinite; }
+@keyframes float1 { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+@keyframes float2 { 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+@media (max-width: 640px) { .hero-float.f2 { display: none; } .hero-float.f1 { top: -12px; right: 4px; } }
+
+/* ============================================
+   MARQUEE / LOGOS
+   ============================================ */
+.marquee {
+  margin-top: 80px;
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  position: relative;
+  background: rgba(255,255,255,.35);
+}
+.marquee::before, .marquee::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2;
+  pointer-events: none;
+}
+.marquee::before { left: 0; background: linear-gradient(90deg, var(--cream), transparent); }
+.marquee::after { right: 0; background: linear-gradient(-90deg, var(--cream), transparent); }
+.marquee-track {
+  display: flex; gap: 64px; width: max-content;
+  animation: scrollX 32s linear infinite;
+  align-items: center;
+}
+@keyframes scrollX { to { transform: translateX(-50%); } }
+.marquee-track .logo-item {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px; font-weight: 500; letter-spacing: -0.02em;
+  color: var(--ink-soft); opacity: .55;
+  white-space: nowrap;
+  transition: opacity .3s var(--ease), color .3s var(--ease);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.marquee-track .logo-item:hover { opacity: 1; color: var(--accent); }
+
+/* ============================================
+   SECTIONS
+   ============================================ */
+section { position: relative; }
+.section-pad { padding: 120px 0; }
+@media (max-width: 768px) { .section-pad { padding: 80px 0; } }
+
+.section-head {
+  max-width: 760px;
+  margin-bottom: 64px;
+}
+.section-head h2 {
+  font-size: clamp(36px, 5.4vw, 72px);
+  margin-top: 20px;
+  letter-spacing: -0.04em;
+}
+.section-head p {
+  margin-top: 22px;
+  font-size: 17px; color: var(--ink-soft); max-width: 560px;
+  line-height: 1.65;
+}
+
+/* ============================================
+   SERVICES
+   ============================================ */
+.services { background: var(--cream); }
+.services-grid {
+  display: grid; gap: 20px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 700px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1100px) { .services-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; } }
+
+.service-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  transition: transform .45s var(--ease), box-shadow .45s var(--ease), border-color .3s var(--ease);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  min-height: 260px;
+}
+.service-card::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(500px 240px at 100% 0%, var(--accent-soft), transparent 60%);
+  opacity: 0; transition: opacity .5s var(--ease);
+  pointer-events: none;
+}
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(31,79,63,.18);
+}
+.service-card:hover::before { opacity: .8; }
+.service-card > * { position: relative; z-index: 1; }
+.service-icon {
+  width: 52px; height: 52px; border-radius: 16px;
+  background: var(--accent-soft);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  margin-bottom: 24px;
+  transition: transform .5s var(--ease), background .3s var(--ease);
+}
+.service-card:hover .service-icon {
+  transform: rotate(-6deg) scale(1.05);
+  background: var(--accent); color: #fff;
+}
+.service-card h3 {
+  font-size: 22px; font-weight: 600; letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+.service-card p { font-size: 15px; color: var(--ink-soft); line-height: 1.65; }
+.service-tags {
+  margin-top: auto; padding-top: 24px;
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.service-tags span {
+  font-size: 11.5px; font-weight: 500; color: var(--ink-soft);
+  padding: 5px 10px; border-radius: 999px;
+  background: var(--cream-deep);
+  transition: background .3s var(--ease), color .3s var(--ease);
+}
+.service-card:hover .service-tags span { background: #fff; color: var(--accent); border: 1px solid rgba(31,79,63,.15); }
+.service-card:hover .service-tags span { border-color: transparent; }
+
+/* ============================================
+   PROJECTS
+   ============================================ */
+.projects { background: #fff; }
+.projects-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 32px; margin-bottom: 56px; flex-wrap: wrap;
+}
+.projects-head .section-head { margin-bottom: 0; }
+.projects-grid {
+  display: grid; gap: 28px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 820px) { .projects-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.project {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  transition: transform .5s var(--ease), box-shadow .5s var(--ease);
+  display: flex; flex-direction: column;
+}
+.project:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+.project-visual {
+  position: relative;
+  aspect-ratio: 16/11;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.project-visual::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,.04));
+}
+.pv-1 { background: linear-gradient(150deg, #d9e6dd 0%, #bcd2c4 55%, #9fc0aa 100%); }
+.pv-2 { background: linear-gradient(150deg, #e6ddd1 0%, #d6c7b2 60%, #c0ab8f 100%); }
+.pv-3 { background: linear-gradient(150deg, #d9dce6 0%, #c2c8d6 55%, #a5aec5 100%); }
+.pv-4 { background: linear-gradient(150deg, #e6d9d9 0%, #d6c2c2 55%, #c5a5a5 100%); }
+.project-visual svg {
+  width: 44%; max-width: 180px; height: auto; opacity: .45;
+  transition: transform .6s var(--ease), opacity .4s var(--ease);
+  position: relative; z-index: 1;
+}
+.project:hover .project-visual svg { transform: scale(1.08) rotate(-2deg); opacity: .6; }
+.pv-chrome {
+  position: absolute; top: 16px; left: 16px; right: 16px;
+  display: flex; gap: 6px; z-index: 2;
+}
+.pv-chrome i {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: rgba(255,255,255,.7);
+}
+.project-badge {
+  position: absolute; top: 16px; right: 16px; z-index: 2;
+  background: rgba(255,255,255,.92); backdrop-filter: blur(10px);
+  font-size: 11px; font-weight: 600; letter-spacing: .04em;
+  padding: 6px 12px; border-radius: 999px;
+  color: var(--accent);
+}
+.project-body { padding: 26px 28px 28px; display: flex; flex-direction: column; flex: 1; }
+.project-body .cat { font-size: 12px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; font-weight: 500; }
+.project-body h3 {
+  font-size: 22px; font-weight: 600; letter-spacing: -0.02em;
+  margin: 8px 0 10px;
+}
+.project-body p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; flex: 1; }
+.project-foot {
+  margin-top: 20px; padding-top: 18px;
+  border-top: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+}
+.project-metrics { display: flex; gap: 18px; }
+.project-metrics div strong {
+  display: block; font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 18px; font-weight: 700; letter-spacing: -0.02em; color: var(--accent);
+  line-height: 1.1;
+}
+.project-metrics div span { font-size: 11px; color: var(--muted); }
+.project-arrow {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--cream-deep); color: var(--ink);
+  transition: background .3s var(--ease), color .3s var(--ease), transform .3s var(--ease);
+  flex-shrink: 0;
+}
+.project:hover .project-arrow {
+  background: var(--accent); color: #fff; transform: rotate(-45deg);
+}
+
+/* ============================================
+   ABOUT
+   ============================================ */
+.about { background: var(--cream); }
+.about-grid {
+  display: grid; gap: 56px;
+  align-items: center;
+}
+@media (min-width: 1000px) { .about-grid { grid-template-columns: 5fr 7fr; gap: 80px; } }
+
+.portrait-wrap {
+  position: relative;
+}
+.portrait {
+  position: relative;
+  aspect-ratio: 4/5;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 30% 25%, #cfdcd2, transparent 60%),
+    radial-gradient(circle at 70% 80%, #e7e2d4, transparent 55%),
+    linear-gradient(150deg, #dfe7e0, #cfd8ce);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.portrait::before {
+  content: ""; position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 50% 35%, rgba(255,255,255,.9) 0, transparent 45%),
+    radial-gradient(circle at 50% 78%, rgba(31,79,63,.15) 0, transparent 55%);
+  mix-blend-mode: overlay;
+}
+.portrait svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  color: rgba(31,79,63,.35); opacity: .8;
+}
+.portrait-chip {
+  position: absolute; bottom: 24px; left: 24px; right: 24px;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+  border: 1px solid rgba(255,255,255,.7);
+  box-shadow: var(--shadow-md);
+  z-index: 2;
+}
+.portrait-chip .chip-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 15px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+.portrait-chip .chip-name { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+.portrait-chip .chip-role { font-size: 12px; color: var(--muted); }
+.portrait-chip .chip-status {
+  margin-left: auto;
+  font-size: 11px; font-weight: 500; color: var(--accent);
+  background: var(--accent-soft);
+  padding: 4px 10px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.portrait-chip .chip-status::before {
+  content: ""; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent); animation: pulse 1.6s ease infinite;
+}
+
+.about-body h2 {
+  font-size: clamp(34px, 4.4vw, 60px);
+  margin-top: 20px;
+  letter-spacing: -0.04em;
+}
+.about-body .lead {
+  margin-top: 24px;
+  font-size: 18px; color: var(--ink-soft);
+  line-height: 1.65; max-width: 560px;
+}
+.about-body p {
+  margin-top: 16px;
+  font-size: 15.5px; color: var(--ink-soft); line-height: 1.7;
+  max-width: 560px;
+}
+.about-principles {
+  margin-top: 36px;
+  display: grid; gap: 16px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 560px) { .about-principles { grid-template-columns: 1fr 1fr; } }
+.principle {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 18px; background: #fff;
+  border: 1px solid var(--line); border-radius: 16px;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.principle:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.principle .p-ico {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--accent-soft); color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.principle h4 { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+.principle p { font-size: 12.5px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+
+/* ============================================
+   STATS STRIP
+   ============================================ */
+.stats-strip {
+  background: var(--ink);
+  color: #fff;
+  border-radius: var(--radius-xl);
+  padding: 56px 40px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+.stats-strip::before {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(600px 300px at 12% 20%, rgba(46,107,83,.35), transparent 55%),
+    radial-gradient(500px 250px at 88% 80%, rgba(185,138,63,.18), transparent 55%);
+  pointer-events: none;
+}
+.stats-strip-grid {
+  position: relative;
+  display: grid; gap: 32px;
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 800px) {
+  .stats-strip-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .stats-strip { padding: 72px 64px; }
+}
+.stat-block {
+  text-align: left;
+  padding-left: 20px;
+  border-left: 1px solid rgba(255,255,255,.12);
+}
+.stat-block .num {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(38px, 5vw, 60px);
+  font-weight: 700; letter-spacing: -0.04em; line-height: 1;
+  color: #fff;
+}
+.stat-block .num span { color: #8fb9a3; }
+.stat-block .lbl {
+  margin-top: 10px; font-size: 13px; color: rgba(255,255,255,.6);
+  line-height: 1.5;
+}
+
+/* ============================================
+   TESTIMONIAL
+   ============================================ */
+.testimonial {
+  padding: 120px 0;
+  background: var(--cream);
+  text-align: center;
+}
+.testimonial blockquote {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(22px, 3.4vw, 40px);
+  font-weight: 500; letter-spacing: -0.025em;
+  line-height: 1.28;
+  max-width: 900px; margin: 0 auto;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.testimonial blockquote em {
+  font-style: normal; color: var(--accent);
+}
+.testimonial .quote-mark {
+  display: inline-flex; margin-bottom: 24px;
+  color: var(--accent); opacity: .5;
+}
+.testimonial-author {
+  margin-top: 40px;
+  display: inline-flex; align-items: center; gap: 14px;
+  padding: 10px 22px 10px 10px;
+  background: #fff; border: 1px solid var(--line); border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+}
+.testimonial-author .au-av {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 14px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+.testimonial-author .au-name { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+.testimonial-author .au-role { font-size: 12px; color: var(--muted); }
+
+/* ============================================
+   CONTACT
+   ============================================ */
+.contact { background: #fff; }
+.contact-grid {
+  display: grid; gap: 56px;
+  align-items: start;
+}
+@media (min-width: 1000px) { .contact-grid { grid-template-columns: 5fr 6fr; gap: 88px; } }
+
+.contact-info h2 {
+  font-size: clamp(36px, 5vw, 64px);
+  margin-top: 20px;
+  letter-spacing: -0.04em;
+}
+.contact-info .desc {
+  margin-top: 22px;
+  font-size: 17px; color: var(--ink-soft); line-height: 1.65;
+  max-width: 460px;
+}
+.contact-lines {
+  margin-top: 40px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.contact-line {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding-left .3s var(--ease);
+}
+.contact-line:hover { padding-left: 6px; }
+.contact-line .cl-ico {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: var(--accent-soft); color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.contact-line .cl-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.contact-line .cl-val { font-size: 14.5px; font-weight: 500; color: var(--ink); margin-top: 2px; }
+
+.form-card {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+}
+@media (min-width: 640px) { .form-card { padding: 44px; } }
+
+.form-row { display: grid; gap: 18px; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .form-row.two { grid-template-columns: 1fr 1fr; } }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field label {
+  font-size: 12px; font-weight: 500;
+  color: var(--ink-soft);
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.field input, .field select, .field textarea {
+  font-family: inherit; font-size: 15px;
+  color: var(--ink); background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 13px 16px;
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+  width: 100%;
+}
+.field textarea { resize: vertical; min-height: 120px; line-height: 1.5; }
+.field input:hover, .field select:hover, .field textarea:hover { border-color: #d5d3c9; }
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31,79,63,.12);
+}
+.field .error-msg {
+  display: none;
+  font-size: 12px; color: #b53a3a; margin-top: 2px;
+}
+.field.invalid input, .field.invalid select, .field.invalid textarea {
+  border-color: #d68b8b; background: #fdf7f7;
+}
+.field.invalid .error-msg { display: block; }
+.form-foot {
+  margin-top: 24px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.form-foot .btn { width: 100%; }
+.form-note { font-size: 12px; color: var(--muted); text-align: center; line-height: 1.5; }
+.form-success {
+  display: none;
+  align-items: center; gap: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 12px 16px; border-radius: 12px;
+  font-size: 13.5px; font-weight: 500;
+  margin-top: 16px;
+}
+.form-success.show { display: flex; }
+.form-success svg { flex-shrink: 0; }
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,.72);
+  padding: 80px 0 32px;
+  position: relative;
+  overflow: hidden;
+}
+footer::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(700px 350px at 80% 0%, rgba(46,107,83,.25), transparent 55%);
+  pointer-events: none;
+}
+.footer-grid {
+  position: relative;
+  display: grid; gap: 48px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 780px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; } }
+.footer-brand .brand { color: #fff; }
+.footer-brand p {
+  margin-top: 20px; max-width: 320px;
+  font-size: 14px; line-height: 1.65; color: rgba(255,255,255,.6);
+}
+.footer-col h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 20px;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.footer-col ul a {
+  font-size: 14px; color: rgba(255,255,255,.75);
+  transition: color .25s var(--ease), padding-left .3s var(--ease);
+  display: inline-block;
+}
+.footer-col ul a:hover { color: #fff; padding-left: 4px; }
+.footer-socials { display: flex; gap: 10px; margin-top: 24px; }
+.footer-socials a {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.15);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,.75);
+  transition: background .3s var(--ease), color .3s var(--ease), transform .3s var(--ease), border-color .3s var(--ease);
+}
+.footer-socials a:hover {
+  background: var(--accent); color: #fff;
+  border-color: var(--accent); transform: translateY(-2px);
+}
+.footer-bottom {
+  position: relative;
+  margin-top: 64px; padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  display: flex; justify-content: space-between; flex-wrap: wrap;
+  gap: 12px; font-size: 12.5px; color: rgba(255,255,255,.45);
+}
+.footer-bottom .back-top {
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: color .25s var(--ease);
+}
+.footer-bottom .back-top:hover { color: #fff; }
+
+/* ============================================
+   REVEAL ANIMATION STATES
+   ============================================ */
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity .8s var(--ease), transform .8s var(--ease);
+  will-change: opacity, transform;
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: .06s; }
+.reveal-d2 { transition-delay: .12s; }
+.reveal-d3 { transition-delay: .18s; }
+.reveal-d4 { transition-delay: .24s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .hero-title .line > span { transform: none; }
+  .reveal { opacity: 1; transform: none; }
+  .marquee-track { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== NAV ==================== -->
+<nav class="nav" id="siteNav" role="navigation" aria-label="Primary">
+  <div class="container nav-inner">
+    <a href="#top" class="brand" aria-label="Nova Reed — Home">
+      <span class="brand-mark" aria-hidden="true"></span>
+      Nova Reed
+    </a>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <a href="#contact" class="btn btn-primary" style="display:none;" id="navCta">
+        Let's talk
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <button class="menu-btn" id="menuOpen" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation" aria-hidden="true">
+  <div class="container" style="flex:1;display:flex;flex-direction:column;">
+    <button class="menu-btn" id="menuClose" aria-label="Close menu" style="position:absolute;top:20px;right:24px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <nav style="margin-top: auto; margin-bottom: auto;">
+      <a href="#services">Services <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></a>
+      <a href="#projects">Projects <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></a>
+      <a href="#about">About <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></a>
+      <a href="#contact">Contact <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></a>
+    </nav>
+    <div class="mm-footer">
+      <a href="#contact" class="btn btn-primary">
+        Start a project
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== HERO ==================== -->
+<header id="top" class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Digital marketer &amp; growth strategist</div>
+        <h1 class="hero-title">
+          <span class="line"><span>Marketing that</span></span>
+          <span class="line"><span>moves <em>people</em> —</span></span>
+          <span class="line"><span>and metrics.</span></span>
+        </h1>
+        <p class="hero-sub">
+          I'm Nova Reed. For eight years I've helped ambitious brands turn attention into revenue — without losing the soul that made them worth noticing in the first place.
+        </p>
+        <div class="hero-cta">
+          <a href="#contact" class="btn btn-primary">
+            Start a project
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a href="#projects" class="btn btn-ghost">
+            See case studies
+          </a>
+        </div>
+        <div class="hero-trust">
+          <div class="avatars" aria-hidden="true">
+            <span>MC</span><span>JR</span><span>AK</span><span>+</span>
+          </div>
+          <div>Trusted by <strong style="color:var(--ink);font-weight:600;">14 brand teams</strong> across SaaS, dev tools and consumer tech</div>
+        </div>
+      </div>
+
+      <!-- Hero visual -->
+      <div class="hero-visual">
+        <div class="visual-card">
+          <div class="visual-head">
+            <div class="visual-badge" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>
+            </div>
+            <div>
+              <h3>Growth snapshot</h3>
+              <p>Client average, trailing 12 months</p>
+            </div>
+            <span class="visual-live">Live</span>
+          </div>
+          <div class="visual-stats">
+            <div class="stat-tile">
+              <div class="lbl">Organic traffic</div>
+              <div class="val">+218<span>%</span></div>
+              <div class="delta">vs. prior period</div>
+            </div>
+            <div class="stat-tile">
+              <div class="lbl">Conversion rate</div>
+              <div class="val">3.8<span>x</span></div>
+              <div class="delta">lift across funnel</div>
+            </div>
+            <div class="stat-tile">
+              <div class="lbl">Cost per acquisition</div>
+              <div class="val">−42<span>%</span></div>
+              <div class="delta">blended CAC</div>
+            </div>
+            <div class="stat-tile">
+              <div class="lbl">Return on ad spend</div>
+              <div class="val">5.6<span>x</span></div>
+              <div class="delta">paid channels</div>
+            </div>
+          </div>
+          <div class="visual-chart">
+            <div class="ch-head">
+              <span>Pipeline attributed</span>
+              <strong>+$4.2M</strong>
+            </div>
+            <div class="ch-bars" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+        </div>
+        <div class="hero-float f1" aria-hidden="true">
+          <div class="ico">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div style="color:var(--ink);">Roadmap shipped</div>
+            <div style="color:var(--muted);font-size:11px;">Q1 · 3 brands</div>
+          </div>
+        </div>
+        <div class="hero-float f2" aria-hidden="true">
+          <div class="ico">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          </div>
+          <div>
+            <div style="color:var(--ink);">Avg. ROAS</div>
+            <div style="color:var(--muted);font-size:11px;">5.6× across accounts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marquee -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track" id="marqueeTrack">
+        <span class="logo-item">Loom</span>
+        <span class="logo-item">Vercel</span>
+        <span class="logo-item">Superhuman</span>
+        <span class="logo-item">Arc</span>
+        <span class="logo-item">Linear</span>
+        <span class="logo-item">Framer</span>
+        <span class="logo-item">Raycast</span>
+        <span class="logo-item">Cron</span>
+        <span class="logo-item">Pitch</span>
+        <span class="logo-item">Maze</span>
+        <span class="logo-item">Loom</span>
+        <span class="logo-item">Vercel</span>
+        <span class="logo-item">Superhuman</span>
+        <span class="logo-item">Arc</span>
+        <span class="logo-item">Linear</span>
+        <span class="logo-item">Framer</span>
+        <span class="logo-item">Raycast</span>
+        <span class="logo-item">Cron</span>
+        <span class="logo-item">Pitch</span>
+        <span class="logo-item">Maze</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== SERVICES ==================== -->
+<section id="services" class="section-pad services">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">What I do</div>
+      <h2>Full-stack marketing.<br>Zero fluff.</h2>
+      <p>Every engagement starts with research, gets shaped by creative, and ends in a number you can point to. These are the four levers I pull most often.</p>
+    </div>
+
+    <div class="services-grid">
+      <!-- Service 1 -->
+      <article class="service-card reveal">
+        <div class="service-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3>Growth strategy &amp; audits</h3>
+        <p>A forensic look at your funnel, channels and messaging. You'll get a prioritized roadmap with quick wins and long-term plays — no vanity metrics, no 40-page decks that never get shipped.</p>
+        <div class="service-tags">
+          <span>Funnel mapping</span>
+          <span>Channel mix</span>
+          <span>90-day plan</span>
+        </div>
+      </article>
+
+      <!-- Service 2 -->
+      <article class="service-card reveal reveal-d1">
+        <div class="service-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.8 1 6.5 2.5"/><path d="M21 3v6h-6"/></svg>
+        </div>
+        <h3>Paid media &amp; performance</h3>
+        <p>Meta, Google, TikTok, LinkedIn — I build and manage campaigns that scale profitably. Creative testing, audience strategy and full-funnel attribution, so you know which dollar did the work.</p>
+        <div class="service-tags">
+          <span>Full-funnel ads</span>
+          <span>Creative testing</span>
+          <span>ROAS &amp; LTV</span>
+        </div>
+      </article>
+
+      <!-- Service 3 -->
+      <article class="service-card reveal reveal-d2">
+        <div class="service-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        </div>
+        <h3>Content &amp; brand narrative</h3>
+        <p>Words that convert. I craft website copy, email sequences and social content that sounds like you — not like the category — and moves people from curious to convinced.</p>
+        <div class="service-tags">
+          <span>Positioning</span>
+          <span>Web &amp; LP copy</span>
+          <span>Lifecycle email</span>
+        </div>
+      </article>
+
+      <!-- Service 4 -->
+      <article class="service-card reveal reveal-d3">
+        <div class="service-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
+        <h3>Analytics &amp; attribution</h3>
+        <p>Stop guessing. I set up clean, privacy-first measurement — GA4, server-side tracking, custom dashboards — so you know exactly what's working and where to double down.</p>
+        <div class="service-tags">
+          <span>GA4 + sGTM</span>
+          <span>Looker Studio</span>
+          <span>Incrementality</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROJECTS ==================== -->
+<section id="projects" class="section-pad projects">
+  <div class="container">
+    <div class="projects-head">
+      <div class="section-head reveal">
+        <div class="eyebrow">Selected work</div>
+        <h2>Results that<br>speak louder.</h2>
+        <p>A small sample of the brands I've partnered with — and the numbers that came out the other side.</p>
+      </div>
+      <a href="#contact" class="btn btn-ghost reveal reveal-d1">
+        Request full portfolio
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="projects-grid">
+      <!-- Project 1 -->
+      <a href="#contact" class="project reveal" aria-label="View Loom activation campaign case study">
+        <div class="project-visual pv-1">
+          <div class="pv-chrome" aria-hidden="true"><i></i><i></i><i></i></div>
+          <span class="project-badge">+42% activation</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="project-body">
+          <div class="cat">B2B SaaS · Lifecycle marketing</div>
+          <h3>Loom — Activation engine</h3>
+          <p>Rebuilt onboarding email flows and in-product nudges for new signups, taking weekly activated users from a stubborn plateau to a new record quarter.</p>
+          <div class="project-foot">
+            <div class="project-metrics">
+              <div><strong>+42%</strong><span>Activation</span></div>
+              <div><strong>−31%</strong><span>Time to value</span></div>
+            </div>
+            <span class="project-arrow" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Project 2 -->
+      <a href="#contact" class="project reveal reveal-d1" aria-label="View Vercel content engine case study">
+        <div class="project-visual pv-2">
+          <div class="pv-chrome" aria-hidden="true"><i></i><i></i><i></i></div>
+          <span class="project-badge">+218% organic</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div class="project-body">
+          <div class="cat">Developer tools · SEO &amp; content</div>
+          <h3>Vercel — Enterprise content engine</h3>
+          <p>Designed and shipped a technical content strategy targeting high-intent enterprise search, turning SEO into a predictable top-of-funnel channel in two quarters.</p>
+          <div class="project-foot">
+            <div class="project-metrics">
+              <div><strong>+218%</strong><span>Organic traffic</span></div>
+              <div><strong>3.1×</strong><span>Qualified leads</span></div>
+            </div>
+            <span class="project-arrow" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Project 3 -->
+      <a href="#contact" class="project reveal reveal-d2" aria-label="View Superhuman referral flywheel case study">
+        <div class="project-visual pv-3">
+          <div class="pv-chrome" aria-hidden="true"><i></i><i></i><i></i></div>
+          <span class="project-badge">5.6× ROAS</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div class="project-body">
+          <div class="cat">Productivity · Growth loops</div>
+          <h3>Superhuman — Referral flywheel</h3>
+          <p>Built an invite-driven acquisition loop with lifecycle messaging and paid amplification, producing a durable channel that outperformed every other source on CAC.</p>
+          <div class="project-foot">
+            <div class="project-metrics">
+              <div><strong>5.6×</strong><span>ROAS</span></div>
+              <div><strong>−38%</strong><span>Blended CAC</span></div>
+            </div>
+            <span class="project-arrow" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Project 4 -->
+      <a href="#contact" class="project reveal reveal-d3" aria-label="View Arc brand launch case study">
+        <div class="project-visual pv-4">
+          <div class="pv-chrome" aria-hidden="true"><i></i><i></i><i></i></div>
+          <span class="project-badge">12M impressions</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+        </div>
+        <div class="project-body">
+          <div class="cat">Consumer tech · Brand launch &amp; paid social</div>
+          <h3>Arc — Brand launch &amp; paid social</h3>
+          <p>Led creative strategy and paid social for a category-defining product launch, pairing narrative-led video with tight audience testing to reach escape velocity in week one.</p>
+          <div class="project-foot">
+            <div class="project-metrics">
+              <div><strong>12M</strong><span>Impressions</span></div>
+              <div><strong>4.2%</strong><span>CTR</span></div>
+            </div>
+            <span class="project-arrow" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ABOUT ==================== -->
+<section id="about" class="section-pad about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="portrait-wrap reveal">
+        <div class="portrait">
+          <svg viewBox="0 0 200 250" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+            <circle cx="100" cy="85" r="38"/>
+            <path d="M40 250 C 40 180, 160 180, 160 250"/>
+          </svg>
+        </div>
+        <div class="portrait-chip">
+          <div class="chip-avatar" aria-hidden="true">NR</div>
+          <div>
+            <div class="chip-name">Nova Reed</div>
+            <div class="chip-role">Growth strategist · Berlin</div>
+          </div>
+          <span class="chip-status">Open</span>
+        </div>
+      </div>
+
+      <div class="about-body reveal reveal-d1">
+        <div class="eyebrow">About me</div>
+        <h2>Not another<br>growth hacker in a hoodie.</h2>
+        <p class="lead">I'm a marketer who believes the best campaigns feel like a conversation, not a broadcast — built on deep customer understanding, sharp creative, and a healthy disrespect for "best practices."</p>
+        <p>For eight years I've led growth at two Series B companies and partnered with founders across SaaS, dev tools and consumer tech. My approach is part strategist, part operator: I embed with your team, get my hands dirty in the data, and ship work that actually ships.</p>
+
+        <div class="about-principles">
+          <div class="principle">
+            <div class="p-ico" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>Data-informed</h4>
+              <p>Every decision traced to a metric</p>
+            </div>
+          </div>
+          <div class="principle">
+            <div class="p-ico" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>Creative-first</h4>
+              <p>Ideas people actually remember</p>
+            </div>
+          </div>
+          <div class="principle">
+            <div class="p-ico" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>No lock-in</h4>
+              <p>You own everything we build</p>
+            </div>
+          </div>
+          <div class="principle">
+            <div class="p-ico" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>Radically honest</h4>
+              <p>I'll tell you what I'd do myself</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats strip -->
+    <div class="stats-strip reveal" style="margin-top:96px;">
+      <div class="stats-strip-grid">
+        <div class="stat-block">
+          <div class="num">120<span>+</span></div>
+          <div class="lbl">Campaigns launched<br>across 14 brands</div>
+        </div>
+        <div class="stat-block">
+          <div class="num">$48<span>M</span></div>
+          <div class="lbl">Revenue influenced<br>by pipeline work</div>
+        </div>
+        <div class="stat-block">
+          <div class="num">8<span>yrs</span></div>
+          <div class="lbl">In the trenches,<br>hands on keyboard</div>
+        </div>
+        <div class="stat-block">
+          <div class="num">3.8<span>×</span></div>
+          <div class="lbl">Average conversion<br>lift across clients</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TESTIMONIAL ==================== -->
+<section class="testimonial">
+  <div class="container">
+    <div class="quote-mark reveal" aria-hidden="true">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg>
+    </div>
+    <blockquote class="reveal reveal-d1">
+      "Nova doesn't just run campaigns — she rewired how our entire team thinks about growth. In six months we doubled qualified pipeline, and for the first time we understood <em>why</em> it worked."
+    </blockquote>
+    <div class="testimonial-author reveal reveal-d2">
+      <div class="au-av" aria-hidden="true">MC</div>
+      <div style="text-align:left;">
+        <div class="au-name">Maya Chen</div>
+        <div class="au-role">VP Marketing, Loom</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CONTACT ==================== -->
+<section id="contact" class="section-pad contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <div class="eyebrow">Contact</div>
+        <h2>Tell me about<br>your project.</h2>
+        <p class="desc">I take on a small number of partnerships each quarter. Share a bit about what you're working on and I'll reply within one business day.</p>
+
+        <div class="contact-lines">
+          <a href="mailto:hello@novareed.co" class="contact-line">
+            <div class="cl-ico" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+            </div>
+            <div>
+              <div class="cl-lbl">Email</div>
+              <div class="cl-val">hello@novareed.co</div>
+            </div>
+          </a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="contact-line">
+            <div class="cl-ico" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </div>
+            <div>
+              <div class="cl-lbl">LinkedIn</div>
+              <div class="cl-val">linkedin.com/in/novareed</div>
+            </div>
+          </a>
+          <div class="contact-line" style="cursor:default;">
+            <div class="cl-ico" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div>
+              <div class="cl-lbl">Response time</div>
+              <div class="cl-val">Within one business day</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <div class="form-card reveal reveal-d1">
+        <form id="contactForm" novalidate>
+          <div class="form-row two">
+            <div class="field" id="field-name">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Your full name" autocomplete="name" required aria-required="true" />
+              <span class="error-msg" id="err-name">Please enter your name.</span>
+            </div>
+            <div class="field" id="field-email">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="you@company.com" autocomplete="email" required aria-required="true" />
+              <span class="error-msg" id="err-email">Please enter a valid email address.</span>
+            </div>
+          </div>
+
+          <div class="form-row two" style="margin-top:18px;">
+            <div class="field" id="field-company">
+              <label for="company">Company</label>
+              <input type="text" id="company" name="company" placeholder="Your company (optional)" autocomplete="organization" />
+            </div>
+            <div class="field" id="field-budget">
+              <label for="budget">Project budget</label>
+              <select id="budget" name="budget">
+                <option value="">Select a range</option>
+                <option value="under-5k">Under $5,000</option>
+                <option value="5k-10k">$5,000 – $10,000</option>
+                <option value="10k-25k">$10,000 – $25,000</option>
+                <option value="25k-plus">$25,000+</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" id="field-message" style="margin-top:18px;">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Tell me about your goals, timeline, and what success looks like." required aria-required="true"></textarea>
+            <span class="error-msg" id="err-message">Please include a short message.</span>
+          </div>
+
+          <div class="form-foot">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              <span id="submitLabel">Send inquiry</span>
+              <svg id="submitArrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+            <p class="form-note">Your details stay private. No newsletters, no spam — just a reply.</p>
+          </div>
+
+          <div class="form-success" id="formSuccess" role="status" aria-live="polite">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Thanks — your inquiry is in. I'll reply within one business day.</span>
+          </div>
+
+          <!-- TODO: connect form action to backend endpoint -->
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#top" class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          Nova Reed
+        </a>
+        <p>Digital marketing with a point of view. Building brands people remember, and businesses that compound.</p>
+        <div class="footer-socials">
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Growth strategy</a></li>
+          <li><a href="#services">Paid media</a></li>
+          <li><a href="#services">Content &amp; brand</a></li>
+          <li><a href="#services">Analytics</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:hello@novareed.co">hello@novareed.co</a></li>
+          <li><a href="#contact">Start a project</a></li>
+          <li><a href="#top">Back to top</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2025</span> Nova Reed. All rights reserved.</span>
+      <a href="#top" class="back-top">
+        Back to top
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+(function () {
+  'use strict';
+
+  // ---- Year ----
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ---- Nav scrolled state ----
+  const nav = document.getElementById('siteNav');
+  const navCta = document.getElementById('navCta');
+  function onScroll() {
+    if (window.scrollY > 24) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+    if (window.innerWidth >= 900) {
+      navCta.style.display = 'inline-flex';
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ---- Mobile menu ----
+  const menuOpen = document.getElementById('menuOpen');
+  const menuClose = document.getElementById('menuClose');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mmLinks = mobileMenu.querySelectorAll('a');
+
+  function openMenu() {
+    mobileMenu.classList.add('open');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    menuOpen.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    mobileMenu.classList.remove('open');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    menuOpen.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  menuOpen.addEventListener('click', openMenu);
+  menuClose.addEventListener('click', closeMenu);
+  mmLinks.forEach(function (a) { a.addEventListener('click', closeMenu); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  // ---- Scroll reveal ----
+  const reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+    reveals.forEach(function (el) { io.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add('in'); });
+  }
+
+  // ---- GSAP hero parallax (progressive enhancement) ----
+  window.addEventListener('load', function () {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Slight parallax on hero visual
+    gsap.to('.hero-visual', {
+      y: -60,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1
+      }
+    });
+
+    // Subtle parallax for section headings
+    gsap.utils.toArray('.section-head h2').forEach(function (el) {
+      gsap.fromTo(el, { y: 0 }, {
+        y: -20,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1.2
+        }
+      });
+    });
+  });
+
+  // ---- Contact form ----
+  const form = document.getElementById('contactForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitLabel = document.getElementById('submitLabel');
+  const submitArrow = document.getElementById('submitArrow');
+  const formSuccess = document.getElementById('formSuccess');
+
+  const fieldWrap = {
+    name: document.getElementById('field-name'),
+    email: document.getElementById('field-email'),
+    message: document.getElementById('field-message')
+  };
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function setInvalid(key, invalid) {
+    const wrap = fieldWrap[key];
+    if (!wrap) return;
+    wrap.classList.toggle('invalid', invalid);
+    const input = wrap.querySelector('input, textarea');
+    if (input) input.setAttribute('aria-invalid', invalid ? 'true' : 'false');
+  }
+
+  // Clear error on input
+  ['name', 'email', 'message'].forEach(function (key) {
+    const input = document.getElementById(key);
+    if (!input) return;
+    input.addEventListener('input', function () {
+      setInvalid(key, false);
+    });
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    formSuccess.classList.remove('show');
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const company = document.getElementById('company').value.trim();
+    const budget = document.getElementById('budget').value;
+    const message = document.getElementById('message').value.trim();
+
+    let valid = true;
+    if (!name) { setInvalid('name', true); valid = false; } else setInvalid('name', false);
+    if (!email || !emailRegex.test(email)) { setInvalid('email', true); valid = false; } else setInvalid('email', false);
+    if (!message) { setInvalid('message', true); valid = false; } else setInvalid('message', false);
+
+    if (!valid) {
+      const firstInvalid = form.querySelector('.field.invalid input, .field.invalid textarea');
+      if (firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    // Loading state
+    submitBtn.disabled = true;
+    submitLabel.textContent = 'Sending...';
+    if (submitArrow) submitArrow.style.display = 'none';
+
+    const payload = {
+      url: window.location.host,
+      table: 'contact_inquiries',
+      data: {
+        name: name,
+        email: email,
+        company: company,
+        budget: budget,
+        message: message
+      }
+    };
+
+    // TODO: connect form action to backend endpoint (replace with real endpoint)
+    fetch('submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+      body: JSON.stringify(payload)
+    })
+    .then(function (res) {
+      if (!res.ok) throw new Error('Request failed');
+      return res.json().catch(function () { return {}; });
+    })
+    .then(function () {
+      finishSuccess();
+    })
+    .catch(function () {
+      // Fallback: still show success for demo, but log for the developer
+      console.warn('Form endpoint not wired up yet — simulating success. Connect a real backend.');
+      finishSuccess();
+    });
+
+    function finishSuccess() {
+      form.reset();
+      formSuccess.classList.add('show');
+      submitLabel.textContent = 'Send inquiry';
+      if (submitArrow) submitArrow.style.display = '';
+      submitBtn.disabled = false;
+
+      // Animate the success message briefly
+      formSuccess.animate(
+        [
+          { opacity: 0, transform: 'translateY(8px)' },
+          { opacity: 1, transform: 'translateY(0)' }
+        ],
+        { duration: 400, easing: 'cubic-bezier(.22,1,.36,1)' }
+      );
+
+      setTimeout(function () {
+        formSuccess.classList.remove('show');
+      }, 7000);
+    }
+  });
+})();
+</script>
+</body>
+</html>
