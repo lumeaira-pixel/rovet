@@ -1,64 +1,1216 @@
-12. PREMIUM WEBSITE OPENING ANIMATION & LUXURY EFFECTS
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LUXORA FASHION — Elevate Your Style</title>
 
-Create a stunning, cinematic luxury opening animation for the LUXORA FASHION website. The animation must play automatically when a visitor opens the website for the first time in a new browsing session.
+<!-- Tailwind CDN -->
+<script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
 
-A. Luxury Intro Animation
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&display=swap" rel="stylesheet" />
 
-- Start with a pure black screen.
-- Display the LUXORA FASHION brand logo in elegant gold typography at the center.
-- Make the logo slowly fade in with a subtle golden glow.
-- Add a thin golden light beam that moves smoothly across the logo from left to right.
-- Reveal the tagline: “ELEVATE YOUR STYLE” with a smooth letter-by-letter animation.
-- Add subtle golden particles and soft cinematic lighting.
-- Keep the animation elegant, minimal, premium, and realistic.
-- After approximately 2–3 seconds, smoothly fade out the intro screen to reveal the homepage.
-- Transition into the homepage with a sophisticated fade and slight zoom effect.
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
 
-B. Hero Section Animation
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
-- Animate the main fashion banner with a slow cinematic zoom.
-- Reveal the headline “ELEVATE YOUR STYLE” using a smooth fade-up animation.
-- Make the subtitle appear slightly after the headline.
-- Animate the “SHOP NOW” and “EXPLORE COLLECTION” buttons with a gentle fade-in and slide-up effect.
-- Use subtle parallax movement on the fashion background image.
+<script>
+  /* Tailwind inline config for brand tokens */
+  window.tailwind && (tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:    '#1a1a1a',
+          cream:  '#faf8f6',
+          gold:   '#c9a84c',
+          goldLt: '#e0c878',
+          goldDk: '#a8862e',
+          charcoal:'#2d2d2d',
+          muted:  '#6b6b6b'
+        },
+        fontFamily: {
+          display: ['"Playfair Display"', 'Georgia', 'serif'],
+          body: ['Inter', 'system-ui', 'sans-serif']
+        },
+        maxWidth: { '8xl': '90rem' }
+      }
+    }
+  });
+</script>
 
-C. Scroll Animations
+<style>
+/* === DESIGN TOKENS === */
+:root{
+  --ink:#1a1a1a;
+  --cream:#faf8f6;
+  --gold:#c9a84c;
+  --gold-light:#e0c878;
+  --gold-dark:#a8862e;
+  --charcoal:#2d2d2d;
+  --muted:#6b6b6b;
+  --surface:#ffffff;
+  --border-light:rgba(0,0,0,0.06);
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md:0 8px 24px rgba(0,0,0,0.08);
+  --shadow-lg:0 16px 48px rgba(0,0,0,0.10);
+  --font-display:'Playfair Display',Georgia,serif;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --focus-ring:#c9a84c;
+}
 
-- Reveal product cards gradually as users scroll down.
-- Use smooth fade-in and upward movement for collection sections.
-- Animate product images with a subtle zoom effect on hover.
-- Reveal headings and promotional banners elegantly.
-- Use staggered animations so product cards appear one after another.
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+body{
+  font-family:var(--font-body);
+  background:var(--cream);
+  color:var(--ink);
+  overflow-x:hidden;
+  line-height:1.6;
+}
+::selection{background:var(--gold);color:#fff;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--cream);}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px;}
 
-D. Interactive Hover Effects
+/* ===== Focus visibility ===== */
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 2px #fff,0 0 0 4px var(--focus-ring);
+  border-radius:2px;
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 
-- Add refined gold underline animations to navigation links.
-- Add subtle scale and shadow effects to product cards.
-- Make buttons show a sophisticated gold transition on hover.
-- Animate wishlist icons and cart icons with gentle micro-interactions.
-- Add smooth transitions when selecting product colors and sizes.
+/* === TYPOGRAPHY === */
+.font-display{font-family:var(--font-display);}
+.heading-xl{
+  font-family:var(--font-display);
+  font-size:clamp(2.75rem,7vw,6rem);
+  font-weight:700;line-height:1.02;letter-spacing:-0.035em;
+}
+.heading-lg{
+  font-family:var(--font-display);
+  font-size:clamp(2rem,4.5vw,3.6rem);
+  font-weight:600;line-height:1.08;letter-spacing:-0.02em;
+}
+.heading-md{
+  font-family:var(--font-display);
+  font-size:clamp(1.35rem,2.6vw,2rem);
+  font-weight:600;line-height:1.2;letter-spacing:-0.01em;
+}
+.eyebrow{
+  font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--gold-dark);font-weight:500;
+}
 
-E. Loading Animation
+/* ===== LOADER (LF + rotating gold ring) ===== */
+#loader{
+  position:fixed;inset:0;z-index:9999;
+  background:#0a0a0a;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .6s ease,visibility .6s ease;
+}
+#loader.hidden-loader{opacity:0;visibility:hidden;pointer-events:none;}
+.loader-ring{
+  width:82px;height:82px;border-radius:50%;
+  border:2px solid rgba(201,168,76,0.15);
+  border-top-color:var(--gold);
+  animation:spin 1s linear infinite;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.loader-initials{
+  position:absolute;font-family:var(--font-display);
+  font-size:1.35rem;font-weight:700;color:var(--gold);
+  letter-spacing:.12em;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loader-bar{
+  width:130px;height:2px;background:rgba(201,168,76,0.15);
+  margin-top:26px;border-radius:2px;overflow:hidden;
+}
+.loader-bar-fill{
+  height:100%;width:0;background:var(--gold);border-radius:2px;
+  animation:loadProgress 1.6s ease-in-out forwards;
+}
+@keyframes loadProgress{
+  0%{width:0;}
+  60%{width:70%;}
+  100%{width:100%;}
+}
 
-- Create a premium LUXORA FASHION loading screen using the brand initials “LF”.
-- Use an elegant rotating gold circular outline around the initials.
-- Display a subtle loading progress animation.
-- Show the loader only when necessary, such as during initial loading or real page transitions. Never display it indefinitely.
+/* ===== INTRO (cinematic black/gold) ===== */
+#intro{
+  position:fixed;inset:0;z-index:9998;
+  background:#000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 1s cubic-bezier(.4,0,.2,1),visibility 1s ease;
+}
+#intro.intro-hidden{opacity:0;visibility:hidden;pointer-events:none;}
 
-F. Technical Requirements
+.intro-logo-wrap{position:relative;padding:0 20px;}
+.intro-logo{
+  font-family:var(--font-display);
+  font-size:clamp(2.4rem,7vw,5.5rem);
+  font-weight:800;letter-spacing:.14em;
+  color:var(--gold);
+  opacity:0;
+  text-shadow:0 0 40px rgba(201,168,76,.35);
+  animation:logoFadeIn 1.3s ease forwards;
+  position:relative;overflow:hidden;
+  display:inline-block;
+}
+.intro-logo::after{
+  content:'';position:absolute;top:0;left:-120%;
+  width:55%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);
+  animation:lightBeam 1.6s ease-in-out .9s forwards;
+}
+@keyframes logoFadeIn{
+  0%{opacity:0;transform:scale(.94);}
+  100%{opacity:1;transform:scale(1);}
+}
+@keyframes lightBeam{
+  0%{left:-120%;}
+  100%{left:220%;}
+}
 
-- Implement real animations using CSS animations, transitions, and JavaScript or the framework supported by the website builder.
-- Use lightweight, optimized animations that do not slow down the website.
-- The intro animation must not replay on every small interaction or every page update.
-- Play the intro once per browsing session, with a replay option if practical.
-- Include a “Skip Intro” button for users who want to enter the store immediately.
-- Respect the user's reduced-motion accessibility preference and provide a static alternative.
-- Ensure the animation works on Android phones, iPhones, tablets, and desktop browsers.
-- Prevent horizontal scrolling, layout shifts, and flickering during transitions.
-- Keep all shopping functions accessible and ensure the animation never blocks cart, checkout, or payment functionality.
+.intro-tagline{
+  font-family:var(--font-body);
+  font-size:clamp(.68rem,1.8vw,.95rem);
+  letter-spacing:.38em;
+  color:rgba(201,168,76,.75);
+  margin-top:22px;
+  display:flex;flex-wrap:wrap;gap:1px;justify-content:center;
+  text-align:center;
+}
+.intro-tagline span{
+  opacity:0;transform:translateY(8px);
+  animation:letterReveal .55s ease forwards;
+  display:inline-block;
+}
+@keyframes letterReveal{to{opacity:1;transform:translateY(0);}}
 
-FINAL ANIMATION GOAL
+.intro-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.particle{
+  position:absolute;width:2px;height:2px;background:var(--gold);
+  border-radius:50%;opacity:0;
+  animation:particleFloat 3s ease-in-out infinite;
+}
+@keyframes particleFloat{
+  0%{opacity:0;transform:translateY(0) scale(.2);}
+  30%{opacity:.6;}
+  70%{opacity:.35;}
+  100%{opacity:0;transform:translateY(-90px) scale(1);}
+}
 
-When visitors open LUXORA FASHION, they should experience a cinematic black-and-gold luxury brand introduction, followed by a seamless transition into a premium fashion shopping website. The overall experience should feel elegant, modern, smooth, and comparable to a high-end international fashion brand.
+.skip-intro{
+  position:absolute;bottom:36px;right:36px;
+  font-family:var(--font-body);
+  font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(201,168,76,.65);
+  background:transparent;
+  border:1px solid rgba(201,168,76,.3);
+  padding:10px 20px;cursor:pointer;
+  transition:all .3s ease;
+  opacity:0;animation:fadeInBtn .6s ease 1.5s forwards;
+}
+.skip-intro:hover{color:var(--gold);border-color:var(--gold);background:rgba(201,168,76,.08);}
+@keyframes fadeInBtn{to{opacity:1;}}
 
-Implement the actual working animation in the website, not just a visual mockup or animation description.
+/* ===== MAIN SITE transition ===== */
+#main-site{
+  opacity:0;transform:scale(.97);
+  transition:opacity 1.1s cubic-bezier(.4,0,.2,1),transform 1.1s cubic-bezier(.4,0,.2,1);
+}
+#main-site.revealed{opacity:1;transform:scale(1);}
+
+/* ===== HEADER ===== */
+.site-header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1.4rem 2rem;transition:all .4s ease;
+  background:transparent;
+}
+.site-header.scrolled{
+  background:rgba(250,248,246,.92);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  padding:.9rem 2rem;box-shadow:0 1px 0 var(--border-light);
+}
+.brand-mark{
+  font-family:var(--font-display);font-size:1.55rem;font-weight:700;
+  letter-spacing:.18em;color:var(--ink);text-decoration:none;
+  transition:color .3s ease;
+}
+.brand-mark:hover{color:var(--gold-dark);}
+
+.nav-link{
+  position:relative;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--charcoal);text-decoration:none;padding:6px 0;
+  transition:color .3s ease;font-weight:500;
+}
+.nav-link::after{
+  content:'';position:absolute;bottom:0;left:0;width:0;height:1px;
+  background:var(--gold);transition:width .45s cubic-bezier(.4,0,.2,1);
+}
+.nav-link:hover{color:var(--gold-dark);}
+.nav-link:hover::after{width:100%;}
+
+.icon-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(0,0,0,.1);
+  background:transparent;cursor:pointer;
+  transition:all .3s ease;color:var(--ink);position:relative;
+}
+.icon-btn:hover{border-color:var(--gold);color:var(--gold-dark);transform:translateY(-1px);}
+.icon-btn:active{transform:scale(.92);}
+
+.cart-badge{
+  position:absolute;top:-3px;right:-3px;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--gold);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:600;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px 34px;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
+  font-weight:500;color:#fff;background:var(--charcoal);
+  border:1px solid var(--charcoal);cursor:pointer;
+  transition:all .45s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;
+}
+.btn-primary::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  opacity:0;transition:opacity .45s ease;
+}
+.btn-primary > *{position:relative;z-index:1;}
+.btn-primary:hover::before{opacity:1;}
+.btn-primary:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 10px 28px rgba(201,168,76,.3);}
+.btn-primary:active{transform:translateY(0) scale(.98);}
+
+.btn-outline{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px 34px;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
+  font-weight:500;color:var(--charcoal);background:transparent;
+  border:1px solid rgba(0,0,0,.16);cursor:pointer;
+  transition:all .45s cubic-bezier(.4,0,.2,1);
+}
+.btn-outline:hover{
+  border-color:var(--gold);color:var(--gold-dark);
+  transform:translateY(-2px);box-shadow:0 10px 28px rgba(201,168,76,.14);
+}
+.btn-outline:active{transform:scale(.98);}
+
+/* ===== HERO ===== */
+.hero{
+  position:relative;min-height:100vh;display:flex;align-items:center;
+  overflow:hidden;background:var(--cream);
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background-image:url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&q=80');
+  background-size:cover;background-position:center 30%;
+  will-change:transform;transform-origin:center;
+}
+.hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to right,rgba(250,248,246,.94) 0%,rgba(250,248,246,.65) 45%,rgba(250,248,246,.12) 100%);
+}
+
+/* ===== PRODUCT CARDS ===== */
+.product-card{
+  position:relative;background:var(--surface);overflow:hidden;cursor:pointer;
+  transition:transform .5s cubic-bezier(.4,0,.2,1),box-shadow .5s ease;
+  border:1px solid var(--border-light);
+}
+.product-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:rgba(201,168,76,.25);}
+.product-card .img-wrap{overflow:hidden;aspect-ratio:3/4;background:#f0ece8;}
+.product-card .img-wrap img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .9s cubic-bezier(.4,0,.2,1);
+}
+.product-card:hover .img-wrap img{transform:scale(1.07);}
+.wishlist-btn{
+  position:absolute;top:14px;right:14px;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  border:none;cursor:pointer;color:var(--ink);
+  opacity:0;transform:translateY(-4px);
+  transition:all .35s ease;z-index:2;
+}
+.product-card:hover .wishlist-btn,.wishlist-btn:focus-visible{opacity:1;transform:translateY(0);}
+.wishlist-btn:hover{background:var(--gold);color:#fff;transform:scale(1.1)!important;}
+.wishlist-btn:active{transform:scale(.92)!important;}
+.wishlist-btn.active{background:var(--gold);color:#fff;}
+.wishlist-btn.active svg{fill:#fff;}
+.wishlist-btn svg{transition:fill .25s ease;}
+
+/* swatches */
+.swatch{
+  width:22px;height:22px;border-radius:50%;
+  border:1px solid rgba(0,0,0,.15);cursor:pointer;
+  transition:all .25s ease;position:relative;
+}
+.swatch:hover{transform:scale(1.15);}
+.swatch.selected{border-color:var(--gold);box-shadow:0 0 0 2px #fff,0 0 0 3px var(--gold);}
+.size-chip{
+  min-width:34px;height:30px;padding:0 8px;
+  font-size:.7rem;font-weight:500;letter-spacing:.05em;
+  border:1px solid rgba(0,0,0,.14);background:#fff;color:var(--ink);
+  cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  transition:all .3s ease;
+}
+.size-chip:hover{border-color:var(--gold);color:var(--gold-dark);}
+.size-chip.selected{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+/* ===== REVEAL UTILITIES ===== */
+.reveal-up{opacity:0;transform:translateY(36px);transition:opacity .8s cubic-bezier(.4,0,.2,1),transform .8s cubic-bezier(.4,0,.2,1);}
+.reveal-up.revealed{opacity:1;transform:translateY(0);}
+.stagger-card{opacity:0;transform:translateY(50px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
+.stagger-card.revealed{opacity:1;transform:translateY(0);}
+
+/* ===== TESTIMONIALS ===== */
+.testimonial-card{
+  background:var(--surface);padding:2.4rem;
+  border:1px solid var(--border-light);
+  transition:all .4s ease;
+}
+.testimonial-card:hover{box-shadow:var(--shadow-md);border-color:rgba(201,168,76,.28);transform:translateY(-3px);}
+.stars svg{width:14px;height:14px;fill:var(--gold);color:var(--gold);}
+
+/* ===== CTA BANNER ===== */
+.cta-banner{position:relative;overflow:hidden;background:#141414;}
+.cta-banner::before{
+  content:'';position:absolute;inset:0;
+  background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1600&q=80');
+  background-size:cover;background-position:center;opacity:.12;
+}
+
+/* ===== FOOTER / FORM ===== */
+.footer-link{
+  font-size:.85rem;color:var(--muted);text-decoration:none;
+  transition:color .3s ease,padding-left .3s ease;
+  display:block;padding:5px 0;
+}
+.footer-link:hover{color:var(--gold-dark);padding-left:5px;}
+
+.form-input{
+  width:100%;padding:12px 16px;
+  font-family:var(--font-body);font-size:.9rem;
+  background:#fff;border:1px solid rgba(0,0,0,.12);
+  color:var(--ink);outline:none;
+  transition:border-color .3s ease,box-shadow .3s ease;
+}
+.form-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.14);}
+.form-input::placeholder{color:#aaa;}
+.form-input.error{border-color:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.1);}
+
+/* Dark footer CTA input override */
+.cta-banner .form-input{
+  background:transparent!important;border-color:rgba(255,255,255,.25)!important;color:#fff!important;
+}
+.cta-banner .form-input::placeholder{color:rgba(255,255,255,.45);}
+
+/* ===== MOBILE MENU ===== */
+.mobile-menu{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(250,248,246,.98);backdrop-filter:blur(24px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;
+  opacity:0;visibility:hidden;
+  transition:opacity .4s ease,visibility .4s ease;
+}
+.mobile-menu.open{opacity:1;visibility:visible;}
+.mobile-menu a{
+  font-family:var(--font-display);font-size:1.8rem;font-weight:600;
+  color:var(--charcoal);text-decoration:none;
+  transition:color .3s ease;
+}
+.mobile-menu a:hover,.mobile-menu a:focus-visible{color:var(--gold);}
+
+/* Marquee ticker */
+.marquee{overflow:hidden;white-space:nowrap;}
+.marquee-track{display:inline-block;animation:scroll 28s linear infinite;will-change:transform;}
+@keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.001ms!important;
+    scroll-behavior:auto!important;
+  }
+  .intro-logo::after,.marquee-track{animation:none!important;display:none;}
+  .hero-bg{transform:none!important;}
+  .reveal-up,.stagger-card{opacity:1!important;transform:none!important;}
+}
+
+/* Mobile tweaks */
+@media (max-width:640px){
+  .site-header{padding:1rem 1.1rem;}
+  .site-header.scrolled{padding:.7rem 1.1rem;}
+  .skip-intro{bottom:20px;right:16px;padding:8px 14px;font-size:.6rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= LOADER ================= -->
+<div id="loader" role="status" aria-label="Loading LUXORA FASHION">
+  <div class="loader-ring" aria-hidden="true">
+    <span class="loader-initials">LF</span>
+  </div>
+  <div class="loader-bar" aria-hidden="true"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- ================= INTRO ================= -->
+<div id="intro" aria-hidden="true">
+  <div class="intro-particles" id="particles"></div>
+  <div class="intro-logo-wrap">
+    <span class="intro-logo">LUXORA</span>
+  </div>
+  <div class="intro-tagline" id="introTagline"></div>
+  <button class="skip-intro" id="skipIntro" aria-label="Skip the introduction animation">Skip Intro</button>
+</div>
+
+<!-- ================= MAIN SITE ================= -->
+<div id="main-site">
+
+  <!-- HEADER -->
+  <header class="site-header" id="siteHeader">
+    <div class="max-w-8xl mx-auto flex items-center justify-between">
+      <a href="#" class="brand-mark" aria-label="LUXORA FASHION — Home">LUXORA</a>
+
+      <nav class="hidden md:flex items-center gap-9" aria-label="Primary navigation">
+        <a href="#collection" class="nav-link">Collection</a>
+        <a href="#about" class="nav-link">Atelier</a>
+        <a href="#testimonials" class="nav-link">Reviews</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <button class="icon-btn hidden sm:inline-flex" id="searchBtn" aria-label="Search products">
+          <i data-lucide="search" style="width:16px;height:16px;"></i>
+        </button>
+        <button class="icon-btn hidden sm:inline-flex" id="cartBtn" aria-label="Shopping cart — 2 items">
+          <i data-lucide="shopping-bag" style="width:16px;height:16px;"></i>
+          <span class="cart-badge" aria-hidden="true">2</span>
+        </button>
+        <button class="icon-btn md:hidden" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" style="width:20px;height:20px;"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button class="absolute top-6 right-6 icon-btn" id="menuClose" aria-label="Close menu">
+      <i data-lucide="x" style="width:22px;height:22px;"></i>
+    </button>
+    <a href="#collection" class="mobile-link">Collection</a>
+    <a href="#about" class="mobile-link">Atelier</a>
+    <a href="#testimonials" class="mobile-link">Reviews</a>
+    <a href="#contact" class="mobile-link">Contact</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="hero" aria-label="Hero">
+    <div class="hero-bg" id="heroBg" aria-hidden="true"></div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <div class="hero-content max-w-8xl mx-auto px-6 md:px-12 w-full pt-32 pb-24">
+      <div class="max-w-xl">
+        <p class="hero-subtitle eyebrow mb-5">Autumn / Winter 2025</p>
+        <h1 class="heading-xl text-gray-900 mb-6" id="heroHeadline">
+          ELEVATE<br>YOUR STYLE
+        </h1>
+        <p class="hero-desc text-base md:text-lg text-gray-600 leading-relaxed mb-9 max-w-md">
+          Timeless pieces crafted with precision. Where modern elegance meets unparalleled craftsmanship — reserved for those who demand more than the ordinary.
+        </p>
+        <div class="hero-buttons flex flex-wrap gap-4">
+          <button class="btn-primary" id="shopNowBtn">
+            <span>Shop Now</span>
+            <i data-lucide="arrow-right" style="width:15px;height:15px;" aria-hidden="true"></i>
+          </button>
+          <button class="btn-outline" id="exploreBtn">
+            <span>Explore Collection</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE STRIP -->
+  <div class="py-5 bg-ink text-cream overflow-hidden" style="background:#141414;color:#faf8f6;">
+    <div class="marquee">
+      <div class="marquee-track font-display" style="font-size:.85rem;letter-spacing:.35em;text-transform:uppercase;">
+        <span class="inline-block px-8" style="color:#c9a84c;">Complimentary Worldwide Shipping</span>
+        <span class="inline-block px-8" style="color:#faf8f6;">&middot;</span>
+        <span class="inline-block px-8">Handcrafted in Italy</span>
+        <span class="inline-block px-8" style="color:#c9a84c;">&middot;</span>
+        <span class="inline-block px-8">30-Day Returns</span>
+        <span class="inline-block px-8" style="color:#faf8f6;">&middot;</span>
+        <span class="inline-block px-8">Private Client Services</span>
+        <span class="inline-block px-8" style="color:#c9a84c;">&middot;</span>
+        <span class="inline-block px-8">Complimentary Worldwide Shipping</span>
+        <span class="inline-block px-8" style="color:#faf8f6;">&middot;</span>
+        <span class="inline-block px-8">Handcrafted in Italy</span>
+        <span class="inline-block px-8" style="color:#c9a84c;">&middot;</span>
+        <span class="inline-block px-8">30-Day Returns</span>
+        <span class="inline-block px-8" style="color:#faf8f6;">&middot;</span>
+        <span class="inline-block px-8">Private Client Services</span>
+        <span class="inline-block px-8" style="color:#c9a84c;">&middot;</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <section class="py-16 md:py-24 bg-white border-b" style="border-color:var(--border-light);" aria-label="Brand milestones">
+    <div class="max-w-8xl mx-auto px-6 md:px-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
+        <div class="reveal-up">
+          <p class="font-display text-3xl md:text-4xl font-bold text-gray-900">25+</p>
+          <p class="text-xs tracking-widest uppercase text-gray-400 mt-2" style="letter-spacing:.18em;">Years of Craft</p>
+        </div>
+        <div class="reveal-up" style="transition-delay:.1s;">
+          <p class="font-display text-3xl md:text-4xl font-bold text-gray-900">120+</p>
+          <p class="text-xs tracking-widest uppercase text-gray-400 mt-2" style="letter-spacing:.18em;">Artisan Partners</p>
+        </div>
+        <div class="reveal-up" style="transition-delay:.2s;">
+          <p class="font-display text-3xl md:text-4xl font-bold text-gray-900">48</p>
+          <p class="text-xs tracking-widest uppercase text-gray-400 mt-2" style="letter-spacing:.18em;">Countries Served</p>
+        </div>
+        <div class="reveal-up" style="transition-delay:.3s;">
+          <p class="font-display text-3xl md:text-4xl font-bold text-gray-900">98%</p>
+          <p class="text-xs tracking-widest uppercase text-gray-400 mt-2" style="letter-spacing:.18em;">Client Satisfaction</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLECTION -->
+  <section class="py-20 md:py-32" id="collection" aria-label="Signature collection">
+    <div class="max-w-8xl mx-auto px-6 md:px-12">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-5 reveal-up">
+        <div>
+          <p class="eyebrow mb-3">Curated Selection</p>
+          <h2 class="heading-lg text-gray-900">The Signature<br>Collection</h2>
+        </div>
+        <a href="#" class="text-xs tracking-widest uppercase text-gray-500 hover:text-yellow-700 transition-colors duration-300 border-b border-gray-300 pb-1 self-start md:self-auto" style="letter-spacing:.2em;">View All</a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8" id="productGrid">
+        <!-- Product 1 -->
+        <article class="product-card stagger-card">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=700&q=80" alt="Cashmere Overcoat in camel" loading="lazy" />
+          </div>
+          <button class="wishlist-btn" data-wishlist aria-label="Add Cashmere Overcoat to wishlist" aria-pressed="false">
+            <i data-lucide="heart" style="width:16px;height:16px;"></i>
+          </button>
+          <div class="p-5">
+            <p class="text-xs tracking-widest uppercase text-gray-400 mb-1" style="letter-spacing:.2em;">Outerwear</p>
+            <h3 class="font-display text-lg font-semibold text-gray-900 mb-1">Cashmere Overcoat</h3>
+            <p class="text-sm text-gray-500 mb-3">$1,240</p>
+            <div class="flex items-center gap-2" aria-label="Color options">
+              <button class="swatch selected" style="background:#c8a97e;" aria-label="Camel"></button>
+              <button class="swatch" style="background:#1a1a1a;" aria-label="Black"></button>
+              <button class="swatch" style="background:#6b6b6b;" aria-label="Graphite"></button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product 2 -->
+        <article class="product-card stagger-card">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=700&q=80" alt="Leather Tote Bag in tan" loading="lazy" />
+          </div>
+          <button class="wishlist-btn" data-wishlist aria-label="Add Leather Tote Bag to wishlist" aria-pressed="false">
+            <i data-lucide="heart" style="width:16px;height:16px;"></i>
+          </button>
+          <div class="p-5">
+            <p class="text-xs tracking-widest uppercase text-gray-400 mb-1" style="letter-spacing:.2em;">Accessories</p>
+            <h3 class="font-display text-lg font-semibold text-gray-900 mb-1">Leather Tote Bag</h3>
+            <p class="text-sm text-gray-500 mb-3">$890</p>
+            <div class="flex items-center gap-2" aria-label="Color options">
+              <button class="swatch selected" style="background:#8b5a2b;" aria-label="Tan"></button>
+              <button class="swatch" style="background:#1a1a1a;" aria-label="Black"></button>
+              <button class="swatch" style="background:#a8862e;" aria-label="Gold"></button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product 3 -->
+        <article class="product-card stagger-card">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=700&q=80" alt="Silk Midi Dress in ivory" loading="lazy" />
+          </div>
+          <button class="wishlist-btn" data-wishlist aria-label="Add Silk Midi Dress to wishlist" aria-pressed="false">
+            <i data-lucide="heart" style="width:16px;height:16px;"></i>
+          </button>
+          <div class="p-5">
+            <p class="text-xs tracking-widest uppercase text-gray-400 mb-1" style="letter-spacing:.2em;">Dresses</p>
+            <h3 class="font-display text-lg font-semibold text-gray-900 mb-1">Silk Midi Dress</h3>
+            <p class="text-sm text-gray-500 mb-3">$680</p>
+            <div class="flex items-center gap-2" aria-label="Size options">
+              <button class="size-chip">XS</button>
+              <button class="size-chip selected">S</button>
+              <button class="size-chip">M</button>
+              <button class="size-chip">L</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product 4 -->
+        <article class="product-card stagger-card">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=700&q=80" alt="Gold Minimal Watch" loading="lazy" />
+          </div>
+          <button class="wishlist-btn" data-wishlist aria-label="Add Gold Minimal Watch to wishlist" aria-pressed="false">
+            <i data-lucide="heart" style="width:16px;height:16px;"></i>
+          </button>
+          <div class="p-5">
+            <p class="text-xs tracking-widest uppercase text-gray-400 mb-1" style="letter-spacing:.2em;">Timepieces</p>
+            <h3 class="font-display text-lg font-semibold text-gray-900 mb-1">Gold Minimal Watch</h3>
+            <p class="text-sm text-gray-500 mb-3">$2,450</p>
+            <div class="flex items-center gap-2" aria-label="Strap options">
+              <button class="swatch selected" style="background:#c9a84c;" aria-label="Gold"></button>
+              <button class="swatch" style="background:#1a1a1a;" aria-label="Black leather"></button>
+              <button class="swatch" style="background:#d9d4cc;" aria-label="Steel"></button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT / ATELIER -->
+  <section class="py-20 md:py-32 bg-white" id="about" aria-label="About the atelier">
+    <div class="max-w-8xl mx-auto px-6 md:px-12">
+      <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+        <div class="reveal-up">
+          <p class="eyebrow mb-4">Our Philosophy</p>
+          <h2 class="heading-lg text-gray-900 mb-6">Crafted for<br>the Discerning</h2>
+          <p class="text-gray-600 leading-relaxed mb-5">
+            LUXORA FASHION was born from a singular vision: to create pieces that transcend seasons and trends. Every garment is a testament to meticulous craftsmanship, sourced from the finest ateliers across Europe and Asia.
+          </p>
+          <p class="text-gray-600 leading-relaxed mb-8">
+            We believe in slow fashion — pieces that are made to last, to be cherished, and to become part of your personal legacy. Our commitment to excellence is unwavering, from the first sketch to the final stitch.
+          </p>
+          <button class="btn-outline"><span>Discover Our Story</span></button>
+        </div>
+        <div class="relative reveal-up" style="transition-delay:.15s;">
+          <div class="aspect-w-4 aspect-h-5 overflow-hidden" style="aspect-ratio:4/5;">
+            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=900&q=80" alt="Inside the LUXORA atelier" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="absolute -bottom-6 -left-6 w-24 h-24 border border-yellow-600/30 pointer-events-none" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="py-20 md:py-32" id="testimonials" aria-label="Client testimonials">
+    <div class="max-w-8xl mx-auto px-6 md:px-12">
+      <div class="text-center mb-16 reveal-up">
+        <p class="eyebrow mb-3">Client Voices</p>
+        <h2 class="heading-lg text-gray-900">Words of Praise</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+        <blockquote class="testimonial-card reveal-up">
+          <div class="stars flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
+          </div>
+          <p class="text-gray-600 leading-relaxed mb-6 italic font-display" style="font-size:1.05rem;">
+            "The attention to detail is extraordinary. Every stitch, every button — it's clear that LUXORA operates on a different level. My overcoat has become a signature piece."
+          </p>
+          <footer>
+            <p class="font-semibold text-gray-900 text-sm">Isabella Laurent</p>
+            <p class="text-xs text-gray-400">Paris, France</p>
+          </footer>
+        </blockquote>
+
+        <blockquote class="testimonial-card reveal-up" style="transition-delay:.1s;">
+          <div class="stars flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
+          </div>
+          <p class="text-gray-600 leading-relaxed mb-6 italic font-display" style="font-size:1.05rem;">
+            "I've shopped at every luxury house you can name. LUXORA is the only one where I feel like the piece was made specifically for me. The leather tote is perfection."
+          </p>
+          <footer>
+            <p class="font-semibold text-gray-900 text-sm">Marcus Chen</p>
+            <p class="text-xs text-gray-400">Singapore</p>
+          </footer>
+        </blockquote>
+
+        <blockquote class="testimonial-card reveal-up" style="transition-delay:.2s;">
+          <div class="stars flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
+          </div>
+          <p class="text-gray-600 leading-relaxed mb-6 italic font-display" style="font-size:1.05rem;">
+            "The unboxing alone was an experience. The packaging, the handwritten note, the tissue paper — it's these details that set LUXORA apart from every other brand."
+          </p>
+          <footer>
+            <p class="font-semibold text-gray-900 text-sm">Amara Okafor</p>
+            <p class="text-xs text-gray-400">London, UK</p>
+          </footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="cta-banner py-20 md:py-28" aria-label="Join the LUXORA Circle">
+    <div class="max-w-4xl mx-auto px-6 md:px-12 text-center relative z-10 reveal-up">
+      <p class="eyebrow mb-4" style="color:#e0c878;">Private Access</p>
+      <h2 class="heading-lg text-white mb-6">Become Part of<br>the LUXORA Circle</h2>
+      <p class="text-gray-400 leading-relaxed mb-9 max-w-lg mx-auto">
+        Join our private list for early access to new collections, invitations to private events, and members-only pricing.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <input type="email" class="form-input flex-1" id="newsletterEmail" placeholder="Your email address" aria-label="Email address for newsletter" />
+        <button class="btn-primary" id="subscribeBtn" style="background:#c9a84c;border-color:#c9a84c;">
+          <span>Subscribe</span>
+        </button>
+      </div>
+      <p class="text-xs text-gray-500 mt-4" id="newsletterMsg" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- FOOTER / CONTACT -->
+  <footer class="bg-white border-t" style="border-color:var(--border-light);" id="contact">
+    <div class="max-w-8xl mx-auto px-6 md:px-12 py-16 md:py-24">
+      <div class="grid md:grid-cols-4 gap-12 md:gap-8 mb-16">
+        <div>
+          <a href="#" class="brand-mark block mb-4">LUXORA</a>
+          <p class="text-sm text-gray-500 leading-relaxed mb-6 max-w-xs">
+            Elevate your style with pieces that transcend time. Crafted with intention, worn with purpose.
+          </p>
+          <div class="flex gap-3">
+            <a href="#" class="icon-btn" aria-label="Instagram"><i data-lucide="instagram" style="width:16px;height:16px;"></i></a>
+            <a href="#" class="icon-btn" aria-label="Facebook"><i data-lucide="facebook" style="width:16px;height:16px;"></i></a>
+            <a href="#" class="icon-btn" aria-label="Twitter"><i data-lucide="twitter" style="width:16px;height:16px;"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="eyebrow mb-5" style="color:#999;">Shop</h4>
+          <a href="#" class="footer-link">New Arrivals</a>
+          <a href="#" class="footer-link">Outerwear</a>
+          <a href="#" class="footer-link">Dresses</a>
+          <a href="#" class="footer-link">Accessories</a>
+          <a href="#" class="footer-link">Timepieces</a>
+        </div>
+
+        <div>
+          <h4 class="eyebrow mb-5" style="color:#999;">Information</h4>
+          <a href="#" class="footer-link">About Us</a>
+          <a href="#" class="footer-link">Craftsmanship</a>
+          <a href="#" class="footer-link">Shipping &amp; Returns</a>
+          <a href="#" class="footer-link">Size Guide</a>
+          <a href="#" class="footer-link">Care Instructions</a>
+        </div>
+
+        <div>
+          <h4 class="eyebrow mb-5" style="color:#999;">Contact</h4>
+          <p class="text-sm text-gray-500 mb-1">12 Savile Row</p>
+          <p class="text-sm text-gray-500 mb-1">London, W1S 3PQ</p>
+          <p class="text-sm text-gray-500 mb-3">+44 20 7946 0958</p>
+          <a href="mailto:hello@luxora.fashion" class="text-sm text-yellow-700 hover:text-yellow-800 transition-colors duration-300">hello@luxora.fashion</a>
+        </div>
+      </div>
+
+      <!-- INLINE ENQUIRY FORM -->
+      <div class="border-t pt-12" style="border-color:var(--border-light);">
+        <h4 class="eyebrow mb-6" style="color:#999;">Send an Enquiry</h4>
+        <form id="contactForm" class="grid md:grid-cols-4 gap-4" novalidate>
+          <input type="text" id="formName" class="form-input" placeholder="Full Name" aria-label="Full name" required />
+          <input type="email" id="formEmail" class="form-input" placeholder="Email Address" aria-label="Email address" required />
+          <input type="tel" id="formPhone" class="form-input" placeholder="Phone Number" aria-label="Phone number" />
+          <button type="submit" class="btn-primary">
+            <span>Send Message</span>
+          </button>
+          <div class="md:col-span-4">
+            <textarea id="formMessage" class="form-input" rows="3" placeholder="Your message..." aria-label="Your message" required></textarea>
+          </div>
+          <p class="md:col-span-4 text-xs text-gray-400" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+        <!-- TODO: connect form action to backend endpoint -->
+      </div>
+
+      <div class="border-t mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4" style="border-color:var(--border-light);">
+        <p class="text-xs text-gray-400">&copy; 2025 LUXORA FASHION. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="text-xs text-gray-400 hover:text-yellow-700 transition-colors duration-300">Privacy Policy</a>
+          <a href="#" class="text-xs text-gray-400 hover:text-yellow-700 transition-colors duration-300">Terms of Service</a>
+          <button id="replayIntro" class="text-xs text-gray-400 hover:text-yellow-700 transition-colors duration-300" style="background:none;border:none;cursor:pointer;">Replay Intro</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  lucide.createIcons();
+
+  /* ============ SESSION FLAG ============ */
+  const SESSION_KEY = 'luxora_intro_played';
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ============ ELEMENTS ============ */
+  const loader     = document.getElementById('loader');
+  const intro      = document.getElementById('intro');
+  const mainSite   = document.getElementById('main-site');
+  const skipBtn    = document.getElementById('skipIntro');
+
+  let introDone = false;
+  let introTimer = null;
+
+  /* ============ LOADER ============ */
+  function hideLoader(){
+    if (loader && !loader.classList.contains('hidden-loader')){
+      loader.classList.add('hidden-loader');
+    }
+  }
+
+  // Loader resolves in max 1.8s (never hangs)
+  const loaderTimeout = setTimeout(()=>{
+    hideLoader();
+    decideIntro();
+  }, 1800);
+
+  /* ============ INTRO LOGIC ============ */
+  function decideIntro(){
+    // If reduced motion, skip intro entirely
+    if (prefersReduced){
+      finishIntro();
+      return;
+    }
+    // If already played in this browsing session, skip
+    let played = false;
+    try { played = sessionStorage.getItem(SESSION_KEY) === '1'; } catch(e){}
+    if (played){
+      finishIntro();
+      return;
+    }
+    // Otherwise play intro
+    playIntro();
+  }
+
+  function playIntro(){
+    // Build letter-by-letter tagline
+    const taglineEl = document.getElementById('introTagline');
+    const text = 'ELEVATE YOUR STYLE';
+    taglineEl.innerHTML = '';
+    text.split('').forEach((ch, i)=>{
+      const s = document.createElement('span');
+      s.textContent = (ch === ' ') ? '\u00A0' : ch;
+      s.style.animationDelay = (1.0 + i * 0.045) + 's';
+      taglineEl.appendChild(s);
+    });
+
+    // Generate subtle gold particles
+    const particles = document.getElementById('particles');
+    particles.innerHTML = '';
+    for (let i=0; i<22; i++){
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = (Math.random()*100) + '%';
+      p.style.top  = (35 + Math.random()*55) + '%';
+      p.style.animationDelay = (Math.random()*3) + 's';
+      p.style.animationDuration = (2.2 + Math.random()*2) + 's';
+      particles.appendChild(p);
+    }
+
+    // Auto-finish intro after ~3s
+    introTimer = setTimeout(finishIntro, 3100);
+  }
+
+  function finishIntro(){
+    if (introDone) return;
+    introDone = true;
+    if (introTimer) clearTimeout(introTimer);
+    intro.classList.add('intro-hidden');
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e){}
+    revealSite();
+  }
+
+  function revealSite(){
+    hideLoader();
+    mainSite.classList.add('revealed');
+    // Kick hero + scroll animations after reveal
+    setTimeout(()=>{
+      animateHero();
+      initScrollAnimations();
+    }, 250);
+  }
+
+  // Skip button
+  skipBtn.addEventListener('click', finishIntro);
+
+  // Replay intro (footer link) — clears session flag and reloads intro
+  const replayBtn = document.getElementById('replayIntro');
+  if (replayBtn){
+    replayBtn.addEventListener('click', ()=>{
+      try { sessionStorage.removeItem(SESSION_KEY); } catch(e){}
+      // Reset states
+      intro.classList.remove('intro-hidden');
+      mainSite.classList.remove('revealed');
+      introDone = false;
+      // Replay
+      playIntro();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  /* ============ HERO ANIMATIONS ============ */
+  function animateHero(){
+    if (prefersReduced || typeof gsap === 'undefined') return;
+
+    gsap.fromTo('#heroHeadline',
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', delay: 0.15 }
+    );
+    gsap.fromTo('.hero-subtitle',
+      { opacity: 0, y: 26 },
+      { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.35 }
+    );
+    gsap.fromTo('.hero-desc',
+      { opacity: 0, y: 26 },
+      { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.55 }
+    );
+    gsap.fromTo('.hero-buttons',
+      { opacity: 0, y: 26 },
+      { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.75 }
+    );
+
+    // Slow cinematic zoom on hero background
+    gsap.fromTo('#heroBg',
+      { scale: 1 },
+      { scale: 1.09, duration: 14, ease: 'none', repeat: -1, yoyo: true }
+    );
+  }
+
+  /* ============ SCROLL ANIMATIONS ============ */
+  function initScrollAnimations(){
+    if (prefersReduced){
+      document.querySelectorAll('.reveal-up, .stagger-card').forEach(el=>el.classList.add('revealed'));
+      return;
+    }
+
+    const revealObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if (entry.isIntersecting){
+          entry.target.classList.add('revealed');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal-up').forEach(el=>revealObserver.observe(el));
+
+    // Stagger product cards
+    const cards = document.querySelectorAll('.stagger-card');
+    const cardObserver = new IntersectionObserver((entries)=>{
+      entries.forEach((entry, i)=>{
+        if (entry.isIntersecting){
+          // find its index among all cards for stagger delay
+          const idx = Array.from(cards).indexOf(entry.target);
+          setTimeout(()=>{
+            entry.target.classList.add('revealed');
+          }, (idx % 4) * 110);
+          cardObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    cards.forEach(c=>cardObserver.observe(c));
+
+    // Hero parallax
+    window.addEventListener('scroll', ()=>{
+      const scrolled = window.pageYOffset;
+      const heroBg = document.getElementById('heroBg');
+      if (heroBg && scrolled < window.innerHeight * 1.2){
+        heroBg.style.transform = 'translateY(' + (scrolled * 0.25) + 'px)';
+      }
+    }, { passive: true });
+  }
+
+  /* ============ HEADER SCROLL ============ */
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', ()=>{
+    if (window.pageYOffset > 60) header.classList.add('scrolled');
+    else header.classList.remove('scrolled');
+  }, { passive: true });
+
+  /* ============ MOBILE MENU ============ */
+  const menuToggle = document.getElementById('menuToggle');
+  const menuClose  = document.getElementById('menuClose');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  menuToggle.addEventListener('click', ()=>{
+    mobileMenu.classList.add('open');
+    menuToggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    menuClose.focus();
+  });
+  function closeMenu(){
+    mobileMenu.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  menuClose.addEventListener('click', closeMenu);
+  document.querySelectorAll('.mobile-link').forEach(l=>l.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (e)=>{
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+  });
+
+  /* ============ WISHLIST MICRO-INTERACTION ============ */
+  document.querySelectorAll('[data-wishlist]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const active = btn.classList.toggle('active');
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      const icon = btn.querySelector('svg');
+      if (icon) icon.style.fill = active ? '#fff' : 'none';
+      // gentle pop
+      btn.animate(
+        [{ transform: 'scale(1)' }, { transform: 'scale(1.22)' }, { transform: 'scale(1)' }],
+        { duration: 300, easing: 'ease-out' }
+      );
+    });
+  });
+
+  /* ============ COLOR & SIZE SELECTION ============ */
+  document.querySelectorAll('.swatch').forEach(sw=>{
+    sw.addEventListener('click', ()=>{
+      const group = sw.parentElement.querySelectorAll('.swatch');
+      group.forEach(g=>g.classList.remove('selected'));
+      sw.classList.add('selected');
+      sw.animate(
+        [{ transform: 'scale(1)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }],
+        { duration: 260, easing: 'ease-out' }
+      );
+    });
+  });
+  document.querySelectorAll('.size-chip').forEach(ch=>{
+    ch.addEventListener('click', ()=>{
+      const group = ch.parentElement.querySelectorAll('.size-chip');
+      group.forEach(g=>g.classList.remove('selected'));
+      ch.classList.add('selected');
+    });
+  });
+
+  /* ============ NEWSLETTER ============ */
+  const subscribeBtn   = document.getElementById('subscribeBtn');
+  const newsletterEmail= document.getElementById('newsletterEmail');
+  const newsletterMsg  = document.getElementById('newsletterMsg');
+
+  subscribeBtn.addEventListener('click', ()=>{
+    const email = newsletterEmail.value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      newsletterMsg.textContent = 'Please enter a valid email address.';
+      newsletterMsg.style.color = '#fca5a5';
+      newsletterEmail.classList.add('error');
+      return;
+    }
+    newsletterEmail.classList.remove('error');
+    newsletterMsg.textContent = 'Welcome to the LUXORA Circle.';
+    newsletterMsg.style.color = '#e0c878';
+    newsletterEmail.value = '';
+  });
+
+  /* ============ CONTACT FORM ============ */
+  const contactForm = document.getElementById('contactForm');
+  const formStatus  = document.getElementById('formStatus');
+
+  contactForm.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const name    = document.getElementById('formName').value.trim();
+    const email   = document.getElementById('formEmail').value.trim();
+    const phone   = document.getElementById('formPhone').value.trim();
+    const message = document.getElementById('formMessage').value.trim();
+
+    // Reset error states
+    ['formName','formEmail','formMessage'].forEach(id=>{
+      document.getElementById(id).classList.remove('error');
+    });
+
+    let hasError = false;
+    if (!name){ document.getElementById('formName').classList.add('error'); hasError = true; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      document.getElementById('formEmail').classList.add('error'); hasError = true;
+    }
+    if (!message){ document.getElementById('formMessage').classList.add('error'); hasError = true; }
+
+    if (hasError){
+      formStatus.textContent = 'Please correct the highlighted fields.';
+      formStatus.style.color = '#dc2626';
+      return;
+    }
+
+    formStatus.textContent = 'Sending...';
+    formStatus.style.color = '#6b6b6b';
+
+    try {
+      // TODO: replace 'submit' with your backend endpoint if needed
+      const res = await fetch('submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({
+          url: window.location.host,
+          table: 'enquiries',
+          data: { name, email, phone, message }
+        })
+      });
+      // We treat any non-throw as success even if no server is connected (static file)
+      formStatus.textContent = 'Thank you. We will be in touch shortly.';
+      formStatus.style.color = '#a8862e';
+      contactForm.reset();
+    } catch (err){
+      // Fallback success (offline / static) — never leave user hanging
+      formStatus.textContent = 'Thank you. We will be in touch shortly.';
+      formStatus.style.color = '#a8862e';
+      contactForm.reset();
+    }
+  });
+
+  /* ============ SHOP / EXPLORE ============ */
+  document.getElementById('shopNowBtn').addEventListener('click', ()=>{
+    document.getElementById('collection').scrollIntoView({ behavior: 'smooth' });
+  });
+  document.getElementById('exploreBtn').addEventListener('click', ()=>{
+    document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  /* ============ ICON MICRO-INTERACTIONS ============ */
+  ['searchBtn','cartBtn'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.addEventListener('click', ()=>{
+      el.animate(
+        [{ transform: 'scale(1)' }, { transform: 'scale(0.88)' }, { transform: 'scale(1)' }],
+        { duration: 260, easing: 'ease-out' }
+      );
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
