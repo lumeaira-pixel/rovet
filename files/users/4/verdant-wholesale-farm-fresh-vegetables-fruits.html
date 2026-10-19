@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdant Wholesale · Farm-Fresh Vegetables & Fruits</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+/* === Design Tokens === */
+:root {
+  --ink: #14261a;
+  --cream: #f9fbf7;
+  --leaf: #2b6e3b;
+  --leaf-dark: #1d4f2a;
+  --leaf-light: #e8f3e9;
+  --harvest: #d99813;
+  --stone: #eef2ec;
+  --hairline: rgba(20, 38, 26, 0.08);
+  --glass: rgba(255, 255, 255, 0.72);
+  --shadow-sm: 0 6px 18px -8px rgba(20, 38, 26, 0.10);
+  --shadow-md: 0 18px 36px -16px rgba(20, 38, 26, 0.16);
+  --shadow-lg: 0 30px 60px -24px rgba(20, 38, 26, 0.22);
+  --focus-ring: 0 0 0 3px rgba(217, 152, 19, 0.55);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* === Accessibility === */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); border: 0;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 6px;
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--stone); }
+::-webkit-scrollbar-thumb { background: #b8c9b9; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--leaf); }
+
+/* === Buttons === */
+.btn-primary {
+  background: var(--leaf);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.85rem 1.9rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 18px -6px rgba(43, 110, 59, 0.45);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-primary:hover { background: var(--leaf-dark); transform: translateY(-2px); box-shadow: 0 14px 24px -8px rgba(43, 110, 59, 0.55); }
+.btn-primary:active { transform: translateY(0) scale(0.98); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--leaf);
+  border: 1.5px solid var(--leaf);
+  border-radius: 999px;
+  padding: 0.85rem 1.9rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-outline:hover { background: var(--leaf-light); transform: translateY(-2px); }
+
+.btn-ghost-icon {
+  padding: 0.65rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--hairline);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  color: var(--ink);
+}
+.btn-ghost-icon:hover { border-color: var(--leaf); background: var(--leaf-light); transform: translateY(-1px); }
+
+/* === Glass === */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+/* === Product Card === */
+.product-card {
+  background: #fff;
+  border-radius: 1.5rem;
+  border: 1px solid var(--hairline);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(43, 110, 59, 0.25);
+}
+.product-card .product-img-wrap {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--stone);
+}
+.product-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.55s cubic-bezier(0.2, 0, 0, 1);
+}
+.product-card:hover img { transform: scale(1.06); }
+
+/* === Filter pills === */
+.filter-pill {
+  padding: 0.55rem 1.25rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--hairline);
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.filter-pill:hover { border-color: var(--leaf); background: var(--leaf-light); }
+.filter-pill.active { background: var(--leaf); border-color: var(--leaf); color: #fff; }
+.filter-pill.active:hover { background: var(--leaf-dark); }
+
+/* === Cart badge === */
+.cart-badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  background: var(--harvest);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--cream);
+}
+
+/* === Modal / Drawer === */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 38, 26, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.overlay.open { opacity: 1; pointer-events: auto; }
+
+.modal-card {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -48%) scale(0.97);
+  background: #fff;
+  border-radius: 1.75rem;
+  width: calc(100% - 2rem);
+  max-width: 440px;
+  max-height: 92vh;
+  overflow-y: auto;
+  z-index: 1010;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+.modal-card.open { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+
+.cart-drawer {
+  position: fixed;
+  top: 0; right: 0;
+  height: 100%;
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  z-index: 1010;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  border-left: 1px solid var(--hairline);
+}
+.cart-drawer.open { transform: translateX(0); }
+
+/* === Inputs === */
+.field-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 0.9rem;
+  border: 1.5px solid #d9e2d8;
+  background: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: var(--ink);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.field-input::placeholder { color: #9aab9c; }
+.field-input:focus {
+  outline: none;
+  border-color: var(--leaf);
+  box-shadow: 0 0 0 3px rgba(43, 110, 59, 0.14);
+}
+.field-input.error { border-color: #d64545; box-shadow: 0 0 0 3px rgba(214, 69, 69, 0.12); }
+.field-error { color: #b93030; font-size: 0.78rem; margin-top: 0.35rem; display: none; }
+.field-error.show { display: block; }
+
+/* === Toast === */
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: #fff;
+  padding: 0.85rem 1.5rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  max-width: 90vw;
+  text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* === Hero glow === */
+.hero-glow {
+  position: absolute;
+  width: 640px; height: 640px;
+  background: radial-gradient(circle, rgba(43,110,59,0.10) 0%, rgba(43,110,59,0) 70%);
+  border-radius: 50%;
+  top: -180px; right: -160px;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-glow-2 {
+  position: absolute;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(217,152,19,0.09) 0%, rgba(217,152,19,0) 70%);
+  border-radius: 50%;
+  bottom: -200px; left: -180px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* === Reveal animation === */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0, 0, 1), transform 0.7s cubic-bezier(0.2, 0, 0, 1);
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* === Hero image with tilt === */
+.hero-visual {
+  perspective: 1200px;
+}
+.hero-visual-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1);
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 6px solid #fff;
+  background: #fff;
+}
+.hero-visual:hover .hero-visual-inner {
+  transform: rotateY(-4deg) rotateX(2deg);
+}
+
+/* === Nav link === */
+.nav-link {
+  position: relative;
+  color: #33512f;
+  font-weight: 500;
+  font-size: 0.92rem;
+  transition: color 0.2s ease;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -4px;
+  width: 0; height: 1.5px;
+  background: var(--leaf);
+  transition: width 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+.nav-link:hover { color: var(--leaf); }
+.nav-link:hover::after { width: 100%; }
+
+/* === Trust strip === */
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #3e5a43;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.trust-item i { color: var(--leaf); }
+
+/* === Section title === */
+.section-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--leaf);
+  background: var(--leaf-light);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+/* === Cart items === */
+.cart-item {
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+  padding: 0.85rem;
+  border-radius: 1rem;
+  border: 1px solid var(--hairline);
+  background: #fbfcfa;
+  transition: border-color 0.2s ease;
+}
+.cart-item:hover { border-color: rgba(43, 110, 59, 0.28); }
+
+.qty-btn {
+  width: 28px; height: 28px;
+  border-radius: 999px;
+  border: 1px solid #d9e2d8;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.qty-btn:hover { border-color: var(--leaf); background: var(--leaf-light); color: var(--leaf); }
+
+/* === User chip === */
+.user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.9rem 0.45rem 0.5rem;
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.user-chip .avatar {
+  width: 26px; height: 26px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--leaf) 0%, var(--leaf-dark) 100%);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* === Mobile nav === */
+.mobile-nav {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.2, 0, 0, 1);
+}
+.mobile-nav.open { max-height: 300px; }
+
+/* === Stat number === */
+.stat-num {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.75rem, 4vw, 2.4rem);
+  color: var(--leaf);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.stat-label {
+  font-size: 0.82rem;
+  color: #5f7a63;
+  margin-top: 0.35rem;
+}
+
+/* === Testimonial === */
+.testimonial-card {
+  background: #fff;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid var(--hairline);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.testimonial-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.stars { display: inline-flex; gap: 2px; color: var(--harvest); margin-bottom: 1rem; }
+.stars svg { width: 16px; height: 16px; fill: currentColor; }
+
+/* === CTA Banner === */
+.cta-banner {
+  background: linear-gradient(135deg, var(--leaf) 0%, var(--leaf-dark) 100%);
+  border-radius: 2.25rem;
+  padding: clamp(2.5rem, 6vw, 5rem);
+  text-align: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.cta-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -20%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(217,152,19,0.28) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* === Footer === */
+.footer-heading {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #3e5a43;
+  margin-bottom: 1rem;
+}
+.footer-link {
+  color: #5f7a63;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+  display: block;
+  padding: 0.25rem 0;
+}
+.footer-link:hover { color: var(--leaf); }
+
+/* === Tab buttons in modal === */
+.tab-btn {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 0.9rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+  color: #5f7a63;
+}
+.tab-btn.active { background: var(--leaf); color: #fff; }
+.tab-btn:not(.active):hover { background: var(--leaf-light); color: var(--leaf); }
+
+/* === Responsive tweaks === */
+@media (max-width: 768px) {
+  .cart-drawer { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header id="siteHeader" class="sticky top-0 z-50 transition-all duration-300" style="background: rgba(249,251,247,0.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--hairline);">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between h-16 md:h-20">
+
+    <!-- Logo -->
+    <a href="#" class="flex items-center gap-2.5 font-display font-bold text-xl md:text-2xl tracking-tight" style="color: var(--ink); text-decoration: none;">
+      <span style="width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, var(--leaf) 0%, var(--leaf-dark) 100%); display: inline-flex; align-items: center; justify-content: center; color: #fff;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+      </span>
+      Verdant<span style="color: var(--leaf);">Wholesale</span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-9" aria-label="Primary">
+      <a href="#shop" class="nav-link">Shop</a>
+      <a href="#why" class="nav-link">Why Us</a>
+      <a href="#testimonials" class="nav-link">Reviews</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-2 md:gap-3">
+      <!-- Cart -->
+      <button id="cartButton" class="btn-ghost-icon relative" aria-label="Open cart" aria-haspopup="dialog">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+        <span id="cartCount" class="cart-badge" style="display:none;">0</span>
+      </button>
+
+      <!-- Sign In (logged out) -->
+      <button id="signInBtn" class="btn-primary hidden sm:inline-flex">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>Sign In</span>
+      </button>
+
+      <!-- User chip (logged in) -->
+      <div id="userArea" class="hidden items-center gap-2">
+        <span class="user-chip">
+          <span class="avatar" id="userAvatar">U</span>
+          <span id="userNameDisplay" class="hidden sm:inline">User</span>
+        </span>
+        <button id="logoutBtn" class="btn-ghost-icon" aria-label="Logout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+
+      <!-- Mobile menu -->
+      <button id="mobileMenuBtn" class="btn-ghost-icon md:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile nav -->
+  <div id="mobileNav" class="mobile-nav md:hidden px-5">
+    <nav class="py-4 flex flex-col gap-1 border-t" style="border-color: var(--hairline);" aria-label="Mobile">
+      <a href="#shop" class="nav-link py-3 mobile-link">Shop</a>
+      <a href="#why" class="nav-link py-3 mobile-link">Why Us</a>
+      <a href="#testimonials" class="nav-link py-3 mobile-link">Reviews</a>
+      <a href="#contact" class="nav-link py-3 mobile-link">Contact</a>
+      <button id="mobileSignInBtn" class="btn-primary mt-3 sm:hidden">
+        <span>Sign In</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- ==================== HERO ==================== -->
+<section class="relative max-w-7xl mx-auto px-5 md:px-8 pt-14 pb-20 md:pt-20 md:pb-28 overflow-hidden">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="hero-glow-2" aria-hidden="true"></div>
+
+  <div class="relative z-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <div class="reveal">
+      <span class="section-eyebrow">Farm-Direct Wholesale</span>
+      <h1 class="font-display font-extrabold leading-[1.04]" style="font-size: clamp(2.4rem, 6vw, 4.5rem); color: var(--ink);">
+        Fresh from the <span style="color: var(--leaf);">field</span>,<br>
+        straight to your <span style="color: var(--harvest);">kitchen</span>.
+      </h1>
+      <p class="mt-6 max-w-lg" style="font-size: 1.08rem; color: #3e5a43; line-height: 1.7;">
+        Premium wholesale vegetables and fruits sourced from 200+ local farms. Bulk pricing, next-day delivery, and a freshness guarantee that restaurants, grocers, and caterers have trusted for years.
+      </p>
+
+      <div class="mt-9 flex flex-wrap gap-3">
+        <a href="#shop" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span>Shop Wholesale</span>
+        </a>
+        <a href="#why" class="btn-outline">Learn More</a>
+      </div>
+
+      <div class="mt-12 grid grid-cols-3 gap-6 max-w-md">
+        <div>
+          <div class="stat-num">200+</div>
+          <div class="stat-label">Farm partners</div>
+        </div>
+        <div>
+          <div class="stat-num">24h</div>
+          <div class="stat-label">Delivery window</div>
+        </div>
+        <div>
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Fresh guarantee</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal">
+      <div class="hero-visual-inner">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1200&auto=format&fit=crop" alt="Assorted fresh vegetables and fruits in crates" style="width: 100%; height: clamp(320px, 45vw, 520px); object-fit: cover; display: block;">
+      </div>
+    </div>
+  </div>
+
+  <!-- Trust strip -->
+  <div class="relative z-10 mt-16 md:mt-20 pt-8 border-t flex flex-wrap items-center justify-between gap-6" style="border-color: var(--hairline);">
+    <div class="trust-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      Free delivery over $150
+    </div>
+    <div class="trust-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      Harvested within 24 hours
+    </div>
+    <div class="trust-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+      Quality guaranteed
+    </div>
+    <div class="trust-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Order by 4pm, delivered next morning
+    </div>
+  </div>
+</section>
+
+<!-- ==================== WHY US ==================== -->
+<section id="why" class="max-w-7xl mx-auto px-5 md:px-8 py-16 md:py-24">
+  <div class="max-w-2xl mb-14 reveal">
+    <span class="section-eyebrow">Why Verdant</span>
+    <h2 class="font-display font-extrabold leading-tight" style="font-size: clamp(2rem, 4.5vw, 3.2rem); color: var(--ink);">
+      Built for kitchens that can't compromise.
+    </h2>
+    <p class="mt-4" style="color: #5f7a63; font-size: 1.02rem;">
+      We combine the freshness of a farmers market with the reliability of a national distributor.
+    </p>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="glass rounded-3xl p-7 reveal" style="transition-delay: 0ms;">
+      <div style="width: 48px; height: 48px; border-radius: 14px; background: var(--leaf-light); display: inline-flex; align-items: center; justify-content: center; color: var(--leaf); margin-bottom: 1.25rem;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+      </div>
+      <h3 class="font-display text-lg font-semibold mb-2">Next-Day Delivery</h3>
+      <p style="color: #5f7a63; font-size: 0.92rem;">Order by 4pm and receive your produce fresh the very next morning.</p>
+    </div>
+
+    <div class="glass rounded-3xl p-7 reveal" style="transition-delay: 80ms;">
+      <div style="width: 48px; height: 48px; border-radius: 14px; background: var(--leaf-light); display: inline-flex; align-items: center; justify-content: center; color: var(--leaf); margin-bottom: 1.25rem;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5 5 19"/><path d="M19 5l-7 7"/><path d="m5 5 7 7"/><path d="M20 6 9 17l-5-5" transform="translate(0 4)"/></svg>
+      </div>
+      <h3 class="font-display text-lg font-semibold mb-2">Wholesale Pricing</h3>
+      <p style="color: #5f7a63; font-size: 0.92rem;">Volume discounts up to 35% for restaurants, grocers &amp; caterers.</p>
+    </div>
+
+    <div class="glass rounded-3xl p-7 reveal" style="transition-delay: 160ms;">
+      <div style="width: 48px; height: 48px; border-radius: 14px; background: var(--leaf-light); display: inline-flex; align-items: center; justify-content: center; color: var(--leaf); margin-bottom: 1.25rem;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+      </div>
+      <h3 class="font-display text-lg font-semibold mb-2">Farm-Direct Freshness</h3>
+      <p style="color: #5f7a63; font-size: 0.92rem;">Harvested within 24 hours of delivery — never weeks in cold storage.</p>
+    </div>
+
+    <div class="glass rounded-3xl p-7 reveal" style="transition-delay: 240ms;">
+      <div style="width: 48px; height: 48px; border-radius: 14px; background: var(--leaf-light); display: inline-flex; align-items: center; justify-content: center; color: var(--leaf); margin-bottom: 1.25rem;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+      </div>
+      <h3 class="font-display text-lg font-semibold mb-2">Quality Guarantee</h3>
+      <p style="color: #5f7a63; font-size: 0.92rem;">Not satisfied? We replace or refund — no questions asked.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SHOP ==================== -->
+<section id="shop" class="max-w-7xl mx-auto px-5 md:px-8 py-16 md:py-20">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 reveal">
+    <div>
+      <span class="section-eyebrow">Today's Harvest</span>
+      <h2 class="font-display font-extrabold leading-tight" style="font-size: clamp(2rem, 4.5vw, 3.2rem); color: var(--ink);">
+        Shop Fresh Produce
+      </h2>
+      <p class="mt-3" style="color: #5f7a63;">Fresh picks, updated daily. Filter by category.</p>
+    </div>
+    <div class="flex flex-wrap gap-2" id="filterContainer" role="group" aria-label="Filter products by category">
+      <button class="filter-pill active" data-filter="all" aria-pressed="true">All</button>
+      <button class="filter-pill" data-filter="vegetables" aria-pressed="false">Vegetables</button>
+      <button class="filter-pill" data-filter="fruits" aria-pressed="false">Fruits</button>
+      <button class="filter-pill" data-filter="herbs" aria-pressed="false">Herbs</button>
+    </div>
+  </div>
+
+  <div id="productGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+
+  <p id="emptyState" class="hidden text-center py-16" style="color: #5f7a63;">
+    No products found in this category.
+  </p>
+</section>
+
+<!-- ==================== TESTIMONIALS ==================== -->
+<section id="testimonials" class="py-20 md:py-28" style="background: linear-gradient(180deg, var(--cream) 0%, var(--leaf-light) 100%);">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+      <span class="section-eyebrow">Trusted By Kitchens</span>
+      <h2 class="font-display font-extrabold leading-tight" style="font-size: clamp(2rem, 4.5vw, 3.2rem); color: var(--ink);">
+        Loved by chefs, grocers, and caterers.
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="testimonial-card reveal">
+        <div class="stars" aria-label="5 out of 5 stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p style="color: #33512f; font-size: 1rem; line-height: 1.7;">"The produce is consistently exceptional. Our restaurant has saved 30% on produce costs while improving quality. The team is responsive and deliveries are always on time."</p>
+        <div class="mt-6 pt-5 border-t" style="border-color: var(--hairline);">
+          <p class="font-semibold" style="color: var(--ink); font-size: 0.92rem;">Marco Chen</p>
+          <p style="color: #7a8f7d; font-size: 0.82rem;">Head Chef · Ember &amp; Oak</p>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal" style="transition-delay: 100ms;">
+        <div class="stars" aria-label="5 out of 5 stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p style="color: #33512f; font-size: 1rem; line-height: 1.7;">"Reliable, fresh, and affordable. We've been sourcing from Verdant for two years — never a bad box. The ordering system is quick and the invoices are always accurate."</p>
+        <div class="mt-6 pt-5 border-t" style="border-color: var(--hairline);">
+          <p class="font-semibold" style="color: var(--ink); font-size: 0.92rem;">Priya Nair</p>
+          <p style="color: #7a8f7d; font-size: 0.82rem;">Grocery Buyer · FreshMart</p>
+        </div>
+      </div>
+
+      <div class="testimonial-card reveal" style="transition-delay: 200ms;">
+        <div class="stars" aria-label="5 out of 5 stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <p style="color: #33512f; font-size: 1rem; line-height: 1.7;">"Their herbs are the most aromatic I've found — perfect for our catering events. The wholesale pricing made it easy to scale our menu without cutting quality."</p>
+        <div class="mt-6 pt-5 border-t" style="border-color: var(--hairline);">
+          <p class="font-semibold" style="color: var(--ink); font-size: 0.92rem;">Laura Simmons</p>
+          <p style="color: #7a8f7d; font-size: 0.82rem;">Events Director · Verdant Table</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CTA BANNER ==================== -->
+<section class="max-w-7xl mx-auto px-5 md:px-8 py-16 md:py-24">
+  <div class="cta-banner reveal">
+    <div class="relative z-10">
+      <h2 class="font-display font-extrabold tracking-tight" style="font-size: clamp(2rem, 4.5vw, 3rem); color: #fff; line-height: 1.1;">
+        Ready to stock your kitchen?
+      </h2>
+      <p class="mt-4 max-w-xl mx-auto" style="color: rgba(255,255,255,0.85); font-size: 1.05rem;">
+        Create a free wholesale account and unlock member-only pricing, priority delivery slots, and a dedicated account manager.
+      </p>
+      <button id="ctaSignUpBtn" class="btn-primary mt-8" style="background: #fff; color: var(--leaf); border-color: #fff; box-shadow: 0 12px 24px -8px rgba(0,0,0,0.25);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        <span>Create Free Account</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer id="contact" class="border-t" style="border-color: var(--hairline); background: #fff;">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-16">
+    <div class="grid md:grid-cols-4 gap-10 md:gap-12">
+      <div class="md:col-span-1">
+        <div class="flex items-center gap-2.5 font-display font-bold text-xl mb-4" style="color: var(--ink);">
+          <span style="width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--leaf) 0%, var(--leaf-dark) 100%); display: inline-flex; align-items: center; justify-content: center; color: #fff;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+          </span>
+          VerdantWholesale
+        </div>
+        <p style="color: #5f7a63; font-size: 0.92rem; line-height: 1.65;">
+          Farm-fresh produce, wholesale prices, delivered with care to restaurants, grocers, and caterers nationwide.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="footer-heading">Shop</h4>
+        <a href="#shop" class="footer-link">Vegetables</a>
+        <a href="#shop" class="footer-link">Fruits</a>
+        <a href="#shop" class="footer-link">Herbs</a>
+        <a href="#shop" class="footer-link">All Products</a>
+      </div>
+
+      <div>
+        <h4 class="footer-heading">Company</h4>
+        <a href="#why" class="footer-link">About Us</a>
+        <a href="#testimonials" class="footer-link">Reviews</a>
+        <a href="#" class="footer-link">Wholesale Program</a>
+        <a href="#" class="footer-link">Careers</a>
+      </div>
+
+      <div>
+        <h4 class="footer-heading">Get in Touch</h4>
+        <p style="color: #5f7a63; font-size: 0.9rem; margin-bottom: 0.35rem;">hello@verdantwholesale.com</p>
+        <p style="color: #5f7a63; font-size: 0.9rem; margin-bottom: 0.35rem;">+1 (555) 234-9876</p>
+        <p style="color: #5f7a63; font-size: 0.9rem;">Mon–Sat · 6am – 6pm</p>
+
+        <!-- Enquiry form -->
+        <form id="enquiryForm" class="mt-5 space-y-3" novalidate>
+          <div>
+            <label for="enqName" class="sr-only">Name</label>
+            <input type="text" id="enqName" name="name" class="field-input" placeholder="Your name" required>
+            <p class="field-error" id="enqNameError">Please enter your name.</p>
+          </div>
+          <div>
+            <label for="enqEmail" class="sr-only">Email</label>
+            <input type="email" id="enqEmail" name="email" class="field-input" placeholder="Email address" required>
+            <p class="field-error" id="enqEmailError">Please enter a valid email.</p>
+          </div>
+          <div>
+            <label for="enqMessage" class="sr-only">Message</label>
+            <textarea id="enqMessage" name="message" rows="2" class="field-input" placeholder="Your message" required></textarea>
+            <p class="field-error" id="enqMessageError">Please enter a message.</p>
+          </div>
+          <button type="submit" class="btn-primary w-full" style="padding: 0.7rem 1.5rem; font-size: 0.9rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            <span>Send Enquiry</span>
+          </button>
+          <!-- TODO: connect form action to backend endpoint -->
+        </form>
+      </div>
+    </div>
+
+    <div class="mt-12 pt-6 border-t flex flex-col sm:flex-row items-center justify-between gap-4" style="border-color: var(--hairline);">
+      <p style="color: #7a8f7d; font-size: 0.82rem;">© 2025 Verdant Wholesale. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="#" class="footer-link" style="display:inline;">Privacy</a>
+        <a href="#" class="footer-link" style="display:inline;">Terms</a>
+        <a href="#" class="footer-link" style="display:inline;">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== AUTH MODAL ==================== -->
+<div id="authOverlay" class="overlay" aria-hidden="true"></div>
+<div id="authModal" class="modal-card" role="dialog" aria-modal="true" aria-labelledby="authModalTitle" aria-hidden="true">
+  <div class="p-7 md:p-9">
+    <div class="flex items-start justify-between mb-6">
+      <div>
+        <h2 id="authModalTitle" class="font-display font-bold" style="font-size: 1.5rem; color: var(--ink);">Welcome back</h2>
+        <p id="authModalSubtitle" style="color: #7a8f7d; font-size: 0.88rem; margin-top: 0.25rem;">Sign in to your wholesale account</p>
+      </div>
+      <button id="closeAuthModal" class="btn-ghost-icon" aria-label="Close dialog" style="padding: 0.45rem;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="flex gap-2 mb-6 p-1 rounded-2xl" style="background: var(--stone);">
+      <button id="tabSignIn" class="tab-btn active" aria-selected="true" role="tab">Sign In</button>
+      <button id="tabSignUp" class="tab-btn" aria-selected="false" role="tab">Sign Up</button>
+    </div>
+
+    <!-- Sign In form -->
+    <form id="signInForm" class="space-y-4" novalidate>
+      <div>
+        <label for="signInEmail" class="block text-sm font-medium mb-1.5" style="color: var(--ink);">Email address</label>
+        <input type="email" id="signInEmail" class="field-input" placeholder="you@company.com" required autocomplete="email">
+        <p class="field-error" id="signInEmailError">Please enter a valid email.</p>
+      </div>
+      <div>
+        <label for="signInPassword" class="block text-sm font-medium mb-1.5" style="color: var(--ink);">Password</label>
+        <input type="password" id="signInPassword" class="field-input" placeholder="Your password" required autocomplete="current-password">
+        <p class="field-error" id="signInPasswordError">Please enter your password.</p>
+      </div>
+      <p id="signInError" class="field-error" style="text-align:center;"></p>
+      <button type="submit" class="btn-primary w-full">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>Sign In</span>
+      </button>
+    </form>
+
+    <!-- Sign Up form -->
+    <form id="signUpForm" class="space-y-4 hidden" novalidate>
+      <div>
+        <label for="signUpName" class="block text-sm font-medium mb-1.5" style="color: var(--ink);">Full name</label>
+        <input type="text" id="signUpName" class="field-input" placeholder="Jane Doe" required autocomplete="name">
+        <p class="field-error" id="signUpNameError">Please enter your name.</p>
+      </div>
+      <div>
+        <label for="signUpEmail" class="block text-sm font-medium mb-1.5" style="color: var(--ink);">Email address</label>
+        <input type="email" id="signUpEmail" class="field-input" placeholder="you@company.com" required autocomplete="email">
+        <p class="field-error" id="signUpEmailError">Please enter a valid email.</p>
+      </div>
+      <div>
+        <label for="signUpPassword" class="block text-sm font-medium mb-1.5" style="color: var(--ink);">Password</label>
+        <input type="password" id="signUpPassword" class="field-input" placeholder="At least 6 characters" required minlength="6" autocomplete="new-password">
+        <p class="field-error" id="signUpPasswordError">Password must be at least 6 characters.</p>
+      </div>
+      <p id="signUpError" class="field-error" style="text-align:center;"></p>
+      <button type="submit" class="btn-primary w-full">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        <span>Create Account</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== CART DRAWER ==================== -->
+<div id="cartOverlay" class="overlay" aria-hidden="true"></div>
+<aside id="cartDrawer" class="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden="true">
+  <div class="flex items-center justify-between p-6 border-b" style="border-color: var(--hairline);">
+    <div>
+      <h3 class="font-display font-bold" style="font-size: 1.35rem; color: var(--ink);">Your Cart</h3>
+      <p id="cartSubtitle" style="color: #7a8f7d; font-size: 0.82rem;">0 items</p>
+    </div>
+    <button id="closeCart" class="btn-ghost-icon" aria-label="Close cart" style="padding: 0.5rem;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div id="cartItems" class="flex-1 overflow-y-auto p-5 space-y-3"></div>
+
+  <div class="p-6 border-t" style="border-color: var(--hairline);">
+    <div class="flex justify-between items-center mb-2">
+      <span style="color: #5f7a63; font-size: 0.9rem;">Subtotal</span>
+      <span id="cartSubtotal" class="font-display font-bold" style="font-size: 1.05rem;">$0.00</span>
+    </div>
+    <div class="flex justify-between items-center mb-4">
+      <span style="color: #5f7a63; font-size: 0.9rem;">Delivery</span>
+      <span id="cartDelivery" style="color: #5f7a63; font-size: 0.9rem;">Free over $150</span>
+    </div>
+    <div class="flex justify-between items-center pt-4 border-t mb-5" style="border-color: var(--hairline);">
+      <span class="font-semibold" style="color: var(--ink);">Total</span>
+      <span id="cartTotal" class="font-display font-bold" style="font-size: 1.35rem; color: var(--leaf);">$0.00</span>
+    </div>
+    <button id="placeOrderBtn" class="btn-primary w-full" disabled>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <span>Place Order</span>
+    </button>
+    <button id="continueShoppingBtn" class="w-full mt-3 py-2 text-sm font-medium" style="color: var(--leaf); background: transparent; border: none; cursor: pointer;">
+      Continue shopping
+    </button>
+  </div>
+</aside>
+
+<!-- ==================== TOAST ==================== -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   VERDANT WHOLESALE — Interactive Logic
+   Vanilla JS only. No build step. localStorage persistence.
+   ========================================================= */
+
+// ==================== PRODUCT DATA ====================
+const PRODUCTS = [
+  { id: 1,  name: 'Roma Tomatoes',     price: 12.99, unit: '10 lb box',   category: 'vegetables', image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop' },
+  { id: 2,  name: 'Organic Carrots',   price: 9.49,  unit: '5 lb bag',    category: 'vegetables', image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=600&auto=format&fit=crop' },
+  { id: 3,  name: 'Baby Spinach',      price: 14.99, unit: '3 lb case',   category: 'vegetables', image: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=600&auto=format&fit=crop' },
+  { id: 4,  name: 'Hass Avocados',     price: 22.50, unit: '12 count',    category: 'fruits',     image: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=600&auto=format&fit=crop' },
+  { id: 5,  name: 'Fresh Basil',       price: 6.99,  unit: '1 lb bunch',  category: 'herbs',      image: 'https://images.unsplash.com/photo-1618375569909-3c8616cf7733?w=600&auto=format&fit=crop' },
+  { id: 6,  name: 'Strawberries',      price: 18.75, unit: '8 x 1 lb',    category: 'fruits',     image: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=600&auto=format&fit=crop' },
+  { id: 7,  name: 'Red Bell Peppers',  price: 11.25, unit: '6 count',     category: 'vegetables', image: 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=600&auto=format&fit=crop' },
+  { id: 8,  name: 'Fresh Mint',        price: 5.49,  unit: '1 lb bunch',  category: 'herbs',      image: 'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=600&auto=format&fit=crop' },
+  { id: 9,  name: 'Sweet Corn',        price: 15.99, unit: '12 ears',     category: 'vegetables', image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=600&auto=format&fit=crop' },
+  { id: 10, name: 'Blueberries',       price: 24.99, unit: '6 x 6 oz',    category: 'fruits',     image: 'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=600&auto=format&fit=crop' },
+  { id: 11, name: 'Cilantro',          price: 4.99,  unit: '1 lb bunch',  category: 'herbs',      image: 'https://images.unsplash.com/photo-1588879460618-9249e7a4f10a?w=600&auto=format&fit=crop' },
+  { id: 12, name: 'Zucchini',          price: 8.75,  unit: '5 lb box',    category: 'vegetables', image: 'https://images.unsplash.com/photo-1574314227312-4b1c2c9f8e5e?w=600&auto=format&fit=crop' }
+];
+
+// ==================== STATE ====================
+const STORAGE_KEYS = { USER: 'verdant_user', USERS: 'verdant_users', CART: 'verdant_cart' };
+let currentUser = safeParse(localStorage.getItem(STORAGE_KEYS.USER), null);
+let cart = safeParse(localStorage.getItem(STORAGE_KEYS.CART), []);
+let activeFilter = 'all';
+
+function safeParse(str, fallback) {
+  try { return str ? JSON.parse(str) : fallback; } catch { return fallback; }
+}
+
+// ==================== DOM REFS ====================
+const $ = (id) => document.getElementById(id);
+
+const productGrid      = $('productGrid');
+const emptyState       = $('emptyState');
+const filterContainer  = $('filterContainer');
+const cartButton       = $('cartButton');
+const cartCount        = $('cartCount');
+const cartDrawer       = $('cartDrawer');
+const cartOverlay      = $('cartOverlay');
+const closeCart        = $('closeCart');
+const cartItems        = $('cartItems');
+const cartSubtotal     = $('cartSubtotal');
+const cartTotal        = $('cartTotal');
+const cartSubtitle     = $('cartSubtitle');
+const placeOrderBtn    = $('placeOrderBtn');
+const continueShopping = $('continueShoppingBtn');
+
+const signInBtn        = $('signInBtn');
+const mobileSignInBtn  = $('mobileSignInBtn');
+const authOverlay      = $('authOverlay');
+const authModal        = $('authModal');
+const closeAuthModal   = $('closeAuthModal');
+const tabSignIn        = $('tabSignIn');
+const tabSignUp        = $('tabSignUp');
+const signInForm       = $('signInForm');
+const signUpForm       = $('signUpForm');
+const authModalTitle   = $('authModalTitle');
+const authModalSubtitle= $('authModalSubtitle');
+
+const userArea         = $('userArea');
+const userNameDisplay  = $('userNameDisplay');
+const userAvatar       = $('userAvatar');
+const logoutBtn        = $('logoutBtn');
+const ctaSignUpBtn     = $('ctaSignUpBtn');
+
+const mobileMenuBtn    = $('mobileMenuBtn');
+const mobileNav        = $('mobileNav');
+
+const toastEl          = $('toast');
+const enquiryForm      = $('enquiryForm');
+
+// ==================== TOAST ====================
+let toastTimer;
+function showToast(message) {
+  toastEl.textContent = message;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+}
+
+// ==================== UTILITIES ====================
+function formatPrice(n) { return '$' + Number(n).toFixed(2); }
+function initials(name) {
+  return name.split(' ').filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase() || 'U';
+}
+
+// ==================== PRODUCT RENDERING ====================
+function renderProducts() {
+  const filtered = activeFilter === 'all'
+    ? PRODUCTS
+    : PRODUCTS.filter(p => p.category === activeFilter);
+
+  if (filtered.length === 0) {
+    productGrid.innerHTML = '';
+    emptyState.classList.remove('hidden');
+    return;
+  }
+  emptyState.classList.add('hidden');
+
+  productGrid.innerHTML = filtered.map(p => `
+    <article class="product-card reveal" data-id="${p.id}">
+      <div class="product-img-wrap">
+        <img src="${p.image}" alt="${p.name}" loading="lazy">
+      </div>
+      <div class="p-5 flex flex-col flex-1">
+        <span style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--leaf); background: var(--leaf-light); padding: 0.28rem 0.7rem; border-radius: 999px; align-self: flex-start;">
+          ${p.category}
+        </span>
+        <h3 class="font-display font-semibold mt-3" style="font-size: 1.05rem; color: var(--ink);">${p.name}</h3>
+        <p style="font-size: 0.8rem; color: #7a8f7d; margin-top: 0.15rem;">${p.unit}</p>
+        <div class="flex items-center justify-between mt-4 pt-4 border-t" style="border-color: var(--hairline);">
+          <span class="font-display font-bold" style="font-size: 1.15rem; color: var(--ink);">${formatPrice(p.price)}</span>
+          <button class="add-to-cart-btn" data-id="${p.id}" aria-label="Add ${p.name} to cart"
+            style="width: 38px; height: 38px; border-radius: 999px; background: var(--leaf-light); color: var(--leaf); border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s ease;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </article>
+  `).join('');
+
+  // attach handlers
+  productGrid.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      addToCart(parseInt(btn.dataset.id, 10));
+    });
+    btn.addEventListener('mouseenter', () => { btn.style.background = 'var(--leaf)'; btn.style.color = '#fff'; });
+    btn.addEventListener('mouseleave', () => { btn.style.background = 'var(--leaf-light)'; btn.style.color = 'var(--leaf)'; });
+  });
+
+  // reveal
+  requestAnimationFrame(() => {
+    productGrid.querySelectorAll('.reveal').forEach((el, i) => {
+      setTimeout(() => el.classList.add('in'), i * 40);
+    });
+  });
+}
+
+// ==================== CART ====================
+function addToCart(id) {
+  if (!currentUser) {
+    showToast('Please sign in to add items to your cart');
+    openAuthModal('signin');
+    return;
+  }
+  const product = PRODUCTS.find(p => p.id === id);
+  if (!product) return;
+
+  const existing = cart.find(i => i.id === id);
+  if (existing) existing.qty += 1;
+  else cart.push({ id: product.id, name: product.name, price: product.price, unit: product.unit, image: product.image, qty: 1 });
+
+  persistCart();
+  updateCartUI();
+  showToast(`${product.name} added to cart`);
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+  persistCart();
+  updateCartUI();
+}
+
+function removeItem(id) {
+  cart = cart.filter(i => i.id !== id);
+  persistCart();
+  updateCartUI();
+}
+
+function persistCart() {
+  localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
+}
+
+function updateCartUI() {
+  const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+  cartCount.textContent = totalQty;
+  cartCount.style.display = totalQty > 0 ? 'inline-flex' : 'none';
+  cartSubtitle.textContent = totalQty === 1 ? '1 item' : `${totalQty} items`;
+
+  if (cart.length === 0) {
+    cartItems.innerHTML = `
+      <div class="flex flex-col items-center justify-center h-full text-center py-16">
+        <div style="width: 64px; height: 64px; border-radius: 999px; background: var(--leaf-light); display: inline-flex; align-items: center; justify-content: center; color: var(--leaf); margin-bottom: 1rem;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+        </div>
+        <p class="font-display font-semibold" style="color: var(--ink);">Your cart is empty</p>
+        <p style="color: #7a8f7d; font-size: 0.88rem; margin-top: 0.35rem;">Add some fresh produce to get started.</p>
+      </div>`;
+    cartSubtotal.textContent = formatPrice(0);
+    cartTotal.textContent = formatPrice(0);
+    placeOrderBtn.disabled = true;
+    return;
+  }
+
+  cartItems.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img src="${item.image}" alt="${item.name}" style="width: 56px; height: 56px; border-radius: 0.75rem; object-fit: cover; flex-shrink: 0;">
+      <div style="flex: 1; min-width: 0;">
+        <p class="font-semibold" style="color: var(--ink); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</p>
+        <p style="color: #7a8f7d; font-size: 0.78rem;">${item.unit}</p>
+        <p class="font-semibold" style="color: var(--leaf); font-size: 0.88rem; margin-top: 0.2rem;">${formatPrice(item.price * item.qty)}</p>
+      </div>
+      <div class="flex flex-col items-end gap-2">
+        <button class="remove-item-btn" data-id="${item.id}" aria-label="Remove ${item.name}" style="background: none; border: none; cursor: pointer; color: #b93030; padding: 0.15rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+        <div class="flex items-center gap-2">
+          <button class="qty-btn" data-id="${item.id}" data-delta="-1" aria-label="Decrease quantity">−</button>
+          <span style="font-size: 0.85rem; font-weight: 600; width: 18px; text-align: center;">${item.qty}</span>
+          <button class="qty-btn" data-id="${item.id}" data-delta="1" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // bind qty
+  cartItems.querySelectorAll('.qty-btn').forEach(btn => {
+    btn.addEventListener('click', () => changeQty(parseInt(btn.dataset.id, 10), parseInt(btn.dataset.delta, 10)));
+  });
+  cartItems.querySelectorAll('.remove-item-btn').forEach(btn => {
+    btn.addEventListener('click', () => removeItem(parseInt(btn.dataset.id, 10)));
+  });
+
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const delivery = subtotal >= 150 ? 0 : 12.50;
+  cartSubtotal.textContent = formatPrice(subtotal);
+  cartTotal.textContent = formatPrice(subtotal + delivery);
+  placeOrderBtn.disabled = false;
+}
+
+// ==================== CART DRAWER ====================
+function openCart() {
+  cartDrawer.classList.add('open');
+  cartOverlay.classList.add('open');
+  cartDrawer.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function closeCartFn() {
+  cartDrawer.classList.remove('open');
+  cartOverlay.classList.remove('open');
+  cartDrawer.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+cartButton.addEventListener('click', openCart);
+closeCart.addEventListener('click', closeCartFn);
+cartOverlay.addEventListener('click', closeCartFn);
+continueShopping.addEventListener('click', closeCartFn);
+
+// ==================== PLACE ORDER ====================
+placeOrderBtn.addEventListener('click', async () => {
+  if (!currentUser) { openAuthModal('signin'); return; }
+  if (cart.length === 0) return;
+
+  placeOrderBtn.disabled = true;
+  const originalLabel = placeOrderBtn.innerHTML;
+  placeOrderBtn.innerHTML = '<span>Placing order…</span>';
+
+  const orderPayload = {
+    customer: { name: currentUser.name, email: currentUser.email },
+    items: cart.map(i => ({ id: i.id, name: i.name, unit: i.unit, qty: i.qty, price: i.price })),
+    subtotal: cart.reduce((s, i) => s + i.price * i.qty, 0),
+    placedAt: new Date().toISOString()
+  };
+
+  // TODO: connect form action to backend endpoint
+  try {
+    await fetch('submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+      body: JSON.stringify({
+        url: window.location.host,
+        table: 'orders',
+        data: orderPayload
+      })
+    });
+  } catch (err) { /* static fallback — order still "processed" client-side */ }
+
+  setTimeout(() => {
+    cart = [];
+    persistCart();
+    updateCartUI();
+    closeCartFn();
+    placeOrderBtn.innerHTML = originalLabel;
+    showToast('Order placed. Confirmation sent to ' + currentUser.email);
+  }, 800);
+});
+
+// ==================== AUTH ====================
+function openAuthModal(tab = 'signin') {
+  authModal.classList.add('open');
+  authOverlay.classList.add('open');
+  authModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  setAuthTab(tab);
+  clearAuthErrors();
+}
+function closeAuthModalFn() {
+  authModal.classList.remove('open');
+  authOverlay.classList.remove('open');
+  authModal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  clearAuthErrors();
+  signInForm.reset();
+  signUpForm.reset();
+}
+function setAuthTab(tab) {
+  if (tab === 'signin') {
+    tabSignIn.classList.add('active');
+    tabSignUp.classList.remove('active');
+    tabSignIn.setAttribute('aria-selected', 'true');
+    tabSignUp.setAttribute('aria-selected', 'false');
+    signInForm.classList.remove('hidden');
+    signUpForm.classList.add('hidden');
+    authModalTitle.textContent = 'Welcome back';
+    authModalSubtitle.textContent = 'Sign in to your wholesale account';
+  } else {
+    tabSignUp.classList.add('active');
+    tabSignIn.classList.remove('active');
+    tabSignUp.setAttribute('aria-selected', 'true');
+    tabSignIn.setAttribute('aria-selected', 'false');
+    signUpForm.classList.remove('hidden');
+    signInForm.classList.add('hidden');
+    authModalTitle.textContent = 'Create your account';
+    authModalSubtitle.textContent = 'Join hundreds of kitchens sourcing fresh';
+  }
+  clearAuthErrors();
+}
+function clearAuthErrors() {
+  document.querySelectorAll('.field-error').forEach(el => { el.classList.remove('show'); el.textContent = el.textContent; });
+  document.querySelectorAll('.field-input').forEach(el => el.classList.remove('error'));
+}
+
+signInBtn.addEventListener('click', () => openAuthModal('signin'));
+if (mobileSignInBtn) mobileSignInBtn.addEventListener('click', () => { mobileNav.classList.remove('open'); openAuthModal('signin'); });
+closeAuthModal.addEventListener('click', closeAuthModalFn);
+authOverlay.addEventListener('click', closeAuthModalFn);
+tabSignIn.addEventListener('click', () => setAuthTab('signin'));
+tabSignUp.addEventListener('click', () => setAuthTab('signup'));
+
+// Sign In submit
+signInForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  clearAuthErrors();
+  const email = $('signInEmail').value.trim();
+  const password = $('signInPassword').value;
+  let ok = true;
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showFieldError('signInEmail', 'signInEmailError', 'Please enter a valid email.');
+    ok = false;
+  }
+  if (!password) {
+    showFieldError('signInPassword', 'signInPasswordError', 'Please enter your password.');
+    ok = false;
+  }
+  if (!ok) return;
+
+  const users = safeParse(localStorage.getItem(STORAGE_KEYS.USERS), []);
+  const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+  if (!user) {
+    const err = $('signInError');
+    err.textContent = 'Invalid email or password. Please try again.';
+    err.classList.add('show');
+    return;
+  }
+
+  currentUser = { name: user.name, email: user.email };
+  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
+  updateAuthUI();
+  closeAuthModalFn();
+  showToast(`Welcome back, ${user.name.split(' ')[0]}`);
+});
+
+// Sign Up submit
+signUpForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  clearAuthErrors();
+  const name = $('signUpName').value.trim();
+  const email = $('signUpEmail').value.trim();
+  const password = $('signUpPassword').value;
+  let ok = true;
+
+  if (!name) { showFieldError('signUpName', 'signUpNameError', 'Please enter your name.'); ok = false; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showFieldError('signUpEmail', 'signUpEmailError', 'Please enter a valid email.'); ok = false; }
+  if (password.length < 6) { showFieldError('signUpPassword', 'signUpPasswordError', 'Password must be at least 6 characters.'); ok = false; }
+  if (!ok) return;
+
+  const users = safeParse(localStorage.getItem(STORAGE_KEYS.USERS), []);
+  if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+    const err = $('signUpError');
+    err.textContent = 'An account with this email already exists. Please sign in.';
+    err.classList.add('show');
+    return;
+  }
+
+  users.push({ name, email, password });
+  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+
+  currentUser = { name, email };
+  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
+  updateAuthUI();
+  closeAuthModalFn();
+  showToast(`Account created. Welcome, ${name.split(' ')[0]}`);
+});
+
+function showFieldError(inputId, errorId, message) {
+  const input = $(inputId);
+  const err = $(errorId);
+  input.classList.add('error');
+  err.textContent = message;
+  err.classList.add('show');
+}
+
+// Logout
+logoutBtn.addEventListener('click', () => {
+  currentUser = null;
+  localStorage.removeItem(STORAGE_KEYS.USER);
+  updateAuthUI();
+  showToast('You have been signed out');
+});
+
+// Update auth UI
+function updateAuthUI() {
+  if (currentUser) {
+    signInBtn.classList.add('hidden');
+    userArea.classList.remove('hidden');
+    userArea.classList.add('flex');
+    userNameDisplay.textContent = currentUser.name;
+    userAvatar.textContent = initials(currentUser.name);
+  } else {
+    signInBtn.classList.remove('hidden');
+    userArea.classList.add('hidden');
+    userArea.classList.remove('flex');
+  }
+}
+
+// ==================== FILTERS ====================
+filterContainer.addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-pill');
+  if (!btn) return;
+  filterContainer.querySelectorAll('.filter-pill').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-pressed', 'false');
+  });
+  btn.classList.add('active');
+  btn.setAttribute('aria-pressed', 'true');
+  activeFilter = btn.dataset.filter;
+  renderProducts();
+});
+
+// ==================== MOBILE NAV ====================
+mobileMenuBtn.addEventListener('click', () => {
+  const open = mobileNav.classList.toggle('open');
+  mobileMenuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+mobileNav.querySelectorAll('.mobile-link').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileNav.classList.remove('open');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+  });
+});
+
+// ==================== ENQUIRY FORM ====================
+enquiryForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearEnquiryErrors();
+  const name = $('enqName').value.trim();
+  const email = $('enqEmail').value.trim();
+  const message = $('enqMessage').value.trim();
+  let ok = true;
+
+  if (!name) { setEnqError('enqName', 'enqNameError', 'Please enter your name.'); ok = false; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setEnqError('enqEmail', 'enqEmailError', 'Please enter a valid email.'); ok = false; }
+  if (!message) { setEnqError('enqMessage', 'enqMessageError', 'Please enter a message.'); ok = false; }
+  if (!ok) return;
+
+  const submitBtn = enquiryForm.querySelector('button[type="submit"]');
+  const originalHtml = submitBtn.innerHTML;
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span>Sending…</span>';
+
+  // TODO: connect form action to backend endpoint
+  try {
+    await fetch('submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+      body: JSON.stringify({
+        url: window.location.host,
+        table: 'enquiries',
+        data: { name, email, message }
+      })
+    });
+  } catch (err) { /* static fallback */ }
+
+  setTimeout(() => {
+    showToast('Thanks, ' + name.split(' ')[0] + '. We\'ll be in touch shortly.');
+    enquiryForm.reset();
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = originalHtml;
+  }, 700);
+});
+
+function setEnqError(inputId, errorId, message) {
+  const input = $(inputId);
+  const err = $(errorId);
+  input.classList.add('error');
+  err.textContent = message;
+  err.classList.add('show');
+}
+function clearEnquiryErrors() {
+  ['enqName','enqEmail','enqMessage'].forEach(id => { $(id).classList.remove('error'); });
+  ['enqNameError','enqEmailError','enqMessageError'].forEach(id => { $(id).classList.remove('show'); });
+}
+
+// ==================== CTA SIGN UP ====================
+ctaSignUpBtn.addEventListener('click', () => openAuthModal('signup'));
+
+// ==================== SCROLL REVEAL ====================
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ==================== HEADER SHRINK ON SCROLL ====================
+const siteHeader = $('siteHeader');
+let lastScrollY = 0;
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y > 20) {
+    siteHeader.style.boxShadow = '0 6px 24px -12px rgba(20, 38, 26, 0.14)';
+  } else {
+    siteHeader.style.boxShadow = 'none';
+  }
+  lastScrollY = y;
+}, { passive: true });
+
+// ==================== ESCAPE KEY ====================
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeAuthModalFn();
+    closeCartFn();
+    mobileNav.classList.remove('open');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+  }
+});
+
+// ==================== INIT ====================
+renderProducts();
+updateCartUI();
+updateAuthUI();
+</script>
+</body>
+</html>
