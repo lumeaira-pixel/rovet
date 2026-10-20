@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Maison Aurélie — Fine Dining Restaurant</title>
+<meta name="description" content="Maison Aurélie — a modern French dining room in the heart of the city. Seasonal tasting menus, an award-winning wine cellar, and warm hospitality." />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<!-- Lucide -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<style>
+/* === Design Tokens === */
+:root{
+  --ink: #1a1712;
+  --ink-soft: #4a443c;
+  --muted: #7a736a;
+  --cream: #faf6ef;
+  --ivory: #f4eee3;
+  --paper: #fffdf9;
+  --line: rgba(26,23,18,0.10);
+  --line-strong: rgba(26,23,18,0.18);
+  --brass: #a8752e;
+  --brass-soft: #c9954a;
+  --terracotta: #b8552f;
+  --sage: #6f7a5e;
+  --shadow-sm: 0 1px 2px rgba(26,23,18,.05), 0 2px 8px rgba(26,23,18,.04);
+  --shadow-md: 0 8px 24px -8px rgba(26,23,18,.14), 0 2px 6px rgba(26,23,18,.05);
+  --shadow-lg: 0 30px 60px -20px rgba(26,23,18,.22), 0 10px 24px -12px rgba(26,23,18,.12);
+  --radius: 18px;
+  --radius-lg: 28px;
+  --focus: #a8752e;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Instrument Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* === Base === */
+*{ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html{ scroll-behavior: smooth; }
+body{
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+::selection{ background: var(--brass); color: #fff; }
+
+/* subtle paper grain */
+body::before{
+  content:""; position: fixed; inset:0; pointer-events:none; z-index: 1;
+  opacity:.035; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* === Typography === */
+.display{ font-family: var(--font-display); font-weight: 400; letter-spacing: -0.02em; line-height: 1.02; }
+.serif-italic{ font-family: var(--font-display); font-style: italic; }
+.eyebrow{
+  font-size: .72rem; letter-spacing: .22em; text-transform: uppercase;
+  font-weight: 600; color: var(--brass);
+}
+.lead{ font-size: clamp(1rem, 1.15vw, 1.15rem); color: var(--ink-soft); line-height: 1.75; }
+
+/* === Focus & A11y === */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 2px var(--cream), 0 0 0 4px var(--focus);
+  border-radius: 6px;
+}
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+/* === Buttons === */
+.btn{
+  display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+  padding: .95rem 1.6rem; border-radius: 999px; font-weight: 600; font-size: .92rem;
+  letter-spacing: .01em; transition: transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s, background .25s, color .25s;
+  cursor: pointer; border: 1px solid transparent; text-decoration: none; white-space: nowrap;
+}
+.btn-primary{ background: var(--ink); color: var(--cream); box-shadow: var(--shadow-md); }
+.btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 18px 34px -14px rgba(26,23,18,.45); background: #26211a; }
+.btn-primary:active{ transform: translateY(0) scale(.98); }
+.btn-ghost{ background: transparent; color: var(--ink); border-color: var(--line-strong); }
+.btn-ghost:hover{ background: rgba(26,23,18,.04); transform: translateY(-2px); }
+.btn-brass{ background: var(--brass); color: #fff; box-shadow: 0 10px 26px -10px rgba(168,117,46,.6); }
+.btn-brass:hover{ background: #94651f; transform: translateY(-2px); }
+.btn-sm{ padding: .65rem 1.15rem; font-size: .85rem; }
+
+/* === Header === */
+.site-header{
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  transition: background .35s ease, box-shadow .35s ease, backdrop-filter .35s;
+  padding: 1.1rem 0;
+}
+.site-header.scrolled{
+  background: rgba(250,246,239,.82);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 1px 0 var(--line), 0 12px 30px -22px rgba(26,23,18,.35);
+  padding: .6rem 0;
+}
+.logo{ display:flex; align-items:center; gap:.6rem; text-decoration:none; color: var(--ink); }
+.logo-mark{
+  width: 38px; height: 38px; border-radius: 12px; display:grid; place-items:center;
+  background: linear-gradient(145deg, var(--brass), #7a5218); color: #fff;
+  font-family: var(--font-display); font-size: 1.3rem; box-shadow: 0 6px 16px -8px rgba(168,117,46,.7);
+  flex-shrink: 0;
+}
+.logo-text{ font-family: var(--font-display); font-size: 1.4rem; line-height: 1; letter-spacing: -.01em; }
+.logo-sub{ font-size: .58rem; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-top: 3px; }
+
+.nav-links{ display: flex; align-items: center; gap: 2rem; }
+.nav-links a{
+  font-size: .9rem; font-weight: 500; color: var(--ink-soft); text-decoration: none;
+  position: relative; padding: .25rem 0; transition: color .2s;
+}
+.nav-links a::after{
+  content:""; position:absolute; left:0; bottom:-2px; height:1.5px; width:0;
+  background: var(--brass); transition: width .3s cubic-bezier(.2,.7,.3,1);
+}
+.nav-links a:hover{ color: var(--ink); }
+.nav-links a:hover::after{ width: 100%; }
+
+.mobile-toggle{ display: none; }
+
+.mobile-menu{
+  position: fixed; inset: 0; z-index: 60;
+  background: var(--cream);
+  transform: translateY(-100%); transition: transform .45s cubic-bezier(.7,0,.2,1);
+  display: flex; flex-direction: column; padding: 1.4rem;
+}
+.mobile-menu.open{ transform: translateY(0); }
+.mobile-menu a{
+  font-family: var(--font-display); font-size: 2rem; color: var(--ink); text-decoration: none;
+  padding: .7rem 0; border-bottom: 1px solid var(--line);
+}
+
+/* === Hero === */
+.hero{ position: relative; padding: 9rem 0 5rem; overflow: hidden; }
+.hero-bg{
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 80% 10%, rgba(201,149,74,.18), transparent 70%),
+    radial-gradient(50% 40% at 10% 80%, rgba(111,122,94,.12), transparent 70%);
+}
+.hero-grid{ display: grid; grid-template-columns: 1.05fr .95fr; gap: 4rem; align-items: center; position: relative; z-index: 2; }
+.hero h1{ font-size: clamp(3rem, 6.4vw, 5.4rem); }
+.hero-visual{ position: relative; perspective: 1200px; }
+.hero-img-wrap{
+  position: relative; border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-lg); transform: rotateY(-6deg) rotateX(2deg);
+  transition: transform .6s cubic-bezier(.2,.7,.3,1);
+  will-change: transform;
+}
+.hero-img-wrap:hover{ transform: rotateY(0) rotateX(0) scale(1.01); }
+.hero-img-wrap img{ width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 4/5; }
+.hero-badge{
+  position: absolute; bottom: 1.4rem; left: -1.5rem; background: var(--paper);
+  border-radius: 16px; padding: 1rem 1.25rem; box-shadow: var(--shadow-md);
+  display: flex; align-items: center; gap: .9rem; z-index: 3;
+}
+.hero-badge .stars{ color: var(--brass); display:flex; gap:2px; }
+.hero-badge small{ font-size: .72rem; color: var(--muted); display:block; }
+
+.hero-stats{ display: flex; gap: 2.5rem; margin-top: 2.8rem; flex-wrap: wrap; }
+.stat-num{ font-family: var(--font-display); font-size: 2.2rem; line-height: 1; }
+.stat-label{ font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-top: .35rem; }
+
+/* === Section helpers === */
+.section{ padding: 6rem 0; position: relative; z-index: 2; }
+.section-head{ max-width: 720px; }
+.section-title{ font-size: clamp(2.1rem, 4vw, 3.4rem); }
+.divider-line{ width: 56px; height: 2px; background: var(--brass); border-radius: 2px; }
+
+/* === Menu === */
+.menu-tabs{ display: flex; gap: .5rem; flex-wrap: wrap; background: var(--paper); padding: .4rem; border-radius: 999px; border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+.menu-tab{
+  padding: .6rem 1.2rem; border-radius: 999px; font-size: .85rem; font-weight: 600;
+  color: var(--ink-soft); background: transparent; border: none; cursor: pointer;
+  transition: all .22s ease;
+}
+.menu-tab:hover{ color: var(--ink); background: rgba(26,23,18,.04); }
+.menu-tab.active{ background: var(--ink); color: var(--cream); box-shadow: var(--shadow-sm); }
+
+.menu-panel{ display: none; }
+.menu-panel.active{ display: block; }
+.menu-item{
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 1.25rem;
+  padding: 1.4rem 0; border-bottom: 1px dashed var(--line);
+}
+.menu-item:last-child{ border-bottom: none; }
+.menu-item h4{ font-size: 1.12rem; font-weight: 600; margin-bottom: .2rem; }
+.menu-item p{ font-size: .88rem; color: var(--muted); line-height: 1.55; max-width: 44ch; }
+.menu-price{ font-family: var(--font-display); font-size: 1.3rem; color: var(--brass); white-space: nowrap; }
+.menu-tag{
+  display:inline-block; font-size:.6rem; letter-spacing:.12em; text-transform:uppercase;
+  padding:.15rem .5rem; border-radius:999px; background:rgba(168,117,46,.1);
+  color:var(--brass); font-weight:700; margin-left:.4rem; vertical-align: middle;
+}
+
+/* === Gallery === */
+.gallery{ display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 200px; gap: 1rem; }
+.gallery figure{
+  position: relative; overflow: hidden; border-radius: var(--radius); margin:0;
+  box-shadow: var(--shadow-sm); transition: transform .4s cubic-bezier(.2,.7,.3,1), box-shadow .4s;
+}
+.gallery figure:hover{ transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.gallery img{ width:100%; height:100%; object-fit: cover; transition: transform .8s cubic-bezier(.2,.7,.3,1); display:block; }
+.gallery figure:hover img{ transform: scale(1.06); }
+.gallery figure::after{
+  content: attr(data-label);
+  position: absolute; left: 1rem; bottom: .9rem; color: #fff; font-size: .72rem;
+  letter-spacing: .14em; text-transform: uppercase; font-weight: 600;
+  text-shadow: 0 1px 12px rgba(0,0,0,.6); opacity: 0; transition: opacity .3s;
+}
+.gallery figure:hover::after{ opacity: 1; }
+.g-span-2{ grid-column: span 2; }
+.g-row-2{ grid-row: span 2; }
+
+/* === Reviews === */
+.review-card{
+  background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  padding: 2rem; box-shadow: var(--shadow-sm); transition: transform .3s, box-shadow .3s;
+  display: flex; flex-direction: column; gap: 1rem; height: 100%;
+}
+.review-card:hover{ transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.review-stars{ color: var(--brass); display: flex; gap: 2px; }
+.review-quote{ font-family: var(--font-display); font-size: 1.15rem; line-height: 1.5; color: var(--ink); flex: 1; }
+.review-author{ display:flex; align-items:center; gap:.75rem; }
+.review-avatar{
+  width: 42px; height: 42px; border-radius: 999px; display:grid; place-items:center;
+  background: var(--ivory); color: var(--brass); font-weight: 700; font-family: var(--font-display);
+  font-size: 1.05rem; border: 1px solid var(--line);
+}
+
+/* === Location === */
+.location-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: stretch; }
+.map-card{
+  border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md);
+  border: 1px solid var(--line); min-height: 420px; position: relative;
+}
+.map-card iframe{ width: 100%; height: 100%; border: 0; display:block; filter: saturate(.85) contrast(.98); }
+.hours-row{ display:flex; justify-content:space-between; padding:.65rem 0; border-bottom:1px solid var(--line); font-size:.92rem; }
+.hours-row:last-child{ border-bottom:none; }
+.hours-row span:first-child{ color: var(--ink-soft); font-weight: 500; }
+.hours-row span:last-child{ color: var(--ink); font-weight: 600; }
+
+/* === Reservation === */
+.reservation{
+  background: var(--ink); color: var(--cream); border-radius: var(--radius-lg);
+  padding: clamp(2rem, 5vw, 4rem); position: relative; overflow: hidden;
+}
+.reservation::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(50% 60% at 90% 0%, rgba(201,149,74,.22), transparent 70%),
+              radial-gradient(40% 50% at 0% 100%, rgba(184,85,47,.14), transparent 70%);
+}
+.reservation > *{ position: relative; z-index: 2; }
+.reservation h2{ color: var(--cream); }
+.form-field label{ font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: rgba(250,246,239,.7); margin-bottom: .45rem; display:block; }
+.form-field input, .form-field select, .form-field textarea{
+  width: 100%; padding: .9rem 1rem; border-radius: 12px;
+  background: rgba(250,246,239,.06); border: 1px solid rgba(250,246,239,.16);
+  color: var(--cream); font-family: var(--font-body); font-size: .92rem;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.form-field input::placeholder, .form-field textarea::placeholder{ color: rgba(250,246,239,.4); }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus{
+  outline: none; border-color: var(--brass-soft); background: rgba(250,246,239,.1);
+  box-shadow: 0 0 0 3px rgba(201,149,74,.2);
+}
+.form-field select{ appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23faf6ef' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position: right 1rem center; padding-right: 2.4rem; }
+.form-field select option{ color: var(--ink); background: var(--paper); }
+.field-error{ color: #f0a08a; font-size: .75rem; margin-top: .35rem; display: none; }
+.field-error.show{ display: block; }
+.input-error{ border-color: #d97a5f !important; }
+.form-success{
+  display: none; padding: 1rem 1.2rem; border-radius: 12px; margin-top: 1rem;
+  background: rgba(111,122,94,.22); border: 1px solid rgba(111,122,94,.4);
+  color: #dbe3c9; font-size: .9rem; align-items: center; gap: .6rem;
+}
+.form-success.show{ display: flex; }
+
+/* === Footer === */
+.footer{ background: var(--ivory); padding: 4rem 0 2rem; position: relative; z-index: 2; border-top: 1px solid var(--line); }
+.footer a{ color: var(--ink-soft); text-decoration: none; font-size: .9rem; transition: color .2s; }
+.footer a:hover{ color: var(--brass); }
+.footer-col h5{ font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 1.1rem; }
+.social-btn{
+  width: 40px; height: 40px; border-radius: 999px; display:grid; place-items:center;
+  border: 1px solid var(--line-strong); color: var(--ink-soft); transition: all .25s;
+}
+.social-btn:hover{ background: var(--ink); color: var(--cream); border-color: var(--ink); transform: translateY(-2px); }
+
+/* === Marquee === */
+.marquee-wrap{ overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 1.4rem 0; background: var(--paper); }
+.marquee{ display: flex; gap: 3rem; width: max-content; animation: marquee 38s linear infinite; }
+.marquee:hover{ animation-play-state: paused; }
+.marquee span{ font-family: var(--font-display); font-size: 1.6rem; color: var(--ink-soft); display:flex; align-items:center; gap: 3rem; white-space: nowrap; }
+.marquee span::after{ content:""; width: 8px; height: 8px; border-radius: 999px; background: var(--brass); }
+@keyframes marquee{ from{ transform: translateX(0); } to{ transform: translateX(-50%); } }
+
+/* === Reveal animation base === */
+.reveal{ opacity: 0; transform: translateY(28px); }
+
+/* === Responsive === */
+@media (max-width: 1024px){
+  .hero-grid{ grid-template-columns: 1fr; gap: 3rem; }
+  .hero-img-wrap img{ aspect-ratio: 16/11; }
+  .gallery{ grid-template-columns: repeat(2, 1fr); grid-auto-rows: 180px; }
+  .g-span-2{ grid-column: span 2; }
+  .g-row-2{ grid-row: span 1; }
+  .location-grid{ grid-template-columns: 1fr; }
+  .map-card{ min-height: 320px; }
+}
+@media (max-width: 768px){
+  .nav-links, .header-cta{ display: none; }
+  .mobile-toggle{ display: inline-flex; }
+  .hero{ padding: 7rem 0 3.5rem; }
+  .section{ padding: 4rem 0; }
+  .hero-badge{ left: .75rem; bottom: .75rem; padding: .75rem 1rem; }
+  .hero-stats{ gap: 1.6rem; margin-top: 2rem; }
+  .stat-num{ font-size: 1.8rem; }
+  .gallery{ grid-template-columns: 1fr 1fr; grid-auto-rows: 150px; gap: .7rem; }
+  .footer{ padding: 3rem 0 1.5rem; }
+  .btn{ padding: .85rem 1.3rem; }
+  .mobile-menu a{ font-size: 1.6rem; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior: auto; }
+  *, *::before, *::after{ animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  .reveal{ opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header" id="siteHeader">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between">
+    <a href="#top" class="logo" aria-label="Maison Aurélie home">
+      <span class="logo-mark" aria-hidden="true">M</span>
+      <span>
+        <span class="logo-text">Maison Aurélie</span>
+        <span class="logo-sub" style="display:block">Fine Dining · Est. 2016</span>
+      </span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#menu">Menu</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#location">Location</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="#reservation" class="btn btn-primary btn-sm header-cta">
+        Reserve a table
+        <i data-lucide="arrow-up-right" width="15" height="15" aria-hidden="true"></i>
+      </a>
+      <button class="btn btn-ghost btn-sm mobile-toggle" id="mobileToggle"
+              aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu" width="20" height="20" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="flex items-center justify-between mb-4">
+    <span class="logo-text">Maison Aurélie</span>
+    <button class="btn btn-ghost btn-sm" id="mobileClose" aria-label="Close menu">
+      <i data-lucide="x" width="20" height="20" aria-hidden="true"></i>
+    </button>
+  </div>
+  <nav aria-label="Mobile">
+    <a href="#menu">Menu</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#location">Location</a>
+    <a href="#reservation">Reservations</a>
+  </nav>
+  <a href="#reservation" class="btn btn-primary mt-6" style="align-self:flex-start">Reserve a table</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<main id="top">
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow mb-5">Modern French · Seasonal Tasting Menus</p>
+        <h1 class="display reveal">Where every dish<br><em class="serif-italic" style="color:var(--brass)">tells a story</em></h1>
+        <p class="lead mt-6 max-w-lg reveal">A quiet dining room in the heart of the city, guided by the seasons and the hands of Chef Aurélie Marchand. Nine courses, one table, and an evening that lingers.</p>
+
+        <div class="flex flex-wrap gap-3 mt-8 reveal">
+          <a href="#reservation" class="btn btn-primary">
+            Reserve your evening
+            <i data-lucide="calendar-check" width="16" height="16" aria-hidden="true"></i>
+          </a>
+          <a href="#menu" class="btn btn-ghost">Explore the menu</a>
+        </div>
+
+        <div class="hero-stats reveal">
+          <div>
+            <div class="stat-num">9</div>
+            <div class="stat-label">Courses</div>
+          </div>
+          <div>
+            <div class="stat-num">2</div>
+            <div class="stat-label">Michelin Stars</div>
+          </div>
+          <div>
+            <div class="stat-num">420+</div>
+            <div class="stat-label">Wine Labels</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal">
+        <div class="hero-img-wrap">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1200&auto=format&fit=crop"
+               alt="Elegant plated dish on a candlelit table at Maison Aurélie" loading="eager" />
+        </div>
+        <div class="hero-badge" aria-label="Rated 4.9 out of 5 by guests">
+          <div>
+            <div class="stars" aria-hidden="true">
+              <i data-lucide="star" width="14" height="14" fill="currentColor"></i>
+              <i data-lucide="star" width="14" height="14" fill="currentColor"></i>
+              <i data-lucide="star" width="14" height="14" fill="currentColor"></i>
+              <i data-lucide="star" width="14" height="14" fill="currentColor"></i>
+              <i data-lucide="star" width="14" height="14" fill="currentColor"></i>
+            </div>
+            <small>4.9 · 1,240 guest reviews</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee">
+    <span>Seasonal produce</span><span>Natural wine</span><span>Chef's table</span><span>Slow dining</span>
+    <span>Seasonal produce</span><span>Natural wine</span><span>Chef's table</span><span>Slow dining</span>
+  </div>
+</div>
+
+<!-- ============ MENU ============ -->
+<section class="section" id="menu">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <div class="section-head">
+        <div class="divider-line mb-5"></div>
+        <p class="eyebrow mb-3">The Menu</p>
+        <h2 class="display section-title">A season on a plate</h2>
+        <p class="lead mt-4 max-w-lg">Our menus change with the harvest. What follows is a taste of the current offering — the full evening unfolds over nine courses.</p>
+      </div>
+      <div class="menu-tabs" role="tablist" aria-label="Menu categories">
+        <button class="menu-tab active" data-tab="tasting" role="tab" aria-selected="true" aria-controls="panel-tasting" id="tab-tasting">Tasting</button>
+        <button class="menu-tab" data-tab="alacarte" role="tab" aria-selected="false" aria-controls="panel-alacarte" id="tab-alacarte">À la carte</button>
+        <button class="menu-tab" data-tab="wine" role="tab" aria-selected="false" aria-controls="panel-wine" id="tab-wine">Wine</button>
+      </div>
+    </div>
+
+    <!-- Tasting -->
+    <div class="menu-panel active" id="panel-tasting" role="tabpanel" aria-labelledby="tab-tasting">
+      <div class="grid md:grid-cols-2 gap-x-16">
+        <div>
+          <div class="menu-item">
+            <div><h4>Oyster &amp; green apple <span class="menu-tag">Signature</span></h4><p>Fine de claire, apple granita, chive oil, buckwheat crisp.</p></div>
+            <div class="menu-price">—</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Heirloom tomato consommé</h4><p>Slow-pressed tomatoes, basil blossom, smoked ricotta.</p></div>
+            <div class="menu-price">—</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Hand-dived scallop</h4><p>Cauliflower cream, brown butter, lemon zest, sea herbs.</p></div>
+            <div class="menu-price">—</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Line-caught turbot</h4><p>Beurre blanc, samphire, confit potato, caviar.</p></div>
+            <div class="menu-price">—</div>
+          </div>
+        </div>
+        <div>
+          <div class="menu-item">
+            <div><h4>Aged duck breast</h4><p>Cherry, black garlic, roasted beetroot, jus gras.</p></div>
+            <div class="menu-price">—</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Comté &amp; honey</h4><p>36-month Comté, wildflower honey, walnut, sourdough.</p></div>
+            <div class="menu-price">—</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Valrhona soufflé</h4><p>Dark chocolate, salted caramel, crème fraîche sorbet.</p></div>
+            <div class="menu-price">—</div>
+          </div>
+          <div class="menu-item" style="border-bottom:none; padding-bottom:0">
+            <div><h4>Petit fours &amp; coffee</h4><p>House-made sweets, single-origin coffee or tea selection.</p></div>
+            <div class="menu-price">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 flex flex-wrap items-center gap-4">
+        <span class="btn btn-brass btn-sm" style="pointer-events:none">Nine-course tasting — £165 per guest</span>
+        <span style="font-size:.85rem;color:var(--muted)">Wine pairing available +£95</span>
+      </div>
+    </div>
+
+    <!-- À la carte -->
+    <div class="menu-panel" id="panel-alacarte" role="tabpanel" aria-labelledby="tab-alacarte">
+      <div class="grid md:grid-cols-2 gap-x-16">
+        <div>
+          <div class="menu-item">
+            <div><h4>Burrata &amp; peach</h4><p>Buffalo burrata, grilled peach, basil, aged balsamic.</p></div>
+            <div class="menu-price">£18</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Steak tartare</h4><p>Hand-cut beef, capers, shallot, quail yolk, brioche.</p></div>
+            <div class="menu-price">£22</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Roasted celeriac</h4><p>Whole celeriac, hazelnut, truffle, sherry glaze.</p></div>
+            <div class="menu-price">£19</div>
+          </div>
+        </div>
+        <div>
+          <div class="menu-item">
+            <div><h4>Rack of lamb</h4><p>Herb crust, aubergine purée, rosemary jus.</p></div>
+            <div class="menu-price">£34</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Wild sea bass</h4><p>Fennel, citrus, saffron beurre blanc.</p></div>
+            <div class="menu-price">£29</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Paris-Brest</h4><p>Praline cream, roasted almond, vanilla ice cream.</p></div>
+            <div class="menu-price">£14</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wine -->
+    <div class="menu-panel" id="panel-wine" role="tabpanel" aria-labelledby="tab-wine">
+      <div class="grid md:grid-cols-2 gap-x-16">
+        <div>
+          <div class="menu-item">
+            <div><h4>Champagne, Côte des Blancs</h4><p>Blanc de blancs, grand cru, 2016 — by the glass.</p></div>
+            <div class="menu-price">£22</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Chablis, 1er Cru Montée de Tonnerre</h4><p>Mineral, precise, with a long saline finish.</p></div>
+            <div class="menu-price">£78</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Fleurie, Cru Beaujolais</h4><p>Silky gamay, red cherry, violet — served lightly chilled.</p></div>
+            <div class="menu-price">£54</div>
+          </div>
+        </div>
+        <div>
+          <div class="menu-item">
+            <div><h4>Barolo, Piedmont</h4><p>Nebbiolo, rose petal, tar, and fine tannins.</p></div>
+            <div class="menu-price">£110</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Vouvray, moelleux</h4><p>Chenin blanc, honeyed, bright acidity — with dessert.</p></div>
+            <div class="menu-price">£16</div>
+          </div>
+          <div class="menu-item">
+            <div><h4>Sommelier's pairing</h4><p>Six glasses chosen to accompany the tasting menu.</p></div>
+            <div class="menu-price">£95</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section class="section" id="gallery" style="background:var(--ivory)">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="mb-10">
+      <div class="divider-line mb-5"></div>
+      <p class="eyebrow mb-3">The Room</p>
+      <h2 class="display section-title">An evening in pictures</h2>
+    </div>
+
+    <div class="gallery">
+      <figure class="g-span-2 g-row-2 reveal" data-label="The dining room">
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop" alt="Warmly lit dining room with set tables" loading="lazy" />
+      </figure>
+      <figure class="reveal" data-label="Seasonal plates">
+        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop" alt="Plated seasonal dish" loading="lazy" />
+      </figure>
+      <figure class="reveal" data-label="The cellar">
+        <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=800&auto=format&fit=crop" alt="Bottles in the wine cellar" loading="lazy" />
+      </figure>
+      <figure class="reveal" data-label="Chef's table">
+        <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?q=80&w=800&auto=format&fit=crop" alt="Chef plating a dish" loading="lazy" />
+      </figure>
+      <figure class="g-span-2 reveal" data-label="Dessert">
+        <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?q=80&w=1200&auto=format&fit=crop" alt="Elegant dessert with berries" loading="lazy" />
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REVIEWS ============ -->
+<section class="section" id="reviews">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="mb-12 max-w-xl">
+      <div class="divider-line mb-5"></div>
+      <p class="eyebrow mb-3">Guest Book</p>
+      <h2 class="display section-title">Kind words, kept close</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <article class="review-card reveal">
+        <div class="review-stars" aria-label="5 out of 5 stars">
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+        </div>
+        <p class="review-quote">"The turbot alone was worth the journey. Every course arrived like a small, quiet surprise."</p>
+        <div class="review-author">
+          <div class="review-avatar" aria-hidden="true">E</div>
+          <div>
+            <div style="font-weight:600;font-size:.92rem">Eleanor V.</div>
+            <div style="font-size:.78rem;color:var(--muted)">Dined March 2025</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="review-card reveal">
+        <div class="review-stars" aria-label="5 out of 5 stars">
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+        </div>
+        <p class="review-quote">"Service that anticipates without hovering. The sommelier's pairing turned dinner into a masterclass."</p>
+        <div class="review-author">
+          <div class="review-avatar" aria-hidden="true">J</div>
+          <div>
+            <div style="font-weight:600;font-size:.92rem">James O.</div>
+            <div style="font-size:.78rem;color:var(--muted)">Dined February 2025</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="review-card reveal">
+        <div class="review-stars" aria-label="5 out of 5 stars">
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+          <i data-lucide="star" width="15" height="15" fill="currentColor"></i>
+        </div>
+        <p class="review-quote">"We came for an anniversary and left planning the next one. The room feels like a secret worth keeping."</p>
+        <div class="review-author">
+          <div class="review-avatar" aria-hidden="true">S</div>
+          <div>
+            <div style="font-weight:600;font-size:.92rem">Sofia &amp; Marc</div>
+            <div style="font-size:.78rem;color:var(--muted)">Dined January 2025</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOCATION ============ -->
+<section class="section" id="location" style="background:var(--ivory)">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="mb-10">
+      <div class="divider-line mb-5"></div>
+      <p class="eyebrow mb-3">Find Us</p>
+      <h2 class="display section-title">Tucked just off the square</h2>
+    </div>
+
+    <div class="location-grid">
+      <div class="map-card reveal">
+        <iframe
+          title="Map showing Maison Aurélie location"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=-0.1450%2C51.5100%2C-0.1250%2C51.5200&layer=mapnik&marker=51.5150%2C-0.1350"
+          loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+
+      <div class="reveal">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div>
+            <h3 style="font-family:var(--font-display);font-size:1.5rem;margin-bottom:.8rem">Address</h3>
+            <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.8">
+              14 Lampwick Lane<br>
+              Marylebone<br>
+              London W1U 4RT
+            </p>
+            <div class="mt-5 flex flex-col gap-2">
+              <a href="tel:+442071234567" style="display:inline-flex;align-items:center;gap:.5rem;color:var(--ink);text-decoration:none;font-weight:500;font-size:.95rem">
+                <i data-lucide="phone" width="16" height="16" aria-hidden="true"></i> +44 20 7123 4567
+              </a>
+              <a href="mailto:hello@maisonaurelie.co.uk" style="display:inline-flex;align-items:center;gap:.5rem;color:var(--ink);text-decoration:none;font-weight:500;font-size:.95rem">
+                <i data-lucide="mail" width="16" height="16" aria-hidden="true"></i> hello@maisonaurelie.co.uk
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="font-family:var(--font-display);font-size:1.5rem;margin-bottom:.8rem">Hours</h3>
+            <div class="hours-row"><span>Tuesday – Thursday</span><span>18:00 – 23:00</span></div>
+            <div class="hours-row"><span>Friday – Saturday</span><span>12:00 – 00:00</span></div>
+            <div class="hours-row"><span>Sunday</span><span>12:00 – 20:00</span></div>
+            <div class="hours-row"><span>Monday</span><span>Closed</span></div>
+          </div>
+        </div>
+
+        <div class="mt-8 p-5" style="background:var(--paper);border:1px solid var(--line);border-radius:16px">
+          <div class="flex items-start gap-3">
+            <i data-lucide="info" width="18" height="18" style="color:var(--brass);flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+            <p style="font-size:.88rem;color:var(--ink-soft);line-height:1.65;margin:0">
+              We hold a limited number of walk-in seats at the bar each evening. For parties of six or more, please contact us directly.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESERVATION ============ -->
+<section class="section" id="reservation">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="reservation">
+      <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div>
+          <p class="eyebrow mb-3" style="color:var(--brass-soft)">Reservations</p>
+          <h2 class="display" style="font-size:clamp(2rem,4vw,3.2rem)">Your table is waiting</h2>
+          <p style="color:rgba(250,246,239,.72);margin-top:1rem;font-size:1rem;line-height:1.75;max-width:42ch">
+            We seat guests by reservation only. Book online below and we'll confirm within two hours. For special occasions, dietary requirements or larger parties, leave us a note and we'll take care of the rest.
+          </p>
+
+          <div class="mt-8 flex flex-col gap-4">
+            <div class="flex items-start gap-3">
+              <i data-lucide="clock" width="18" height="18" style="color:var(--brass-soft);flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+              <div>
+                <div style="font-weight:600;font-size:.9rem">Evenings from 18:00</div>
+                <div style="font-size:.82rem;color:rgba(250,246,239,.55)">Last seating at 21:30</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="users" width="18" height="18" style="color:var(--brass-soft);flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+              <div>
+                <div style="font-weight:600;font-size:.9rem">Tables for 1–6 guests</div>
+                <div style="font-size:.82rem;color:rgba(250,246,239,.55)">Private dining available on request</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="leaf" width="18" height="18" style="color:var(--brass-soft);flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+              <div>
+                <div style="font-weight:600;font-size:.9rem">Dietary requirements</div>
+                <div style="font-size:.82rem;color:rgba(250,246,239,.55)">Vegetarian and pescatarian menus always available</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form id="reservationForm" novalidate>
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div class="form-field">
+              <label for="resName">Full name</label>
+              <input type="text" id="resName" name="name" placeholder="Your name" autocomplete="name" required />
+              <div class="field-error" id="err-resName">Please enter your name.</div>
+            </div>
+            <div class="form-field">
+              <label for="resEmail">Email</label>
+              <input type="email" id="resEmail" name="email" placeholder="you@example.com" autocomplete="email" required />
+              <div class="field-error" id="err-resEmail">Please enter a valid email.</div>
+            </div>
+            <div class="form-field">
+              <label for="resPhone">Phone</label>
+              <input type="tel" id="resPhone" name="phone" placeholder="+44 ..." autocomplete="tel" required />
+              <div class="field-error" id="err-resPhone">Please enter a phone number.</div>
+            </div>
+            <div class="form-field">
+              <label for="resGuests">Guests</label>
+              <select id="resGuests" name="guests" required>
+                <option value="">Select</option>
+                <option>1 guest</option>
+                <option>2 guests</option>
+                <option>3 guests</option>
+                <option>4 guests</option>
+                <option>5 guests</option>
+                <option>6 guests</option>
+              </select>
+              <div class="field-error" id="err-resGuests">Please select party size.</div>
+            </div>
+            <div class="form-field">
+              <label for="resDate">Date</label>
+              <input type="date" id="resDate" name="date" required />
+              <div class="field-error" id="err-resDate">Please choose a date.</div>
+            </div>
+            <div class="form-field">
+              <label for="resTime">Time</label>
+              <select id="resTime" name="time" required>
+                <option value="">Select</option>
+                <option>18:00</option>
+                <option>18:30</option>
+                <option>19:00</option>
+                <option>19:30</option>
+                <option>20:00</option>
+                <option>20:30</option>
+                <option>21:00</option>
+              </select>
+              <div class="field-error" id="err-resTime">Please choose a time.</div>
+            </div>
+          </div>
+
+          <div class="form-field mt-5">
+            <label for="resNotes">Notes <span style="text-transform:none;letter-spacing:0;font-weight:400;color:rgba(250,246,239,.45)">(optional)</span></label>
+            <textarea id="resNotes" name="notes" rows="3" placeholder="Allergies, celebrations, seating preferences..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-brass w-full mt-6" style="justify-content:center" id="resSubmit">
+            Request reservation
+            <i data-lucide="arrow-right" width="16" height="16" aria-hidden="true"></i>
+          </button>
+
+          <div class="form-success" id="resSuccess" role="status" aria-live="polite">
+            <i data-lucide="check-circle" width="18" height="18" aria-hidden="true"></i>
+            <span>Thank you. Your request has been received — we'll confirm by email within two hours.</span>
+          </div>
+
+          <!-- TODO: connect form action to backend endpoint -->
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA BANNER ============ -->
+<section style="padding:0 0 0" aria-hidden="true">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 pb-4">
+    <div style="border-top:1px solid var(--line);padding-top:3rem;text-align:center">
+      <p class="serif-italic" style="font-family:var(--font-display);font-size:clamp(1.4rem,2.6vw,2rem);color:var(--ink-soft);max-width:36ch;margin:0 auto">
+        "Good food is honest, seasonal, and made to be shared."
+      </p>
+      <p class="eyebrow" style="margin-top:1rem">— Chef Aurélie Marchand</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="grid md:grid-cols-4 gap-10 mb-12">
+      <div class="md:col-span-2">
+        <div class="logo mb-4" style="pointer-events:none">
+          <span class="logo-mark" aria-hidden="true">M</span>
+          <span>
+            <span class="logo-text">Maison Aurélie</span>
+            <span class="logo-sub" style="display:block">Fine Dining · Est. 2016</span>
+          </span>
+        </div>
+        <p style="font-size:.9rem;color:var(--ink-soft);line-height:1.75;max-width:36ch">
+          A modern French dining room guided by the seasons. Nine courses, a considered cellar, and an evening built to be remembered.
+        </p>
+        <div class="flex gap-3 mt-6">
+          <a href="#" class="social-btn" aria-label="Instagram">
+            <i data-lucide="instagram" width="17" height="17" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="social-btn" aria-label="Facebook">
+            <i data-lucide="facebook" width="17" height="17" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="social-btn" aria-label="X (Twitter)">
+            <i data-lucide="twitter" width="17" height="17" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>Explore</h5>
+        <div class="flex flex-col gap-2.5">
+          <a href="#menu">Menu</a>
+          <a href="#gallery">Gallery</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#location">Location</a>
+          <a href="#reservation">Reservations</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <div class="flex flex-col gap-2.5" style="font-size:.9rem;color:var(--ink-soft)">
+          <span>14 Lampwick Lane<br>London W1U 4RT</span>
+          <a href="tel:+442071234567">+44 20 7123 4567</a>
+          <a href="mailto:hello@maisonaurelie.co.uk">hello@maisonaurelie.co.uk</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid var(--line);padding-top:1.5rem;display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center">
+      <p style="font-size:.78rem;color:var(--muted);margin:0">© 2025 Maison Aurélie. All rights reserved.</p>
+      <div class="flex gap-5">
+        <a href="#" style="font-size:.78rem">Privacy</a>
+        <a href="#" style="font-size:.78rem">Terms</a>
+        <a href="#" style="font-size:.78rem">Accessibility</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* === Icons === */
+lucide.createIcons();
+
+/* === Header scroll state === */
+const header = document.getElementById('siteHeader');
+const onScroll = () => {
+  if (window.scrollY > 24) header.classList.add('scrolled');
+  else header.classList.remove('scrolled');
+};
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+/* === Mobile menu === */
+const mobileToggle = document.getElementById('mobileToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileClose = document.getElementById('mobileClose');
+
+function openMenu(){
+  mobileMenu.classList.add('open');
+  mobileToggle.setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu(){
+  mobileMenu.classList.remove('open');
+  mobileToggle.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+mobileToggle.addEventListener('click', openMenu);
+mobileClose.addEventListener('click', closeMenu);
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+});
+
+/* === Menu tabs === */
+const tabs = document.querySelectorAll('.menu-tab');
+const panels = document.querySelectorAll('.menu-panel');
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+    panels.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected', 'true');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* === Reservation form === */
+const resForm = document.getElementById('reservationForm');
+const resSuccess = document.getElementById('resSuccess');
+const resSubmit = document.getElementById('resSubmit');
+
+// Set min date to today
+const resDate = document.getElementById('resDate');
+const today = new Date().toISOString().split('T')[0];
+resDate.setAttribute('min', today);
+
+const fields = [
+  { id: 'resName', validate: v => v.trim().length >= 2 },
+  { id: 'resEmail', validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+  { id: 'resPhone', validate: v => v.trim().length >= 7 },
+  { id: 'resGuests', validate: v => v !== '' },
+  { id: 'resDate', validate: v => v !== '' },
+  { id: 'resTime', validate: v => v !== '' },
+];
+
+fields.forEach(f => {
+  const input = document.getElementById(f.id);
+  input.addEventListener('input', () => {
+    if (f.validate(input.value)) {
+      input.classList.remove('input-error');
+      document.getElementById('err-' + f.id).classList.remove('show');
+    }
+  });
+});
+
+resForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  let valid = true;
+
+  fields.forEach(f => {
+    const input = document.getElementById(f.id);
+    const err = document.getElementById('err-' + f.id);
+    if (!f.validate(input.value)) {
+      input.classList.add('input-error');
+      err.classList.add('show');
+      valid = false;
+    } else {
+      input.classList.remove('input-error');
+      err.classList.remove('show');
+    }
+  });
+
+  if (!valid) {
+    const firstError = resForm.querySelector('.input-error');
+    if (firstError) firstError.focus();
+    return;
+  }
+
+  resSubmit.disabled = true;
+  resSubmit.innerHTML = 'Sending...';
+
+  const formData = {
+    name: document.getElementById('resName').value.trim(),
+    email: document.getElementById('resEmail').value.trim(),
+    phone: document.getElementById('resPhone').value.trim(),
+    guests: document.getElementById('resGuests').value,
+    date: document.getElementById('resDate').value,
+    time: document.getElementById('resTime').value,
+    notes: document.getElementById('resNotes').value.trim()
+  };
+
+  try {
+    const response = await fetch('submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+      body: JSON.stringify({
+        url: window.location.host,
+        table: 'reservations',
+        data: formData
+      })
+    });
+
+    // Simulate success — no backend connected in this static demo
+    resSuccess.classList.add('show');
+    resForm.reset();
+    resSubmit.innerHTML = 'Request sent <i data-lucide="check" width="16" height="16" aria-hidden="true"></i>';
+    lucide.createIcons();
+    resSubmit.disabled = false;
+
+    setTimeout(() => {
+      resSuccess.classList.remove('show');
+      resSubmit.innerHTML = 'Request reservation <i data-lucide="arrow-right" width="16" height="16" aria-hidden="true"></i>';
+      lucide.createIcons();
+    }, 6000);
+
+  } catch (err) {
+    resSubmit.disabled = false;
+    resSubmit.innerHTML = 'Request reservation <i data-lucide="arrow-right" width="16" height="16" aria-hidden="true"></i>';
+    lucide.createIcons();
+    alert('Something went wrong. Please try again or call us on +44 20 7123 4567.');
+  }
+});
+
+/* === GSAP reveal animations === */
+if (window.gsap && window.ScrollTrigger) {
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero reveal sequence
+  gsap.utils.toArray('.hero .reveal').forEach((el, i) => {
+    gsap.to(el, {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'power3.out',
+      delay: 0.15 + i * 0.12
+    });
+  });
+
+  // Scroll reveals
+  gsap.utils.toArray('.reveal:not(.hero .reveal)').forEach(el => {
+    gsap.to(el, {
+      opacity: 1,
+      y: 0,
+      duration: 0.9,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 88%',
+        once: true
+      }
+    });
+  });
+
+  // Parallax on hero visual
+  gsap.to('.hero-visual', {
+    y: -30,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '.hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 1
+    }
+  });
+
+  // Gallery subtle parallax
+  gsap.utils.toArray('.gallery figure').forEach((fig, i) => {
+    gsap.fromTo(fig, { y: 20 }, {
+      y: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: fig,
+        start: 'top 95%',
+        end: 'top 60%',
+        scrub: 1
+      }
+    });
+  });
+} else {
+  // Fallback: just show everything
+  document.querySelectorAll('.reveal').forEach(el => {
+    el.style.opacity = '1';
+    el.style.transform = 'none';
+  });
+}
+</script>
+</body>
+</html>
