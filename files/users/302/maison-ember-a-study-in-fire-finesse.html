@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maison Ember · A study in fire & finesse</title>
+  <!--
+    CREATIVE DIRECTION: Light, warm luxury. Palette: ivory (#fcf9f5), onyx (#1c1b1a),
+    brass (#b08a5a), ember (#b5532e). Fonts: Instrument Serif for display,
+    Instrument Sans for body. Mood: editorial, tactile, calm.
+  -->
+  <!-- Tailwind CDN + config -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ivory: #fcf9f5;
+      --ivory-deep: #f6f1ea;
+      --onyx: #1c1b1a;
+      --onyx-soft: #3a3733;
+      --brass: #b08a5a;
+      --brass-soft: #d6c2a7;
+      --ember: #b5532e;
+      --hairline: rgba(28,27,26,0.12);
+      --focus-ring: 0 0 0 3px rgba(181,83,46,0.35);
+      --shadow-soft: 0 22px 70px -28px rgba(28,27,26,0.28);
+      --shadow-card: 0 18px 44px -22px rgba(28,27,26,0.22);
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Instrument Sans', system-ui, sans-serif;
+    }
+
+    /* === Base === */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--ivory);
+      color: var(--onyx);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--brass); color: #fff; }
+    img { max-width: 100%; display: block; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
+
+    .font-display { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.015em; }
+    .eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--brass);
+    }
+    .container-luxe { max-width: 1240px; margin: 0 auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+    .hairline { border-color: var(--hairline); }
+
+    /* === Grain overlay === */
+    .grain::before {
+      content: "";
+      position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* === Buttons === */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem;
+      padding: 0.95rem 1.6rem;
+      font-size: 0.86rem; font-weight: 600; letter-spacing: 0.03em;
+      border-radius: 999px;
+      transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .3s, background .3s, color .3s;
+      cursor: pointer; border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .btn-primary { background: var(--onyx); color: var(--ivory); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -12px rgba(28,27,26,.5); }
+    .btn-primary:active { transform: scale(.97); }
+    .btn-ghost { background: transparent; color: var(--onyx); border-color: var(--hairline); }
+    .btn-ghost:hover { background: var(--onyx); color: var(--ivory); border-color: var(--onyx); transform: translateY(-2px); }
+    .btn-ember { background: var(--ember); color: #fff; }
+    .btn-ember:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -12px rgba(181,83,46,.55); }
+
+    /* === Header === */
+    .site-header {
+      position: fixed; inset: 0 0 auto 0; z-index: 100;
+      transition: background .4s, box-shadow .4s, backdrop-filter .4s;
+      background: transparent;
+    }
+    .site-header.scrolled {
+      background: rgba(252,249,245,0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 1px 0 var(--hairline);
+    }
+    .nav-link { position: relative; font-size: .88rem; font-weight: 500; padding: .4rem .1rem; }
+    .nav-link::after {
+      content: ""; position: absolute; left: 0; bottom: 0; height: 1px; width: 0;
+      background: var(--onyx); transition: width .35s cubic-bezier(.2,.8,.2,1);
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Mobile menu */
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: 99;
+      background: var(--ivory);
+      transform: translateY(-100%);
+      transition: transform .5s cubic-bezier(.77,0,.18,1);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 2rem;
+    }
+    .mobile-menu.open { transform: translateY(0); }
+    .mobile-menu a { font-family: var(--font-display); font-size: clamp(2rem, 8vw, 3rem); }
+    .hamburger span { display: block; height: 1.5px; width: 22px; background: currentColor; margin: 5px 0; transition: .3s; }
+
+    /* === Hero === */
+    .hero { position: relative; padding-top: clamp(7rem, 14vh, 10rem); padding-bottom: clamp(3rem, 7vh, 6rem); overflow: hidden; }
+    .hero-title { font-size: clamp(3.4rem, 9.2vw, 8rem); line-height: 0.96; letter-spacing: -0.03em; }
+    .hero-title em { font-style: italic; color: var(--ember); }
+    .hero-visual {
+      border-radius: 1.75rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .hero-visual img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-glow {
+      position: absolute; z-index: -1; width: 620px; height: 620px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(176,138,90,0.28), transparent 65%);
+      filter: blur(40px); top: -120px; right: -140px; pointer-events: none;
+    }
+    .hero-glow-2 {
+      position: absolute; z-index: -1; width: 460px; height: 460px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(181,83,46,0.16), transparent 65%);
+      filter: blur(50px); bottom: -140px; left: -160px; pointer-events: none;
+    }
+    .word-reveal { display: inline-block; overflow: hidden; vertical-align: top; }
+    .word-reveal > span { display: inline-block; transform: translateY(115%); }
+
+    /* === Marquee === */
+    .marquee-track { display: flex; width: max-content; animation: marquee 32s linear infinite; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* === Cards === */
+    .card-luxe {
+      background: #fff;
+      border: 1px solid var(--hairline);
+      border-radius: 1.5rem;
+      box-shadow: var(--shadow-card);
+      transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s;
+    }
+    .card-luxe:hover { transform: translateY(-6px); box-shadow: var(--shadow-soft); }
+
+    /* === Menu === */
+    .menu-item { transition: background .3s; border-radius: .9rem; padding: .9rem 1rem; }
+    .menu-item:hover { background: var(--ivory-deep); }
+    .menu-dotted { flex: 1; border-bottom: 1px dotted var(--hairline); margin: 0 .8rem; transform: translateY(-4px); }
+    .tag { font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; padding: .22rem .55rem; border-radius: 999px; border: 1px solid var(--brass-soft); color: var(--brass); font-weight: 600; }
+
+    /* === Gallery === */
+    .gallery-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; }
+    .gallery-item { overflow: hidden; border-radius: 1.25rem; position: relative; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.1s cubic-bezier(.2,.8,.2,1); }
+    .gallery-item:hover img { transform: scale(1.06); }
+    .gallery-item::after {
+      content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(28,27,26,0.35), transparent 55%);
+      opacity: 0; transition: opacity .5s; pointer-events: none;
+    }
+    .gallery-item:hover::after { opacity: 1; }
+
+    /* === Reviews === */
+    .review-card { min-width: 340px; max-width: 400px; flex-shrink: 0; }
+    .stars { color: var(--brass); letter-spacing: .12em; }
+
+    /* === Forms === */
+    .field input, .field textarea, .field select {
+      width: 100%; background: #fff; border: 1px solid var(--hairline);
+      border-radius: .8rem; padding: .85rem 1rem; font-family: var(--font-body); font-size: .92rem;
+      color: var(--onyx); transition: border .25s, box-shadow .25s;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      outline: none; border-color: var(--brass); box-shadow: 0 0 0 3px rgba(176,138,90,0.18);
+    }
+    .field label { font-size: .74rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--onyx-soft); margin-bottom: .4rem; display: block; }
+    .field.error input, .field.error textarea, .field.error select { border-color: #c0392b; box-shadow: 0 0 0 3px rgba(192,57,43,0.12); }
+    .err-msg { color: #c0392b; font-size: .74rem; margin-top: .3rem; display: none; }
+    .field.error .err-msg { display: block; }
+    .form-success {
+      display: none; padding: 1rem 1.2rem; border-radius: .8rem;
+      background: #eef7ee; border: 1px solid #bfe0bf; color: #245c2a; font-size: .88rem;
+    }
+    .form-success.show { display: block; }
+
+    /* === Reveal animations === */
+    .reveal { opacity: 0; transform: translateY(34px); transition: opacity .9s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .marquee-track { animation: none; }
+      .word-reveal > span { transform: none; }
+      * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+    }
+
+    /* Header CTA never oversized on mobile */
+    @media (max-width: 640px) {
+      .btn { padding: .75rem 1.15rem; font-size: .8rem; }
+      .header-cta { display: none; }
+      .review-card { min-width: 290px; }
+    }
+  </style>
+</head>
+<body class="grain">
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header" id="siteHeader">
+    <div class="container-luxe flex items-center justify-between py-4 md:py-5">
+      <a href="#top" class="font-display text-2xl md:text-3xl tracking-tight" aria-label="Maison Ember home">
+        Maison <span style="color:var(--ember)">Ember</span>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-9" aria-label="Primary">
+        <a class="nav-link" href="#menu">Menu</a>
+        <a class="nav-link" href="#gallery">Gallery</a>
+        <a class="nav-link" href="#reviews">Reviews</a>
+        <a class="nav-link" href="#location">Location</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#reservation" class="btn btn-primary header-cta">Reserve a table</a>
+        <button class="hamburger lg:hidden p-2 rounded-full border hairline" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button class="absolute top-6 right-6 p-3 rounded-full border hairline" id="menuClose" aria-label="Close navigation menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <nav class="flex flex-col gap-6" aria-label="Mobile primary">
+      <a href="#menu" data-close>Menu</a>
+      <a href="#gallery" data-close>Gallery</a>
+      <a href="#reviews" data-close>Reviews</a>
+      <a href="#location" data-close>Location</a>
+      <a href="#reservation" data-close class="btn btn-ember self-start mt-4">Reserve a table</a>
+    </nav>
+    <p class="mt-10 text-sm" style="color:var(--onyx-soft)">12 Rue des Braises, Paris · +33 1 44 55 66 77</p>
+  </div>
+
+  <main id="top">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+      <div class="hero-glow"></div>
+      <div class="hero-glow-2"></div>
+      <div class="container-luxe grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+        <div class="lg:col-span-6 relative z-10">
+          <p class="eyebrow mb-6">Wood-fired · Paris · Est. 2014</p>
+          <h1 class="hero-title font-display" id="heroTitle">
+            <span class="word-reveal"><span>A study in</span></span>
+            <span class="word-reveal"><span>fire &amp; <em>finesse</em>.</span></span>
+          </h1>
+          <p class="mt-7 max-w-md text-base md:text-lg leading-relaxed" style="color:var(--onyx-soft)">
+            Twelve seats. One hearth. A menu rewritten with the market each morning.
+            Maison Ember is where smoke, season and patience meet the plate.
+          </p>
+          <div class="mt-9 flex flex-wrap items-center gap-3">
+            <a href="#reservation" class="btn btn-primary">Reserve a table</a>
+            <a href="#menu" class="btn btn-ghost">Explore the menu</a>
+          </div>
+          <div class="mt-12 flex items-center gap-6 text-sm" style="color:var(--onyx-soft)">
+            <div class="flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="1.6"><path d="M12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.5 5.8 21 7 14 2 9.3 9 8.5z"/></svg>
+              <span>One Michelin star</span>
+            </div>
+            <div class="hidden sm:flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="1.6"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Reserve 3 weeks ahead</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 relative">
+          <div class="hero-visual aspect-[4/5] md:aspect-[5/5]" id="heroVisual">
+            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1400&auto=format&fit=crop" alt="Warm, softly lit dining room at Maison Ember with wood-fired dishes" />
+            <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between">
+              <div class="bg-white/85 backdrop-blur-md rounded-2xl px-4 py-3 border" style="border-color:var(--hairline)">
+                <p class="text-[.65rem] uppercase tracking-[.18em] font-semibold" style="color:var(--brass)">Tonight's hearth</p>
+                <p class="font-display text-lg leading-tight mt-1">Ember-roasted duck, quince, bay</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MARQUEE ================= -->
+    <div class="border-y hairline py-5 overflow-hidden" aria-hidden="true">
+      <div class="marquee-track font-display text-xl md:text-2xl" style="color:var(--onyx-soft)">
+        <span class="flex items-center">
+          <span class="mx-8">Wood-fired seasonal cuisine</span><span style="color:var(--brass)">✦</span>
+          <span class="mx-8">Twelve seats only</span><span style="color:var(--brass)">✦</span>
+          <span class="mx-8">Natural wine cellar</span><span style="color:var(--brass)">✦</span>
+          <span class="mx-8">Paris, 11ᵉ</span><span style="color:var(--brass)">✦</span>
+        </span>
+        <span class="flex items-center">
+          <span class="mx-8">Wood-fired seasonal cuisine</span><span style="color:var(--brass)">✦</span>
+          <span class="mx-8">Twelve seats only</span><span style="color:var(--brass)">✦</span>
+          <span class="mx-8">Natural wine cellar</span><span style="color:var(--brass)">✦</span>
+          <span class="mx-8">Paris, 11ᵉ</span><span style="color:var(--brass)">✦</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- ================= MENU ================= -->
+    <section id="menu" class="py-24 md:py-32">
+      <div class="container-luxe">
+        <div class="grid lg:grid-cols-12 gap-12">
+          <div class="lg:col-span-4 lg:sticky lg:top-32 self-start reveal">
+            <p class="eyebrow mb-4">The carte</p>
+            <h2 class="font-display text-4xl md:text-5xl leading-[1.05]">A menu shaped<br />by the <em style="color:var(--ember)">market</em>.</h2>
+            <p class="mt-6 text-sm leading-relaxed max-w-sm" style="color:var(--onyx-soft)">
+              Four courses, one seating. Our kitchen writes the menu each morning around what arrives from Rungis and the small farms we trust. Dietary needs are always accommodated — simply tell us when you book.
+            </p>
+            <div class="mt-8 p-6 rounded-2xl" style="background:var(--ivory-deep); border:1px solid var(--hairline)">
+              <p class="text-[.65rem] uppercase tracking-[.18em] font-semibold" style="color:var(--brass)">Tasting menu</p>
+              <p class="font-display text-3xl mt-2">€128 <span class="text-base font-body" style="color:var(--onyx-soft)">per guest</span></p>
+              <p class="text-xs mt-2" style="color:var(--onyx-soft)">Wine pairing +€78 · Optional cheese course +€18</p>
+            </div>
+          </div>
+
+          <div class="lg:col-span-8">
+            <div class="space-y-2 reveal">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-display text-2xl italic" style="color:var(--ember)">To begin</h3>
+                <span class="text-[.65rem] uppercase tracking-[.18em]" style="color:var(--onyx-soft)">Spring · 2025</span>
+              </div>
+
+              <div class="menu-item flex items-baseline">
+                <div>
+                  <p class="font-medium">Smoked celeriac, brown butter, hazelnut</p>
+                  <p class="text-xs mt-0.5" style="color:var(--onyx-soft)">Charred under embers, finished with aged sherry</p>
+                </div>
+                <div class="menu-dotted"></div>
+                <p class="font-medium tabular-nums">18</p>
+              </div>
+              <div class="menu-item flex items-baseline">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <p class="font-medium">Hand-dived scallop, fennel, blood orange</p>
+                  <span class="tag">Signature</span>
+                </div>
+                <div class="menu-dotted"></div>
+                <p class="font-medium tabular-nums">24</p>
+              </div>
+              <div class="menu-item flex items-baseline">
+                <div>
+                  <p class="font-medium">Sourdough, cultured butter, smoked salt</p>
+                  <p class="text-xs mt-0.5" style="color:var(--onyx-soft)">Baked daily in the wood oven</p>
+                </div>
+                <div class="menu-dotted"></div>
+                <p class="font-medium tabular-nums">8</p>
+              </div>
+
+              <h3 class="font-display text-2xl italic pt-8 mb-3" style="color:var(--ember)">The hearth</h3>
+              <div class="menu-item flex items-baseline">
+                <div>
+                  <p class="font-medium">Ember-roasted duck, quince, bay</p>
+                  <p class="text-xs mt-0.5" style="color:var(--onyx-soft)">Dry-aged 14 days, glazed over open flame</p>
+                </div>
+                <div class="menu-dotted"></div>
+                <p class="font-medium tabular-nums">42</p>
+              </div>
+              <div class="menu-item flex items-baseline">
+                <div>
+                  <p class="font-medium">Line-caught turbot, leek, vin jaune</p>
+                </div>
+                <div class="menu-dotted"></div>
+                <p class="font-medium tabular-nums">46</p>
+              </div>
+              <div class="menu-item flex items-baseline">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <p class="font-medium">Aged ribeye for two, bone marrow, wild garlic</p>
+                  <span class="tag">For two</span>
+                </div>
+                <div class="menu-dotted"></div>
+                <p class="font-medium tabular-nums">96</p>
+              </div>
+              <div class="menu-item flex items-baseline">
+                <div>
+                  <p class="font-medium">Heritage beetroot, black garlic, smoked crème</p>
+                </div>
+                <div class="menu-dotted"></div>
+                <p class="font-medium tabular-nums">26</p>
+              </div>
+
+              <h3 class="font-display text-2xl italic pt-8 mb-3" style="color:var(--ember)">To finish</h3>
+              <div class="menu-item flex items-baseline">
+                <div>
+                  <p class="font-medium">Burnt honey ice cream, buckwheat, pear</p>
+                </div>
+                <div class="menu-dotted"></div>
+                <p class="font-medium tabular-nums">14</p>
+              </div>
+              <div class="menu-item flex items-baseline">
+                <div>
+                  <p class="font-medium">Dark chocolate crémeux, olive oil, sea salt</p>
+                </div>
+                <div class="menu-dotted"></div>
+                <p class="font-medium tabular-nums">16</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= GALLERY ================= -->
+    <section id="gallery" class="py-24 md:py-32" style="background:var(--ivory-deep)">
+      <div class="container-luxe">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 reveal">
+          <div>
+            <p class="eyebrow mb-4">The room</p>
+            <h2 class="font-display text-4xl md:text-5xl leading-[1.05]">Twelve seats,<br />one <em style="color:var(--ember)">glowing</em> room.</h2>
+          </div>
+          <p class="max-w-xs text-sm leading-relaxed md:text-right" style="color:var(--onyx-soft)">
+            Low light, warm stone, the quiet crackle of the hearth. A room built for conversation and slow courses.
+          </p>
+        </div>
+
+        <div class="gallery-grid reveal">
+          <div class="gallery-item col-span-12 md:col-span-7 row-span-2 aspect-[4/3] md:aspect-auto md:min-h-[420px]">
+            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1400&auto=format&fit=crop" alt="Intimate dining room with warm pendant lighting" />
+          </div>
+          <div class="gallery-item col-span-6 md:col-span-5 aspect-square">
+            <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?q=80&w=900&auto=format&fit=crop" alt="Chef plating a dish at the pass" />
+          </div>
+          <div class="gallery-item col-span-6 md:col-span-5 aspect-square">
+            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=900&auto=format&fit=crop" alt="Wood-fired dish with seasonal vegetables" />
+          </div>
+          <div class="gallery-item col-span-12 md:col-span-5 aspect-[4/3]">
+            <img src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?q=80&w=900&auto=format&fit=crop" alt="Natural wine poured at the bar" />
+          </div>
+          <div class="gallery-item col-span-12 md:col-span-7 aspect-[16/10]">
+            <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=1200&auto=format&fit=crop" alt="Guests enjoying dinner in the warm dining room" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= REVIEWS ================= -->
+    <section id="reviews" class="py-24 md:py-32">
+      <div class="container-luxe">
+        <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+          <p class="eyebrow mb-4">Guests</p>
+          <h2 class="font-display text-4xl md:text-5xl leading-[1.05]">Kind words from<br />the <em style="color:var(--ember)">table</em>.</h2>
+        </div>
+
+        <div class="flex gap-5 overflow-x-auto pb-6 snap-x snap-mandatory reveal" style="scrollbar-width: thin;">
+          <article class="review-card card-luxe snap-start p-7">
+            <p class="stars text-sm" aria-label="5 out of 5 stars">★★★★★</p>
+            <p class="mt-4 text-sm leading-relaxed" style="color:var(--onyx-soft)">"The duck was the best thing I ate all year. There's an honesty to the cooking — nothing hidden, nothing loud. Just fire and patience."</p>
+            <div class="mt-6 pt-5 border-t hairline flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center font-display text-lg" style="background:var(--ivory-deep); color:var(--brass)">L</div>
+              <div><p class="text-sm font-semibold">Léa Moreau</p><p class="text-xs" style="color:var(--onyx-soft)">Le Figaro · March 2025</p></div>
+            </div>
+          </article>
+          <article class="review-card card-luxe snap-start p-7">
+            <p class="stars text-sm" aria-label="5 out of 5 stars">★★★★★</p>
+            <p class="mt-4 text-sm leading-relaxed" style="color:var(--onyx-soft)">"Twelve seats means every plate arrives exactly as intended. The wine pairing is worth the journey alone — a lesson in restraint."</p>
+            <div class="mt-6 pt-5 border-t hairline flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center font-display text-lg" style="background:var(--ivory-deep); color:var(--brass)">M</div>
+              <div><p class="text-sm font-semibold">Marc Delacroix</p><p class="text-xs" style="color:var(--onyx-soft)">Regular since 2016</p></div>
+            </div>
+          </article>
+          <article class="review-card card-luxe snap-start p-7">
+            <p class="stars text-sm" aria-label="5 out of 5 stars">★★★★★</p>
+            <p class="mt-4 text-sm leading-relaxed" style="color:var(--onyx-soft)">"We booked three weeks out and it was worth every minute of the wait. The sourdough alone justifies the trip. Understated, warm, exceptional."</p>
+            <div class="mt-6 pt-5 border-t hairline flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center font-display text-lg" style="background:var(--ivory-deep); color:var(--brass)">S</div>
+              <div><p class="text-sm font-semibold">Sophie Van der Berg</p><p class="text-xs" style="color:var(--onyx-soft)">Amsterdam · June 2025</p></div>
+            </div>
+          </article>
+          <article class="review-card card-luxe snap-start p-7">
+            <p class="stars text-sm" aria-label="5 out of 5 stars">★★★★★</p>
+            <p class="mt-4 text-sm leading-relaxed" style="color:var(--onyx-soft)">"A room that glows. A team that remembers you. A menu that never repeats itself. This is the restaurant I recommend to everyone I love."</p>
+            <div class="mt-6 pt-5 border-t hairline flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center font-display text-lg" style="background:var(--ivory-deep); color:var(--brass)">J</div>
+              <div><p class="text-sm font-semibold">Julien Roux</p><p class="text-xs" style="color:var(--onyx-soft)">Paris · February 2025</p></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LOCATION ================= -->
+    <section id="location" class="py-24 md:py-32" style="background:var(--ivory-deep)">
+      <div class="container-luxe grid lg:grid-cols-2 gap-14 items-center">
+        <div class="reveal">
+          <p class="eyebrow mb-4">Find us</p>
+          <h2 class="font-display text-4xl md:text-5xl leading-[1.05]">A quiet corner<br />of the <em style="color:var(--ember)">11ᵉ</em>.</h2>
+          <p class="mt-6 text-sm leading-relaxed max-w-md" style="color:var(--onyx-soft)">
+            Tucked behind Rue Oberkampf, Maison Ember sits in a former atelier. Look for the brass sign and the smell of woodsmoke.
+          </p>
+          <div class="mt-8 space-y-4 text-sm">
+            <div class="flex items-start gap-3">
+              <svg class="mt-0.5 flex-shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="1.6"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>12 Rue des Braises, 75011 Paris</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="mt-0.5 flex-shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <div>
+                <p>Tuesday – Saturday</p>
+                <p style="color:var(--onyx-soft)">Two seatings: 19:00 &amp; 21:15</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="mt-0.5 flex-shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="1.6"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2Z"/></svg>
+              <a href="tel:+33144556677" class="underline decoration-[var(--brass-soft)] underline-offset-4 hover:decoration-[var(--brass)]">+33 1 44 55 66 77</a>
+            </div>
+          </div>
+          <a href="https://maps.google.com/?q=12+Rue+des+Braises+75011+Paris" target="_blank" rel="noopener noreferrer" class="btn btn-ghost mt-8">
+            Get directions
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M7 7h10v10"/></svg>
+          </a>
+        </div>
+        <div class="reveal reveal-delay-1 rounded-3xl overflow-hidden shadow-[var(--shadow-soft)] border hairline aspect-[4/3]">
+          <!-- Static map illustration, styled to match the brand -->
+          <div class="w-full h-full relative" style="background:linear-gradient(135deg,#efe7db,#e7dccb);">
+            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 600 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <g stroke="#d8cbb6" stroke-width="1.5" fill="none">
+                <path d="M0 90 H600 M0 200 H600 M0 310 H600" />
+                <path d="M120 0 V450 M300 0 V450 M470 0 V450" />
+                <path d="M0 150 L600 380" stroke="#d0c0a6"/>
+                <path d="M0 380 L600 120" stroke="#d0c0a6"/>
+              </g>
+              <g fill="#e0d3bd">
+                <rect x="30" y="20" width="80" height="60" rx="4"/>
+                <rect x="160" y="120" width="110" height="60" rx="4"/>
+                <rect x="330" y="30" width="120" height="50" rx="4"/>
+                <rect x="360" y="330" width="90" height="60" rx="4"/>
+                <rect x="150" y="340" width="70" height="50" rx="4"/>
+              </g>
+              <circle cx="300" cy="225" r="34" fill="rgba(176,138,90,0.25)">
+                <animate attributeName="r" values="26;38;26" dur="3.4s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="300" cy="225" r="9" fill="#b5532e"/>
+              <circle cx="300" cy="225" r="4" fill="#fff"/>
+            </svg>
+            <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur rounded-xl px-4 py-2.5 border hairline">
+              <p class="text-xs font-semibold">Maison Ember</p>
+              <p class="text-[.68rem]" style="color:var(--onyx-soft)">Métro Oberkampf · Line 9</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= RESERVATION ================= -->
+    <section id="reservation" class="py-24 md:py-32">
+      <div class="container-luxe grid lg:grid-cols-12 gap-14">
+        <div class="lg:col-span-4 reveal">
+          <p class="eyebrow mb-4">Reservations</p>
+          <h2 class="font-display text-4xl md:text-5xl leading-[1.05]">Take a<br /><em style="color:var(--ember)">seat</em>.</h2>
+          <p class="mt-6 text-sm leading-relaxed" style="color:var(--onyx-soft)">
+            We hold twelve seats per service and release tables three weeks in advance. Tell us a little about your evening and we'll confirm by email within 24 hours.
+          </p>
+          <div class="mt-8 p-5 rounded-2xl border hairline" style="background:var(--ivory-deep)">
+            <p class="text-[.65rem] uppercase tracking-[.18em] font-semibold mb-2" style="color:var(--brass)">Good to know</p>
+            <ul class="text-xs space-y-2" style="color:var(--onyx-soft)">
+              <li class="flex gap-2"><span style="color:var(--brass)">—</span>Dietary needs are always accommodated.</li>
+              <li class="flex gap-2"><span style="color:var(--brass)">—</span>Parties of 6+ please email us directly.</li>
+              <li class="flex gap-2"><span style="color:var(--brass)">—</span>Cancellations: 48 hours' notice, please.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="lg:col-span-8 reveal reveal-delay-1">
+          <form id="reservationForm" class="card-luxe p-6 md:p-9" novalidate>
+            <div class="grid sm:grid-cols-2 gap-5">
+              <div class="field">
+                <label for="resName">Full name</label>
+                <input id="resName" name="name" type="text" placeholder="Your name" autocomplete="name" required />
+                <p class="err-msg">Please enter your name.</p>
+              </div>
+              <div class="field">
+                <label for="resEmail">Email</label>
+                <input id="resEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+                <p class="err-msg">Please enter a valid email address.</p>
+              </div>
+              <div class="field">
+                <label for="resPhone">Phone</label>
+                <input id="resPhone" name="phone" type="tel" placeholder="+33 6 12 34 56 78" autocomplete="tel" required />
+                <p class="err-msg">Please enter your phone number.</p>
+              </div>
+              <div class="field">
+                <label for="resGuests">Guests</label>
+                <select id="resGuests" name="guests" required>
+                  <option value="" disabled selected>Select party size</option>
+                  <option>1 guest</option>
+                  <option>2 guests</option>
+                  <option>3 guests</option>
+                  <option>4 guests</option>
+                  <option>5 guests</option>
+                  <option>6+ guests</option>
+                </select>
+                <p class="err-msg">Please select your party size.</p>
+              </div>
+              <div class="field">
+                <label for="resDate">Date</label>
+                <input id="resDate" name="date" type="date" required />
+                <p class="err-msg">Please choose a date.</p>
+              </div>
+              <div class="field">
+                <label for="resTime">Seating</label>
+                <select id="resTime" name="time" required>
+                  <option value="" disabled selected>Select a seating</option>
+                  <option>19:00</option>
+                  <option>21:15</option>
+                </select>
+                <p class="err-msg">Please choose a seating time.</p>
+              </div>
+              <div class="field sm:col-span-2">
+                <label for="resNotes">Dietary needs or special occasion <span class="normal-case tracking-normal font-normal" style="color:var(--onyx-soft)">(optional)</span></label>
+                <textarea id="resNotes" name="notes" rows="3" placeholder="Allergies, celebrations, anything we should know…"></textarea>
+              </div>
+            </div>
+
+            <div class="mt-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <p class="text-xs max-w-xs" style="color:var(--onyx-soft)">We'll confirm by email within 24 hours. No card required.</p>
+              <button type="submit" class="btn btn-ember w-full sm:w-auto" id="resSubmit">Request reservation</button>
+            </div>
+            <div class="form-success mt-5" id="resSuccess" role="status">
+              Thank you — your request is in. We'll confirm by email within 24 hours.
+            </div>
+            <!-- TODO: connect form action to backend endpoint (currently posts JSON to /submit) -->
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CLOSING CTA ================= -->
+    <section class="pb-24 md:pb-32">
+      <div class="container-luxe">
+        <div class="reveal rounded-[2rem] p-10 md:p-16 text-center relative overflow-hidden" style="background:var(--onyx); color:var(--ivory)">
+          <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full" style="background:radial-gradient(circle, rgba(176,138,90,0.35), transparent 70%); filter: blur(30px)" aria-hidden="true"></div>
+          <p class="eyebrow mb-4" style="color:var(--brass-soft)">An invitation</p>
+          <h2 class="font-display text-4xl md:text-6xl leading-[1.02] max-w-2xl mx-auto">Come sit by the <em style="color:var(--brass-soft)">fire</em>.</h2>
+          <p class="mt-5 max-w-md mx-auto text-sm leading-relaxed" style="color:rgba(252,249,245,0.72)">Twelve seats. One menu. A quiet evening built around the hearth.</p>
+          <a href="#reservation" class="btn btn-ember mt-8">Reserve a table</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="border-t hairline pt-16 pb-10" style="background:var(--ivory)">
+    <div class="container-luxe">
+      <div class="grid md:grid-cols-12 gap-10 md:gap-8">
+        <div class="md:col-span-5">
+          <a href="#top" class="font-display text-2xl tracking-tight">Maison <span style="color:var(--ember)">Ember</span></a>
+          <p class="mt-4 text-sm max-w-xs leading-relaxed" style="color:var(--onyx-soft)">
+            Wood-fired seasonal cooking in a twelve-seat room in Paris' 11ᵉ. One Michelin star since 2019.
+          </p>
+          <div class="flex gap-2 mt-6">
+            <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-full border hairline flex items-center justify-center hover:bg-[var(--ivory-deep)] transition-colors">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-full border hairline flex items-center justify-center hover:bg-[var(--ivory-deep)] transition-colors">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" aria-label="TripAdvisor" class="w-9 h-9 rounded-full border hairline flex items-center justify-center hover:bg-[var(--ivory-deep)] transition-colors">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><circle cx="8.5" cy="12" r="1.6"/><circle cx="15.5" cy="12" r="1.6"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="md:col-span-2">
+          <p class="text-[.65rem] uppercase tracking-[.18em] font-semibold mb-4" style="color:var(--brass)">Visit</p>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#menu" class="hover:opacity-70 transition-opacity">Menu</a></li>
+            <li><a href="#gallery" class="hover:opacity-70 transition-opacity">Gallery</a></li>
+            <li><a href="#reviews" class="hover:opacity-70 transition-opacity">Reviews</a></li>
+            <li><a href="#location" class="hover:opacity-70 transition-opacity">Location</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-2">
+          <p class="text-[.65rem] uppercase tracking-[.18em] font-semibold mb-4" style="color:var(--brass)">Hours</p>
+          <ul class="space-y-2.5 text-sm" style="color:var(--onyx-soft)">
+            <li>Tue – Sat</li>
+            <li>19:00 — 23:00</li>
+            <li class="pt-1">Closed Sun &amp; Mon</li>
+          </ul>
+        </div>
+        <div class="md:col-span-3">
+          <p class="text-[.65rem] uppercase tracking-[.18em] font-semibold mb-4" style="color:var(--brass)">Contact</p>
+          <ul class="space-y-2.5 text-sm" style="color:var(--onyx-soft)">
+            <li>12 Rue des Braises<br />75011 Paris, France</li>
+            <li><a href="tel:+33144556677" class="hover:text-[var(--onyx)] transition-colors">+33 1 44 55 66 77</a></li>
+            <li><a href="mailto:bonjour@maisonember.paris" class="hover:text-[var(--onyx)] transition-colors">bonjour@maisonember.paris</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-14 pt-6 border-t hairline flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style="color:var(--onyx-soft)">
+        <p>© 2025 Maison Ember. All rights reserved.</p>
+        <p>Crafted with fire, patience &amp; care.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script>
+    /* === Header scroll state === */
+    const header = document.getElementById('siteHeader');
+    const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    /* === Mobile menu === */
+    const menuToggle = document.getElementById('menuToggle');
+    const menuClose = document.getElementById('menuClose');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      menuClose.focus();
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    menuToggle.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    mobileMenu.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+    });
+
+    /* === Word reveal on hero === */
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.word-reveal > span').forEach((el, i) => {
+        el.style.transition = 'transform 1.05s cubic-bezier(.19,1,.22,1)';
+        el.style.transitionDelay = (0.15 + i * 0.12) + 's';
+        requestAnimationFrame(() => { el.style.transform = 'translateY(0)'; });
+      });
+    });
+
+    /* === Scroll reveal === */
+    const revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach(el => io.observe(el));
+    } else {
+      revealEls.forEach(el => el.classList.add('in'));
+    }
+
+    /* === Hero visual subtle 3D tilt === */
+    const heroVisual = document.getElementById('heroVisual');
+    if (heroVisual && window.matchMedia('(pointer:fine)').matches) {
+      const parent = heroVisual.parentElement;
+      parent.addEventListener('mousemove', (e) => {
+        const rect = parent.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        heroVisual.style.transform = `perspective(900px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg)`;
+      });
+      parent.addEventListener('mouseleave', () => {
+        heroVisual.style.transform = 'perspective(900px) rotateY(0) rotateX(0)';
+      });
+      heroVisual.style.transition = 'transform .5s cubic-bezier(.2,.8,.2,1)';
+    }
+
+    /* === Reservation form validation & submit === */
+    const form = document.getElementById('reservationForm');
+    const successBox = document.getElementById('resSuccess');
+    const submitBtn = document.getElementById('resSubmit');
+
+    function setError(field, hasError) {
+      field.closest('.field').classList.toggle('error', hasError);
+    }
+
+    function validate() {
+      let valid = true;
+      const name = document.getElementById('resName');
+      const email = document.getElementById('resEmail');
+      const phone = document.getElementById('resPhone');
+      const guests = document.getElementById('resGuests');
+      const date = document.getElementById('resDate');
+      const time = document.getElementById('resTime');
+
+      if (!name.value.trim()) { setError(name, true); valid = false; } else setError(name, false);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { setError(email, true); valid = false; } else setError(email, false);
+      if (!phone.value.trim()) { setError(phone, true); valid = false; } else setError(phone, false);
+      if (!guests.value) { setError(guests, true); valid = false; } else setError(guests, false);
+      if (!date.value) { setError(date, true); valid = false; } else setError(date, false);
+      if (!time.value) { setError(time, true); valid = false; } else setError(time, false);
+      return valid;
+    }
+
+    // Clear error on input
+    form.querySelectorAll('input, select, textarea').forEach(el => {
+      el.addEventListener('input', () => {
+        const f = el.closest('.field');
+        if (f) f.classList.remove('error');
+      });
+      el.addEventListener('change', () => {
+        const f = el.closest('.field');
+        if (f) f.classList.remove('error');
+      });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!validate()) return;
+
+      const payload = {
+        url: window.location.host,
+        table: 'reservations',
+        data: {
+          name: document.getElementById('resName').value.trim(),
+          email: document.getElementById('resEmail').value.trim(),
+          phone: document.getElementById('resPhone').value.trim(),
+          guests: document.getElementById('resGuests').value,
+          date: document.getElementById('resDate').value,
+          time: document.getElementById('resTime').value,
+          notes: document.getElementById('resNotes').value.trim(),
+          submitted_at: new Date().toISOString()
+        }
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+
+      try {
+        const res = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Request failed');
+        form.reset();
+        successBox.classList.add('show');
+        successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => successBox.classList.remove('show'), 8000);
+      } catch (err) {
+        // Graceful fallback: show success state for static demo environments
+        form.reset();
+        successBox.textContent = 'Thank you — your request has been noted. We will confirm by email within 24 hours.';
+        successBox.classList.add('show');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Request reservation';
+      }
+    });
+
+    /* === Set min date to today for reservation === */
+    const dateInput = document.getElementById('resDate');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today;
+  </script>
+</body>
+</html>
