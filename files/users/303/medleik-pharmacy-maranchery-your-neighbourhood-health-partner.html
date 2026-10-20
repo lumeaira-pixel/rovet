@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Medleik Pharmacy Maranchery | Your Neighbourhood Health Partner</title>
+  <meta name="description" content="Medleik Pharmacy in Maranchery, Kerala – friendly pharmacy service, medicine support, home delivery enquiry on WhatsApp. Trusted local healthcare partner.">
+  <meta name="keywords" content="Medleik Pharmacy Maranchery, pharmacy Maranchery, medicine home delivery Kerala, WhatsApp pharmacy">
+  <meta property="og:title" content="Medleik Pharmacy – Your Neighbourhood Health Partner">
+  <meta property="og:description" content="Friendly pharmacy service and medicine support in Maranchery. Order via WhatsApp.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0B5E4B">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Malayalam:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: { 50:'#eefaf5',100:'#d6f2e6',200:'#ade5cf',300:'#7bd3b2',400:'#45b992',500:'#1f9a76',600:'#127d60',700:'#0e6450',800:'#0b5042',900:'#0b453b' },
+            ink: '#12241f',
+            cream: '#FBFAF7',
+            mist: '#F3F6F3'
+          },
+          fontFamily: {
+            sans: ['Manrope','Noto Sans Malayalam','system-ui','sans-serif'],
+          },
+          borderRadius: { '4xl': '2rem', '5xl': '2.5rem' }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+  <style>
+    /* === Design Tokens === */
+    :root{
+      --emerald-900:#0b453b;
+      --emerald-700:#0e6450;
+      --emerald-600:#127d60;
+      --emerald-500:#1f9a76;
+      --emerald-100:#d6f2e6;
+      --cream:#FBFAF7;
+      --mist:#F3F6F3;
+      --ink:#12241f;
+      --ink-soft:#3d514b;
+      --line: rgba(12,72,58,.12);
+      --shadow-sm: 0 1px 2px rgba(12,72,58,.06), 0 8px 24px -12px rgba(12,72,58,.15);
+      --shadow-md: 0 2px 6px rgba(12,72,58,.06), 0 24px 60px -24px rgba(12,72,58,.28);
+      --glow: 0 0 0 6px rgba(31,154,118,.18);
+      --radius: 1.25rem;
+      --focus: #1f9a76;
+    }
+
+    html, body { background: var(--cream); color: var(--ink); }
+    body { font-family: 'Manrope','Noto Sans Malayalam',system-ui,sans-serif; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+    /* === Typography === */
+    h1,h2,h3,h4 { letter-spacing: -0.025em; font-weight: 800; }
+    .display { letter-spacing: -0.035em; line-height: 1.02; }
+    .eyebrow { font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; font-weight: 700; color: var(--emerald-600); }
+    .text-soft { color: var(--ink-soft); }
+
+    /* === Utility & Focus === */
+    a, button, input, textarea, select { outline: none; }
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--focus);
+      border-radius: 8px;
+    }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+    /* === Hero visual === */
+    .hero-mesh {
+      background:
+        radial-gradient(900px 500px at 88% -10%, rgba(31,154,118,.20), transparent 60%),
+        radial-gradient(700px 480px at -10% 20%, rgba(31,154,118,.10), transparent 60%),
+        linear-gradient(180deg,#FBFAF7 0%,#F3F6F3 100%);
+    }
+    .grain::before{
+      content:""; position:absolute; inset:0; pointer-events:none; opacity:.35;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.09'/></svg>");
+      border-radius: inherit;
+    }
+
+    /* === Cards & glass === */
+    .glass {
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(14px) saturate(1.1);
+      -webkit-backdrop-filter: blur(14px) saturate(1.1);
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: var(--shadow-sm);
+    }
+    .card {
+      background:#fff; border:1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease, border-color .35s ease;
+      will-change: transform;
+    }
+    .card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: rgba(18,125,96,.28); }
+
+    /* === Buttons === */
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:.55rem;
+      font-weight:700; font-size:.95rem; line-height:1; border-radius:999px;
+      padding: .9rem 1.35rem; transition: transform .2s ease, box-shadow .25s ease, background-color .25s ease, color .25s ease, border-color .25s ease;
+      border:1px solid transparent; cursor:pointer; text-decoration:none; white-space:nowrap;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--emerald-600); color:#fff; box-shadow: 0 10px 24px -10px rgba(18,125,96,.7); }
+    .btn-primary:hover { background: var(--emerald-700); box-shadow: 0 14px 30px -10px rgba(18,125,96,.85); }
+    .btn-outline { background:#fff; color: var(--emerald-800); border-color: rgba(18,125,96,.28); }
+    .btn-outline:hover { background: var(--emerald-50); border-color: rgba(18,125,96,.5); }
+    .btn-soft { background: var(--emerald-50); color: var(--emerald-800); }
+    .btn-soft:hover { background: var(--emerald-100); }
+    .btn-wa { background:#1f9a76; color:#fff; box-shadow: 0 10px 24px -10px rgba(31,154,118,.7); }
+    .btn-wa:hover { background:#127d60; }
+
+    /* === Nav === */
+    .nav-shell { transition: box-shadow .3s ease, background-color .3s ease, backdrop-filter .3s ease; }
+    .nav-scrolled { background: rgba(251,250,247,.85); backdrop-filter: blur(14px); box-shadow: 0 1px 0 rgba(12,72,58,.08), 0 12px 30px -20px rgba(12,72,58,.35); }
+    .nav-link { position:relative; font-weight:600; font-size:.94rem; color:var(--ink-soft); padding:.4rem .15rem; transition:color .2s ease; }
+    .nav-link:hover { color: var(--emerald-700); }
+    .nav-link::after { content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px; background:var(--emerald-500); border-radius:2px; transform:scaleX(0); transform-origin:left; transition:transform .3s cubic-bezier(.22,1,.36,1); }
+    .nav-link:hover::after { transform:scaleX(1); }
+
+    /* === Language toggle === */
+    .lang-btn { padding:.35rem .6rem; border-radius:999px; font-size:.78rem; font-weight:700; letter-spacing:.04em; transition:.2s; border:1px solid transparent; }
+    .lang-btn.active { background: var(--emerald-600); color:#fff; }
+    .lang-btn:not(.active) { color:var(--ink-soft); }
+    .lang-btn:not(.active):hover { background: var(--emerald-50); color:var(--emerald-800); }
+
+    /* === Icons in cards === */
+    .ico-badge {
+      width:56px; height:56px; border-radius:18px; display:grid; place-items:center;
+      background: linear-gradient(145deg,#eefaf5,#d6f2e6); color: var(--emerald-700);
+      box-shadow: inset 0 1px 0 #fff, 0 8px 20px -14px rgba(18,125,96,.5);
+      flex: none;
+    }
+    .ico-badge i { width: 26px; height: 26px; }
+
+    /* === Category chip grid === */
+    .cat-card { display:flex; gap:1rem; align-items:flex-start; }
+    .cat-card ul { margin-top:.5rem; }
+    .cat-card li { font-size:.92rem; color:var(--ink-soft); line-height:1.5; }
+    .cat-card li::before { content:"•"; color: var(--emerald-500); font-weight:800; margin-right:.5rem; }
+
+    /* === WhatsApp floating === */
+    .fab {
+      position: fixed; right: 18px; bottom: 18px; z-index: 60;
+      display:inline-flex; align-items:center; gap:.6rem;
+      padding: .9rem 1.1rem; border-radius:999px;
+      background:#1f9a76; color:#fff; font-weight:800; font-size:.92rem;
+      box-shadow: 0 16px 40px -12px rgba(31,154,118,.8);
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+      text-decoration:none;
+    }
+    .fab:hover { transform: translateY(-3px); background:#127d60; box-shadow: 0 22px 48px -12px rgba(31,154,118,.9); }
+    .fab:active { transform: scale(.96); }
+    @media (max-width: 640px){
+      .fab span { display:none; }
+      .fab { padding: 1rem; border-radius: 50%; }
+      .fab i { width: 22px; height: 22px; }
+    }
+
+    /* === Reveal animations (GSAP fallback) === */
+    .reveal { opacity: 0; transform: translateY(24px); }
+    @media (prefers-reduced-motion: reduce){
+      .reveal { opacity:1 !important; transform:none !important; }
+      html { scroll-behavior:auto; }
+      .card, .btn, .fab, .nav-link::after { transition:none !important; }
+    }
+
+    /* === Marquee-style trust strip === */
+    .trust-strip { display:flex; gap:2rem; flex-wrap:wrap; align-items:center; }
+    .trust-item { display:inline-flex; align-items:center; gap:.55rem; font-weight:600; color:var(--ink-soft); font-size:.9rem; }
+    .trust-item i { color: var(--emerald-600); width:18px; height:18px; }
+
+    /* === Form === */
+    .field { width:100%; background:#fff; border:1px solid var(--line); border-radius: 14px; padding:.85rem 1rem; font-size:.95rem; color:var(--ink); transition: border-color .2s, box-shadow .2s; }
+    .field:focus { border-color: var(--emerald-500); box-shadow: 0 0 0 4px rgba(31,154,118,.15); }
+    .field.invalid { border-color:#c0392b; box-shadow: 0 0 0 4px rgba(192,57,43,.12); }
+    .label { font-size:.82rem; font-weight:700; color:var(--ink-soft); margin-bottom:.35rem; display:block; }
+    .error-text { color:#b03528; font-size:.78rem; margin-top:.3rem; min-height:1rem; }
+
+    /* === Section headings === */
+    .section-title { font-size: clamp(1.7rem, 3vw, 2.6rem); line-height:1.12; letter-spacing:-.03em; font-weight:800; }
+
+    /* === Accordion === */
+    .acc-item { border-bottom:1px solid var(--line); }
+    .acc-trigger { width:100%; text-align:left; display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:1.1rem .25rem; font-weight:700; background:none; border:none; cursor:pointer; color:var(--ink); }
+    .acc-trigger:hover { color: var(--emerald-700); }
+    .acc-panel { max-height:0; overflow:hidden; transition:max-height .4s cubic-bezier(.22,1,.36,1); }
+    .acc-panel-inner { padding-bottom:1rem; color:var(--ink-soft); font-size:.95rem; line-height:1.6; }
+    .acc-trigger[aria-expanded="true"] .acc-icon { transform: rotate(180deg); }
+    .acc-icon { transition: transform .3s ease; }
+
+    /* Mobile nav */
+    #mobileMenu { transition: opacity .25s ease, transform .25s ease; }
+    #mobileMenu.hidden-panel { opacity:0; transform: translateY(-8px); pointer-events:none; }
+
+    /* Skip link */
+    .skip-link { position:absolute; left:-999px; top:0; background:#fff; color:var(--emerald-800); padding:.6rem 1rem; border-radius:0 0 10px 0; z-index:1000; font-weight:700; }
+    .skip-link:focus { left:0; }
+  </style>
+</head>
+<body class="antialiased">
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<!-- ================= HEADER ================= -->
+<header id="siteHeader" class="nav-shell fixed top-0 inset-x-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
+      <a href="#home" class="flex items-center gap-2.5 group" aria-label="Medleik Pharmacy home">
+        <span class="w-10 h-10 rounded-2xl grid place-items-center text-white shadow-md" style="background:linear-gradient(145deg,#1f9a76,#0e6450)">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v18M3 12h18"/>
+          </svg>
+        </span>
+        <span class="leading-tight">
+          <span class="block font-extrabold text-[1.02rem] tracking-tight text-ink">Medleik Pharmacy</span>
+          <span class="block text-[.68rem] font-semibold tracking-[.14em] uppercase text-emerald-600">Maranchery</span>
+        </span>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden lg:flex items-center gap-7" aria-label="Primary">
+        <a href="#home" class="nav-link">Home</a>
+        <a href="#about" class="nav-link">About Us</a>
+        <a href="#products" class="nav-link">Products</a>
+        <a href="#care" class="nav-link">Patient Care</a>
+        <a href="#ordering" class="nav-link">Ordering</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Language -->
+        <div class="hidden sm:flex items-center gap-1 p-1 rounded-full" style="background:var(--mist)" role="group" aria-label="Language switcher">
+          <button class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
+          <button class="lang-btn" data-lang="ml" aria-pressed="false">മലയാളം</button>
+        </div>
+
+        <a href="tel:7012370940" class="hidden md:inline-flex btn btn-outline !py-2.5 !px-4 !text-[.86rem]" aria-label="Call Medleik Pharmacy">
+          <i data-lucide="phone" class="w-4 h-4"></i> Call
+        </a>
+        <a href="https://wa.me/919645154723?text=Hello%20Medleik%20Pharmacy%2C%20I%20would%20like%20to%20enquire%20about%20medicine%20availability%20and%20home%20delivery.%20Please%20let%20me%20know%20the%20next%20steps." target="_blank" rel="noopener" class="hidden sm:inline-flex btn btn-wa !py-2.5 !px-4 !text-[.86rem]">
+          <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
+        </a>
+
+        <!-- Mobile menu button -->
+        <button id="menuToggle" class="lg:hidden w-10 h-10 grid place-items-center rounded-xl border" style="border-color:var(--line);background:#fff" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile panel -->
+  <div id="mobileMenu" class="lg:hidden hidden-panel opacity-100">
+    <div class="mx-4 mb-4 rounded-3xl p-4 glass">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-1 p-1 rounded-full" style="background:var(--mist)" role="group" aria-label="Language switcher mobile">
+          <button class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
+          <button class="lang-btn" data-lang="ml" aria-pressed="false">മലയാളം</button>
+        </div>
+        <button id="menuClose" class="w-9 h-9 grid place-items-center rounded-lg border" style="border-color:var(--line)" aria-label="Close menu">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <nav class="grid gap-1" aria-label="Mobile primary">
+        <a href="#home" class="px-3 py-3 rounded-xl font-semibold hover:bg-emerald-50">Home</a>
+        <a href="#about" class="px-3 py-3 rounded-xl font-semibold hover:bg-emerald-50">About Us</a>
+        <a href="#products" class="px-3 py-3 rounded-xl font-semibold hover:bg-emerald-50">Products</a>
+        <a href="#care" class="px-3 py-3 rounded-xl font-semibold hover:bg-emerald-50">Patient Care</a>
+        <a href="#ordering" class="px-3 py-3 rounded-xl font-semibold hover:bg-emerald-50">WhatsApp Ordering</a>
+        <a href="#contact" class="px-3 py-3 rounded-xl font-semibold hover:bg-emerald-50">Contact</a>
+        <div class="grid grid-cols-2 gap-2 mt-2">
+          <a href="tel:7012370940" class="btn btn-outline !py-3"><i data-lucide="phone" class="w-4 h-4"></i> Call</a>
+          <a href="https://wa.me/919645154723" target="_blank" rel="noopener" class="btn btn-wa !py-3"><i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ================= HERO ================= -->
+  <section id="home" class="relative hero-mesh grain overflow-hidden pt-28 md:pt-36 pb-16 md:pb-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-7">
+          <p class="eyebrow mb-5 reveal">Your Neighbourhood Health Partner</p>
+          <h1 class="display text-[clamp(2.6rem,7vw,5.2rem)] text-ink reveal">
+            Your Health,<br><span class="text-emerald-600">Our Priority.</span>
+          </h1>
+          <p class="mt-6 text-lg md:text-xl text-soft max-w-xl leading-relaxed reveal">
+            Friendly pharmacy service, reliable medicine support and everyday healthcare essentials for your family — right here in Maranchery.
+          </p>
+
+          <div class="mt-9 flex flex-wrap gap-3 reveal">
+            <a href="https://wa.me/919645154723?text=Hello%20Medleik%20Pharmacy%2C%20I%20would%20like%20to%20enquire%20about%20medicine%20availability%20and%20home%20delivery.%20Please%20let%20me%20know%20the%20next%20steps." target="_blank" rel="noopener" class="btn btn-wa">
+              <i data-lucide="message-circle" class="w-5 h-5"></i> Order on WhatsApp
+            </a>
+            <a href="#contact" class="btn btn-primary">
+              <i data-lucide="phone" class="w-5 h-5"></i> Contact Us
+            </a>
+            <a href="#products" class="btn btn-outline">
+              <i data-lucide="pill" class="w-5 h-5"></i> Explore Products
+            </a>
+          </div>
+
+          <div class="mt-10 trust-strip reveal">
+            <span class="trust-item"><i data-lucide="shield-check"></i> Prescription-verified medicines</span>
+            <span class="trust-item"><i data-lucide="lock"></i> Privacy respected</span>
+            <span class="trust-item"><i data-lucide="heart-handshake"></i> Patient-first care</span>
+          </div>
+        </div>
+
+        <!-- Hero visual -->
+        <div class="lg:col-span-5 reveal">
+          <div class="relative">
+            <div class="absolute -inset-6 rounded-[2.5rem] rotate-3 opacity-60" style="background:linear-gradient(145deg,#d6f2e6,#eefaf5)"></div>
+            <div class="relative rounded-[2rem] overflow-hidden border border-white/70 shadow-[0_40px_80px_-40px_rgba(11,69,59,.45)]">
+              <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=1000&q=80"
+                   alt="Friendly pharmacy team member assisting a customer with healthcare products"
+                   class="w-full h-[340px] sm:h-[420px] lg:h-[480px] object-cover" loading="eager">
+              <div class="absolute inset-0" style="background:linear-gradient(180deg,transparent 40%,rgba(11,69,59,.5) 100%)"></div>
+              <div class="absolute bottom-5 left-5 right-5 flex items-center gap-3 p-3.5 rounded-2xl glass">
+                <span class="w-10 h-10 rounded-xl grid place-items-center" style="background:linear-gradient(145deg,#1f9a76,#0e6450);color:#fff">
+                  <i data-lucide="package-check" class="w-5 h-5"></i>
+                </span>
+                <div>
+                  <p class="text-sm font-extrabold leading-tight">Medicine availability enquiry</p>
+                  <p class="text-xs text-soft">Just send us a WhatsApp message</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TRUST / INTRO ================= -->
+  <section id="about" class="py-16 md:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+        <div class="lg:col-span-5">
+          <p class="eyebrow mb-4">About Medleik Pharmacy</p>
+          <h2 class="section-title reveal">A trusted neighbourhood healthcare partner in Maranchery.</h2>
+          <p class="mt-5 text-soft leading-relaxed reveal">
+            We opened our doors with one simple belief: healthcare should feel approachable. Medleik Pharmacy aims to be the friendly face you can turn to for everyday medicines, wellness essentials and clear, respectful guidance — right in your own neighbourhood.
+          </p>
+          <p class="mt-4 text-soft leading-relaxed reveal">
+            Our team listens first. We take time to explain medicine labels and prescription instructions clearly, encourage you to follow your prescriber’s directions, and always maintain privacy when handling prescriptions and personal information.
+          </p>
+          <a href="#care" class="mt-7 inline-flex btn btn-outline reveal">
+            <i data-lucide="heart-handshake" class="w-5 h-5"></i> Our Patient-First Approach
+          </a>
+        </div>
+
+        <div class="lg:col-span-7 grid sm:grid-cols-2 gap-4">
+          <div class="card p-6 reveal">
+            <div class="ico-badge mb-4"><i data-lucide="message-square-heart"></i></div>
+            <h3 class="font-extrabold text-lg">Respectful & Friendly Service</h3>
+            <p class="mt-2 text-sm text-soft leading-relaxed">Every customer is treated with courtesy and patience, whether you’re picking up a monthly prescription or asking for a recommendation.</p>
+          </div>
+          <div class="card p-6 reveal">
+            <div class="ico-badge mb-4"><i data-lucide="clipboard-list"></i></div>
+            <h3 class="font-extrabold text-lg">Clear Instructions</h3>
+            <p class="mt-2 text-sm text-soft leading-relaxed">We help you understand medicine labels, dosage instructions and storage requirements in a way that makes sense.</p>
+          </div>
+          <div class="card p-6 reveal">
+            <div class="ico-badge mb-4"><i data-lucide="shield-check"></i></div>
+            <h3 class="font-extrabold text-lg">Safety & Expiry Checks</h3>
+            <p class="mt-2 text-sm text-soft leading-relaxed">We guide you on appropriate storage and checking expiry dates, and we only sell prescription medicines with valid prescriptions.</p>
+          </div>
+          <div class="card p-6 reveal">
+            <div class="ico-badge mb-4"><i data-lucide="lock"></i></div>
+            <h3 class="font-extrabold text-lg">Privacy & Confidentiality</h3>
+            <p class="mt-2 text-sm text-soft leading-relaxed">Your prescriptions and personal information are handled discreetly, in line with our commitment to your privacy.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PRODUCT CATEGORIES ================= -->
+  <section id="products" class="py-16 md:py-24" style="background:var(--mist)">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+        <div>
+          <p class="eyebrow mb-3">Product Categories</p>
+          <h2 class="section-title reveal">Everyday healthcare essentials, thoughtfully organised.</h2>
+        </div>
+        <p class="text-soft max-w-md text-sm leading-relaxed reveal">
+          Browse categories below. Availability of specific products varies; please enquire on WhatsApp for current stock, prices and delivery eligibility.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+        <!-- 1 Medicines -->
+        <article class="card p-6 reveal">
+          <div class="cat-card">
+            <div class="ico-badge"><i data-lucide="pill"></i></div>
+            <div>
+              <h3 class="font-extrabold text-lg">Medicines</h3>
+              <ul>
+                <li>Prescription medicines</li>
+                <li>Common OTC medicines, where legally permitted</li>
+                <li>Tablets, capsules & other dosage forms</li>
+                <li>Chronic-condition medicines with valid prescription</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2 Syrups -->
+        <article class="card p-6 reveal">
+          <div class="cat-card">
+            <div class="ico-badge"><i data-lucide="flask-conical"></i></div>
+            <div>
+              <h3 class="font-extrabold text-lg">Syrups & Liquid Medicines</h3>
+              <ul>
+                <li>Adult & paediatric liquid medicines</li>
+                <li>Cough & cold preparations, where permitted</li>
+                <li>Pharmacist-approved liquid healthcare products</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- 3 Baby care -->
+        <article class="card p-6 reveal">
+          <div class="cat-card">
+            <div class="ico-badge"><i data-lucide="baby"></i></div>
+            <div>
+              <h3 class="font-extrabold text-lg">Baby Care</h3>
+              <ul>
+                <li>Diapers & baby wipes</li>
+                <li>Baby skincare & bathing products</li>
+                <li>Feeding & hygiene accessories</li>
+                <li>Infant nutrition, where stocked & permitted</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4 Wellness -->
+        <article class="card p-6 reveal">
+          <div class="cat-card">
+            <div class="ico-badge"><i data-lucide="leaf"></i></div>
+            <div>
+              <h3 class="font-extrabold text-lg">Wellness & Nutrition</h3>
+              <ul>
+                <li>Vitamins & minerals</li>
+                <li>Nutrition & wellness products</li>
+                <li>Basic health-monitoring devices</li>
+                <li>Other permitted wellness products</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5 Women's care -->
+        <article class="card p-6 reveal">
+          <div class="cat-card">
+            <div class="ico-badge"><i data-lucide="flower-2"></i></div>
+            <div>
+              <h3 class="font-extrabold text-lg">Women’s Care</h3>
+              <ul>
+                <li>Menstrual hygiene products</li>
+                <li>Sanitary pads & intimate hygiene</li>
+                <li>Pregnancy & maternity essentials</li>
+                <li>Other women’s healthcare products</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- 6 Personal care -->
+        <article class="card p-6 reveal">
+          <div class="cat-card">
+            <div class="ico-badge"><i data-lucide="sparkles"></i></div>
+            <div>
+              <h3 class="font-extrabold text-lg">Personal Care</h3>
+              <ul>
+                <li>Skincare & moisturisers</li>
+                <li>Haircare products</li>
+                <li>Oral hygiene products</li>
+                <li>Soaps, body care & hygiene</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- 7 First aid -->
+        <article class="card p-6 reveal">
+          <div class="cat-card">
+            <div class="ico-badge"><i data-lucide="bandage"></i></div>
+            <div>
+              <h3 class="font-extrabold text-lg">First Aid & Wound Care</h3>
+              <ul>
+                <li>Bandages & gauze</li>
+                <li>Adhesive dressings & medical tape</li>
+                <li>Antiseptic products, where permitted</li>
+                <li>Basic first-aid essentials</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- 8 Devices -->
+        <article class="card p-6 reveal">
+          <div class="cat-card">
+            <div class="ico-badge"><i data-lucide="activity"></i></div>
+            <div>
+              <h3 class="font-extrabold text-lg">Medical Devices & Monitoring</h3>
+              <ul>
+                <li>Thermometers</li>
+                <li>Blood pressure monitors</li>
+                <li>Glucose monitoring products</li>
+                <li>Masks, gloves & permitted supplies</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- 9 Elderly -->
+        <article class="card p-6 reveal">
+          <div class="cat-card">
+            <div class="ico-badge"><i data-lucide="person-standing"></i></div>
+            <div>
+              <h3 class="font-extrabold text-lg">Elderly Care & Daily Healthcare</h3>
+              <ul>
+                <li>Adult diapers & incontinence care</li>
+                <li>Mobility & daily-care accessories</li>
+                <li>Other suitable healthcare essentials</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- 10 Seasonal -->
+        <article class="card p-6 reveal">
+          <div class="cat-card">
+            <div class="ico-badge"><i data-lucide="cloud-sun"></i></div>
+            <div>
+              <h3 class="font-extrabold text-lg">Seasonal & Family Healthcare</h3>
+              <ul>
+                <li>Seasonal healthcare essentials</li>
+                <li>Hygiene products</li>
+                <li>Other products approved for sale</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="mt-8 p-5 rounded-2xl border flex items-start gap-3 reveal" style="border-color:var(--line);background:#fff">
+        <i data-lucide="info" class="w-5 h-5 mt-0.5 text-emerald-600 flex-none"></i>
+        <p class="text-sm text-soft leading-relaxed">
+          We display only product categories. Specific products, brands and prices are subject to current stock and legal permissions. Please contact us on WhatsApp to confirm availability. Prescription-only medicines are dispensed only after the required prescription and legal checks.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PATIENT CARE ================= -->
+  <section id="care" class="py-16 md:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid lg:grid-cols-12 gap-10 items-start">
+        <div class="lg:col-span-5">
+          <p class="eyebrow mb-4">Care Beyond Medicines</p>
+          <h2 class="section-title reveal">Our commitment to responsible, patient-first care.</h2>
+          <p class="mt-5 text-soft leading-relaxed reveal">
+            At Medleik Pharmacy, we believe good pharmacy care goes beyond the counter. We aim to create a calm, respectful space where you feel comfortable asking questions and confident about the medicines and products you take home.
+          </p>
+          <div class="mt-6 p-5 rounded-2xl" style="background:var(--mist)">
+            <p class="text-sm font-bold text-emerald-800 flex items-center gap-2"><i data-lucide="shield-alert" class="w-4 h-4"></i> Important</p>
+            <p class="mt-2 text-sm text-soft leading-relaxed">
+              Our website is an information and enquiry service. It does not replace medical advice, diagnosis or treatment. Please consult a registered healthcare professional for medical concerns.
+            </p>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7">
+          <div class="space-y-1">
+            <div class="acc-item">
+              <button class="acc-trigger" aria-expanded="true" aria-controls="acc1">
+                <span>Respectful and friendly customer service</span>
+                <i data-lucide="chevron-down" class="w-5 h-5 acc-icon"></i>
+              </button>
+              <div id="acc1" class="acc-panel" style="max-height:200px">
+                <div class="acc-panel-inner">
+                  Every customer is greeted with courtesy and patience. Whether you have a quick question or need help understanding a prescription, our team is here to listen and assist.
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" aria-expanded="false" aria-controls="acc2">
+                <span>Clear explanations about medicines</span>
+                <i data-lucide="chevron-down" class="w-5 h-5 acc-icon"></i>
+              </button>
+              <div id="acc2" class="acc-panel" style="max-height:0">
+                <div class="acc-panel-inner">
+                  Qualified pharmacy staff help you understand medicine labels and prescription instructions clearly. We encourage you to follow your prescriber’s directions and to ask questions whenever something is unclear.
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" aria-expanded="false" aria-controls="acc3">
+                <span>Support with prescription instructions</span>
+                <i data-lucide="chevron-down" class="w-5 h-5 acc-icon"></i>
+              </button>
+              <div id="acc3" class="acc-panel" style="max-height:0">
+                <div class="acc-panel-inner">
+                  We help you understand dosage schedules, storage instructions and expiry dates. For any warning symptoms or medicine-related concerns, we refer you to an appropriate registered healthcare professional.
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" aria-expanded="false" aria-controls="acc4">
+                <span>Privacy and confidentiality</span>
+                <i data-lucide="chevron-down" class="w-5 h-5 acc-icon"></i>
+              </button>
+              <div id="acc4" class="acc-panel" style="max-height:0">
+                <div class="acc-panel-inner">
+                  Prescriptions and customer information are handled discreetly. We respect your privacy and take confidentiality seriously in every interaction.
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button class="acc-trigger" aria-expanded="false" aria-controls="acc5">
+                <span>Helping you find suitable healthcare products</span>
+                <i data-lucide="chevron-down" class="w-5 h-5 acc-icon"></i>
+              </button>
+              <div id="acc5" class="acc-panel" style="max-height:0">
+                <div class="acc-panel-inner">
+                  Within our available and legally permitted range, we help you find suitable healthcare products. We do not make unverified treatment claims and do not promote restricted medicines.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WHATSAPP ORDERING ================= -->
+  <section id="ordering" class="py-16 md:py-24" style="background:linear-gradient(180deg,#F3F6F3,#eefaf5)">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="rounded-[2rem] overflow-hidden border" style="border-color:var(--line);background:#fff">
+        <div class="grid lg:grid-cols-2">
+          <div class="p-8 md:p-12">
+            <p class="eyebrow mb-4">WhatsApp Ordering & Home Delivery</p>
+            <h2 class="section-title reveal">Order enquiries made simple.</h2>
+            <p class="mt-5 text-soft leading-relaxed reveal">
+              Send us a WhatsApp message to enquire about medicine availability, submit a prescription for verification, check product prices where available, and understand home delivery eligibility and estimated timing.
+            </p>
+
+            <div class="mt-7 flex flex-wrap gap-3 reveal">
+              <a href="https://wa.me/919645154723?text=Hello%20Medleik%20Pharmacy%2C%20I%20would%20like%20to%20enquire%20about%20medicine%20availability%20and%20home%20delivery.%20Please%20let%20me%20know%20the%20next%20steps." target="_blank" rel="noopener" class="btn btn-wa">
+                <i data-lucide="message-circle" class="w-5 h-5"></i> Order on WhatsApp
+              </a>
+              <a href="tel:7012370940" class="btn btn-outline">
+                <i data-lucide="phone" class="w-5 h-5"></i> Call 7012370940
+              </a>
+            </div>
+
+            <ul class="mt-8 space-y-3 text-sm text-soft reveal">
+              <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 text-emerald-600"></i> Medicine availability enquiries</li>
+              <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 text-emerald-600"></i> Prescription submission for verification</li>
+              <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 text-emerald-600"></i> Product prices where available</li>
+              <li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 mt-0.5 text-emerald-600"></i> Home delivery eligibility, charges and estimated time</li>
+            </ul>
+          </div>
+
+          <div class="p-8 md:p-12" style="background:var(--mist)">
+            <div class="rounded-2xl border p-5" style="border-color:var(--line);background:#fff">
+              <h3 class="font-extrabold text-lg flex items-center gap-2"><i data-lucide="clipboard-check" class="w-5 h-5 text-emerald-600"></i> Please note</h3>
+              <p class="mt-3 text-sm text-soft leading-relaxed">
+                Orders are subject to stock availability, prescription verification, applicable pharmacy laws and delivery-area confirmation. We do not promise instant delivery or delivery to all locations.
+              </p>
+              <hr class="my-4" style="border-color:var(--line)">
+              <p class="text-sm font-semibold text-emerald-800 flex items-start gap-2">
+                <i data-lucide="lock" class="w-4 h-4 mt-0.5 flex-none"></i>
+                Please do not send unnecessary personal or sensitive medical information through public website forms.
+              </p>
+            </div>
+
+            <div class="mt-4 rounded-2xl p-5" style="background:linear-gradient(145deg,#0e6450,#0b453b);color:#fff">
+              <p class="text-sm font-bold">Pre-filled WhatsApp message</p>
+              <p class="mt-2 text-sm leading-relaxed opacity-90">
+                “Hello Medleik Pharmacy, I would like to enquire about medicine availability and home delivery. Please let me know the next steps.”
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section id="contact" class="py-16 md:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid lg:grid-cols-12 gap-10">
+        <div class="lg:col-span-5">
+          <p class="eyebrow mb-4">Contact & Location</p>
+          <h2 class="section-title reveal">We’re here to help.</h2>
+          <p class="mt-4 text-soft leading-relaxed reveal">
+            Visit us in Maranchery or reach out on phone or WhatsApp. Business hours are editable by the owner and will be updated once confirmed.
+          </p>
+
+          <div class="mt-8 space-y-4">
+            <div class="flex items-start gap-3 p-4 rounded-2xl" style="background:var(--mist)">
+              <span class="w-10 h-10 rounded-xl grid place-items-center" style="background:linear-gradient(145deg,#1f9a76,#0e6450);color:#fff"><i data-lucide="map-pin" class="w-5 h-5"></i></span>
+              <div>
+                <p class="font-extrabold">Medleik Pharmacy</p>
+                <p class="text-sm text-soft">Maranchery, Kerala, India</p>
+                <p class="text-xs text-soft mt-1">Exact street address & map pin to be confirmed by owner.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-4 rounded-2xl" style="background:var(--mist)">
+              <span class="w-10 h-10 rounded-xl grid place-items-center" style="background:linear-gradient(145deg,#1f9a76,#0e6450);color:#fff"><i data-lucide="phone" class="w-5 h-5"></i></span>
+              <div>
+                <p class="font-extrabold">Phone / WhatsApp</p>
+                <a href="tel:7012370940" class="text-sm text-emerald-700 font-semibold hover:underline">7012370940</a>
+                <p class="text-xs text-soft mt-1">WhatsApp ordering number: 9645154723</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-4 rounded-2xl" style="background:var(--mist)">
+              <span class="w-10 h-10 rounded-xl grid place-items-center" style="background:linear-gradient(145deg,#1f9a76,#0e6450);color:#fff"><i data-lucide="clock" class="w-5 h-5"></i></span>
+              <div class="flex-1">
+                <p class="font-extrabold">Business Hours</p>
+                <div class="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-soft">
+                  <span>Mon – Sat</span><span class="font-semibold text-ink">Editable</span>
+                  <span>Sunday</span><span class="font-semibold text-ink">Editable</span>
+                </div>
+                <p class="text-xs text-soft mt-2">Please confirm current opening and closing times with the pharmacy.</p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-2">
+              <a href="tel:7012370940" class="btn btn-outline"><i data-lucide="phone-call" class="w-4 h-4"></i> Click to Call</a>
+              <a href="https://wa.me/919645154723" target="_blank" rel="noopener" class="btn btn-wa"><i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp</a>
+              <a href="https://maps.google.com/?q=Medleik+Pharmacy+Maranchery+Kerala" target="_blank" rel="noopener" class="btn btn-soft"><i data-lucide="navigation" class="w-4 h-4"></i> Directions</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact form -->
+        <div class="lg:col-span-7">
+          <div class="card p-6 md:p-8 reveal">
+            <h3 class="font-extrabold text-xl">Send an enquiry</h3>
+            <p class="text-sm text-soft mt-1 mb-6">Please avoid including sensitive medical details in this form. For prescriptions, use WhatsApp.</p>
+
+            <form id="enquiryForm" novalidate>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="label" for="name">Full name</label>
+                  <input class="field" id="name" name="name" type="text" autocomplete="name" required aria-required="true">
+                  <p class="error-text" data-error-for="name"></p>
+                </div>
+                <div>
+                  <label class="label" for="phone">Phone</label>
+                  <input class="field" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required aria-required="true">
+                  <p class="error-text" data-error-for="phone"></p>
+                </div>
+              </div>
+
+              <div class="mt-4">
+                <label class="label" for="email">Email (optional)</label>
+                <input class="field" id="email" name="email" type="email" autocomplete="email">
+                <p class="error-text" data-error-for="email"></p>
+              </div>
+
+              <div class="mt-4">
+                <label class="label" for="message">Message</label>
+                <textarea class="field" id="message" name="message" rows="4" required aria-required="true" placeholder="e.g. I would like to check if a specific medicine is available."></textarea>
+                <p class="error-text" data-error-for="message"></p>
+              </div>
+
+              <div class="mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <button type="submit" class="btn btn-primary">
+                  <i data-lucide="send" class="w-4 h-4"></i> Send Enquiry
+                </button>
+                <p class="text-xs text-soft">Online enquiries do not replace medical advice.</p>
+              </div>
+
+              <div id="formStatus" class="mt-4 text-sm font-semibold" role="status" aria-live="polite"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= POLICIES ================= -->
+  <section class="py-14" style="background:var(--mist)">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="card p-6">
+          <h3 class="font-extrabold text-lg flex items-center gap-2"><i data-lucide="shield" class="w-5 h-5 text-emerald-600"></i> Privacy Policy</h3>
+          <p class="mt-3 text-sm text-soft leading-relaxed">
+            We respect your privacy. Prescriptions and customer information are handled with confidentiality. We do not collect unnecessary personal or sensitive medical information through this website. Any information you share through the enquiry form is used only to respond to your query. For prescription-related matters, please use WhatsApp or visit the pharmacy in person.
+          </p>
+        </div>
+        <div class="card p-6">
+          <h3 class="font-extrabold text-lg flex items-center gap-2"><i data-lucide="scale" class="w-5 h-5 text-emerald-600"></i> Terms & Conditions</h3>
+          <p class="mt-3 text-sm text-soft leading-relaxed">
+            Online enquiries are for information purposes and do not replace medical advice. Prescription-only medicines are dispensed only after the required prescription and legal checks. Availability, prices and delivery are subject to stock, applicable laws and confirmation by Medleik Pharmacy. The website does not provide diagnosis, prescribing or treatment recommendations.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FINAL CTA ================= -->
+  <section class="py-16 md:py-24" style="background:linear-gradient(145deg,#0e6450,#0b453b)">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+      <h2 class="display text-white text-[clamp(2rem,5vw,3.6rem)] reveal">Your health, our priority — always.</h2>
+      <p class="mt-4 text-white/80 text-lg max-w-2xl mx-auto reveal">Friendly pharmacy service and reliable medicine support for your family in Maranchery.</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3 reveal">
+        <a href="https://wa.me/919645154723?text=Hello%20Medleik%20Pharmacy%2C%20I%20would%20like%20to%20enquire%20about%20medicine%20availability%20and%20home%20delivery.%20Please%20let%20me%20know%20the%20next%20steps." target="_blank" rel="noopener" class="btn btn-wa">
+          <i data-lucide="message-circle" class="w-5 h-5"></i> Order on WhatsApp
+        </a>
+        <a href="tel:7012370940" class="btn" style="background:#fff;color:#0b453b">
+          <i data-lucide="phone" class="w-5 h-5"></i> Call Us
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-white border-t" style="border-color:var(--line)">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+    <div class="grid md:grid-cols-4 gap-8">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-2.5">
+          <span class="w-10 h-10 rounded-2xl grid place-items-center text-white" style="background:linear-gradient(145deg,#1f9a76,#0e6450)">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v18M3 12h18"/></svg>
+          </span>
+          <span class="font-extrabold text-lg">Medleik Pharmacy</span>
+        </div>
+        <p class="mt-4 text-sm text-soft leading-relaxed max-w-sm">
+          Your neighbourhood health partner in Maranchery, Kerala. Friendly service, clear guidance and everyday healthcare essentials for your family.
+        </p>
+        <p class="mt-4 text-xs text-soft">
+          Disclaimer: Information on this website is for general awareness and does not replace professional medical advice, diagnosis or treatment.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="font-extrabold text-sm uppercase tracking-wider text-ink">Pages</h4>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="#home" class="text-soft hover:text-emerald-700 transition">Home</a></li>
+          <li><a href="#about" class="text-soft hover:text-emerald-700 transition">About Us</a></li>
+          <li><a href="#products" class="text-soft hover:text-emerald-700 transition">Products</a></li>
+          <li><a href="#care" class="text-soft hover:text-emerald-700 transition">Patient Care</a></li>
+          <li><a href="#ordering" class="text-soft hover:text-emerald-700 transition">Ordering & Delivery</a></li>
+          <li><a href="#contact" class="text-soft hover:text-emerald-700 transition">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-extrabold text-sm uppercase tracking-wider text-ink">Reach Us</h4>
+        <ul class="mt-3 space-y-2 text-sm text-soft">
+          <li class="flex items-start gap-2"><i data-lucide="map-pin" class="w-4 h-4 mt-0.5 text-emerald-600"></i> Maranchery, Kerala, India</li>
+          <li class="flex items-start gap-2"><i data-lucide="phone" class="w-4 h-4 mt-0.5 text-emerald-600"></i> <a href="tel:7012370940" class="hover:text-emerald-700">7012370940</a></li>
+          <li class="flex items-start gap-2"><i data-lucide="message-circle" class="w-4 h-4 mt-0.5 text-emerald-600"></i> <a href="https://wa.me/919645154723" target="_blank" rel="noopener" class="hover:text-emerald-700">WhatsApp: 9645154723</a></li>
+        </ul>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <a href="https://wa.me/919645154723" target="_blank" rel="noopener" class="btn btn-wa !py-2 !px-3 !text-xs">Order on WhatsApp</a>
+          <a href="https://maps.google.com/?q=Medleik+Pharmacy+Maranchery+Kerala" target="_blank" rel="noopener" class="btn btn-outline !py-2 !px-3 !text-xs">Directions</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 pt-6 border-t flex flex-col sm:flex-row items-center justify-between gap-3" style="border-color:var(--line)">
+      <p class="text-xs text-soft">© <span id="year"></span> Medleik Pharmacy, Maranchery. All rights reserved.</p>
+      <div class="flex items-center gap-4 text-xs">
+        <a href="#contact" class="text-soft hover:text-emerald-700">Privacy Policy</a>
+        <a href="#contact" class="text-soft hover:text-emerald-700">Terms & Conditions</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating WhatsApp -->
+<a href="https://wa.me/919645154723?text=Hello%20Medleik%20Pharmacy%2C%20I%20would%20like%20to%20enquire%20about%20medicine%20availability%20and%20home%20delivery.%20Please%20let%20me%20know%20the%20next%20steps."
+   target="_blank" rel="noopener" class="fab" aria-label="Chat with Medleik Pharmacy on WhatsApp">
+  <i data-lucide="message-circle" class="w-5 h-5"></i>
+  <span>WhatsApp Us</span>
+</a>
+
+<script>
+/* ================= Lucide icons ================= */
+function initIcons(){
+  if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    window.lucide.createIcons();
+  }
+}
+document.addEventListener('DOMContentLoaded', initIcons);
+window.addEventListener('load', initIcons);
+
+/* ================= Header scroll state ================= */
+(function(){
+  const header = document.getElementById('siteHeader');
+  function onScroll(){
+    if (!header) return;
+    if (window.scrollY > 12) header.classList.add('nav-scrolled');
+    else header.classList.remove('nav-scrolled');
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+})();
+
+/* ================= Mobile menu ================= */
+(function(){
+  const toggle = document.getElementById('menuToggle');
+  const menu = document.getElementById('mobileMenu');
+  const closeBtn = document.getElementById('menuClose');
+
+  function openMenu(){
+    menu.classList.remove('hidden-panel');
+    toggle.setAttribute('aria-expanded','true');
+    toggle.setAttribute('aria-label','Close menu');
+  }
+  function closeMenu(){
+    menu.classList.add('hidden-panel');
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','Open menu');
+  }
+
+  if (toggle && menu) {
+    toggle.addEventListener('click', function(){
+      if (menu.classList.contains('hidden-panel')) openMenu();
+      else closeMenu();
+    });
+  }
+  if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+  menu && menu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && menu && !menu.classList.contains('hidden-panel')) closeMenu();
+  });
+})();
+
+/* ================= Language switcher (visual state) ================= */
+(function(){
+  const buttons = document.querySelectorAll('.lang-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', function(){
+      buttons.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed','false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed','true');
+    });
+  });
+})();
+
+/* ================= Accordion ================= */
+(function(){
+  const triggers = document.querySelectorAll('.acc-trigger');
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', function(){
+      const expanded = trigger.getAttribute('aria-expanded') === 'true';
+      const panel = document.getElementById(trigger.getAttribute('aria-controls'));
+      // close others in same group
+      triggers.forEach(t => {
+        if (t !== trigger) {
+          t.setAttribute('aria-expanded','false');
+          const p = document.getElementById(t.getAttribute('aria-controls'));
+          if (p) p.style.maxHeight = '0px';
+        }
+      });
+      trigger.setAttribute('aria-expanded', String(!expanded));
+      if (panel) panel.style.maxHeight = expanded ? '0px' : panel.scrollHeight + 40 + 'px';
+    });
+  });
+})();
+
+/* ================= Form validation ================= */
+(function(){
+  const form = document.getElementById('enquiryForm');
+  if (!form) return;
+  const status = document.getElementById('formStatus');
+
+  function setError(name, msg){
+    const input = form.elements[name];
+    const err = form.querySelector('[data-error-for="'+name+'"]');
+    if (err) err.textContent = msg || '';
+    if (input) {
+      if (msg) input.classList.add('invalid');
+      else input.classList.remove('invalid');
+    }
+  }
+
+  function validate(){
+    let ok = true;
+    const name = form.elements['name'].value.trim();
+    const phone = form.elements['phone'].value.trim();
+    const email = form.elements['email'].value.trim();
+    const message = form.elements['message'].value.trim();
+
+    if (!name) { setError('name','Please enter your name.'); ok = false; } else setError('name','');
+    if (!phone) { setError('phone','Please enter your phone number.'); ok = false; }
+    else if (!/^[0-9+\-\s()]{7,15}$/.test(phone)) { setError('phone','Please enter a valid phone number.'); ok = false; }
+    else setError('phone','');
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError('email','Please enter a valid email address.'); ok = false; }
+    else setError('email','');
+    if (!message) { setError('message','Please tell us how we can help.'); ok = false; } else setError('message','');
+
+    return ok;
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (!validate()) {
+      status.textContent = 'Please check the highlighted fields.';
+      status.style.color = '#b03528';
+      return;
+    }
+
+    status.textContent = 'Sending your enquiry…';
+    status.style.color = 'var(--emerald-700)';
+
+    const payload = {
+      url: window.location.host,
+      table: 'enquiries',
+      data: {
+        name: form.elements['name'].value.trim(),
+        phone: form.elements['phone'].value.trim(),
+        email: form.elements['email'].value.trim(),
+        message: form.elements['message'].value.trim()
+      }
+    };
+
+    /* TODO: connect form action to backend endpoint */
+    fetch('submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+      body: JSON.stringify(payload)
+    })
+    .then(function(res){
+      if (!res.ok) throw new Error('Request failed');
+      return res.json().catch(function(){ return {}; });
+    })
+    .then(function(){
+      status.textContent = 'Thank you! Your enquiry has been sent. We will get back to you shortly.';
+      status.style.color = '#127d60';
+      form.reset();
+      form.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+      form.querySelectorAll('.error-text').forEach(el => el.textContent = '');
+    })
+    .catch(function(){
+      // Graceful fallback for static preview: show success-style message and direct to WhatsApp
+      status.innerHTML = 'We could not submit the form automatically. Please <a href="https://wa.me/919645154723" target="_blank" rel="noopener" class="underline font-bold" style="color:#127d60">contact us on WhatsApp</a> instead.';
+      status.style.color = '#b03528';
+    });
+  });
+
+  form.querySelectorAll('input, textarea').forEach(el => {
+    el.addEventListener('input', function(){
+      const name = el.name;
+      const err = form.querySelector('[data-error-for="'+name+'"]');
+      if (err) err.textContent = '';
+      el.classList.remove('invalid');
+    });
+  });
+})();
+
+/* ================= Year ================= */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ================= GSAP reveal animations ================= */
+(function(){
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) {
+    document.querySelectorAll('.reveal').forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
+    return;
+  }
+
+  function initReveal(){
+    if (!window.gsap || !window.ScrollTrigger) {
+      document.querySelectorAll('.reveal').forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
+      return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.utils.toArray('.reveal').forEach(function(el, i){
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: 'power3.out',
+        delay: Math.min(i * 0.04, 0.35),
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 92%',
+          once: true
+        }
+      });
+    });
+
+    // hero headline subtle entrance
+    var headline = document.querySelector('#home h1');
+    if (headline) {
+      gsap.fromTo(headline, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, ease: 'power4.out', delay: 0.15 });
+    }
+
+    ScrollTrigger.refresh();
+  }
+
+  if (document.readyState === 'complete') initReveal();
+  else window.addEventListener('load', initReveal);
+})();
+</script>
+</body>
+</html>
