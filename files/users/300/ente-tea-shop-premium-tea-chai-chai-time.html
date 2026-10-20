@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ente Tea Shop · Premium Tea, Chai & Chai Time</title>
+  <!-- ===== FONTS + ICONS ===== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- ===== TAILWIND CDN + CONFIG ===== -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FCF8F3',
+            paper: '#F8F3ED',
+            terra: '#B55A3B',
+            'terra-light': '#D97D5A',
+            olive: '#4D5D4B',
+            'olive-light': '#6B7D66',
+            ink: '#1E1E1E',
+            'ink-soft': '#3A3A3A',
+          },
+          fontFamily: {
+            sans: ['Instrument Sans', 'sans-serif'],
+            serif: ['Instrument Serif', 'serif'],
+          },
+          boxShadow: {
+            'soft': '0 10px 40px -12px rgba(30, 30, 30, 0.08)',
+            'lift': '0 20px 50px -16px rgba(30, 30, 30, 0.12)',
+          },
+          borderRadius: {
+            '4xl': '2rem',
+          },
+          maxWidth: {
+            '8xl': '88rem',
+          },
+        },
+      },
+    };
+  </script>
+  <!-- ===== CUSTOM CSS ===== -->
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1E1E1E;
+      --ink-soft: #3A3A3A;
+      --cream: #FCF8F3;
+      --paper: #F8F3ED;
+      --terra: #B55A3B;
+      --terra-light: #D97D5A;
+      --olive: #4D5D4B;
+      --olive-light: #6B7D66;
+      --border-hairline: rgba(30, 30, 30, 0.08);
+      --focus-ring: 0 0 0 3px rgba(181, 90, 59, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* === Typography Overrides === */
+    .font-serif {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    h1, h2, h3 {
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    /* === Focus States (Accessibility) === */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Scroll Progress Bar === */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--terra), var(--terra-light));
+      width: 0%;
+      z-index: 9999;
+      transition: width 0.1s ease-out;
+    }
+
+    /* === Sticky Header === */
+    .header-scrolled {
+      backdrop-filter: blur(16px);
+      background: rgba(252, 248, 243, 0.82);
+      box-shadow: 0 1px 0 var(--border-hairline);
+    }
+
+    /* === Hero Animated Blob === */
+    .hero-blob {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(217, 125, 90, 0.18), rgba(252, 248, 243, 0) 70%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatBlob 14s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatBlob {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, -40px) scale(1.08); }
+    }
+
+    /* === Text Reveal === */
+    .reveal-text {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
+    }
+
+    .reveal-text span {
+      display: inline-block;
+      transform: translateY(110%);
+      animation: revealUp 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+
+    .reveal-text span:nth-child(2) { animation-delay: 0.08s; }
+    .reveal-text span:nth-child(3) { animation-delay: 0.16s; }
+    .reveal-text span:nth-child(4) { animation-delay: 0.24s; }
+
+    @keyframes revealUp {
+      to { transform: translateY(0); }
+    }
+
+    /* === Fade-Up on Scroll === */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s cubic-bezier(0.23, 1, 0.32, 1), transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === Card Hover Lift === */
+    .card-lift {
+      transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.35s ease;
+    }
+
+    .card-lift:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 48px -16px rgba(30, 30, 30, 0.14);
+    }
+
+    /* === Magnetic Button Hover === */
+    .btn-primary {
+      background: var(--terra);
+      color: #fff;
+      transition: background 0.3s ease, transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
+      box-shadow: 0 8px 24px -8px rgba(181, 90, 59, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: var(--terra-light);
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px -8px rgba(181, 90, 59, 0.45);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-outline {
+      border: 1.5px solid var(--ink);
+      color: var(--ink);
+      transition: background 0.3s ease, color 0.3s ease, transform 0.25s ease;
+    }
+
+    .btn-outline:hover {
+      background: var(--ink);
+      color: var(--cream);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline:active {
+      transform: scale(0.98);
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marqueeScroll 40s linear infinite;
+    }
+
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes marqueeScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Form Inputs === */
+    .form-field {
+      background: #fff;
+      border: 1.5px solid rgba(30, 30, 30, 0.1);
+      border-radius: 0.75rem;
+      padding: 0.85rem 1rem;
+      width: 100%;
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .form-field:focus {
+      border-color: var(--terra);
+      box-shadow: 0 0 0 3px rgba(181, 90, 59, 0.15);
+      outline: none;
+    }
+
+    .form-field.error {
+      border-color: #D44;
+      box-shadow: 0 0 0 3px rgba(221, 68, 68, 0.12);
+    }
+
+    .error-msg {
+      color: #D44;
+      font-size: 0.78rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .error-msg.show {
+      display: block;
+    }
+
+    /* === Success Message Animation === */
+    .success-pop {
+      animation: popIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* === Grain Texture Overlay === */
+    .grain::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* === Tilt Card === */
+    .tilt-card {
+      perspective: 800px;
+    }
+
+    .tilt-card-inner {
+      transition: transform 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    .tilt-card:hover .tilt-card-inner {
+      transform: rotateX(4deg) rotateY(-4deg) translateY(-4px);
+    }
+
+    /* === Responsive Typography === */
+    @media (max-width: 640px) {
+      .hero-heading {
+        font-size: 2.6rem !important;
+        line-height: 1.08;
+      }
+      .section-heading {
+        font-size: 2rem !important;
+      }
+    }
+
+    /* === Hide scrollbar for clean look (optional) === */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="grain antialiased">
+
+  <!-- Scroll Progress Bar -->
+  <div class="progress-bar" id="progressBar" aria-hidden="true"></div>
+
+  <!-- ========== HEADER ========== -->
+  <header id="siteHeader" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <div class="max-w-8xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="flex items-center justify-between h-16 sm:h-20 transition-all duration-500" id="headerInner">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2 group" aria-label="Ente Tea Shop home">
+          <span class="w-9 h-9 rounded-full bg-terra flex items-center justify-center text-cream transition-transform duration-300 group-hover:rotate-12">
+            <i class="fas fa-leaf text-sm" aria-hidden="true"></i>
+          </span>
+          <span class="font-serif text-xl sm:text-2xl tracking-tight text-ink">Ente Tea Shop</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center gap-8 lg:gap-10" aria-label="Main navigation">
+          <a href="#story" class="text-sm font-medium text-ink-soft hover:text-terra transition-colors duration-200">Our Story</a>
+          <a href="#teas" class="text-sm font-medium text-ink-soft hover:text-terra transition-colors duration-200">Teas</a>
+          <a href="#ritual" class="text-sm font-medium text-ink-soft hover:text-terra transition-colors duration-200">The Ritual</a>
+          <a href="#visit" class="text-sm font-medium text-ink-soft hover:text-terra transition-colors duration-200">Visit</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a href="#visit" class="hidden sm:inline-flex btn-primary text-sm font-semibold px-5 py-2.5 rounded-full items-center gap-2">
+            <i class="fas fa-mug-hot text-xs" aria-hidden="true"></i>
+            Book a tasting
+          </a>
+          <!-- Mobile menu toggle -->
+          <button id="menuToggle" class="md:hidden w-10 h-10 flex items-center justify-center rounded-full border border-ink/10 bg-white/60 hover:bg-white transition-colors" aria-label="Open menu" aria-expanded="false">
+            <i class="fas fa-bars text-ink text-lg" id="menuIcon" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobileMenu" class="mobile-menu fixed inset-y-0 right-0 w-full max-w-sm bg-cream z-40 shadow-2xl p-8 flex flex-col justify-between md:hidden" aria-hidden="true" role="dialog" aria-label="Mobile navigation">
+    <div>
+      <div class="flex justify-end mb-10">
+        <button id="closeMenu" class="w-10 h-10 flex items-center justify-center rounded-full border border-ink/10 hover:bg-paper transition-colors" aria-label="Close menu">
+          <i class="fas fa-times text-ink text-lg" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-6" aria-label="Mobile navigation links">
+        <a href="#story" class="text-2xl font-serif text-ink hover:text-terra transition-colors mobile-link">Our Story</a>
+        <a href="#teas" class="text-2xl font-serif text-ink hover:text-terra transition-colors mobile-link">Teas</a>
+        <a href="#ritual" class="text-2xl font-serif text-ink hover:text-terra transition-colors mobile-link">The Ritual</a>
+        <a href="#visit" class="text-2xl font-serif text-ink hover:text-terra transition-colors mobile-link">Visit</a>
+      </nav>
+    </div>
+    <a href="#visit" class="btn-primary text-center font-semibold px-6 py-3.5 rounded-full inline-flex items-center justify-center gap-2 mobile-link">
+      <i class="fas fa-mug-hot text-sm" aria-hidden="true"></i> Book a tasting
+    </a>
+  </div>
+
+  <main>
+    <!-- ========== HERO ========== -->
+    <section class="relative min-h-[90vh] flex items-center overflow-hidden pt-24 pb-16 sm:pt-28 sm:pb-20" id="hero">
+      <div class="hero-blob top-[-100px] right-[-100px]"></div>
+      <div class="hero-blob bottom-[-200px] left-[-150px] opacity-60" style="animation-delay: 3s;"></div>
+
+      <div class="max-w-8xl mx-auto px-5 sm:px-8 lg:px-12 w-full relative z-10">
+        <div class="grid lg:grid-cols-12 gap-10 lg:gap-6 items-center">
+          <!-- Left: Copy -->
+          <div class="lg:col-span-6 xl:col-span-5">
+            <p class="fade-up text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-terra mb-5 flex items-center gap-3" style="transition-delay: 0.1s;">
+              <span class="w-8 h-px bg-terra inline-block"></span>
+              Slow-brewed since 2016
+            </p>
+            <h1 class="hero-heading font-serif text-6xl sm:text-7xl lg:text-[5.2rem] xl:text-[5.8rem] text-ink leading-[1.02] fade-up" style="transition-delay: 0.15s;">
+              <span class="reveal-text"><span>Every</span></span> <br />
+              <span class="reveal-text"><span>cup tells</span></span> <br />
+              <span class="reveal-text"><span class="italic text-terra">a story.</span></span>
+            </h1>
+            <p class="fade-up text-base sm:text-lg text-ink-soft max-w-md mt-7 leading-relaxed" style="transition-delay: 0.25s;">
+              Hand-picked leaves from the highlands, steeped with patience in our little corner of the world. Ente Tea Shop is not just a café — it's a pause button for your day.
+            </p>
+            <div class="fade-up flex flex-wrap gap-4 mt-9" style="transition-delay: 0.35s;">
+              <a href="#teas" class="btn-primary px-7 py-3.5 rounded-full font-semibold text-sm inline-flex items-center gap-2">
+                Explore our teas
+                <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+              </a>
+              <a href="#story" class="btn-outline px-7 py-3.5 rounded-full font-semibold text-sm inline-flex items-center gap-2 bg-transparent">
+                Our story
+              </a>
+            </div>
+            <!-- Micro social proof -->
+            <div class="fade-up flex items-center gap-4 mt-10" style="transition-delay: 0.45s;">
+              <div class="flex -space-x-2">
+                <span class="w-8 h-8 rounded-full bg-olive-light border-2 border-cream flex items-center justify-center text-[10px] font-bold text-white">RS</span>
+                <span class="w-8 h-8 rounded-full bg-terra-light border-2 border-cream flex items-center justify-center text-[10px] font-bold text-white">AM</span>
+                <span class="w-8 h-8 rounded-full bg-ink border-2 border-cream flex items-center justify-center text-[10px] font-bold text-cream">KT</span>
+              </div>
+              <p class="text-xs sm:text-sm text-ink-soft">
+                <span class="font-semibold text-ink">4.9/5</span> from 1,200+ tea lovers
+              </p>
+            </div>
+          </div>
+
+          <!-- Right: Visual -->
+          <div class="lg:col-span-6 xl:col-span-7 relative fade-up" style="transition-delay: 0.3s;">
+            <div class="relative mx-auto max-w-lg lg:max-w-none">
+              <!-- Main visual card -->
+              <div class="relative rounded-4xl overflow-hidden shadow-lift bg-gradient-to-br from-paper to-cream border border-ink/5 aspect-[4/5] sm:aspect-[5/5] lg:aspect-[4/4] xl:aspect-[5/4]">
+                <!-- Abstract tea illustration (SVG) -->
+                <svg viewBox="0 0 600 480" class="absolute inset-0 w-full h-full" aria-hidden="true" role="presentation">
+                  <defs>
+                    <radialGradient id="glow1" cx="50%" cy="40%" r="60%">
+                      <stop offset="0%" stop-color="#D97D5A" stop-opacity="0.18" />
+                      <stop offset="100%" stop-color="#FCF8F3" stop-opacity="0" />
+                    </radialGradient>
+                    <linearGradient id="cupGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#F8F3ED" />
+                      <stop offset="100%" stop-color="#EADFD3" />
+                    </linearGradient>
+                    <linearGradient id="teaGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#B55A3B" />
+                      <stop offset="100%" stop-color="#D97D5A" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="600" height="480" fill="url(#glow1)" />
+                  <!-- Saucer -->
+                  <ellipse cx="300" cy="370" rx="180" ry="30" fill="#EADFD3" opacity="0.5" />
+                  <ellipse cx="300" cy="365" rx="160" ry="24" fill="#F8F3ED" opacity="0.7" />
+                  <!-- Cup body -->
+                  <path d="M180 260 Q180 370 300 370 Q420 370 420 260 L400 260 Q400 340 300 340 Q200 340 200 260 Z" fill="url(#cupGrad)" stroke="#E5D9CC" stroke-width="1.5" />
+                  <!-- Cup rim -->
+                  <ellipse cx="300" cy="260" rx="120" ry="22" fill="#FCF8F3" stroke="#E5D9CC" stroke-width="1.5" />
+                  <!-- Tea surface -->
+                  <ellipse cx="300" cy="262" rx="108" ry="17" fill="url(#teaGrad)" opacity="0.85" />
+                  <!-- Steam -->
+                  <path d="M270 230 Q260 200 275 175" stroke="#B55A3B" stroke-width="2.5" fill="none" opacity="0.25" stroke-linecap="round" />
+                  <path d="M300 225 Q290 190 305 160" stroke="#B55A3B" stroke-width="2.5" fill="none" opacity="0.35" stroke-linecap="round" />
+                  <path d="M330 230 Q320 205 335 180" stroke="#B55A3B" stroke-width="2.5" fill="none" opacity="0.25" stroke-linecap="round" />
+                  <!-- Handle -->
+                  <path d="M420 260 Q470 260 470 300 Q470 340 420 340" stroke="#E5D9CC" stroke-width="10" fill="none" stroke-linecap="round" />
+                  <!-- Floating leaves -->
+                  <path d="M140 130 Q160 110 175 125 Q160 145 140 130 Z" fill="#4D5D4B" opacity="0.25" />
+                  <path d="M470 100 Q490 85 500 105 Q480 120 470 100 Z" fill="#4D5D4B" opacity="0.2" />
+                  <path d="M420 400 Q435 385 445 400 Q430 415 420 400 Z" fill="#4D5D4B" opacity="0.18" />
+                </svg>
+                <!-- Floating badge -->
+                <div class="absolute top-5 left-5 bg-white/80 backdrop-blur-md rounded-full px-4 py-2 text-xs font-semibold text-ink shadow-soft flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-terra animate-pulse"></span>
+                  Freshly brewed
+                </div>
+                <div class="absolute bottom-5 right-5 bg-white/80 backdrop-blur-md rounded-2xl px-5 py-3.5 shadow-soft">
+                  <p class="text-[10px] uppercase tracking-widest text-ink-soft font-semibold">Today's special</p>
+                  <p class="font-serif text-lg text-ink">Cardamom Chai</p>
+                </div>
+              </div>
+              <!-- Floating side card -->
+              <div class="absolute -left-4 top-1/3 bg-white rounded-2xl shadow-lift p-4 hidden sm:flex flex-col gap-1 border border-ink/5 animate-[floatBlob_6s_ease-in-out_infinite_alternate]" style="animation-duration: 6s;">
+                <i class="fas fa-star text-terra text-xs" aria-hidden="true"></i>
+                <p class="text-[11px] font-semibold text-ink">Award-winning</p>
+                <p class="text-[10px] text-ink-soft">Best chai 2024</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== MARQUEE / SOCIAL PROOF ========== -->
+    <section class="border-y border-ink/[0.06] bg-paper/60 py-5 overflow-hidden" aria-label="Trusted by">
+      <div class="marquee-track gap-12 items-center text-sm font-medium text-ink-soft/70">
+        <span class="flex items-center gap-3 whitespace-nowrap"><i class="fas fa-leaf text-terra/60" aria-hidden="true"></i> Single-origin leaves</span>
+        <span class="flex items-center gap-3 whitespace-nowrap"><i class="fas fa-seedling text-terra/60" aria-hidden="true"></i> Organic & fair-trade</span>
+        <span class="flex items-center gap-3 whitespace-nowrap"><i class="fas fa-mug-hot text-terra/60" aria-hidden="true"></i> Brewed to order</span>
+        <span class="flex items-center gap-3 whitespace-nowrap"><i class="fas fa-heart text-terra/60" aria-hidden="true"></i> Local favourite</span>
+        <span class="flex items-center gap-3 whitespace-nowrap"><i class="fas fa-award text-terra/60" aria-hidden="true"></i> Award-winning chai</span>
+        <span class="flex items-center gap-3 whitespace-nowrap"><i class="fas fa-leaf text-terra/60" aria-hidden="true"></i> Single-origin leaves</span>
+        <span class="flex items-center gap-3 whitespace-nowrap"><i class="fas fa-seedling text-terra/60" aria-hidden="true"></i> Organic & fair-trade</span>
+        <span class="flex items-center gap-3 whitespace-nowrap"><i class="fas fa-mug-hot text-terra/60" aria-hidden="true"></i> Brewed to order</span>
+        <span class="flex items-center gap-3 whitespace-nowrap"><i class="fas fa-heart text-terra/60" aria-hidden="true"></i> Local favourite</span>
+        <span class="flex items-center gap-3 whitespace-nowrap"><i class="fas fa-award text-terra/60" aria-hidden="true"></i> Award-winning chai</span>
+      </div>
+    </section>
+
+    <!-- ========== STORY SECTION ========== -->
+    <section id="story" class="py-24 sm:py-32 bg-cream relative overflow-hidden">
+      <div class="max-w-8xl mx-auto px-5 sm:px-8 lg:px-12">
+        <div class="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+          <!-- Image / visual -->
+          <div class="fade-up order-2 lg:order-1">
+            <div class="relative rounded-4xl overflow-hidden aspect-[4/3] bg-gradient-to-br from-olive/10 to-terra/10 border border-ink/5 shadow-soft">
+              <svg viewBox="0 0 600 450" class="w-full h-full" aria-hidden="true">
+                <defs>
+                  <linearGradient id="hill1" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#4D5D4B" stop-opacity="0.12" />
+                    <stop offset="100%" stop-color="#6B7D66" stop-opacity="0.18" />
+                  </linearGradient>
+                  <linearGradient id="hill2" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#B55A3B" stop-opacity="0.10" />
+                    <stop offset="100%" stop-color="#D97D5A" stop-opacity="0.16" />
+                  </linearGradient>
+                </defs>
+                <rect width="600" height="450" fill="#FCF8F3" />
+                <!-- Rolling hills -->
+                <path d="M0 350 Q150 260 300 320 T600 280 L600 450 L0 450 Z" fill="url(#hill2)" />
+                <path d="M0 380 Q200 300 400 360 T600 340 L600 450 L0 450 Z" fill="url(#hill1)" />
+                <!-- Tea leaves pattern -->
+                <g opacity="0.35">
+                  <path d="M120 150 Q140 130 155 145 Q140 165 120 150 Z" fill="#4D5D4B" />
+                  <path d="M420 120 Q440 100 455 115 Q440 135 420 120 Z" fill="#4D5D4B" />
+                  <path d="M300 180 Q320 160 335 175 Q320 195 300 180 Z" fill="#4D5D4B" />
+                  <path d="M480 200 Q500 180 515 195 Q500 215 480 200 Z" fill="#4D5D4B" />
+                  <path d="M90 250 Q110 230 125 245 Q110 265 90 250 Z" fill="#4D5D4B" />
+                </g>
+                <!-- Sun circle -->
+                <circle cx="480" cy="90" r="40" fill="#D97D5A" opacity="0.18" />
+                <circle cx="480" cy="90" r="24" fill="#D97D5A" opacity="0.25" />
+              </svg>
+              <div class="absolute bottom-6 left-6 bg-white/85 backdrop-blur-md rounded-2xl px-5 py-4 shadow-soft max-w-[200px]">
+                <p class="text-xs uppercase tracking-widest text-ink-soft font-semibold mb-1">Our estate</p>
+                <p class="font-serif text-xl text-ink leading-snug">Munnar, Kerala</p>
+                <p class="text-[11px] text-ink-soft mt-1">1,600m above sea level</p>
+              </div>
+            </div>
+          </div>
+          <!-- Copy -->
+          <div class="fade-up order-1 lg:order-2" style="transition-delay: 0.1s;">
+            <p class="text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-terra mb-4 flex items-center gap-3">
+              <span class="w-8 h-px bg-terra inline-block"></span>
+              Our Story
+            </p>
+            <h2 class="section-heading font-serif text-4xl sm:text-5xl lg:text-6xl text-ink leading-[1.05]">
+              From a tiny <span class="italic text-terra">tea stall</span> to your favourite corner.
+            </h2>
+            <p class="text-ink-soft text-base sm:text-lg mt-6 leading-relaxed max-w-lg">
+              Ente Tea Shop began as a two-table stall run by our grandmother in the misty hills of Munnar. Today, we still source every leaf from the same family gardens — and we still brew every cup like it's for someone we love.
+            </p>
+            <p class="text-ink-soft text-base sm:text-lg mt-4 leading-relaxed max-w-lg">
+              No shortcuts. No syrups. Just good leaves, good milk, and a whole lot of patience.
+            </p>
+            <div class="grid grid-cols-3 gap-6 mt-10">
+              <div>
+                <p class="font-serif text-3xl sm:text-4xl text-ink">18+</p>
+                <p class="text-xs text-ink-soft mt-1 uppercase tracking-wider font-semibold">Tea varieties</p>
+              </div>
+              <div>
+                <p class="font-serif text-3xl sm:text-4xl text-ink">9yrs</p>
+                <p class="text-xs text-ink-soft mt-1 uppercase tracking-wider font-semibold">Of brewing</p>
+              </div>
+              <div>
+                <p class="font-serif text-3xl sm:text-4xl text-ink">100%</p>
+                <p class="text-xs text-ink-soft mt-1 uppercase tracking-wider font-semibold">Organic leaves</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TEAS MENU ========== -->
+    <section id="teas" class="py-24 sm:py-32 bg-paper/50 border-y border-ink/[0.06]">
+      <div class="max-w-8xl mx-auto px-5 sm:px-8 lg:px-12">
+        <div class="fade-up text-center max-w-2xl mx-auto mb-14">
+          <p class="text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-terra mb-4">The Menu</p>
+          <h2 class="section-heading font-serif text-4xl sm:text-5xl lg:text-6xl text-ink">
+            Teas we <span class="italic text-terra">love</span> to brew.
+          </h2>
+          <p class="text-ink-soft mt-5 text-base sm:text-lg">
+            Every cup is made to order — choose your milk, sweetness, and spice level. Here are the favourites.
+          </p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <!-- Card 1 -->
+          <div class="tilt-card fade-up" style="transition-delay: 0.05s;">
+            <div class="tilt-card-inner bg-white rounded-4xl p-7 sm:p-8 shadow-soft border border-ink/5 h-full flex flex-col">
+              <div class="flex items-center justify-between mb-5">
+                <span class="w-11 h-11 rounded-full bg-terra/10 flex items-center justify-center">
+                  <i class="fas fa-mug-hot text-terra" aria-hidden="true"></i>
+                </span>
+                <span class="text-xs font-semibold text-ink-soft bg-paper px-3 py-1 rounded-full">Bestseller</span>
+              </div>
+              <h3 class="font-serif text-2xl text-ink mb-2">Cardamom Chai</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">Our signature — Assam leaves slow-simmered with green cardamom, ginger, and a whisper of fennel.</p>
+              <div class="flex items-center justify-between mt-6 pt-4 border-t border-ink/[0.06]">
+                <span class="font-semibold text-ink">₹120</span>
+                <button class="text-terra text-sm font-semibold hover:underline flex items-center gap-1" aria-label="Order Cardamom Chai">
+                  Order <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="tilt-card fade-up" style="transition-delay: 0.12s;">
+            <div class="tilt-card-inner bg-white rounded-4xl p-7 sm:p-8 shadow-soft border border-ink/5 h-full flex flex-col">
+              <div class="flex items-center justify-between mb-5">
+                <span class="w-11 h-11 rounded-full bg-olive/10 flex items-center justify-center">
+                  <i class="fas fa-leaf text-olive" aria-hidden="true"></i>
+                </span>
+                <span class="text-xs font-semibold text-ink-soft bg-paper px-3 py-1 rounded-full">New</span>
+              </div>
+              <h3 class="font-serif text-2xl text-ink mb-2">Kashmiri Kahwa</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">Green tea with saffron strands, almonds, and cinnamon — light, fragrant, and beautifully golden.</p>
+              <div class="flex items-center justify-between mt-6 pt-4 border-t border-ink/[0.06]">
+                <span class="font-semibold text-ink">₹160</span>
+                <button class="text-terra text-sm font-semibold hover:underline flex items-center gap-1" aria-label="Order Kashmiri Kahwa">
+                  Order <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="tilt-card fade-up" style="transition-delay: 0.19s;">
+            <div class="tilt-card-inner bg-white rounded-4xl p-7 sm:p-8 shadow-soft border border-ink/5 h-full flex flex-col">
+              <div class="flex items-center justify-between mb-5">
+                <span class="w-11 h-11 rounded-full bg-terra/10 flex items-center justify-center">
+                  <i class="fas fa-snowflake text-terra" aria-hidden="true"></i>
+                </span>
+                <span class="text-xs font-semibold text-ink-soft bg-paper px-3 py-1 rounded-full">Seasonal</span>
+              </div>
+              <h3 class="font-serif text-2xl text-ink mb-2">Iced Rose Oolong</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">Cold-brewed oolong with rose petals and a squeeze of lime. Your new summer obsession.</p>
+              <div class="flex items-center justify-between mt-6 pt-4 border-t border-ink/[0.06]">
+                <span class="font-semibold text-ink">₹180</span>
+                <button class="text-terra text-sm font-semibold hover:underline flex items-center gap-1" aria-label="Order Iced Rose Oolong">
+                  Order <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Card 4 -->
+          <div class="tilt-card fade-up" style="transition-delay: 0.26s;">
+            <div class="tilt-card-inner bg-white rounded-4xl p-7 sm:p-8 shadow-soft border border-ink/5 h-full flex flex-col">
+              <div class="flex items-center justify-between mb-5">
+                <span class="w-11 h-11 rounded-full bg-olive/10 flex items-center justify-center">
+                  <i class="fas fa-fire text-olive" aria-hidden="true"></i>
+                </span>
+                <span class="text-xs font-semibold text-ink-soft bg-paper px-3 py-1 rounded-full">Strong</span>
+              </div>
+              <h3 class="font-serif text-2xl text-ink mb-2">Masala Kadak</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">The one that wakes you up — black tea boiled with clove, pepper, and our house masala blend.</p>
+              <div class="flex items-center justify-between mt-6 pt-4 border-t border-ink/[0.06]">
+                <span class="font-semibold text-ink">₹110</span>
+                <button class="text-terra text-sm font-semibold hover:underline flex items-center gap-1" aria-label="Order Masala Kadak">
+                  Order <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Card 5 -->
+          <div class="tilt-card fade-up" style="transition-delay: 0.33s;">
+            <div class="tilt-card-inner bg-white rounded-4xl p-7 sm:p-8 shadow-soft border border-ink/5 h-full flex flex-col">
+              <div class="flex items-center justify-between mb-5">
+                <span class="w-11 h-11 rounded-full bg-terra/10 flex items-center justify-center">
+                  <i class="fas fa-heart text-terra" aria-hidden="true"></i>
+                </span>
+                <span class="text-xs font-semibold text-ink-soft bg-paper px-3 py-1 rounded-full">Caffeine-free</span>
+              </div>
+              <h3 class="font-serif text-2xl text-ink mb-2">Chamomile & Honey</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">Whole chamomile flowers steeped with wild honey and a squeeze of lemon. Pure calm in a cup.</p>
+              <div class="flex items-center justify-between mt-6 pt-4 border-t border-ink/[0.06]">
+                <span class="font-semibold text-ink">₹140</span>
+                <button class="text-terra text-sm font-semibold hover:underline flex items-center gap-1" aria-label="Order Chamomile & Honey">
+                  Order <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Card 6 -->
+          <div class="tilt-card fade-up" style="transition-delay: 0.40s;">
+            <div class="tilt-card-inner bg-white rounded-4xl p-7 sm:p-8 shadow-soft border border-ink/5 h-full flex flex-col">
+              <div class="flex items-center justify-between mb-5">
+                <span class="w-11 h-11 rounded-full bg-olive/10 flex items-center justify-center">
+                  <i class="fas fa-gem text-olive" aria-hidden="true"></i>
+                </span>
+                <span class="text-xs font-semibold text-ink-soft bg-paper px-3 py-1 rounded-full">Rare</span>
+              </div>
+              <h3 class="font-serif text-2xl text-ink mb-2">Darjeeling First Flush</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">Delicate, muscatel, and impossibly light. A single-estate spring pick, served without milk.</p>
+              <div class="flex items-center justify-between mt-6 pt-4 border-t border-ink/[0.06]">
+                <span class="font-semibold text-ink">₹220</span>
+                <button class="text-terra text-sm font-semibold hover:underline flex items-center gap-1" aria-label="Order Darjeeling First Flush">
+                  Order <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== THE RITUAL ========== -->
+    <section id="ritual" class="py-24 sm:py-32 bg-cream relative overflow-hidden">
+      <div class="max-w-8xl mx-auto px-5 sm:px-8 lg:px-12">
+        <div class="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+          <div class="fade-up">
+            <p class="text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-terra mb-4 flex items-center gap-3">
+              <span class="w-8 h-px bg-terra inline-block"></span>
+              The Ritual
+            </p>
+            <h2 class="section-heading font-serif text-4xl sm:text-5xl lg:text-6xl text-ink leading-[1.05]">
+              Brewed slow, <br /><span class="italic text-terra">served warm.</span>
+            </h2>
+            <p class="text-ink-soft text-base sm:text-lg mt-6 leading-relaxed max-w-lg">
+              We don't use machines. Every pot is watched, every steep is timed, and every cup is poured by hand. It's slower — and that's the point.
+            </p>
+            <div class="mt-10 space-y-6">
+              <div class="flex gap-5">
+                <span class="w-10 h-10 rounded-full bg-terra/10 flex items-center justify-center shrink-0">
+                  <span class="font-serif text-lg text-terra">01</span>
+                </span>
+                <div>
+                  <h3 class="font-semibold text-ink">Hand-picked leaves</h3>
+                  <p class="text-sm text-ink-soft mt-1">Sourced directly from family estates in Munnar and Darjeeling.</p>
+                </div>
+              </div>
+              <div class="flex gap-5">
+                <span class="w-10 h-10 rounded-full bg-terra/10 flex items-center justify-center shrink-0">
+                  <span class="font-serif text-lg text-terra">02</span>
+                </span>
+                <div>
+                  <h3 class="font-semibold text-ink">Slow-steeped to order</h3>
+                  <p class="text-sm text-ink-soft mt-1">No pre-brewed batches. Your cup starts when you order it.</p>
+                </div>
+              </div>
+              <div class="flex gap-5">
+                <span class="w-10 h-10 rounded-full bg-terra/10 flex items-center justify-center shrink-0">
+                  <span class="font-serif text-lg text-terra">03</span>
+                </span>
+                <div>
+                  <h3 class="font-semibold text-ink">Poured with intention</h3>
+                  <p class="text-sm text-ink-soft mt-1">A proper chai needs a proper pour. We take our time.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fade-up" style="transition-delay: 0.1s;">
+            <div class="relative rounded-4xl overflow-hidden aspect-square bg-gradient-to-tr from-terra/10 to-olive/10 border border-ink/5 shadow-soft flex items-center justify-center p-8">
+              <svg viewBox="0 0 400 400" class="w-full h-full max-w-[320px]" aria-hidden="true">
+                <defs>
+                  <radialGradient id="steamGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#D97D5A" stop-opacity="0.2" />
+                    <stop offset="100%" stop-color="#FCF8F3" stop-opacity="0" />
+                  </radialGradient>
+                </defs>
+                <circle cx="200" cy="200" r="180" fill="url(#steamGlow)" />
+                <!-- Kettle body -->
+                <ellipse cx="200" cy="280" rx="90" ry="20" fill="#EADFD3" opacity="0.5" />
+                <path d="M140 200 Q140 300 200 300 Q260 300 260 200 L240 200 Q240 270 200 270 Q160 270 160 200 Z" fill="#F8F3ED" stroke="#E5D9CC" stroke-width="1.5" />
+                <ellipse cx="200" cy="200" rx="60" ry="12" fill="#FCF8F3" stroke="#E5D9CC" stroke-width="1.5" />
+                <ellipse cx="200" cy="202" rx="50" ry="9" fill="#B55A3B" opacity="0.6" />
+                <!-- Spout -->
+                <path d="M260 210 Q290 210 295 240 Q298 255 285 260" stroke="#E5D9CC" stroke-width="8" fill="none" stroke-linecap="round" />
+                <!-- Steam -->
+                <path d="M180 170 Q170 140 185 115" stroke="#B55A3B" stroke-width="2.5" fill="none" opacity="0.3" stroke-linecap="round" />
+                <path d="M200 165 Q190 130 205 100" stroke="#B55A3B" stroke-width="2.5" fill="none" opacity="0.4" stroke-linecap="round" />
+                <path d="M220 170 Q210 145 225 120" stroke="#B55A3B" stroke-width="2.5" fill="none" opacity="0.3" stroke-linecap="round" />
+                <!-- Floating leaves -->
+                <path d="M100 120 Q120 100 135 115 Q120 135 100 120 Z" fill="#4D5D4B" opacity="0.25" />
+                <path d="M300 100 Q320 80 335 95 Q320 115 300 100 Z" fill="#4D5D4B" opacity="0.2" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TESTIMONIALS ========== -->
+    <section class="py-24 sm:py-32 bg-paper/50 border-y border-ink/[0.06]">
+      <div class="max-w-8xl mx-auto px-5 sm:px-8 lg:px-12">
+        <div class="fade-up text-center max-w-2xl mx-auto mb-14">
+          <p class="text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-terra mb-4">Kind Words</p>
+          <h2 class="section-heading font-serif text-4xl sm:text-5xl lg:text-6xl text-ink">
+            What our <span class="italic text-terra">regulars</span> say.
+          </h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+          <div class="fade-up bg-white rounded-4xl p-7 sm:p-8 shadow-soft border border-ink/5" style="transition-delay: 0.05s;">
+            <div class="flex gap-1 text-terra mb-4" aria-label="5 out of 5 stars">
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+            </div>
+            <p class="text-ink-soft text-sm leading-relaxed">"I've tried chai all over the city. Nothing comes close to the cardamom chai here. It's the only place I bring out-of-town guests."</p>
+            <div class="flex items-center gap-3 mt-6 pt-5 border-t border-ink/[0.06]">
+              <span class="w-9 h-9 rounded-full bg-terra/15 flex items-center justify-center text-xs font-bold text-terra">RS</span>
+              <div>
+                <p class="text-sm font-semibold text-ink">Riya Sharma</p>
+                <p class="text-xs text-ink-soft">Regular since 2019</p>
+              </div>
+            </div>
+          </div>
+          <div class="fade-up bg-white rounded-4xl p-7 sm:p-8 shadow-soft border border-ink/5" style="transition-delay: 0.12s;">
+            <div class="flex gap-1 text-terra mb-4" aria-label="5 out of 5 stars">
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+            </div>
+            <p class="text-ink-soft text-sm leading-relaxed">"The Kashmiri Kahwa is unreal. Saffron, almonds, just the right sweetness. I come here every Friday to unwind."</p>
+            <div class="flex items-center gap-3 mt-6 pt-5 border-t border-ink/[0.06]">
+              <span class="w-9 h-9 rounded-full bg-olive/15 flex items-center justify-center text-xs font-bold text-olive">AM</span>
+              <div>
+                <p class="text-sm font-semibold text-ink">Arjun Mehta</p>
+                <p class="text-xs text-ink-soft">Tea enthusiast</p>
+              </div>
+            </div>
+          </div>
+          <div class="fade-up bg-white rounded-4xl p-7 sm:p-8 shadow-soft border border-ink/5" style="transition-delay: 0.19s;">
+            <div class="flex gap-1 text-terra mb-4" aria-label="5 out of 5 stars">
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+              <i class="fas fa-star text-xs" aria-hidden="true"></i>
+            </div>
+            <p class="text-ink-soft text-sm leading-relaxed">"This place feels like a hug. The staff remember your order, the music is soft, and the chai is perfect. My happy place."</p>
+            <div class="flex items-center gap-3 mt-6 pt-5 border-t border-ink/[0.06]">
+              <span class="w-9 h-9 rounded-full bg-ink flex items-center justify-center text-xs font-bold text-cream">KT</span>
+              <div>
+                <p class="text-sm font-semibold text-ink">Kavya Thomas</p>
+                <p class="text-xs text-ink-soft">Local designer</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CTA BANNER ========== -->
+    <section class="py-24 sm:py-32 bg-cream">
+      <div class="max-w-8xl mx-auto px-5 sm:px-8 lg:px-12">
+        <div class="fade-up bg-ink rounded-4xl p-10 sm:p-16 lg:p-20 text-center relative overflow-hidden">
+          <div class="absolute top-[-80px] right-[-80px] w-[300px] h-[300px] rounded-full bg-terra/20 blur-[100px]" aria-hidden="true"></div>
+          <div class="absolute bottom-[-80px] left-[-80px] w-[250px] h-[250px] rounded-full bg-olive/20 blur-[100px]" aria-hidden="true"></div>
+          <div class="relative z-10">
+            <h2 class="font-serif text-4xl sm:text-5xl lg:text-6xl text-cream leading-[1.05] max-w-2xl mx-auto">
+              Come for the chai. <br /><span class="italic text-terra-light">Stay for the calm.</span>
+            </h2>
+            <p class="text-cream/60 text-base sm:text-lg mt-6 max-w-md mx-auto">
+              We're open every day from 7 AM to 9 PM. Drop in, or book a private tasting for your group.
+            </p>
+            <div class="flex flex-wrap gap-4 justify-center mt-9">
+              <a href="#visit" class="btn-primary px-7 py-3.5 rounded-full font-semibold text-sm inline-flex items-center gap-2">
+                <i class="fas fa-mug-hot text-xs" aria-hidden="true"></i> Book a tasting
+              </a>
+              <a href="#visit" class="border border-cream/30 text-cream px-7 py-3.5 rounded-full font-semibold text-sm hover:bg-cream/10 transition-colors inline-flex items-center gap-2">
+                Find us
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONTACT / VISIT ========== -->
+    <section id="visit" class="py-24 sm:py-32 bg-paper/50 border-t border-ink/[0.06]">
+      <div class="max-w-8xl mx-auto px-5 sm:px-8 lg:px-12">
+        <div class="grid lg:grid-cols-2 gap-14 lg:gap-20">
+          <!-- Info -->
+          <div class="fade-up">
+            <p class="text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-terra mb-4 flex items-center gap-3">
+              <span class="w-8 h-px bg-terra inline-block"></span>
+              Visit Us
+            </p>
+            <h2 class="section-heading font-serif text-4xl sm:text-5xl lg:text-6xl text-ink leading-[1.05]">
+              Come say <span class="italic text-terra">hello.</span>
+            </h2>
+            <p class="text-ink-soft text-base sm:text-lg mt-5 leading-relaxed max-w-md">
+              We're tucked away on a quiet street in Fort Kochi. Look for the green door and the smell of cardamom.
+            </p>
+            <div class="mt-10 space-y-5">
+              <div class="flex items-start gap-4">
+                <span class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-soft shrink-0">
+                  <i class="fas fa-map-marker-alt text-terra text-sm" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <p class="font-semibold text-ink text-sm">Address</p>
+                  <p class="text-sm text-ink-soft mt-0.5">12/481, Princess Street, Fort Kochi, Kerala 682001</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <span class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-soft shrink-0">
+                  <i class="fas fa-clock text-terra text-sm" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <p class="font-semibold text-ink text-sm">Hours</p>
+                  <p class="text-sm text-ink-soft mt-0.5">Every day · 7:00 AM – 9:00 PM</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <span class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-soft shrink-0">
+                  <i class="fas fa-phone-alt text-terra text-sm" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <p class="font-semibold text-ink text-sm">Phone</p>
+                  <p class="text-sm text-ink-soft mt-0.5">+91 98470 12345</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div class="fade-up" style="transition-delay: 0.1s;">
+            <div class="bg-white rounded-4xl p-7 sm:p-10 shadow-soft border border-ink/5">
+              <h3 class="font-serif text-2xl sm:text-3xl text-ink mb-1">Book a tasting</h3>
+              <p class="text-sm text-ink-soft mb-8">Groups of 2–12. We'll brew a guided flight of five teas for you.</p>
+
+              <form id="bookingForm" novalidate>
+                <div class="space-y-4">
+                  <div>
+                    <label for="name" class="sr-only">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Your name" class="form-field" required />
+                    <p class="error-msg" id="nameError">Please enter your name.</p>
+                  </div>
+                  <div>
+                    <label for="email" class="sr-only">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Email address" class="form-field" required />
+                    <p class="error-msg" id="emailError">Please enter a valid email.</p>
+                  </div>
+                  <div>
+                    <label for="phone" class="sr-only">Phone</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Phone number" class="form-field" required />
+                    <p class="error-msg" id="phoneError">Please enter your phone number.</p>
+                  </div>
+                  <div>
+                    <label for="message" class="sr-only">Message</label>
+                    <textarea id="message" name="message" rows="3" placeholder="How many people, and any dietary notes?" class="form-field" required></textarea>
+                    <p class="error-msg" id="messageError">Please tell us a little about your visit.</p>
+                  </div>
+                </div>
+                <button type="submit" class="btn-primary w-full mt-6 py-3.5 rounded-full font-semibold text-sm flex items-center justify-center gap-2">
+                  <span id="submitText">Send request</span>
+                  <i class="fas fa-paper-plane text-xs" id="submitIcon" aria-hidden="true"></i>
+                </button>
+                <p class="text-[11px] text-ink-soft text-center mt-4">We'll reply within a few hours. No spam, ever.</p>
+              </form>
+
+              <!-- Success message (hidden by default) -->
+              <div id="successMsg" class="hidden text-center py-8 success-pop" role="status" aria-live="polite">
+                <span class="w-14 h-14 rounded-full bg-olive/10 flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-check text-olive text-xl" aria-hidden="true"></i>
+                </span>
+                <p class="font-serif text-2xl text-ink mb-1">Thank you!</p>
+                <p class="text-sm text-ink-soft">Your tasting request is in. We'll be in touch shortly.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="bg-cream border-t border-ink/[0.06] pt-16 pb-8">
+    <div class="max-w-8xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 mb-12">
+        <!-- Brand -->
+        <div class="sm:col-span-2 lg:col-span-1">
+          <a href="#" class="flex items-center gap-2 mb-4" aria-label="Ente Tea Shop home">
+            <span class="w-9 h-9 rounded-full bg-terra flex items-center justify-center text-cream">
+              <i class="fas fa-leaf text-sm" aria-hidden="true"></i>
+            </span>
+            <span class="font-serif text-xl text-ink">Ente Tea Shop</span>
+          </a>
+          <p class="text-sm text-ink-soft leading-relaxed max-w-xs">
+            Slow-brewed chai and single-origin teas from the hills of Kerala. Made with patience, served with love.
+          </p>
+          <div class="flex gap-3 mt-5">
+            <a href="#" class="w-9 h-9 rounded-full border border-ink/10 flex items-center justify-center text-ink-soft hover:text-terra hover:border-terra transition-colors" aria-label="Instagram">
+              <i class="fab fa-instagram text-sm" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-ink/10 flex items-center justify-center text-ink-soft hover:text-terra hover:border-terra transition-colors" aria-label="Facebook">
+              <i class="fab fa-facebook-f text-sm" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-ink/10 flex items-center justify-center text-ink-soft hover:text-terra hover:border-terra transition-colors" aria-label="Twitter">
+              <i class="fab fa-twitter text-sm" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+        <!-- Links -->
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-ink-soft mb-4">Explore</p>
+          <ul class="space-y-2.5">
+            <li><a href="#story" class="text-sm text-ink-soft hover:text-terra transition-colors">Our Story</a></li>
+            <li><a href="#teas" class="text-sm text-ink-soft hover:text-terra transition-colors">Teas</a></li>
+            <li><a href="#ritual" class="text-sm text-ink-soft hover:text-terra transition-colors">The Ritual</a></li>
+            <li><a href="#visit" class="text-sm text-ink-soft hover:text-terra transition-colors">Visit</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-ink-soft mb-4">Visit</p>
+          <ul class="space-y-2.5">
+            <li class="text-sm text-ink-soft">12/481, Princess Street</li>
+            <li class="text-sm text-ink-soft">Fort Kochi, Kerala 682001</li>
+            <li class="text-sm text-ink-soft">+91 98470 12345</li>
+            <li class="text-sm text-ink-soft">hello@enteteadhop.com</li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-ink-soft mb-4">Hours</p>
+          <ul class="space-y-2.5">
+            <li class="text-sm text-ink-soft flex justify-between"><span>Mon – Fri</span><span class="text-ink font-medium">7am – 9pm</span></li>
+            <li class="text-sm text-ink-soft flex justify-between"><span>Saturday</span><span class="text-ink font-medium">8am – 10pm</span></li>
+            <li class="text-sm text-ink-soft flex justify-between"><span>Sunday</span><span class="text-ink font-medium">8am – 8pm</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-ink/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p class="text-xs text-ink-soft">&copy; 2026 Ente Tea Shop. All rights reserved.</p>
+        <p class="text-xs text-ink-soft">Brewed with patience in Fort Kochi.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    (function() {
+      'use strict';
+
+      // === Scroll Progress Bar ===
+      const progressBar = document.getElementById('progressBar');
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = progress + '%';
+      });
+
+      // === Sticky Header ===
+      const header = document.getElementById('siteHeader');
+      const headerInner = document.getElementById('headerInner');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 20) {
+          header.classList.add('header-scrolled');
+          headerInner.classList.remove('h-16', 'sm:h-20');
+          headerInner.classList.add('h-14', 'sm:h-16');
+        } else {
+          header.classList.remove('header-scrolled');
+          headerInner.classList.remove('h-14', 'sm:h-16');
+          headerInner.classList.add('h-16', 'sm:h-20');
+        }
+      });
+
+      // === Mobile Menu ===
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const closeMenu = document.getElementById('closeMenu');
+      const menuIcon = document.getElementById('menuIcon');
+
+      function openMenu() {
+        mobileMenu.classList.add('open');
+        mobileMenu.setAttribute('aria-hidden', 'false');
+        menuToggle.setAttribute('aria-expanded', 'true');
+        menuIcon.classList.remove('fa-bars');
+        menuIcon.classList.add('fa-times');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMenuFn() {
+        mobileMenu.classList.remove('open');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuIcon.classList.remove('fa-times');
+        menuIcon.classList.add('fa-bars');
+        document.body.style.overflow = '';
+      }
+
+      menuToggle.addEventListener('click', () => {
+        if (mobileMenu.classList.contains('open')) {
+          closeMenuFn();
+        } else {
+          openMenu();
+        }
+      });
+
+      closeMenu.addEventListener('click', closeMenuFn);
+
+      // Close menu on link click
+      document.querySelectorAll('.mobile-link').forEach(link => {
+        link.addEventListener('click', closeMenuFn);
+      });
+
+      // === Fade-Up on Scroll (IntersectionObserver) ===
+      const fadeElements = document.querySelectorAll('.fade-up');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
+      });
+
+      fadeElements.forEach(el => observer.observe(el));
+
+      // === Form Validation & Submission ===
+      const form = document.getElementById('bookingForm');
+      const successMsg = document.getElementById('successMsg');
+      const submitText = document.getElementById('submitText');
+      const submitIcon = document.getElementById('submitIcon');
+
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      function showError(fieldId, errorId) {
+        const field = document.getElementById(fieldId);
+        const error = document.getElementById(errorId);
+        field.classList.add('error');
+        error.classList.add('show');
+      }
+
+      function clearError(fieldId, errorId) {
+        const field = document.getElementById(fieldId);
+        const error = document.getElementById(errorId);
+        field.classList.remove('error');
+        error.classList.remove('show');
+      }
+
+      // Live clear on input
+      ['name', 'email', 'phone', 'message'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', () => {
+            el.classList.remove('error');
+            const err = document.getElementById(id + 'Error');
+            if (err) err.classList.remove('show');
+          });
+        }
+      });
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        let isValid = true;
+
+        // Validate name
+        if (!name) {
+          showError('name', 'nameError');
+          isValid = false;
+        } else {
+          clearError('name', 'nameError');
+        }
+
+        // Validate email
+        if (!email || !validateEmail(email)) {
+          showError('email', 'emailError');
+          isValid = false;
+        } else {
+          clearError('email', 'emailError');
+        }
+
+        // Validate phone
+        if (!phone) {
+          showError('phone', 'phoneError');
+          isValid = false;
+        } else {
+          clearError('phone', 'phoneError');
+        }
+
+        // Validate message
+        if (!message) {
+          showError('message', 'messageError');
+          isValid = false;
+        } else {
+          clearError('message', 'messageError');
+        }
+
+        if (!isValid) return;
+
+        // Simulate submission
+        submitText.textContent = 'Sending...';
+        submitIcon.classList.remove('fa-paper-plane');
+        submitIcon.classList.add('fa-spinner', 'fa-spin');
+
+        // TODO: connect form action to backend endpoint
+        // Replace the setTimeout below with a fetch() to your backend.
+        // Example:
+        // fetch('submit', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   cache: 'no-store',
+        //   body: JSON.stringify({
+        //     url: window.location.host,
+        //     table: 'tasting_bookings',
+        //     data: { name, email, phone, message }
+        //   })
+        // });
+
+        setTimeout(() => {
+          form.style.display = 'none';
+          successMsg.classList.remove('hidden');
+          successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 1200);
+      });
+
+      // === Smooth scroll for anchor links ===
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            const offset = 80;
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>
