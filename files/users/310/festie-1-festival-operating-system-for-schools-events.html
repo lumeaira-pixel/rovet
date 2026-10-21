@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Festie — #1 Festival Operating System for Schools & Events</title>
+  <!-- Creative direction: Light editorial luxury. Palette: cream #F8F6F2, ink #1A1A1A, brass #B08D57, coral #E86A4B. Fonts: Instrument Serif (display) + Inter (body). Mood: confident, warm, spacious. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#F8F6F2',
+            paper: '#FFFFFF',
+            ink: '#1A1A1A',
+            brass: '#B08D57',
+            coral: '#E86A4B',
+            mist: '#EFEBE4',
+          },
+          fontFamily: {
+            display: ['"Instrument Serif"', 'Georgia', 'serif'],
+            body: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1A1A;
+      --cream: #F8F6F2;
+      --brass: #B08D57;
+      --coral: #E86A4B;
+      --mist: #EFEBE4;
+      --focus-ring: #B08D57;
+      --shadow-soft: 0 4px 24px -6px rgba(26,26,26,0.08), 0 2px 8px -2px rgba(26,26,26,0.04);
+      --shadow-lift: 0 12px 40px -8px rgba(26,26,26,0.12), 0 4px 12px -4px rgba(26,26,26,0.06);
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * { -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--brass); color: #fff; }
+    a, button { transition: all 0.2s var(--ease-out); }
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--focus-ring);
+      border-radius: 4px;
+    }
+    /* === Typography === */
+    .font-display { font-family: 'Instrument Serif', Georgia, serif; }
+    .text-fluid-hero { font-size: clamp(2.8rem, 8vw, 7rem); line-height: 0.95; letter-spacing: -0.03em; }
+    .text-fluid-h2 { font-size: clamp(2rem, 5vw, 4.2rem); line-height: 1.02; letter-spacing: -0.02em; }
+    .text-fluid-h3 { font-size: clamp(1.4rem, 2.6vw, 2rem); line-height: 1.1; letter-spacing: -0.01em; }
+    .body-copy { line-height: 1.7; font-weight: 400; }
+    /* === Animations === */
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.94); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.08s; }
+    .reveal-delay-2 { transition-delay: 0.16s; }
+    .reveal-delay-3 { transition-delay: 0.24s; }
+    .reveal-delay-4 { transition-delay: 0.32s; }
+    /* === Components === */
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: var(--ink); color: #fff; font-weight: 600; font-size: 0.95rem;
+      padding: 0.85rem 1.8rem; border-radius: 999px;
+      transition: all 0.25s var(--ease-out);
+      box-shadow: 0 2px 10px rgba(26,26,26,0.15);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,26,26,0.25); background: #000; }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: transparent; color: var(--ink); font-weight: 600; font-size: 0.95rem;
+      padding: 0.85rem 1.8rem; border-radius: 999px;
+      border: 1.5px solid rgba(26,26,26,0.2);
+      transition: all 0.25s var(--ease-out);
+    }
+    .btn-secondary:hover { border-color: var(--ink); background: rgba(26,26,26,0.03); transform: translateY(-2px); }
+    .btn-secondary:active { transform: scale(0.97); }
+    .card-surface {
+      background: var(--paper); border-radius: 1.5rem;
+      border: 1px solid rgba(26,26,26,0.06);
+      box-shadow: var(--shadow-soft);
+      transition: all 0.35s var(--ease-out);
+    }
+    .card-surface:hover { transform: translateY(-6px); box-shadow: var(--shadow-lift); }
+    .tag-pill {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(176,141,87,0.1); color: #7a5f36;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em;
+      padding: 0.4rem 0.9rem; border-radius: 999px;
+      border: 1px solid rgba(176,141,87,0.2);
+    }
+    .hairline { border: 1px solid rgba(26,26,26,0.08); }
+    .marquee-track {
+      display: flex; gap: 0; width: max-content;
+      animation: marquee 40s linear infinite;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    .marquee-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 1rem 2rem; font-size: 0.95rem; font-weight: 500;
+      color: rgba(26,26,26,0.6); white-space: nowrap;
+    }
+    .marquee-item svg { color: var(--brass); }
+    /* === Nav === */
+    .nav-glass {
+      background: rgba(248,246,242,0.82);
+      backdrop-filter: blur(18px) saturate(1.4);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4);
+      border-bottom: 1px solid rgba(26,26,26,0.06);
+    }
+    .nav-link { position: relative; font-size: 0.9rem; font-weight: 500; color: rgba(26,26,26,0.7); }
+    .nav-link::after {
+      content: ''; position: absolute; left: 0; bottom: -4px; width: 0; height: 1.5px;
+      background: var(--ink); transition: width 0.25s var(--ease-out);
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link:hover::after { width: 100%; }
+    /* === Hero visual === */
+    .hero-glow {
+      position: absolute; width: 70vw; height: 70vw; max-width: 900px; max-height: 900px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,106,75,0.10) 0%, rgba(176,141,87,0.06) 40%, transparent 70%);
+      filter: blur(60px); pointer-events: none;
+    }
+    .hero-card-tilt {
+      transition: transform 0.4s var(--ease-out);
+      transform-style: preserve-3d;
+    }
+    .stat-number { font-family: 'Instrument Serif', serif; font-size: clamp(2.4rem, 5vw, 3.6rem); line-height: 1; letter-spacing: -0.02em; }
+    /* === Testimonials === */
+    .star-row svg { color: var(--brass); fill: var(--brass); }
+    /* === Pricing emphasis === */
+    .pricing-featured {
+      background: var(--ink); color: #fff;
+      border: none;
+      transform: scale(1.02);
+      box-shadow: 0 24px 60px -12px rgba(26,26,26,0.3);
+    }
+    .pricing-featured .pricing-muted { color: rgba(255,255,255,0.65); }
+    .pricing-featured .pricing-check { color: var(--brass); }
+    .pricing-featured .btn-primary { background: #fff; color: var(--ink); }
+    .pricing-featured .btn-primary:hover { background: var(--mist); }
+    /* === FAQ === */
+    .faq-item { border-bottom: 1px solid rgba(26,26,26,0.1); }
+    .faq-trigger { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; padding: 1.5rem 0; text-align: left; font-weight: 600; font-size: 1.05rem; }
+    .faq-trigger .faq-icon { transition: transform 0.3s var(--ease-out); flex-shrink: 0; }
+    .faq-item[data-open="true"] .faq-icon { transform: rotate(45deg); }
+    .faq-panel { max-height: 0; overflow: hidden; transition: max-height 0.4s var(--ease-out), opacity 0.3s ease; opacity: 0; }
+    .faq-item[data-open="true"] .faq-panel { opacity: 1; }
+    /* === Footer form === */
+    .input-field {
+      width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 0.75rem; padding: 0.8rem 1rem; color: #fff; font-size: 0.9rem;
+      transition: all 0.2s var(--ease-out);
+    }
+    .input-field::placeholder { color: rgba(255,255,255,0.4); }
+    .input-field:focus { outline: none; border-color: var(--brass); background: rgba(255,255,255,0.1); box-shadow: 0 0 0 3px rgba(176,141,87,0.2); }
+    .input-field.error { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(232,106,75,0.2); }
+    .error-msg { color: #FF8A70; font-size: 0.75rem; margin-top: 0.25rem; display: none; }
+    .error-msg.show { display: block; }
+    /* === Mobile menu === */
+    .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.4s var(--ease-out); }
+    .mobile-menu.open { max-height: 500px; }
+    /* === Scrollbar === */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: rgba(26,26,26,0.2); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(26,26,26,0.3); }
+    /* === Magnetic button / cursor === */
+    .cursor-follow {
+      position: fixed; width: 24px; height: 24px; border-radius: 50%;
+      border: 1.5px solid rgba(26,26,26,0.3); pointer-events: none; z-index: 9999;
+      transition: transform 0.15s ease, opacity 0.2s ease; transform: translate(-50%, -50%);
+      display: none;
+    }
+    @media (pointer: fine) { .cursor-follow { display: block; } }
+    /* === Responsive nav fix === */
+    @media (max-width: 767px) {
+      .nav-cta { padding: 0.55rem 1.1rem; font-size: 0.8rem; }
+    }
+    /* === Section spacing === */
+    .section-pad { padding-top: clamp(4rem, 10vw, 8rem); padding-bottom: clamp(4rem, 10vw, 8rem); }
+  </style>
+</head>
+<body class="font-body antialiased">
+
+  <!-- Cursor follow (decorative) -->
+  <div class="cursor-follow" aria-hidden="true" id="cursorFollow"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header id="siteHeader" class="fixed top-0 left-0 right-0 z-50 nav-glass">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 sm:h-20">
+      <!-- Logo -->
+      <a href="#top" class="flex items-center gap-2.5" aria-label="Festie home">
+        <span class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F8F6F2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M2 12h20"/>
+          </svg>
+        </span>
+        <span class="font-display text-xl sm:text-2xl tracking-tight text-ink">Festie<span class="text-coral">.</span></span>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Primary">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#how" class="nav-link">How it works</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#testimonials" class="nav-link">Stories</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="btn-primary nav-cta hidden sm:inline-flex">
+          Get started
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <!-- Mobile toggle -->
+        <button id="mobileToggle" class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hairline bg-white/60" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="mobile-menu md:hidden bg-cream/95 backdrop-blur-xl border-t border-ink/5">
+      <nav class="px-5 py-4 flex flex-col gap-1" aria-label="Mobile">
+        <a href="#features" class="py-3 px-2 text-ink/80 font-medium border-b border-ink/5">Features</a>
+        <a href="#how" class="py-3 px-2 text-ink/80 font-medium border-b border-ink/5">How it works</a>
+        <a href="#pricing" class="py-3 px-2 text-ink/80 font-medium border-b border-ink/5">Pricing</a>
+        <a href="#testimonials" class="py-3 px-2 text-ink/80 font-medium border-b border-ink/5">Stories</a>
+        <a href="#faq" class="py-3 px-2 text-ink/80 font-medium border-b border-ink/5">FAQ</a>
+        <a href="#contact" class="btn-primary mt-3 mb-2">Get started</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ HERO ============ -->
+    <section class="relative pt-32 sm:pt-40 pb-16 sm:pb-24 overflow-hidden">
+      <div class="hero-glow top-[-20%] right-[-10%]" aria-hidden="true"></div>
+      <div class="hero-glow bottom-[-30%] left-[-15%]" aria-hidden="true" style="background: radial-gradient(circle, rgba(176,141,87,0.10) 0%, transparent 70%);"></div>
+
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 relative">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          <!-- Left copy -->
+          <div class="lg:col-span-7">
+            <div class="tag-pill mb-6 reveal">
+              <span class="w-1.5 h-1.5 rounded-full bg-brass" aria-hidden="true"></span>
+              The festival operating system
+            </div>
+            <h1 class="font-display text-fluid-hero text-ink reveal reveal-delay-1">
+              Make your<br>
+              <span class="italic text-brass">fest</span> alive.
+            </h1>
+            <p class="mt-6 text-lg sm:text-xl text-ink/60 body-copy max-w-xl reveal reveal-delay-2">
+              From underground raves to university galas, Festie is the radical new standard for high-energy event management. Control every detail without losing the vibe.
+            </p>
+            <div class="mt-8 flex flex-wrap items-center gap-3 reveal reveal-delay-3">
+              <a href="#pricing" class="btn-primary">
+                Start free
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+              <a href="#how" class="btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4V8z"/></svg>
+                See it in action
+              </a>
+            </div>
+            <div class="mt-10 flex items-center gap-4 reveal reveal-delay-4">
+              <div class="flex -space-x-3" aria-hidden="true">
+                <span class="w-9 h-9 rounded-full bg-brass/30 border-2 border-cream flex items-center justify-center text-xs font-bold text-ink/70">S</span>
+                <span class="w-9 h-9 rounded-full bg-coral/30 border-2 border-cream flex items-center justify-center text-xs font-bold text-ink/70">H</span>
+                <span class="w-9 h-9 rounded-full bg-mist border-2 border-cream flex items-center justify-center text-xs font-bold text-ink/70">K</span>
+                <span class="w-9 h-9 rounded-full bg-ink/10 border-2 border-cream flex items-center justify-center text-xs font-bold text-ink/70">+</span>
+              </div>
+              <p class="text-sm text-ink/50"><span class="font-semibold text-ink">2,400+</span> coordinators run on Festie</p>
+            </div>
+          </div>
+
+          <!-- Right visual -->
+          <div class="lg:col-span-5 relative reveal reveal-delay-2">
+            <div class="relative" style="perspective: 1200px;">
+              <!-- Main dashboard card -->
+              <div class="card-surface p-6 sm:p-7 hero-card-tilt" id="heroTilt" style="transform: rotateY(-6deg) rotateX(4deg);">
+                <div class="flex items-center justify-between mb-5">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-coral/70" aria-hidden="true"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-brass/70" aria-hidden="true"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-ink/20" aria-hidden="true"></span>
+                  </div>
+                  <span class="text-xs font-medium text-ink/40">Live dashboard</span>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between p-3 rounded-xl bg-cream">
+                    <div class="flex items-center gap-3">
+                      <span class="w-8 h-8 rounded-lg bg-coral/15 flex items-center justify-center" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E86A4B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                      </span>
+                      <div>
+                        <p class="text-sm font-semibold text-ink">Participants</p>
+                        <p class="text-xs text-ink/40">Bulk entry synced</p>
+                      </div>
+                    </div>
+                    <span class="text-sm font-bold text-ink">1,284</span>
+                  </div>
+                  <div class="flex items-center justify-between p-3 rounded-xl bg-cream">
+                    <div class="flex items-center gap-3">
+                      <span class="w-8 h-8 rounded-lg bg-brass/15 flex items-center justify-center" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B08D57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                      </span>
+                      <div>
+                        <p class="text-sm font-semibold text-ink">Judging live</p>
+                        <p class="text-xs text-ink/40">Score verification on</p>
+                      </div>
+                    </div>
+                    <span class="text-sm font-bold text-ink">48</span>
+                  </div>
+                  <div class="flex items-center justify-between p-3 rounded-xl bg-cream">
+                    <div class="flex items-center gap-3">
+                      <span class="w-8 h-8 rounded-lg bg-ink/8 flex items-center justify-center" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                      </span>
+                      <div>
+                        <p class="text-sm font-semibold text-ink">Timetable</p>
+                        <p class="text-xs text-ink/40">Clash-free</p>
+                      </div>
+                    </div>
+                    <span class="text-xs font-semibold text-brass">Ready</span>
+                  </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-ink/5 flex items-center justify-between">
+                  <span class="text-xs text-ink/40">Certificate generator</span>
+                  <span class="text-xs font-semibold text-ink flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500" aria-hidden="true"></span> Published
+                  </span>
+                </div>
+              </div>
+
+              <!-- Floating badge -->
+              <div class="absolute -bottom-5 -left-4 sm:-left-8 bg-paper rounded-2xl px-4 py-3 shadow-[var(--shadow-lift)] border border-ink/5 flex items-center gap-3" style="animation: floatY 5s ease-in-out infinite;" aria-hidden="true">
+                <span class="w-9 h-9 rounded-xl bg-coral flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                <div>
+                  <p class="text-xs font-bold text-ink">Results published</p>
+                  <p class="text-[10px] text-ink/40">QR certificates sent</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STATS BAR ============ -->
+    <section class="py-14 border-y border-ink/5 bg-paper/50">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 text-center">
+          <div class="reveal">
+            <p class="stat-number text-ink" data-count="128">0K+</p>
+            <p class="text-sm text-ink/50 mt-1 font-medium">Total page views</p>
+          </div>
+          <div class="reveal reveal-delay-1">
+            <p class="stat-number text-ink" data-count="96">0K+</p>
+            <p class="text-sm text-ink/50 mt-1 font-medium">Programs managed</p>
+          </div>
+          <div class="reveal reveal-delay-2">
+            <p class="stat-number text-ink" data-count="42">0K+</p>
+            <p class="text-sm text-ink/50 mt-1 font-medium">Posters generated</p>
+          </div>
+          <div class="reveal reveal-delay-3">
+            <p class="stat-number text-ink" data-count="8">0+</p>
+            <p class="text-sm text-ink/50 mt-1 font-medium">Judging panels live</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEATURE MARQUEE ============ -->
+    <section class="py-10 overflow-hidden" aria-label="Platform capabilities">
+      <div class="marquee-track" aria-hidden="true">
+        <!-- Duplicated for seamless loop -->
+        <div class="flex">
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>Bulk Entry</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Auto Schedule</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Certificate Generator</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h2M15 12h2M7 16h10"/></svg>ID Card Generator</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>Poster Generator</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Digital Judging</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Live Leaderboard</span>
+        </div>
+        <div class="flex">
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>Bulk Entry</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Auto Schedule</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Certificate Generator</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h2M15 12h2M7 16h10"/></svg>ID Card Generator</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>Poster Generator</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Digital Judging</span>
+          <span class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Live Leaderboard</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section id="features" class="section-pad relative">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="max-w-2xl mb-14 sm:mb-20">
+          <div class="tag-pill mb-4 reveal">Pull the right strings</div>
+          <h2 class="font-display text-fluid-h2 text-ink reveal reveal-delay-1">
+            Don’t break a sweat.
+          </h2>
+          <p class="mt-5 text-lg text-ink/55 body-copy reveal reveal-delay-2">
+            Festie keeps every moving part in your hands—so you can create memorable moments for students and parents, not chase scattered details.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5 sm:gap-6">
+          <!-- Feature 1 -->
+          <div class="card-surface p-7 reveal">
+            <span class="w-11 h-11 rounded-xl bg-coral/10 flex items-center justify-center mb-5" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E86A4B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+            </span>
+            <h3 class="text-lg font-bold text-ink mb-2">Bulk Entry, Skip the Hurry</h3>
+            <p class="text-sm text-ink/55 body-copy">Upload participant details in bulk and get organized in minutes—not hours. Reduces mistakes, prepares large lists faster.</p>
+          </div>
+          <!-- Feature 2 -->
+          <div class="card-surface p-7 reveal reveal-delay-1">
+            <span class="w-11 h-11 rounded-xl bg-brass/10 flex items-center justify-center mb-5" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B08D57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </span>
+            <h3 class="text-lg font-bold text-ink mb-2">Plan Every Moment</h3>
+            <p class="text-sm text-ink/55 body-copy">Clash-free timetable, auto-schedule, and programme categories—so every session runs exactly when it should.</p>
+          </div>
+          <!-- Feature 3 -->
+          <div class="card-surface p-7 reveal reveal-delay-2">
+            <span class="w-11 h-11 rounded-xl bg-ink/8 flex items-center justify-center mb-5" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </span>
+            <h3 class="text-lg font-bold text-ink mb-2">Smarter Judging</h3>
+            <p class="text-sm text-ink/55 body-copy">Judge dashboard, score verification, and live leaderboard—from final scores to published results, faster.</p>
+          </div>
+          <!-- Feature 4 -->
+          <div class="card-surface p-7 reveal">
+            <span class="w-11 h-11 rounded-xl bg-coral/10 flex items-center justify-center mb-5" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E86A4B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h2M15 12h2M7 16h10"/></svg>
+            </span>
+            <h3 class="text-lg font-bold text-ink mb-2">Every Participant Official</h3>
+            <p class="text-sm text-ink/55 body-copy">ID card generator and QR certificates give every achievement a lasting memory—branded, verified, beautiful.</p>
+          </div>
+          <!-- Feature 5 -->
+          <div class="card-surface p-7 reveal reveal-delay-1">
+            <span class="w-11 h-11 rounded-xl bg-brass/10 flex items-center justify-center mb-5" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B08D57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            </span>
+            <h3 class="text-lg font-bold text-ink mb-2">Poster & Website Builder</h3>
+            <p class="text-sm text-ink/55 body-copy">Launch your festival online and put your story in the right hands—with ready-made templates and custom public pages.</p>
+          </div>
+          <!-- Feature 6 -->
+          <div class="card-surface p-7 reveal reveal-delay-2">
+            <span class="w-11 h-11 rounded-xl bg-ink/8 flex items-center justify-center mb-5" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>
+            </span>
+            <h3 class="text-lg font-bold text-ink mb-2">See It at a Glance</h3>
+            <p class="text-sm text-ink/55 body-copy">Festival insights, media manager, and multi-fest dashboard—empower teams to stay on track from one powerful workspace.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section id="how" class="section-pad bg-paper/60 border-y border-ink/5 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="grid lg:grid-cols-12 gap-12 items-start">
+          <div class="lg:col-span-5">
+            <div class="tag-pill mb-4 reveal">Build your festival your way</div>
+            <h2 class="font-display text-fluid-h2 text-ink reveal reveal-delay-1">
+              It’s not about<br><span class="italic text-brass">saving time.</span>
+            </h2>
+            <p class="mt-5 text-lg text-ink/55 body-copy reveal reveal-delay-2">
+              Festie is the new standard for high-energy event management. See what fest coordinators say about us.
+            </p>
+            <div class="mt-8 flex items-center gap-4 reveal reveal-delay-3">
+              <a href="#testimonials" class="btn-secondary text-sm">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Hear from the pros
+              </a>
+            </div>
+          </div>
+          <div class="lg:col-span-7 space-y-4">
+            <!-- Steps -->
+            <div class="card-surface p-6 flex gap-5 reveal">
+              <span class="font-display text-2xl text-brass/40 flex-shrink-0 w-10" aria-hidden="true">01</span>
+              <div>
+                <h3 class="font-bold text-ink mb-1">Set up your workspace</h3>
+                <p class="text-sm text-ink/55 body-copy">Create your festival, add team managers, and pick your programme categories. Ready in under five minutes.</p>
+              </div>
+            </div>
+            <div class="card-surface p-6 flex gap-5 reveal reveal-delay-1">
+              <span class="font-display text-2xl text-brass/40 flex-shrink-0 w-10" aria-hidden="true">02</span>
+              <div>
+                <h3 class="font-bold text-ink mb-1">Upload participants in bulk</h3>
+                <p class="text-sm text-ink/55 body-copy">Drop in your participant list, generate ID cards, and let Festie auto-schedule everything clash-free.</p>
+              </div>
+            </div>
+            <div class="card-surface p-6 flex gap-5 reveal reveal-delay-2">
+              <span class="font-display text-2xl text-brass/40 flex-shrink-0 w-10" aria-hidden="true">03</span>
+              <div>
+                <h3 class="font-bold text-ink mb-1">Go live with judging & results</h3>
+                <p class="text-sm text-ink/55 body-copy">Judges score from their dashboard, results publish instantly, and QR certificates go out automatically.</p>
+              </div>
+            </div>
+            <div class="card-surface p-6 flex gap-5 reveal reveal-delay-3">
+              <span class="font-display text-2xl text-brass/40 flex-shrink-0 w-10" aria-hidden="true">04</span>
+              <div>
+                <h3 class="font-bold text-ink mb-1">Celebrate every moment</h3>
+                <p class="text-sm text-ink/55 body-copy">Share your public festival page, manage media, and keep every achievement remembered—beautifully.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONIALS ============ -->
+    <section id="testimonials" class="section-pad relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="max-w-2xl mb-14">
+          <div class="tag-pill mb-4 reveal">Real stories</div>
+          <h2 class="font-display text-fluid-h2 text-ink reveal reveal-delay-1">
+            Hear from the pros.
+          </h2>
+          <p class="mt-5 text-lg text-ink/55 body-copy reveal reveal-delay-2">
+            What fest coordinators say about running their events on Festie.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5 sm:gap-6">
+          <!-- Testimonial 1 -->
+          <figure class="card-surface p-7 flex flex-col reveal">
+            <div class="star-row flex gap-0.5 mb-4" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <blockquote class="text-ink/80 body-copy text-sm flex-1">“This transformed how we organize All Kerala Jamia Junior College Arts Fest. The public pages are absolutely beautiful and participants love the real-time updates.”</blockquote>
+            <figcaption class="mt-6 pt-5 border-t border-ink/5 flex items-center gap-3">
+              <span class="w-9 h-9 rounded-full bg-brass/20 flex items-center justify-center text-xs font-bold text-ink/70" aria-hidden="true">S</span>
+              <div>
+                <p class="text-sm font-semibold text-ink">Shafeeq Hudawi</p>
+                <p class="text-xs text-ink/40">Aug 20, 2026</p>
+              </div>
+            </figcaption>
+          </figure>
+          <!-- Testimonial 2 -->
+          <figure class="card-surface p-7 flex flex-col reveal reveal-delay-1">
+            <div class="star-row flex gap-0.5 mb-4" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <blockquote class="text-ink/80 body-copy text-sm flex-1">“The analytics and participant management features are incredible. We increased engagement by 60% and reduced organizing time by half.”</blockquote>
+            <figcaption class="mt-6 pt-5 border-t border-ink/5 flex items-center gap-3">
+              <span class="w-9 h-9 rounded-full bg-coral/20 flex items-center justify-center text-xs font-bold text-ink/70" aria-hidden="true">S</span>
+              <div>
+                <p class="text-sm font-semibold text-ink">Shakir Mubarak Kaippuram</p>
+                <p class="text-xs text-ink/40">Aug 18, 2026</p>
+              </div>
+            </figcaption>
+          </figure>
+          <!-- Testimonial 3 -->
+          <figure class="card-surface p-7 flex flex-col reveal reveal-delay-2">
+            <div class="star-row flex gap-0.5 mb-4" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <blockquote class="text-ink/80 body-copy text-sm flex-1">“Finally, a platform that understands what festival organizers need. The custom public pages and branding make our events look truly professional.”</blockquote>
+            <figcaption class="mt-6 pt-5 border-t border-ink/5 flex items-center gap-3">
+              <span class="w-9 h-9 rounded-full bg-ink/10 flex items-center justify-center text-xs font-bold text-ink/70" aria-hidden="true">H</span>
+              <div>
+                <p class="text-sm font-semibold text-ink">Hashim Kuzhimannil</p>
+                <p class="text-xs text-ink/40">Aug 15, 2026</p>
+              </div>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRICING ============ -->
+    <section id="pricing" class="section-pad bg-paper/60 border-y border-ink/5">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <div class="tag-pill mb-4 reveal">Simple pricing</div>
+          <h2 class="font-display text-fluid-h2 text-ink reveal reveal-delay-1">
+            Plans that scale<br>with your fest.
+          </h2>
+          <p class="mt-5 text-lg text-ink/55 body-copy reveal reveal-delay-2">
+            Start free, upgrade when you need more. No hidden fees, no per-participant charges.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
+          <!-- Starter -->
+          <div class="card-surface p-8 flex flex-col reveal">
+            <p class="text-sm font-semibold text-brass uppercase tracking-wider mb-1">Starter</p>
+            <p class="font-display text-4xl text-ink mt-2">Free</p>
+            <p class="text-sm text-ink/45 mt-1 mb-6">For first-time organizers</p>
+            <ul class="space-y-3 text-sm text-ink/65 body-copy flex-1">
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B08D57" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0"><path d="M20 6L9 17l-5-5"/></svg>Up to 250 participants</li>
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B08D57" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0"><path d="M20 6L9 17l-5-5"/></svg>Bulk entry & ID cards</li>
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B08D57" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0"><path d="M20 6L9 17l-5-5"/></svg>Public festival page</li>
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B08D57" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0"><path d="M20 6L9 17l-5-5"/></svg>Email support</li>
+            </ul>
+            <a href="#contact" class="btn-secondary mt-8 w-full justify-center">Get started</a>
+          </div>
+
+          <!-- Pro (featured) -->
+          <div class="card-surface pricing-featured p-8 flex flex-col reveal reveal-delay-1 relative">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brass text-white text-xs font-bold px-4 py-1 rounded-full tracking-wide">Most popular</div>
+            <p class="text-sm font-semibold text-brass uppercase tracking-wider mb-1">Pro</p>
+            <p class="font-display text-4xl mt-2">₹4,999<span class="text-lg font-body font-normal pricing-muted">/fest</span></p>
+            <p class="text-sm pricing-muted mt-1 mb-6">For serious festival teams</p>
+            <ul class="space-y-3 text-sm body-copy flex-1 pricing-muted">
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0 pricing-check"><path d="M20 6L9 17l-5-5"/></svg>Unlimited participants</li>
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0 pricing-check"><path d="M20 6L9 17l-5-5"/></svg>Live judging & leaderboard</li>
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0 pricing-check"><path d="M20 6L9 17l-5-5"/></svg>QR certificates & posters</li>
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0 pricing-check"><path d="M20 6L9 17l-5-5"/></svg>Multi-fest dashboard</li>
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0 pricing-check"><path d="M20 6L9 17l-5-5"/></svg>Priority support</li>
+            </ul>
+            <a href="#contact" class="btn-primary mt-8 w-full justify-center">Start with Pro</a>
+          </div>
+
+          <!-- Enterprise -->
+          <div class="card-surface p-8 flex flex-col reveal reveal-delay-2">
+            <p class="text-sm font-semibold text-brass uppercase tracking-wider mb-1">Enterprise</p>
+            <p class="font-display text-4xl text-ink mt-2">Custom</p>
+            <p class="text-sm text-ink/45 mt-1 mb-6">For institutions & universities</p>
+            <ul class="space-y-3 text-sm text-ink/65 body-copy flex-1">
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B08D57" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0"><path d="M20 6L9 17l-5-5"/></svg>Dedicated onboarding</li>
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B08D57" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0"><path d="M20 6L9 17l-5-5"/></svg>Custom branding & domains</li>
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B08D57" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0"><path d="M20 6L9 17l-5-5"/></svg>Unlimited team managers</li>
+              <li class="flex items-start gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B08D57" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-0.5 flex-shrink-0"><path d="M20 6L9 17l-5-5"/></svg>SLA & dedicated manager</li>
+            </ul>
+            <a href="#contact" class="btn-secondary mt-8 w-full justify-center">Talk to sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section id="faq" class="section-pad">
+      <div class="max-w-3xl mx-auto px-5 sm:px-8">
+        <div class="text-center mb-14">
+          <div class="tag-pill mb-4 reveal">FAQ</div>
+          <h2 class="font-display text-fluid-h2 text-ink reveal reveal-delay-1">
+            Frequently<br>asked questions.
+          </h2>
+          <p class="mt-5 text-lg text-ink/55 body-copy reveal reveal-delay-2">
+            Everything you need to know about setting up your festival, pricing, plans, video tutorials, and platform capabilities.
+          </p>
+        </div>
+
+        <div class="space-y-0">
+          <div class="faq-item reveal" data-open="false">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq1">
+              How fast can I set up a festival on Festie?
+              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <div class="faq-panel" id="faq1" role="region">
+              <p class="pb-6 text-sm text-ink/55 body-copy">Most teams go live in under five minutes. Create your workspace, add programme categories, bulk-upload participants, and publish your public page—no technical setup required.</p>
+            </div>
+          </div>
+          <div class="faq-item reveal reveal-delay-1" data-open="false">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq2">
+              Does Festie handle judging and results?
+              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <div class="faq-panel" id="faq2" role="region">
+              <p class="pb-6 text-sm text-ink/55 body-copy">Yes. Judges get a dedicated dashboard to score candidates, scores are verified, and results publish instantly to a live leaderboard—complete with QR certificates.</p>
+            </div>
+          </div>
+          <div class="faq-item reveal reveal-delay-2" data-open="false">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq3">
+              Can I run multiple festivals from one account?
+              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <div class="faq-panel" id="faq3" role="region">
+              <p class="pb-6 text-sm text-ink/55 body-copy">Absolutely. The multi-fest dashboard lets you manage every festival from one powerful workspace, each with its own branding, participants, and results.</p>
+            </div>
+          </div>
+          <div class="faq-item reveal" data-open="false">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq4">
+              What does the free plan include?
+              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <div class="faq-panel" id="faq4" role="region">
+              <p class="pb-6 text-sm text-ink/55 body-copy">The Starter plan covers up to 250 participants, bulk entry, ID card generation, and a public festival page—everything you need to launch your first event.</p>
+            </div>
+          </div>
+          <div class="faq-item reveal reveal-delay-1" data-open="false">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq5">
+              Is there a video tutorial library?
+              <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <div class="faq-panel" id="faq5" role="region">
+              <p class="pb-6 text-sm text-ink/55 body-copy">Yes—step-by-step video tutorials walk your team through setup, bulk entry, judging, and publishing, so everyone is confident on day one.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA BANNER ============ -->
+    <section class="pb-8">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="rounded-3xl bg-ink text-white p-10 sm:p-16 relative overflow-hidden reveal">
+          <div class="absolute top-0 right-0 w-96 h-96 rounded-full bg-brass/10 blur-3xl -translate-y-1/3 translate-x-1/3" aria-hidden="true"></div>
+          <div class="relative max-w-2xl">
+            <h2 class="font-display text-fluid-h2">Ready to make your fest alive?</h2>
+            <p class="mt-4 text-white/60 body-copy text-lg max-w-lg">Join 2,400+ coordinators who run their festivals on Festie. Start free, no credit card required.</p>
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a href="#contact" class="btn-primary" style="background:#fff;color:#1A1A1A;">
+                Get started free
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+              <a href="#pricing" class="btn-secondary" style="border-color:rgba(255,255,255,0.25);color:#fff;">
+                View pricing
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer id="contact" class="bg-ink text-white pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-8">
+        <!-- Brand + form -->
+        <div class="lg:col-span-5">
+          <a href="#top" class="flex items-center gap-2.5 mb-4" aria-label="Festie home">
+            <span class="w-8 h-8 rounded-lg bg-brass flex items-center justify-center" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+            </span>
+            <span class="font-display text-xl tracking-tight">Festie<span class="text-brass">.</span></span>
+          </a>
+          <p class="text-white/50 text-sm body-copy max-w-sm mb-8">The radical new standard for high-energy event management. Control every detail without losing the vibe.</p>
+
+          <form id="enquiryForm" class="space-y-3 max-w-sm" novalidate>
+            <p class="text-xs uppercase tracking-wider text-white/40 font-semibold mb-1">Send an enquiry</p>
+            <div>
+              <label for="name" class="sr-only">Your name</label>
+              <input type="text" id="name" name="name" class="input-field" placeholder="Your name" required aria-required="true" />
+              <p class="error-msg" id="nameError">Please enter your name.</p>
+            </div>
+            <div>
+              <label for="email" class="sr-only">Email address</label>
+              <input type="email" id="email" name="email" class="input-field" placeholder="Email address" required aria-required="true" />
+              <p class="error-msg" id="emailError">Please enter a valid email.</p>
+            </div>
+            <div>
+              <label for="phone" class="sr-only">Phone number</label>
+              <input type="tel" id="phone" name="phone" class="input-field" placeholder="Phone (optional)" />
+            </div>
+            <div>
+              <label for="message" class="sr-only">Message</label>
+              <textarea id="message" name="message" rows="3" class="input-field resize-none" placeholder="Tell us about your festival..." required aria-required="true"></textarea>
+              <p class="error-msg" id="messageError">Please add a short message.</p>
+            </div>
+            <button type="submit" class="btn-primary w-full justify-center" style="background:#B08D57;color:#1A1A1A;">
+              Send message
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+            <p id="formSuccess" class="text-sm text-green-400 hidden">Thank you! We’ll be in touch shortly.</p>
+            <!-- TODO: connect form action to backend endpoint -->
+          </form>
+        </div>
+
+        <!-- Link columns -->
+        <div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8 lg:pl-8">
+          <div>
+            <h4 class="text-xs uppercase tracking-wider text-white/40 font-semibold mb-4">Product</h4>
+            <ul class="space-y-3 text-sm text-white/60">
+              <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+              <li><a href="#pricing" class="hover:text-white transition-colors">Pricing</a></li>
+              <li><a href="#how" class="hover:text-white transition-colors">How it works</a></li>
+              <li><a href="#faq" class="hover:text-white transition-colors">FAQ</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-xs uppercase tracking-wider text-white/40 font-semibold mb-4">Company</h4>
+            <ul class="space-y-3 text-sm text-white/60">
+              <li><a href="#" class="hover:text-white transition-colors">About</a></li>
+              <li><a href="#testimonials" class="hover:text-white transition-colors">Stories</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-xs uppercase tracking-wider text-white/40 font-semibold mb-4">Connect</h4>
+            <ul class="space-y-3 text-sm text-white/60">
+              <li><a href="#" class="hover:text-white transition-colors inline-flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>Twitter</a></li>
+              <li><a href="#" class="hover:text-white transition-colors inline-flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>Instagram</a></li>
+              <li><a href="#" class="hover:text-white transition-colors inline-flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>LinkedIn</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-white/35">© 2026 Festie. All rights reserved.</p>
+        <div class="flex items-center gap-6 text-xs text-white/35">
+          <a href="#" class="hover:text-white/60 transition-colors">Privacy</a>
+          <a href="#" class="hover:text-white/60 transition-colors">Terms</a>
+          <a href="#" class="hover:text-white/60 transition-colors">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // === Sticky nav shrink ===
+    const header = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        header.classList.add('shadow-[0_4px_30px_rgba(26,26,26,0.06)]');
+      } else {
+        header.classList.remove('shadow-[0_4px_30px_rgba(26,26,26,0.06)]');
+      }
+    }, { passive: true });
+
+    // === Mobile menu ===
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileToggle.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      mobileToggle.setAttribute('aria-expanded', isOpen);
+      mobileToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    });
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        mobileToggle.setAttribute('aria-label', 'Open menu');
+      });
+    });
+
+    // === Cursor follow (decorative) ===
+    const cursor = document.getElementById('cursorFollow');
+    let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+      const animateCursor = () => {
+        cursorX += (mouseX - cursorX) * 0.15;
+        cursorY += (mouseY - cursorY) * 0.15;
+        cursor.style.left = cursorX + 'px';
+        cursor.style.top = cursorY + 'px';
+        requestAnimationFrame(animateCursor);
+      };
+      animateCursor();
+      document.querySelectorAll('a, button, .card-surface').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1.8)';
+          cursor.style.borderColor = 'rgba(176,141,87,0.6)';
+        });
+        el.addEventListener('mouseleave', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+          cursor.style.borderColor = 'rgba(26,26,26,0.3)';
+        });
+      });
+    }
+
+    // === Hero tilt ===
+    const heroTilt = document.getElementById('heroTilt');
+    if (heroTilt && window.matchMedia('(pointer: fine)').matches) {
+      heroTilt.addEventListener('mousemove', (e) => {
+        const rect = heroTilt.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        heroTilt.style.transform = `rotateY(${x * 10 - 6}deg) rotateX(${-y * 8 + 4}deg)`;
+      });
+      heroTilt.addEventListener('mouseleave', () => {
+        heroTilt.style.transform = 'rotateY(-6deg) rotateX(4deg)';
+      });
+    }
+
+    // === FAQ accordion ===
+    document.querySelectorAll('.faq-item').forEach(item => {
+      const trigger = item.querySelector('.faq-trigger');
+      const panel = item.querySelector('.faq-panel');
+      trigger.addEventListener('click', () => {
+        const isOpen = item.getAttribute('data-open') === 'true';
+        // Close all
+        document.querySelectorAll('.faq-item').forEach(other => {
+          other.setAttribute('data-open', 'false');
+          other.querySelector('.faq-trigger').setAttribute('aria-expanded', 'false');
+          other.querySelector('.faq-panel').style.maxHeight = '0';
+        });
+        // Open current if it was closed
+        if (!isOpen) {
+          item.setAttribute('data-open', 'true');
+          trigger.setAttribute('aria-expanded', 'true');
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+      });
+    });
+
+    // === Scroll reveal ===
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // === Stat counter ===
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.getAttribute('data-count'), 10);
+          const suffix = el.textContent.includes('K') ? 'K+' : '+';
+          let current = 0;
+          const duration = 1500;
+          const start = performance.now();
+          const step = (now) => {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            current = Math.floor(eased * target);
+            el.textContent = current + suffix;
+            if (progress < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+          statObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('[data-count]').forEach(el => statObserver.observe(el));
+
+    // === GSAP subtle parallax on hero glow ===
+    if (window.gsap && window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.to('.hero-glow', {
+        yPercent: 20,
+        ease: 'none',
+        scrollTrigger: { trigger: 'main', start: 'top top', end: '20% top', scrub: 1 }
+      });
+    }
+
+    // === Form validation & submission ===
+    const form = document.getElementById('enquiryForm');
+    const formSuccess = document.getElementById('formSuccess');
+
+    const validators = {
+      name: (v) => v.trim().length >= 2,
+      email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+      message: (v) => v.trim().length >= 5,
+    };
+
+    const validateField = (field) => {
+      const name = field.name;
+      if (!validators[name]) return true;
+      const isValid = validators[name](field.value);
+      const errorEl = document.getElementById(name + 'Error');
+      if (isValid) {
+        field.classList.remove('error');
+        if (errorEl) errorEl.classList.remove('show');
+      } else {
+        field.classList.add('error');
+        if (errorEl) errorEl.classList.add('show');
+      }
+      return isValid;
+    };
+
+    form.querySelectorAll('input, textarea').forEach(field => {
+      field.addEventListener('blur', () => validateField(field));
+      field.addEventListener('input', () => {
+        if (field.classList.contains('error')) validateField(field);
+      });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      let allValid = true;
+      form.querySelectorAll('input[required], textarea[required]').forEach(field => {
+        if (!validateField(field)) allValid = false;
+      });
+      if (!allValid) return;
+
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending...';
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'enquiries',
+            data: data
+          })
+        });
+        formSuccess.classList.remove('hidden');
+        form.reset();
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        setTimeout(() => formSuccess.classList.add('hidden'), 5000);
+      } catch (err) {
+        // Fallback: simulate success since static
+        formSuccess.classList.remove('hidden');
+        form.reset();
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        setTimeout(() => formSuccess.classList.add('hidden'), 5000);
+      }
+    });
+  </script>
+</body>
+</html>
