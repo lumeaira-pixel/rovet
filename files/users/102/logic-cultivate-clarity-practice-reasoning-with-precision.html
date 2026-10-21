@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOGIC · Cultivate Clarity — Practice Reasoning with Precision</title>
+  <!-- Creative Direction: Warm cream & brass luxury palette, display serif (Fraunces) + grotesk (Plus Jakarta Sans), calm editorial spacing with micro-interactions. -->
+  <!-- Tailwind CDN + custom config -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.16/lib/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.16/lib/index.min.js" onerror="this.remove()"></script>
+  <script>
+    // Use Tailwind Play CDN (tailwindcss v3 browser build) via CDN
+    document.addEventListener('DOMContentLoaded', function () {
+      if (!window.tailwind) {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.tailwindcss.com/3.4.16';
+        document.head.appendChild(s);
+      }
+    });
+  </script>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1A1815',
+            cream: '#FBF9F6',
+            sand: '#F2EDE6',
+            brass: '#B08D57',
+            'brass-dark': '#8F6F3E',
+            mist: '#E8E2D9',
+          },
+          fontFamily: {
+            display: ['Fraunces', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          borderRadius: {
+            '4xl': '2rem',
+            '5xl': '2.5rem',
+          },
+          boxShadow: {
+            'lux': '0 20px 50px -12px rgba(26,24,21,0.12), 0 4px 12px -4px rgba(26,24,21,0.06)',
+            'lux-lg': '0 32px 80px -20px rgba(26,24,21,0.18), 0 8px 24px -8px rgba(26,24,21,0.08)',
+            'brass': '0 8px 30px -6px rgba(176,141,87,0.35)',
+          },
+          transitionTimingFunction: {
+            'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1815;
+      --ink-soft: #4A453E;
+      --cream: #FBF9F6;
+      --sand: #F2EDE6;
+      --mist: #E8E2D9;
+      --brass: #B08D57;
+      --brass-dark: #8F6F3E;
+      --focus-ring: #B08D57;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --shadow-soft: 0 20px 50px -12px rgba(26,24,21,0.12), 0 4px 12px -4px rgba(26,24,21,0.06);
+      --shadow-lift: 0 32px 80px -20px rgba(26,24,21,0.18), 0 8px 24px -8px rgba(26,24,21,0.08);
+      --shadow-brass: 0 8px 30px -6px rgba(176,141,87,0.35);
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --tracking-tight: -0.02em;
+      --tracking-tighter: -0.04em;
+    }
+
+    /* === Base & Reset === */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* === Accessibility === */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    *:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cream), 0 0 0 5px var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    ::selection {
+      background-color: rgba(176, 141, 87, 0.25);
+      color: var(--ink);
+    }
+
+    /* === Typography === */
+    h1, h2, h3, h4 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.1;
+    }
+
+    .text-balance {
+      text-wrap: balance;
+    }
+
+    .display-hero {
+      font-size: clamp(2.75rem, 7vw, 5.5rem);
+      font-weight: 600;
+      letter-spacing: var(--tracking-tighter);
+      line-height: 1.02;
+    }
+
+    .display-section {
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      font-weight: 600;
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.08;
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background-color: var(--ink);
+      color: var(--cream);
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      letter-spacing: 0.01em;
+      padding: 0.875rem 2rem;
+      border-radius: 999px;
+      border: 1px solid var(--ink);
+      cursor: pointer;
+      transition: transform 0.25s var(--ease-out-expo), box-shadow 0.25s var(--ease-out-expo), background-color 0.25s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+      background-color: #2D2823;
+      box-shadow: var(--shadow-brass);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97) translateY(0);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background-color: transparent;
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      letter-spacing: 0.01em;
+      padding: 0.875rem 2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(26, 24, 21, 0.2);
+      cursor: pointer;
+      transition: border-color 0.25s var(--ease-out-expo), background-color 0.25s ease, transform 0.25s var(--ease-out-expo);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--brass);
+      background-color: rgba(176, 141, 87, 0.06);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.97) translateY(0);
+    }
+
+    .btn-nav {
+      font-size: 0.875rem;
+      padding: 0.625rem 1.5rem;
+    }
+
+    /* === Header === */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      transition: background-color 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease;
+      background-color: transparent;
+    }
+
+    .site-header.scrolled {
+      background-color: rgba(251, 249, 246, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 1px 0 rgba(26, 24, 21, 0.06);
+    }
+
+    /* === Cards & Surfaces === */
+    .surface-card {
+      background-color: #fff;
+      border: 1px solid rgba(26, 24, 21, 0.06);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+    }
+
+    .surface-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lift);
+    }
+
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+    }
+
+    /* === Hero Visual Depth === */
+    .hero-visual {
+      perspective: 1200px;
+    }
+
+    .hero-visual-inner {
+      transform: rotateY(-6deg) rotateX(4deg);
+      transition: transform 0.8s var(--ease-out-expo);
+      transform-style: preserve-3d;
+    }
+
+    .hero-visual:hover .hero-visual-inner {
+      transform: rotateY(0deg) rotateX(0deg) scale(1.01);
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      gap: 4rem;
+      width: max-content;
+      animation: marquee 32s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Reveal Animations === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === Interactive Accordion === */
+    .faq-item {
+      border-bottom: 1px solid rgba(26, 24, 21, 0.08);
+    }
+
+    .faq-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.5rem 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-align: left;
+      transition: color 0.2s ease;
+    }
+
+    .faq-toggle:hover {
+      color: var(--brass-dark);
+    }
+
+    .faq-toggle .faq-icon {
+      flex-shrink: 0;
+      transition: transform 0.4s var(--ease-out-expo);
+    }
+
+    .faq-toggle[aria-expanded="true"] .faq-icon {
+      transform: rotate(45deg);
+    }
+
+    .faq-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s var(--ease-out-expo), padding 0.3s ease;
+    }
+
+    .faq-content-inner {
+      padding-bottom: 1.5rem;
+      color: var(--ink-soft);
+      font-size: 0.975rem;
+      line-height: 1.7;
+      max-width: 60ch;
+    }
+
+    /* === Pricing Toggle === */
+    .pricing-toggle-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background-color: var(--sand);
+      border-radius: 999px;
+      padding: 0.375rem;
+      border: 1px solid rgba(26, 24, 21, 0.06);
+    }
+
+    .pricing-toggle-btn {
+      padding: 0.5rem 1.5rem;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: var(--ink-soft);
+      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .pricing-toggle-btn.active {
+      background-color: #fff;
+      color: var(--ink);
+      box-shadow: 0 2px 8px rgba(26, 24, 21, 0.08);
+    }
+
+    /* === Form Styles === */
+    .form-field {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background-color: #fff;
+      border: 1px solid rgba(26, 24, 21, 0.12);
+      border-radius: 12px;
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      color: var(--ink);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .form-field::placeholder {
+      color: rgba(26, 24, 21, 0.35);
+    }
+
+    .form-field:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.15);
+    }
+
+    .form-field.error {
+      border-color: #C0392B;
+      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+    }
+
+    .form-field.success {
+      border-color: #2E7D5B;
+    }
+
+    .form-error-text {
+      display: none;
+      color: #C0392B;
+      font-size: 0.8125rem;
+      margin-top: 0.375rem;
+    }
+
+    .form-error-text.visible {
+      display: block;
+    }
+
+    /* === Footer === */
+    .footer-link {
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--brass-dark);
+    }
+
+    /* === Nav Link Underline === */
+    .nav-link {
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-decoration: none;
+      padding: 0.25rem 0;
+      transition: color 0.2s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background-color: var(--brass);
+      transition: width 0.3s var(--ease-out-expo);
+    }
+
+    .nav-link:hover {
+      color: var(--ink);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.5s var(--ease-out-expo);
+    }
+
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    .mobile-menu-overlay {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .mobile-menu-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* === Stat Counter === */
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: clamp(2.25rem, 4vw, 3rem);
+      font-weight: 600;
+      letter-spacing: var(--tracking-tight);
+      line-height: 1;
+    }
+
+    /* === Testimonial Card === */
+    .testimonial-card {
+      background-color: #fff;
+      border: 1px solid rgba(26, 24, 21, 0.06);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lift);
+    }
+
+    /* === Noise Texture === */
+    .noise-bg {
+      position: relative;
+    }
+
+    .noise-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+      border-radius: inherit;
+    }
+
+    /* === Gradient Accents === */
+    .radial-glow {
+      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(176, 141, 87, 0.12), transparent 70%);
+    }
+
+    .text-gradient-brass {
+      background: linear-gradient(135deg, #8F6F3E 0%, #B08D57 50%, #C9A96E 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* === Logo Mark === */
+    .logo-mark {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+    }
+
+    .logo-symbol {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(140deg, var(--ink) 0%, #3A342D 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--brass);
+      box-shadow: 0 4px 12px rgba(26, 24, 21, 0.15);
+      flex-shrink: 0;
+    }
+
+    /* === Responsive tweaks === */
+    @media (max-width: 640px) {
+      .btn-primary,
+      .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
+      }
+
+      .btn-nav {
+        padding: 0.5rem 1rem;
+        font-size: 0.8125rem;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+      }
+    }
+
+    /* === Reduce Motion === */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* === Loading Spinner (if needed) === */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="noise-bg">
+
+  <!-- Skip to content -->
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-ink focus:text-cream focus:px-4 focus:py-2 focus:rounded-full">Skip to content</a>
+
+  <!-- === HEADER === -->
+  <header class="site-header" id="siteHeader">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="flex items-center justify-between h-20 md:h-24">
+        <!-- Logo -->
+        <a href="#" class="logo-mark" aria-label="LOGIC home">
+          <span class="logo-symbol" aria-hidden="true">
+            <i data-lucide="brain" class="w-5 h-5"></i>
+          </span>
+          <span class="font-display text-xl md:text-2xl font-semibold tracking-tight text-ink">LOGIC</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center gap-10" aria-label="Main navigation">
+          <a href="#method" class="nav-link">The Method</a>
+          <a href="#pricing" class="nav-link">Pricing</a>
+          <a href="#testimonials" class="nav-link">Results</a>
+          <a href="#faq" class="nav-link">FAQ</a>
+        </nav>
+
+        <!-- Desktop CTA -->
+        <div class="hidden md:flex items-center gap-3">
+          <a href="#contact" class="btn-secondary btn-nav">Start free</a>
+          <a href="#pricing" class="btn-primary btn-nav">Begin practice</a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button class="md:hidden p-2 -mr-2 rounded-lg text-ink hover:bg-sand transition-colors" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay fixed inset-0 bg-ink/20 z-40 md:hidden" id="mobileMenuOverlay" aria-hidden="true"></div>
+
+    <!-- Mobile Menu Panel -->
+    <div class="mobile-menu fixed top-0 right-0 bottom-0 w-[85%] max-w-sm bg-cream z-50 md:hidden shadow-2xl flex flex-col" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+      <div class="flex items-center justify-between p-5 border-b border-mist">
+        <span class="font-display text-lg font-semibold">Menu</span>
+        <button class="p-2 -mr-1 rounded-lg text-ink hover:bg-sand transition-colors" id="mobileMenuClose" aria-label="Close menu">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-1 p-5" aria-label="Mobile navigation">
+        <a href="#method" class="mobile-nav-link py-3 px-3 rounded-lg text-lg font-medium text-ink hover:bg-sand transition-colors">The Method</a>
+        <a href="#pricing" class="mobile-nav-link py-3 px-3 rounded-lg text-lg font-medium text-ink hover:bg-sand transition-colors">Pricing</a>
+        <a href="#testimonials" class="mobile-nav-link py-3 px-3 rounded-lg text-lg font-medium text-ink hover:bg-sand transition-colors">Results</a>
+        <a href="#faq" class="mobile-nav-link py-3 px-3 rounded-lg text-lg font-medium text-ink hover:bg-sand transition-colors">FAQ</a>
+      </nav>
+      <div class="mt-auto p-5 border-t border-mist flex flex-col gap-3">
+        <a href="#contact" class="mobile-nav-link btn-secondary w-full text-center">Start free</a>
+        <a href="#pricing" class="mobile-nav-link btn-primary w-full text-center">Begin practice</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- === HERO === -->
+    <section class="relative pt-32 md:pt-44 pb-16 md:pb-24 overflow-hidden">
+      <div class="absolute inset-0 radial-glow" aria-hidden="true"></div>
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 relative">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          <!-- Hero Copy -->
+          <div class="max-w-xl">
+            <div class="reveal inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm border border-mist rounded-full px-4 py-1.5 mb-8">
+              <span class="w-1.5 h-1.5 rounded-full bg-brass animate-pulse" aria-hidden="true"></span>
+              <span class="text-xs font-semibold tracking-wide text-ink-soft uppercase">Now accepting new cohorts</span>
+            </div>
+
+            <h1 class="display-hero text-balance reveal">
+              Think sharper.<br />
+              Reason <span class="text-gradient-brass">deeper.</span><br />
+              Decide better.
+            </h1>
+
+            <p class="mt-6 text-lg md:text-xl text-ink-soft leading-relaxed max-w-lg reveal" style="transition-delay: 0.1s;">
+              LOGIC is the precision practice platform for analysts, founders, and critical thinkers. Daily reasoning drills, structured argument mapping, and feedback that actually makes you smarter.
+            </p>
+
+            <div class="mt-9 flex flex-col sm:flex-row gap-3 reveal" style="transition-delay: 0.2s;">
+              <a href="#pricing" class="btn-primary">
+                Begin your practice
+                <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+              <a href="#method" class="btn-secondary">
+                Explore the method
+              </a>
+            </div>
+
+            <div class="mt-10 flex items-center gap-5 reveal" style="transition-delay: 0.3s;">
+              <div class="flex -space-x-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brass to-brass-dark border-2 border-cream flex items-center justify-center text-cream text-xs font-bold">AK</div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-ink to-ink-soft border-2 border-cream flex items-center justify-center text-cream text-xs font-bold">JM</div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-mist to-sand border-2 border-cream flex items-center justify-center text-ink text-xs font-bold">SR</div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brass-dark to-ink border-2 border-cream flex items-center justify-center text-cream text-xs font-bold">+</div>
+              </div>
+              <div>
+                <div class="flex gap-0.5 text-brass" aria-hidden="true">
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                  <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                </div>
+                <p class="text-sm text-ink-soft mt-0.5">Trusted by 4,200+ rigorous thinkers</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Visual -->
+          <div class="hero-visual hidden lg:block reveal" style="transition-delay: 0.15s;">
+            <div class="hero-visual-inner relative">
+              <!-- Main panel -->
+              <div class="glass-panel p-6 shadow-lux-lg relative z-10">
+                <div class="flex items-center justify-between mb-5">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-brass" aria-hidden="true"></span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-ink-soft">Today's drill</span>
+                  </div>
+                  <span class="text-xs font-medium text-brass-dark bg-brass/10 px-2.5 py-1 rounded-full">12 min</span>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 border border-mist/60 mb-4">
+                  <p class="text-sm font-semibold text-ink mb-3">Which conclusion follows logically?</p>
+                  <p class="text-sm text-ink-soft leading-relaxed mb-4">All analysts who verify sources are rigorous. Some rigorous people are not analysts. Therefore...</p>
+                  <div class="space-y-2.5">
+                    <div class="flex items-start gap-2.5 p-2.5 rounded-lg bg-sand/50">
+                      <span class="mt-0.5 w-4 h-4 rounded-full border-2 border-brass bg-brass flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="check" class="w-2.5 h-2.5 text-white"></i>
+                      </span>
+                      <span class="text-xs text-ink leading-snug">Some rigorous people may not be analysts.</span>
+                    </div>
+                    <div class="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-sand/30 transition-colors">
+                      <span class="mt-0.5 w-4 h-4 rounded-full border-2 border-mist flex-shrink-0"></span>
+                      <span class="text-xs text-ink-soft leading-snug">All rigorous people are analysts.</span>
+                    </div>
+                    <div class="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-sand/30 transition-colors">
+                      <span class="mt-0.5 w-4 h-4 rounded-full border-2 border-mist flex-shrink-0"></span>
+                      <span class="text-xs text-ink-soft leading-snug">No analysts are rigorous.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <i data-lucide="flame" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+                    <span class="text-xs font-semibold text-ink">14-day streak</span>
+                  </div>
+                  <div class="h-1.5 w-24 bg-mist rounded-full overflow-hidden">
+                    <div class="h-full w-2/3 bg-brass rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Floating accent card -->
+              <div class="absolute -bottom-8 -left-8 bg-white rounded-2xl p-4 shadow-lux border border-mist/60 z-20 w-48">
+                <div class="flex items-center gap-2 mb-1.5">
+                  <i data-lucide="trending-up" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+                  <span class="text-xs font-semibold text-ink">Accuracy</span>
+                </div>
+                <div class="font-display text-2xl font-semibold text-ink">94.2%</div>
+                <div class="text-[11px] text-ink-soft mt-0.5">+12% this month</div>
+              </div>
+
+              <!-- Decorative gradient -->
+              <div class="absolute -top-12 -right-12 w-48 h-48 bg-brass/15 rounded-full blur-3xl" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === SOCIAL PROOF / MARQUEE === -->
+    <section class="py-10 border-y border-mist/60 bg-sand/30 overflow-hidden" aria-label="Trusted by">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <p class="text-center text-xs font-semibold uppercase tracking-[0.2em] text-ink-soft/60 mb-6 reveal">Practised by teams at</p>
+        <div class="marquee-track" aria-hidden="true">
+          <span class="font-display text-2xl md:text-3xl font-medium text-ink/25 whitespace-nowrap">Axiom Capital</span>
+          <span class="font-display text-2xl md:text-3xl font-medium text-ink/25 whitespace-nowrap">Northwind Labs</span>
+          <span class="font-display text-2xl md:text-3xl font-medium text-ink/25 whitespace-nowrap">Veritas Law</span>
+          <span class="font-display text-2xl md:text-3xl font-medium text-ink/25 whitespace-nowrap">Meridian Research</span>
+          <span class="font-display text-2xl md:text-3xl font-medium text-ink/25 whitespace-nowrap">Clarity Partners</span>
+          <span class="font-display text-2xl md:text-3xl font-medium text-ink/25 whitespace-nowrap">Axiom Capital</span>
+          <span class="font-display text-2xl md:text-3xl font-medium text-ink/25 whitespace-nowrap">Northwind Labs</span>
+          <span class="font-display text-2xl md:text-3xl font-medium text-ink/25 whitespace-nowrap">Veritas Law</span>
+          <span class="font-display text-2xl md:text-3xl font-medium text-ink/25 whitespace-nowrap">Meridian Research</span>
+          <span class="font-display text-2xl md:text-3xl font-medium text-ink/25 whitespace-nowrap">Clarity Partners</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- === STATS BAR === -->
+    <section class="py-16 md:py-20" aria-label="Key statistics">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          <div class="text-center reveal">
+            <div class="stat-number text-ink" data-count="4200" data-suffix="+">0</div>
+            <p class="mt-2 text-sm text-ink-soft">Active thinkers</p>
+          </div>
+          <div class="text-center reveal" style="transition-delay: 0.08s;">
+            <div class="stat-number text-ink" data-count="94" data-suffix="%">0</div>
+            <p class="mt-2 text-sm text-ink-soft">Avg. accuracy lift</p>
+          </div>
+          <div class="text-center reveal" style="transition-delay: 0.16s;">
+            <div class="stat-number text-ink" data-count="120" data-suffix="k">0</div>
+            <p class="mt-2 text-sm text-ink-soft">Drills completed</p>
+          </div>
+          <div class="text-center reveal" style="transition-delay: 0.24s;">
+            <div class="stat-number text-ink" data-count="14" data-suffix="d">0</div>
+            <p class="mt-2 text-sm text-ink-soft">Avg. streak length</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === METHOD / FEATURES === -->
+    <section id="method" class="py-20 md:py-28 bg-sand/40 relative">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="max-w-2xl mb-16 md:mb-20 reveal">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-brass-dark mb-4">The LOGIC Method</p>
+          <h2 class="display-section text-balance">Reasoning is a muscle. We built the gym.</h2>
+          <p class="mt-5 text-lg text-ink-soft leading-relaxed">Three interlocking practices — daily precision drills, structured argument mapping, and deliberate error review — compound into sharper judgment over time.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+          <!-- Feature 1 -->
+          <article class="surface-card p-8 reveal">
+            <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+              <i data-lucide="target" class="w-6 h-6 text-brass-dark" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display text-2xl font-semibold mb-3">Precision Drills</h3>
+            <p class="text-ink-soft leading-relaxed text-[0.95rem]">Short, adaptive exercises in deduction, induction, and probabilistic reasoning. Five minutes a day is enough to see measurable gains.</p>
+            <ul class="mt-6 space-y-2.5">
+              <li class="flex items-center gap-2 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Adaptive difficulty
+              </li>
+              <li class="flex items-center gap-2 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Instant explanations
+              </li>
+              <li class="flex items-center gap-2 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Spaced repetition
+              </li>
+            </ul>
+          </article>
+
+          <!-- Feature 2 -->
+          <article class="surface-card p-8 reveal" style="transition-delay: 0.1s;">
+            <div class="w-12 h-12 rounded-2xl bg-ink/5 flex items-center justify-center mb-6">
+              <i data-lucide="git-branch" class="w-6 h-6 text-ink" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display text-2xl font-semibold mb-3">Argument Mapping</h3>
+            <p class="text-ink-soft leading-relaxed text-[0.95rem]">Deconstruct complex claims into premises, inferences, and conclusions. See exactly where reasoning holds — and where it breaks.</p>
+            <ul class="mt-6 space-y-2.5">
+              <li class="flex items-center gap-2 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Visual premise trees
+              </li>
+              <li class="flex items-center gap-2 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Fallacy detection
+              </li>
+              <li class="flex items-center gap-2 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Peer review threads
+              </li>
+            </ul>
+          </article>
+
+          <!-- Feature 3 -->
+          <article class="surface-card p-8 reveal" style="transition-delay: 0.2s;">
+            <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+              <i data-lucide="rotate-ccw" class="w-6 h-6 text-brass-dark" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display text-2xl font-semibold mb-3">Error Review</h3>
+            <p class="text-ink-soft leading-relaxed text-[0.95rem]">The most intelligent people aren't those who never err — they're the ones who systematically learn from it. We make review effortless.</p>
+            <ul class="mt-6 space-y-2.5">
+              <li class="flex items-center gap-2 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Mistake journaling
+              </li>
+              <li class="flex items-center gap-2 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Pattern insights
+              </li>
+              <li class="flex items-center gap-2 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Weekly calibration
+              </li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- === PRICING === -->
+    <section id="pricing" class="py-20 md:py-28">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-brass-dark mb-4">Pricing</p>
+          <h2 class="display-section text-balance">Invest in the only asset that compounds everywhere.</h2>
+          <p class="mt-5 text-lg text-ink-soft">Simple, transparent plans. No lock-in. Cancel anytime.</p>
+        </div>
+
+        <!-- Toggle -->
+        <div class="flex justify-center mb-12 reveal" style="transition-delay: 0.08s;">
+          <div class="pricing-toggle-wrap" role="group" aria-label="Billing period">
+            <button class="pricing-toggle-btn active" data-period="monthly" aria-pressed="true">Monthly</button>
+            <button class="pricing-toggle-btn" data-period="yearly" aria-pressed="false">Yearly <span class="text-brass-dark">−20%</span></button>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8 items-start">
+          <!-- Plan 1 -->
+          <article class="surface-card p-8 reveal">
+            <h3 class="font-display text-xl font-semibold">Practice</h3>
+            <p class="text-sm text-ink-soft mt-1 mb-6">For the curious beginner.</p>
+            <div class="flex items-baseline gap-1 mb-6">
+              <span class="font-display text-4xl font-semibold" data-price-monthly="$0" data-price-yearly="$0">$0</span>
+              <span class="text-sm text-ink-soft">/ month</span>
+            </div>
+            <a href="#contact" class="btn-secondary w-full text-center mb-8">Start free</a>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-2.5 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                3 drills per week
+              </li>
+              <li class="flex items-center gap-2.5 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Basic progress tracking
+              </li>
+              <li class="flex items-center gap-2.5 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Community forum access
+              </li>
+            </ul>
+          </article>
+
+          <!-- Plan 2 (Highlighted) -->
+          <article class="relative surface-card p-8 border-2 border-brass shadow-lux-lg reveal md:-mt-4" style="transition-delay: 0.1s;">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brass text-cream text-[11px] font-bold uppercase tracking-wider px-4 py-1 rounded-full whitespace-nowrap">Most chosen</div>
+            <h3 class="font-display text-xl font-semibold">Rigour</h3>
+            <p class="text-sm text-ink-soft mt-1 mb-6">For serious daily practice.</p>
+            <div class="flex items-baseline gap-1 mb-6">
+              <span class="font-display text-4xl font-semibold" data-price-monthly="$18" data-price-yearly="$14">$18</span>
+              <span class="text-sm text-ink-soft">/ month</span>
+            </div>
+            <a href="#contact" class="btn-primary w-full text-center mb-8">Begin practice</a>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-2.5 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Unlimited adaptive drills
+              </li>
+              <li class="flex items-center gap-2.5 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Full argument mapping tools
+              </li>
+              <li class="flex items-center gap-2.5 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Error review & insights
+              </li>
+              <li class="flex items-center gap-2.5 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Weekly calibration reports
+              </li>
+            </ul>
+          </article>
+
+          <!-- Plan 3 -->
+          <article class="surface-card p-8 reveal" style="transition-delay: 0.2s;">
+            <h3 class="font-display text-xl font-semibold">Mastery</h3>
+            <p class="text-sm text-ink-soft mt-1 mb-6">For teams and professionals.</p>
+            <div class="flex items-baseline gap-1 mb-6">
+              <span class="font-display text-4xl font-semibold" data-price-monthly="$42" data-price-yearly="$34">$42</span>
+              <span class="text-sm text-ink-soft">/ month</span>
+            </div>
+            <a href="#contact" class="btn-secondary w-full text-center mb-8">Contact us</a>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-2.5 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Everything in Rigour
+              </li>
+              <li class="flex items-center gap-2.5 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Team dashboards
+              </li>
+              <li class="flex items-center gap-2.5 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Custom reasoning tracks
+              </li>
+              <li class="flex items-center gap-2.5 text-sm text-ink-soft">
+                <i data-lucide="check" class="w-4 h-4 text-brass flex-shrink-0" aria-hidden="true"></i>
+                Dedicated support
+              </li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- === TESTIMONIALS === -->
+    <section id="testimonials" class="py-20 md:py-28 bg-sand/40">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="max-w-2xl mb-14 reveal">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-brass-dark mb-4">Results</p>
+          <h2 class="display-section text-balance">What sharper thinking feels like.</h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+          <!-- Testimonial 1 -->
+          <blockquote class="testimonial-card reveal">
+            <div class="flex gap-0.5 text-brass mb-4" aria-label="5 out of 5 stars">
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+            </div>
+            <p class="text-ink leading-relaxed text-[0.95rem]">"I've read the classics. I've taken courses. Nothing changed my day-to-day judgment like three weeks of LOGIC's error review. I catch assumptions before they cost me."</p>
+            <footer class="mt-6 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brass to-brass-dark flex items-center justify-center text-cream text-xs font-bold flex-shrink-0">AK</div>
+              <div>
+                <div class="text-sm font-semibold text-ink">Amara Kessler</div>
+                <div class="text-xs text-ink-soft">Investment analyst, Axiom Capital</div>
+              </div>
+            </footer>
+          </blockquote>
+
+          <!-- Testimonial 2 -->
+          <blockquote class="testimonial-card reveal" style="transition-delay: 0.1s;">
+            <div class="flex gap-0.5 text-brass mb-4" aria-label="5 out of 5 stars">
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+            </div>
+            <p class="text-ink leading-relaxed text-[0.95rem]">"The argument mapping tool is quietly revolutionary. Our strategy team now maps every major decision before committing. The quality of debate has transformed."</p>
+            <footer class="mt-6 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-ink to-ink-soft flex items-center justify-center text-cream text-xs font-bold flex-shrink-0">JM</div>
+              <div>
+                <div class="text-sm font-semibold text-ink">Jonas Meredith</div>
+                <div class="text-xs text-ink-soft">Head of Strategy, Northwind Labs</div>
+              </div>
+            </footer>
+          </blockquote>
+
+          <!-- Testimonial 3 -->
+          <blockquote class="testimonial-card reveal" style="transition-delay: 0.2s;">
+            <div class="flex gap-0.5 text-brass mb-4" aria-label="5 out of 5 stars">
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+            </div>
+            <p class="text-ink leading-relaxed text-[0.95rem]">"As a lawyer, I thought I was already rigorous. LOGIC showed me the gaps — specifically in probabilistic reasoning. I'm a sharper advocate because of it."</p>
+            <footer class="mt-6 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-mist to-sand flex items-center justify-center text-ink text-xs font-bold flex-shrink-0">SR</div>
+              <div>
+                <div class="text-sm font-semibold text-ink">Sofia Reyes</div>
+                <div class="text-xs text-ink-soft">Partner, Veritas Law</div>
+              </div>
+            </footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- === FAQ === -->
+    <section id="faq" class="py-20 md:py-28">
+      <div class="max-w-3xl mx-auto px-5 sm:px-8">
+        <div class="text-center mb-12 reveal">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-brass-dark mb-4">FAQ</p>
+          <h2 class="display-section">Questions, answered.</h2>
+        </div>
+
+        <div class="reveal">
+          <div class="faq-item">
+            <button class="faq-toggle" aria-expanded="false" aria-controls="faq-1">
+              <span>What exactly is "logic practice"?</span>
+              <i data-lucide="plus" class="faq-icon w-5 h-5 text-ink-soft flex-shrink-0" aria-hidden="true"></i>
+            </button>
+            <div class="faq-content" id="faq-1" role="region">
+              <div class="faq-content-inner">LOGIC gives you structured exercises in formal and informal reasoning — deduction, induction, abduction, and probabilistic thinking. Each drill is short, feedback is immediate, and the difficulty adapts to your skill. Over time, you build the same kind of systematic rigor that top analysts and researchers rely on.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-toggle" aria-expanded="false" aria-controls="faq-2">
+              <span>How much time does it take each day?</span>
+              <i data-lucide="plus" class="faq-icon w-5 h-5 text-ink-soft flex-shrink-0" aria-hidden="true"></i>
+            </button>
+            <div class="faq-content" id="faq-2" role="region">
+              <div class="faq-content-inner">Most members spend 10–15 minutes per day. Consistency matters far more than session length. The platform is designed to fit into a morning coffee or a commute — and to compound over weeks, not crammed into a weekend.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-toggle" aria-expanded="false" aria-controls="faq-3">
+              <span>Is this useful if I'm not a philosopher?</span>
+              <i data-lucide="plus" class="faq-icon w-5 h-5 text-ink-soft flex-shrink-0" aria-hidden="true"></i>
+            </button>
+            <div class="faq-content" id="faq-3" role="region">
+              <div class="faq-content-inner">Absolutely. Our members are founders, lawyers, investors, engineers, and managers — not philosophers. The skills transfer directly to decision-making under uncertainty, evaluating claims, writing persuasively, and spotting flawed reasoning in meetings, pitches, and the news.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-toggle" aria-expanded="false" aria-controls="faq-4">
+              <span>Can I cancel or change plans?</span>
+              <i data-lucide="plus" class="faq-icon w-5 h-5 text-ink-soft flex-shrink-0" aria-hidden="true"></i>
+            </button>
+            <div class="faq-content" id="faq-4" role="region">
+              <div class="faq-content-inner">Yes — no lock-in contracts. You can upgrade, downgrade, or cancel at any time from your account settings. Annual plans are billed upfront and include a 20% discount. If you're on the fence, the free Practice plan has no time limit and no card required.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === CTA BANNER === -->
+    <section class="py-16 md:py-24" aria-label="Call to action">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="relative bg-ink rounded-[2rem] md:rounded-[2.5rem] overflow-hidden noise-bg reveal">
+          <div class="absolute inset-0 radial-glow opacity-30" aria-hidden="true" style="background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(176,141,87,0.35), transparent 70%);"></div>
+          <div class="relative px-6 sm:px-12 md:px-16 py-14 md:py-20 text-center max-w-3xl mx-auto">
+            <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-semibold text-cream leading-tight text-balance">Sharpen your mind starting today.</h2>
+            <p class="mt-5 text-cream/60 text-base md:text-lg leading-relaxed max-w-xl mx-auto">Join thousands of professionals who treat clear thinking as a practice, not a gift. Five minutes a day. Measurable change in weeks.</p>
+            <div class="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
+              <a href="#pricing" class="inline-flex items-center justify-center gap-2 bg-brass text-ink font-semibold text-[0.9375rem] px-8 py-3.5 rounded-full hover:bg-brass-dark hover:text-cream transition-all duration-300 hover:-translate-y-0.5 hover:shadow-brass active:scale-[0.97]">
+                Begin your practice
+                <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+              <a href="#contact" class="inline-flex items-center justify-center gap-2 bg-transparent text-cream/80 font-semibold text-[0.9375rem] px-8 py-3.5 rounded-full border border-cream/20 hover:border-cream/40 hover:text-cream transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.97]">
+                Talk to us
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- === FOOTER === -->
+  <footer class="bg-ink text-cream pt-16 md:pt-24 pb-8" id="contact">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-8">
+        <!-- Brand & Contact Form -->
+        <div class="lg:col-span-5">
+          <a href="#" class="logo-mark mb-6 inline-flex" aria-label="LOGIC home">
+            <span class="logo-symbol" aria-hidden="true">
+              <i data-lucide="brain" class="w-5 h-5"></i>
+            </span>
+            <span class="font-display text-2xl font-semibold tracking-tight text-cream">LOGIC</span>
+          </a>
+          <p class="text-cream/50 text-sm leading-relaxed max-w-sm mb-8">A precision practice platform for people who refuse to think sloppily. Built by analysts, for anyone who wants a sharper mind.</p>
+
+          <!-- Enquiry Form -->
+          <div class="glass-panel p-6 md:p-8 bg-white/5 border-white/10">
+            <h3 class="font-display text-lg font-semibold text-cream mb-1">Send an enquiry</h3>
+            <p class="text-cream/40 text-xs mb-5">We reply within one business day.</p>
+            <form id="enquiryForm" class="space-y-3" novalidate>
+              <div>
+                <label for="name" class="sr-only">Name</label>
+                <input type="text" id="name" name="name" placeholder="Full name" class="form-field bg-white/10 border-white/15 text-cream placeholder-cream/30" required aria-required="true" />
+                <p class="form-error-text" id="nameError">Please enter your name.</p>
+              </div>
+              <div>
+                <label for="email" class="sr-only">Email</label>
+                <input type="email" id="email" name="email" placeholder="Email address" class="form-field bg-white/10 border-white/15 text-cream placeholder-cream/30" required aria-required="true" />
+                <p class="form-error-text" id="emailError">Please enter a valid email address.</p>
+              </div>
+              <div>
+                <label for="message" class="sr-only">Message</label>
+                <textarea id="message" name="message" rows="3" placeholder="What brings you here?" class="form-field bg-white/10 border-white/15 text-cream placeholder-cream/30 resize-none" required aria-required="true"></textarea>
+                <p class="form-error-text" id="messageError">Please tell us a little about your goals.</p>
+              </div>
+              <button type="submit" class="w-full bg-brass text-ink font-semibold text-sm px-6 py-3 rounded-full hover:bg-brass-dark hover:text-cream transition-all duration-300 hover:-translate-y-0.5 hover:shadow-brass active:scale-[0.98]" id="submitBtn">
+                Send enquiry
+              </button>
+              <p class="text-[11px] text-cream/30 text-center" id="formStatus"></p>
+            </form>
+          </div>
+        </div>
+
+        <!-- Sitemap Columns -->
+        <div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8 lg:pl-8">
+          <div>
+            <h4 class="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-cream/40 mb-4">Platform</h4>
+            <ul class="space-y-3">
+              <li><a href="#method" class="footer-link text-cream/60 hover:text-brass">The Method</a></li>
+              <li><a href="#pricing" class="footer-link text-cream/60 hover:text-brass">Pricing</a></li>
+              <li><a href="#testimonials" class="footer-link text-cream/60 hover:text-brass">Results</a></li>
+              <li><a href="#faq" class="footer-link text-cream/60 hover:text-brass">FAQ</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-cream/40 mb-4">Company</h4>
+            <ul class="space-y-3">
+              <li><a href="#" class="footer-link text-cream/60 hover:text-brass">About</a></li>
+              <li><a href="#" class="footer-link text-cream/60 hover:text-brass">Careers</a></li>
+              <li><a href="#" class="footer-link text-cream/60 hover:text-brass">Press</a></li>
+              <li><a href="#contact" class="footer-link text-cream/60 hover:text-brass">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-cream/40 mb-4">Legal</h4>
+            <ul class="space-y-3">
+              <li><a href="#" class="footer-link text-cream/60 hover:text-brass">Privacy</a></li>
+              <li><a href="#" class="footer-link text-cream/60 hover:text-brass">Terms</a></li>
+              <li><a href="#" class="footer-link text-cream/60 hover:text-brass">Cookies</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-cream/30">© <span id="year"></span> LOGIC Reasoning Labs. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="text-cream/40 hover:text-brass transition-colors" aria-label="Twitter / X">
+            <i data-lucide="twitter" class="w-4 h-4"></i>
+          </a>
+          <a href="#" class="text-cream/40 hover:text-brass transition-colors" aria-label="LinkedIn">
+            <i data-lucide="linkedin" class="w-4 h-4"></i>
+          </a>
+          <a href="#" class="text-cream/40 hover:text-brass transition-colors" aria-label="GitHub">
+            <i data-lucide="github" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- === SCRIPTS === -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize Lucide icons
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // === Year ===
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // === Header scroll effect ===
+      const header = document.getElementById('siteHeader');
+      let lastScroll = 0;
+      window.addEventListener('scroll', function () {
+        const currentScroll = window.scrollY;
+        if (currentScroll > 40) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+        lastScroll = currentScroll;
+      }, { passive: true });
+
+      // === Mobile Menu ===
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenuClose = document.getElementById('mobileMenuClose');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+      const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+      function openMenu() {
+        mobileMenu.classList.add('open');
+        mobileMenuOverlay.classList.add('open');
+        mobileMenuBtn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMenu() {
+        mobileMenu.classList.remove('open');
+        mobileMenuOverlay.classList.remove('open');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      mobileMenuBtn.addEventListener('click', openMenu);
+      mobileMenuClose.addEventListener('click', closeMenu);
+      mobileMenuOverlay.addEventListener('click', closeMenu);
+      mobileNavLinks.forEach(function (link) {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+          closeMenu();
+        }
+      });
+
+      // === Scroll Reveal ===
+      const revealElements = document.querySelectorAll('.reveal');
+      const revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      revealElements.forEach(function (el) {
+        revealObserver.observe(el);
+      });
+
+      // === Animated Counters ===
+      const counters = document.querySelectorAll('[data-count]');
+      const counterObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseInt(el.getAttribute('data-count'), 10);
+            const suffix = el.getAttribute('data-suffix') || '';
+            const duration = 1800;
+            const start = performance.now();
+
+            function updateCounter(now) {
+              const elapsed = now - start;
+              const progress = Math.min(elapsed / duration, 1);
+              const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+              const current = Math.floor(eased * target);
+              el.textContent = current.toLocaleString() + suffix;
+              if (progress < 1) {
+                requestAnimationFrame(updateCounter);
+              } else {
+                el.textContent = target.toLocaleString() + suffix;
+              }
+            }
+
+            requestAnimationFrame(updateCounter);
+            counterObserver.unobserve(el);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      counters.forEach(function (el) {
+        counterObserver.observe(el);
+      });
+
+      // === FAQ Accordion ===
+      const faqToggles = document.querySelectorAll('.faq-toggle');
+      faqToggles.forEach(function (toggle) {
+        toggle.addEventListener('click', function () {
+          const expanded = this.getAttribute('aria-expanded') === 'true';
+          const content = document.getElementById(this.getAttribute('aria-controls'));
+
+          // Close others in the same section
+          faqToggles.forEach(function (other) {
+            if (other !== toggle) {
+              other.setAttribute('aria-expanded', 'false');
+              const otherContent = document.getElementById(other.getAttribute('aria-controls'));
+              if (otherContent) {
+                otherContent.style.maxHeight = '0';
+              }
+            }
+          });
+
+          // Toggle current
+          if (expanded) {
+            this.setAttribute('aria-expanded', 'false');
+            content.style.maxHeight = '0';
+          } else {
+            this.setAttribute('aria-expanded', 'true');
+            content.style.maxHeight = content.scrollHeight + 'px';
+          }
+        });
+      });
+
+      // === Pricing Toggle ===
+      const pricingToggleBtns = document.querySelectorAll('.pricing-toggle-btn');
+      const priceElements = document.querySelectorAll('[data-price-monthly]');
+
+      pricingToggleBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const period = this.getAttribute('data-period');
+
+          pricingToggleBtns.forEach(function (b) {
+            b.classList.remove('active');
+            b.setAttribute('aria-pressed', 'false');
+          });
+          this.classList.add('active');
+          this.setAttribute('aria-pressed', 'true');
+
+          priceElements.forEach(function (el) {
+            const price = period === 'yearly' ? el.getAttribute('data-price-yearly') : el.getAttribute('data-price-monthly');
+            el.textContent = price;
+          });
+        });
+      });
+
+      // === Smooth anchor scroll (offset for fixed header) ===
+      document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            const headerHeight = header.offsetHeight;
+            const targetPosition = target.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+          }
+        });
+      });
+
+      // === Enquiry Form ===
+      const form = document.getElementById('enquiryForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const formStatus = document.getElementById('formStatus');
+
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      function showError(fieldId, errorId, show) {
+        const field = document.getElementById(fieldId);
+        const error = document.getElementById(errorId);
+        if (show) {
+          field.classList.add('error');
+          error.classList.add('visible');
+        } else {
+          field.classList.remove('error');
+          error.classList.remove('visible');
+        }
+      }
+
+      // Real-time validation clearing
+      ['name', 'email', 'message'].forEach(function (id) {
+        const field = document.getElementById(id);
+        field.addEventListener('input', function () {
+          this.classList.remove('error');
+          const errorEl = document.getElementById(id + 'Error');
+          if (errorEl) errorEl.classList.remove('visible');
+        });
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        let isValid = true;
+
+        if (!name) {
+          showError('name', 'nameError', true);
+          isValid = false;
+        }
+        if (!email || !validateEmail(email)) {
+          showError('email', 'emailError', true);
+          isValid = false;
+        }
+        if (!message) {
+          showError('message', 'messageError', true);
+          isValid = false;
+        }
+
+        if (!isValid) {
+          formStatus.textContent = 'Please correct the fields above.';
+          formStatus.style.color = '#E74C3C';
+          return;
+        }
+
+        // Simulate submission
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner"></span> Sending...';
+        formStatus.textContent = '';
+        formStatus.style.color = '';
+
+        // TODO: connect form action to backend endpoint
+        // Replace the timeout below with your actual fetch to /submit endpoint.
+        // Example:
+        // fetch('submit', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   cache: 'no-store',
+        //   body: JSON.stringify({
+        //     url: window.location.host,
+        //     table: 'enquiries',
+        //     data: { name, email, message }
+        //   })
+        // })
+        // .then(function(res) { if (!res.ok) throw new Error('Network error'); return res.json(); })
+        // .then(function() { ... success ... })
+        // .catch(function(err) { ... error ... });
+
+        setTimeout(function () {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Send enquiry';
+          formStatus.textContent = 'Thank you — we\'ll be in touch within one business day.';
+          formStatus.style.color = '#B08D57';
+          form.reset();
+
+          // Clear any lingering error states
+          ['name', 'email', 'message'].forEach(function (id) {
+            document.getElementById(id).classList.remove('error');
+            document.getElementById(id + 'Error').classList.remove('visible');
+          });
+        }, 1400);
+      });
+
+      // === GSAP ScrollTrigger for parallax on hero visual (subtle) ===
+      if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Subtle parallax on hero visual
+        const heroVisual = document.querySelector('.hero-visual-inner');
+        if (heroVisual && window.innerWidth > 1024) {
+          gsap.to(heroVisual, {
+            y: -30,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.hero-visual',
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.2
+            }
+          });
+        }
+      }
+    });
+  </script>
+</body>
+</html>
