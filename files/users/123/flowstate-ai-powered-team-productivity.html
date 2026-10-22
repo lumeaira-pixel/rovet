@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flowstate — AI-powered team productivity</title>
+  <!-- Creative direction: premium light UI, white/cream base, brass accent, Inter + Bricolage Grotesque -->
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@4/dist/tailwind.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0b0d10;
+      --ink-soft: #2a2f36;
+      --muted: #6b7280;
+      --cream: #faf9f7;
+      --surface: #ffffff;
+      --brass: #b8892e;
+      --brass-light: #d9b46a;
+      --brass-glow: rgba(184, 137, 46, 0.12);
+      --border-light: rgba(0, 0, 0, 0.06);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02);
+      --shadow-md: 0 4px 24px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+
+    /* === Base === */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, h5 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    p, li, span, a { font-family: var(--font-body); }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; font-family: var(--font-body); }
+
+    /* === Custom Scrollbar (subtle) === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+    /* === Focus States (accessible) === */
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--brass);
+      border-radius: 4px;
+    }
+
+    /* === Utility Classes === */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+    .container-custom {
+      max-width: 1280px; margin: 0 auto; padding-left: 1.5rem; padding-right: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .container-custom { padding-left: 2.5rem; padding-right: 2.5rem; }
+    }
+
+    /* === Gradient/Glow Accents === */
+    .glow-brass {
+      background: radial-gradient(ellipse at center, var(--brass-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .grain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
+
+    /* === Header === */
+    .header-glass {
+      background: rgba(250, 249, 247, 0.82);
+      backdrop-filter: blur(18px) saturate(1.2);
+      -webkit-backdrop-filter: blur(18px) saturate(1.2);
+      border-bottom: 1px solid var(--border-light);
+      transition: box-shadow 0.3s ease, background 0.3s ease;
+    }
+    .header-glass.scrolled {
+      box-shadow: var(--shadow-sm);
+      background: rgba(250, 249, 247, 0.92);
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: var(--ink); color: #fff;
+      padding: 0.8rem 1.75rem; border-radius: 999px;
+      font-weight: 600; font-size: 0.9rem; letter-spacing: -0.01em;
+      border: 1px solid var(--ink);
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .btn-primary:hover {
+      background: #1a1d22; transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: transparent; color: var(--ink);
+      padding: 0.8rem 1.75rem; border-radius: 999px;
+      font-weight: 600; font-size: 0.9rem; letter-spacing: -0.01em;
+      border: 1.5px solid rgba(0,0,0,0.15);
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn-secondary:hover {
+      border-color: var(--ink); background: rgba(0,0,0,0.03);
+      transform: translateY(-2px);
+    }
+    .btn-secondary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-brass {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: var(--brass); color: #fff;
+      padding: 0.8rem 1.75rem; border-radius: 999px;
+      font-weight: 600; font-size: 0.9rem; letter-spacing: -0.01em;
+      border: 1px solid var(--brass);
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 4px 16px var(--brass-glow);
+    }
+    .btn-brass:hover {
+      background: #a67a26; transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(184,137,46,0.25);
+    }
+    .btn-brass:active { transform: translateY(0) scale(0.98); }
+
+    /* === Cards === */
+    .card-premium {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .card-premium:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(184, 137, 46, 0.15);
+      transform: translateY(-4px);
+    }
+
+    /* === Ticker / Marquee === */
+    .marquee-track {
+      display: flex; gap: 3rem; align-items: center;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Text Reveal / Split === */
+    .reveal-line {
+      display: block; overflow: hidden;
+    }
+    .reveal-line .line-inner {
+      display: block;
+      transform: translateY(110%);
+      transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-line.is-visible .line-inner {
+      transform: translateY(0);
+    }
+
+    /* === 3D Tilt Card === */
+    .tilt-card {
+      perspective: 800px;
+      transition: transform 0.15s ease-out;
+    }
+    .tilt-card-inner {
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out;
+    }
+
+    /* === Form Fields === */
+    .input-lux {
+      width: 100%; padding: 0.85rem 1.1rem;
+      border: 1.5px solid rgba(0,0,0,0.1); border-radius: var(--radius-sm);
+      background: var(--surface); font-family: var(--font-body);
+      font-size: 0.9rem; color: var(--ink);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .input-lux:focus {
+      outline: none; border-color: var(--brass);
+      box-shadow: 0 0 0 3px var(--brass-glow);
+    }
+    .input-lux.error { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.1); }
+    .input-lux::placeholder { color: #9ca3af; }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .mobile-menu.open { transform: translateX(0); }
+
+    /* === Responsive type === */
+    .hero-headline {
+      font-size: clamp(2.6rem, 7vw, 5.2rem);
+      line-height: 1.06;
+      letter-spacing: -0.04em;
+    }
+    .section-heading {
+      font-size: clamp(1.9rem, 4vw, 3.2rem);
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+    }
+
+    /* === Stats bar === */
+    .stat-divider { width: 1px; height: 2.5rem; background: rgba(0,0,0,0.08); }
+
+    /* === Pricing === */
+    .pricing-card.featured {
+      border: 2px solid var(--brass);
+      box-shadow: 0 8px 40px var(--brass-glow);
+      position: relative;
+    }
+    .pricing-card.featured::before {
+      content: 'MOST POPULAR';
+      position: absolute; top: -0.7rem; left: 50%; transform: translateX(-50%);
+      background: var(--brass); color: #fff;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em;
+      padding: 0.3rem 1rem; border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* === Success message === */
+    .form-success {
+      display: none;
+    }
+    .form-success.show {
+      display: flex;
+    }
+
+    /* === Noise overlay === */
+    .noise-overlay {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0.4;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
+
+    /* === Logo cloud subtle fade === */
+    .logo-cloud img, .logo-cloud svg { opacity: 0.45; transition: opacity 0.3s ease; }
+    .logo-cloud img:hover, .logo-cloud svg:hover { opacity: 0.9; }
+
+    /* === Prevent horizontal overflow on mobile === */
+    img, svg { max-width: 100%; height: auto; }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Grain overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header-glass fixed top-0 left-0 w-full z-50" id="header">
+    <div class="container-custom flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5" aria-label="Flowstate home">
+        <span class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: var(--ink);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </span>
+        <span class="font-bold text-lg tracking-tight" style="font-family: var(--font-display);">Flowstate</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#features" class="text-sm font-medium hover:opacity-60 transition-opacity" style="color: var(--ink-soft);">Features</a>
+        <a href="#how-it-works" class="text-sm font-medium hover:opacity-60 transition-opacity" style="color: var(--ink-soft);">How it works</a>
+        <a href="#pricing" class="text-sm font-medium hover:opacity-60 transition-opacity" style="color: var(--ink-soft);">Pricing</a>
+        <a href="#testimonials" class="text-sm font-medium hover:opacity-60 transition-opacity" style="color: var(--ink-soft);">Testimonials</a>
+      </nav>
+
+      <!-- Desktop CTA -->
+      <div class="hidden md:flex items-center gap-3">
+        <a href="#contact" class="btn-primary text-sm">
+          Start free trial
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button id="menuBtn" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg transition-colors hover:bg-black/5" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Panel -->
+    <div id="mobileMenu" class="mobile-menu md:hidden fixed top-0 right-0 h-full w-72 bg-white z-50 shadow-2xl p-6 flex flex-col gap-6" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+      <div class="flex justify-between items-center">
+        <span class="font-bold text-lg" style="font-family: var(--font-display);">Menu</span>
+        <button id="closeMenuBtn" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-black/5 transition-colors" aria-label="Close menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-4" aria-label="Mobile navigation">
+        <a href="#features" class="text-base font-medium py-2 border-b border-black/5 hover:text-[--brass] transition-colors">Features</a>
+        <a href="#how-it-works" class="text-base font-medium py-2 border-b border-black/5 hover:text-[--brass] transition-colors">How it works</a>
+        <a href="#pricing" class="text-base font-medium py-2 border-b border-black/5 hover:text-[--brass] transition-colors">Pricing</a>
+        <a href="#testimonials" class="text-base font-medium py-2 border-b border-black/5 hover:text-[--brass] transition-colors">Testimonials</a>
+      </nav>
+      <a href="#contact" class="btn-primary w-full mt-auto">Start free trial</a>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
+    <!-- Background glow -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] glow-brass" aria-hidden="true"></div>
+    <div class="absolute -top-20 -right-20 w-[400px] h-[400px] rounded-full" style="background: radial-gradient(circle, rgba(184,137,46,0.06) 0%, transparent 70%);" aria-hidden="true"></div>
+
+    <div class="container-custom relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <!-- Eyebrow badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 border" style="background: var(--surface); border-color: var(--border-light); box-shadow: var(--shadow-sm);">
+          <span class="w-2 h-2 rounded-full" style="background: var(--brass);"></span>
+          <span class="text-xs font-semibold tracking-wide uppercase" style="color: var(--ink-soft);">Now in public beta</span>
+        </div>
+
+        <h1 class="hero-headline mb-6" style="color: var(--ink);">
+          Your team's<br/>
+          <span style="color: var(--brass);">deep focus</span> engine
+        </h1>
+
+        <p class="text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style="color: var(--muted);">
+          Flowstate uses AI to protect your team's attention. Block distractions, automate shallow work, and ship what matters—without the burnout.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="#contact" class="btn-primary w-full sm:w-auto text-base px-8 py-3.5">
+            Start free trial
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#how-it-works" class="btn-secondary w-full sm:w-auto text-base px-8 py-3.5">
+            See how it works
+          </a>
+        </div>
+
+        <p class="mt-6 text-sm" style="color: var(--muted);">No credit card required · Free for teams up to 5</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SOCIAL PROOF / STATS ===== -->
+  <section class="pb-16 md:pb-20">
+    <div class="container-custom">
+      <div class="max-w-4xl mx-auto">
+        <div class="card-premium !p-8 md:!p-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div class="flex flex-col sm:flex-row items-center gap-8 md:gap-12 w-full md:w-auto">
+            <div class="text-center sm:text-left">
+              <div class="text-3xl font-bold" style="font-family: var(--font-display); color: var(--ink);">12,000+</div>
+              <div class="text-sm mt-1" style="color: var(--muted);">Teams focused daily</div>
+            </div>
+            <div class="hidden sm:block stat-divider"></div>
+            <div class="text-center sm:text-left">
+              <div class="text-3xl font-bold" style="font-family: var(--font-display); color: var(--ink);">4.9/5</div>
+              <div class="text-sm mt-1" style="color: var(--muted);">Average rating</div>
+            </div>
+            <div class="hidden sm:block stat-divider"></div>
+            <div class="text-center sm:text-left">
+              <div class="text-3xl font-bold" style="font-family: var(--font-display); color: var(--ink);">38%</div>
+              <div class="text-sm mt-1" style="color: var(--muted);">More deep work</div>
+            </div>
+          </div>
+          <div class="logo-cloud flex items-center gap-6 opacity-60" aria-label="Trusted by teams at">
+            <svg width="64" height="24" viewBox="0 0 100 28" fill="none" aria-label="Acme Corp"><rect width="100" height="28" rx="4" fill="#000" fill-opacity="0.08"/><text x="50" y="18" text-anchor="middle" font-size="12" font-weight="600" fill="#000">ACME</text></svg>
+            <svg width="72" height="24" viewBox="0 0 100 28" fill="none" aria-label="Vertex Labs"><rect width="100" height="28" rx="4" fill="#000" fill-opacity="0.08"/><text x="50" y="18" text-anchor="middle" font-size="12" font-weight="600" fill="#000">VERTEX</text></svg>
+            <svg width="68" height="24" viewBox="0 0 100 28" fill="none" aria-label="Northwind"><rect width="100" height="28" rx="4" fill="#000" fill-opacity="0.08"/><text x="50" y="18" text-anchor="middle" font-size="12" font-weight="600" fill="#000">NORTH</text></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section id="features" class="py-20 md:py-28">
+    <div class="container-custom">
+      <div class="max-w-2xl mb-14 md:mb-20">
+        <p class="text-xs font-bold tracking-[0.12em] uppercase mb-4" style="color: var(--brass);">Why Flowstate</p>
+        <h2 class="section-heading mb-5" style="color: var(--ink);">Built for the work that actually matters</h2>
+        <p class="text-lg leading-relaxed" style="color: var(--muted);">Three pillars that turn scattered teams into focused powerhouses.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <!-- Feature 1 -->
+        <div class="card-premium tilt-card group">
+          <div class="tilt-card-inner">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110" style="background: var(--brass-glow);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3" style="font-family: var(--font-display); color: var(--ink);">AI focus blocks</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--muted);">Flowstate learns your team's peak hours and automatically schedules distraction-free deep work sessions—synced across every calendar.</p>
+          </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="card-premium tilt-card group">
+          <div class="tilt-card-inner">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110" style="background: var(--brass-glow);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3" style="font-family: var(--font-display); color: var(--ink);">Distraction shield</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--muted);">One toggle silences Slack pings, mutes non-urgent notifications, and routes true emergencies through a smart triage channel.</p>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="card-premium tilt-card group">
+          <div class="tilt-card-inner">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110" style="background: var(--brass-glow);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <h3 class="text-xl font-bold mb-3" style="font-family: var(--font-display); color: var(--ink);">Shallow-work autopilot</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--muted);">Recurring status updates, standup summaries, and routine approvals are drafted by AI—you just hit send.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how-it-works" class="py-20 md:py-28 relative overflow-hidden">
+    <div class="absolute inset-0" style="background: linear-gradient(180deg, var(--cream) 0%, #f4f2ee 50%, var(--cream) 100%);" aria-hidden="true"></div>
+    <div class="container-custom relative z-10">
+      <div class="max-w-2xl mb-14 md:mb-20">
+        <p class="text-xs font-bold tracking-[0.12em] uppercase mb-4" style="color: var(--brass);">Simple by design</p>
+        <h2 class="section-heading mb-5" style="color: var(--ink);">Three steps to a calmer, sharper team</h2>
+        <p class="text-lg leading-relaxed" style="color: var(--muted);">Set it up in five minutes. Let it run forever.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+        <!-- Step 1 -->
+        <div class="relative">
+          <div class="flex items-center gap-4 mb-5">
+            <span class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style="background: var(--ink); color: #fff;">01</span>
+            <div class="h-px flex-1" style="background: rgba(0,0,0,0.08);"></div>
+          </div>
+          <h3 class="text-lg font-bold mb-2" style="font-family: var(--font-display);">Connect your stack</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--muted);">Link Slack, Google Calendar, Notion, and Linear in one click. Flowstate maps your team's rhythms instantly.</p>
+        </div>
+        <!-- Step 2 -->
+        <div class="relative">
+          <div class="flex items-center gap-4 mb-5">
+            <span class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style="background: var(--ink); color: #fff;">02</span>
+            <div class="h-px flex-1" style="background: rgba(0,0,0,0.08);"></div>
+          </div>
+          <h3 class="text-lg font-bold mb-2" style="font-family: var(--font-display);">Set your focus rules</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--muted);">Choose peak hours, define what counts as "urgent," and let Flowstate handle the rest. Fully customisable per person.</p>
+        </div>
+        <!-- Step 3 -->
+        <div class="relative">
+          <div class="flex items-center gap-4 mb-5">
+            <span class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style="background: var(--ink); color: #fff;">03</span>
+            <div class="h-px flex-1" style="background: rgba(0,0,0,0.08);"></div>
+          </div>
+          <h3 class="text-lg font-bold mb-2" style="font-family: var(--font-display);">Watch output soar</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--muted);">Get weekly focus reports, celebrate wins, and see your team ship more meaningful work—without longer hours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section id="pricing" class="py-20 md:py-28">
+    <div class="container-custom">
+      <div class="max-w-2xl mx-auto text-center mb-14 md:mb-20">
+        <p class="text-xs font-bold tracking-[0.12em] uppercase mb-4" style="color: var(--brass);">Pricing</p>
+        <h2 class="section-heading mb-5" style="color: var(--ink);">Simple, transparent plans</h2>
+        <p class="text-lg leading-relaxed" style="color: var(--muted);">Start free. Upgrade when your team is ready. Cancel anytime.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto items-start">
+        <!-- Starter -->
+        <div class="card-premium pricing-card flex flex-col">
+          <h3 class="text-lg font-bold mb-1" style="font-family: var(--font-display);">Starter</h3>
+          <p class="text-sm mb-6" style="color: var(--muted);">For small teams testing the waters.</p>
+          <div class="mb-6">
+            <span class="text-4xl font-bold" style="font-family: var(--font-display);">$0</span>
+            <span class="text-sm" style="color: var(--muted);">/month</span>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Up to 5 team members</li>
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Basic focus blocks</li>
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Weekly focus report</li>
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Community support</li>
+          </ul>
+          <a href="#contact" class="btn-secondary w-full text-sm">Get started free</a>
+        </div>
+
+        <!-- Growth (featured) -->
+        <div class="card-premium pricing-card featured flex flex-col">
+          <h3 class="text-lg font-bold mb-1" style="font-family: var(--font-display);">Growth</h3>
+          <p class="text-sm mb-6" style="color: var(--muted);">For teams serious about deep work.</p>
+          <div class="mb-6">
+            <span class="text-4xl font-bold" style="font-family: var(--font-display);">$12</span>
+            <span class="text-sm" style="color: var(--muted);">/member/month</span>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Unlimited team members</li>
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>AI-optimised focus blocks</li>
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Distraction shield & triage</li>
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Shallow-work autopilot</li>
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
+          </ul>
+          <a href="#contact" class="btn-brass w-full text-sm">Start 14-day trial</a>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="card-premium pricing-card flex flex-col">
+          <h3 class="text-lg font-bold mb-1" style="font-family: var(--font-display);">Enterprise</h3>
+          <p class="text-sm mb-6" style="color: var(--muted);">For orgs with custom needs.</p>
+          <div class="mb-6">
+            <span class="text-4xl font-bold" style="font-family: var(--font-display);">Custom</span>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Everything in Growth</li>
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>SSO & SCIM provisioning</li>
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Dedicated success manager</li>
+            <li class="flex items-start gap-2.5 text-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Custom AI model tuning</li>
+          </ul>
+          <a href="#contact" class="btn-secondary w-full text-sm">Talk to sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section id="testimonials" class="py-20 md:py-28">
+    <div class="container-custom">
+      <div class="max-w-2xl mb-14 md:mb-20">
+        <p class="text-xs font-bold tracking-[0.12em] uppercase mb-4" style="color: var(--brass);">Testimonials</p>
+        <h2 class="section-heading mb-5" style="color: var(--ink);">Teams that found their flow</h2>
+        <p class="text-lg leading-relaxed" style="color: var(--muted);">Real words from real operators who stopped drowning in shallow work.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <!-- Testimonial 1 -->
+        <div class="card-premium flex flex-col">
+          <div class="flex gap-0.5 mb-4" aria-label="5 out of 5 stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <blockquote class="text-sm leading-relaxed mb-6 flex-1" style="color: var(--ink-soft);">"Flowstate gave our engineers back two hours of real focus every day. Sprint velocity is up 30% and the team is calmer. It's a no-brainer."</blockquote>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style="background: var(--brass-glow); color: var(--brass);">MR</div>
+            <div>
+              <div class="text-sm font-semibold">Maya Rivera</div>
+              <div class="text-xs" style="color: var(--muted);">VP Engineering, Northwind</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="card-premium flex flex-col">
+          <div class="flex gap-0.5 mb-4" aria-label="5 out of 5 stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <blockquote class="text-sm leading-relaxed mb-6 flex-1" style="color: var(--ink-soft);">"We tried three other 'focus' tools. Flowstate is the only one that actually understands how modern teams communicate. The autopilot feature is magic."</blockquote>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style="background: var(--brass-glow); color: var(--brass);">JK</div>
+            <div>
+              <div class="text-sm font-semibold">James Kim</div>
+              <div class="text-xs" style="color: var(--muted);">Head of Product, Vertex Labs</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="card-premium flex flex-col">
+          <div class="flex gap-0.5 mb-4" aria-label="5 out of 5 stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--brass)" stroke="var(--brass)" stroke-width="1" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <blockquote class="text-sm leading-relaxed mb-6 flex-1" style="color: var(--ink-soft);">"Our operations team is 40% more efficient. The AI summaries alone save us 5 hours a week. Flowstate pays for itself in the first month."</blockquote>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style="background: var(--brass-glow); color: var(--brass);">SP</div>
+            <div>
+              <div class="text-sm font-semibold">Sofia Patel</div>
+              <div class="text-xs" style="color: var(--muted);">COO, Acme Corp</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA BANNER ===== -->
+  <section class="py-20 md:py-28">
+    <div class="container-custom">
+      <div class="relative rounded-3xl overflow-hidden p-10 md:p-16 text-center" style="background: var(--ink);">
+        <div class="absolute inset-0 opacity-20" aria-hidden="true">
+          <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full" style="background: radial-gradient(circle, var(--brass) 0%, transparent 70%);"></div>
+          <div class="absolute bottom-0 right-1/4 w-80 h-80 rounded-full" style="background: radial-gradient(circle, var(--brass-light) 0%, transparent 70%);"></div>
+        </div>
+        <div class="relative z-10 max-w-2xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4" style="font-family: var(--font-display); color: #fff;">Ready to protect your team's focus?</h2>
+          <p class="text-lg mb-8" style="color: rgba(255,255,255,0.65);">Join 12,000+ teams shipping deeper work with Flowstate.</p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="#contact" class="btn-brass text-base px-8 py-3.5">
+              Start free trial
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#pricing" class="text-sm font-medium transition-opacity hover:opacity-70" style="color: rgba(255,255,255,0.75);">View pricing</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT / FOOTER ===== -->
+  <footer id="contact" class="pt-20 md:pt-28 pb-10" style="background: var(--cream); border-top: 1px solid var(--border-light);">
+    <div class="container-custom">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 mb-16">
+        <!-- Contact form -->
+        <div>
+          <p class="text-xs font-bold tracking-[0.12em] uppercase mb-4" style="color: var(--brass);">Get in touch</p>
+          <h2 class="section-heading mb-4" style="color: var(--ink);">Let's find your flow</h2>
+          <p class="text-base mb-8" style="color: var(--muted);">Tell us about your team and we'll show you how Flowstate fits. No pressure, no spam.</p>
+
+          <form id="contactForm" class="space-y-4" novalidate>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="name" class="block text-sm font-medium mb-1.5">Full name</label>
+                <input type="text" id="name" name="name" class="input-lux" placeholder="Alex Chen" required aria-required="true" />
+                <p class="text-xs mt-1 hidden" style="color: #dc2626;" data-error-for="name">Please enter your name.</p>
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-medium mb-1.5">Work email</label>
+                <input type="email" id="email" name="email" class="input-lux" placeholder="alex@company.com" required aria-required="true" />
+                <p class="text-xs mt-1 hidden" style="color: #dc2626;" data-error-for="email">Please enter a valid email.</p>
+              </div>
+            </div>
+            <div>
+              <label for="phone" class="block text-sm font-medium mb-1.5">Phone (optional)</label>
+              <input type="tel" id="phone" name="phone" class="input-lux" placeholder="+1 (555) 000-0000" />
+            </div>
+            <div>
+              <label for="message" class="block text-sm font-medium mb-1.5">Message</label>
+              <textarea id="message" name="message" rows="4" class="input-lux resize-none" placeholder="Tell us about your team size, current tools, and what you're trying to solve..." required aria-required="true"></textarea>
+              <p class="text-xs mt-1 hidden" style="color: #dc2626;" data-error-for="message">Please tell us a bit about your needs.</p>
+            </div>
+            <button type="submit" class="btn-primary w-full text-base py-3.5" id="submitBtn">
+              Send message
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <!-- TODO: connect form action to backend endpoint -->
+            <div id="formSuccess" class="form-success items-center gap-3 p-4 rounded-xl" style="background: rgba(22, 163, 74, 0.08); border: 1px solid rgba(22, 163, 74, 0.2);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              <span class="text-sm font-medium" style="color: #16a34a;">Message sent! We'll be in touch within one business day.</span>
+            </div>
+            <div id="formError" class="hidden items-center gap-3 p-4 rounded-xl" style="background: rgba(220, 38, 38, 0.06); border: 1px solid rgba(220, 38, 38, 0.15);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span class="text-sm font-medium" style="color: #dc2626;">Something went wrong. Please try again or email us directly.</span>
+            </div>
+          </form>
+        </div>
+
+        <!-- Footer links / brand -->
+        <div class="flex flex-col justify-between">
+          <div class="grid grid-cols-2 gap-8 mb-12">
+            <div>
+              <h4 class="text-sm font-bold mb-4" style="font-family: var(--font-display);">Product</h4>
+              <ul class="space-y-2.5">
+                <li><a href="#features" class="text-sm transition-opacity hover:opacity-60" style="color: var(--muted);">Features</a></li>
+                <li><a href="#pricing" class="text-sm transition-opacity hover:opacity-60" style="color: var(--muted);">Pricing</a></li>
+                <li><a href="#" class="text-sm transition-opacity hover:opacity-60" style="color: var(--muted);">Changelog</a></li>
+                <li><a href="#" class="text-sm transition-opacity hover:opacity-60" style="color: var(--muted);">Integrations</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold mb-4" style="font-family: var(--font-display);">Company</h4>
+              <ul class="space-y-2.5">
+                <li><a href="#" class="text-sm transition-opacity hover:opacity-60" style="color: var(--muted);">About</a></li>
+                <li><a href="#" class="text-sm transition-opacity hover:opacity-60" style="color: var(--muted);">Blog</a></li>
+                <li><a href="#" class="text-sm transition-opacity hover:opacity-60" style="color: var(--muted);">Careers</a></li>
+                <li><a href="#" class="text-sm transition-opacity hover:opacity-60" style="color: var(--muted);">Contact</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center gap-2.5 mb-4">
+              <span class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: var(--ink);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </span>
+              <span class="font-bold text-lg tracking-tight" style="font-family: var(--font-display);">Flowstate</span>
+            </div>
+            <p class="text-sm mb-6 max-w-xs" style="color: var(--muted);">Protecting deep work for teams that ship what matters.</p>
+            <div class="flex items-center gap-4">
+              <a href="#" class="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-black/5" style="border: 1px solid var(--border-light);" aria-label="Twitter">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              <a href="#" class="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-black/5" style="border: 1px solid var(--border-light);" aria-label="LinkedIn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              </a>
+              <a href="#" class="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-black/5" style="border: 1px solid var(--border-light);" aria-label="GitHub">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4" style="border-top: 1px solid var(--border-light);">
+        <p class="text-xs" style="color: var(--muted);">&copy; 2025 Flowstate Inc. All rights reserved.</p>
+        <div class="flex items-center gap-6">
+          <a href="#" class="text-xs transition-opacity hover:opacity-60" style="color: var(--muted);">Privacy</a>
+          <a href="#" class="text-xs transition-opacity hover:opacity-60" style="color: var(--muted);">Terms</a>
+          <a href="#" class="text-xs transition-opacity hover:opacity-60" style="color: var(--muted);">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    (function() {
+      'use strict';
+
+      // Initialize Lucide icons
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+
+      // === Header scroll effect ===
+      const header = document.getElementById('header');
+      let lastScroll = 0;
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 20) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+        lastScroll = window.scrollY;
+      }, { passive: true });
+
+      // === Mobile menu ===
+      const menuBtn = document.getElementById('menuBtn');
+      const closeMenuBtn = document.getElementById('closeMenuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileLinks = mobileMenu.querySelectorAll('a');
+
+      function openMenu() {
+        mobileMenu.classList.add('open');
+        menuBtn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMenu() {
+        mobileMenu.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      menuBtn.addEventListener('click', openMenu);
+      closeMenuBtn.addEventListener('click', closeMenu);
+      mobileLinks.forEach(function(link) {
+        link.addEventListener('click', closeMenu);
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+      });
+
+      // === GSAP ScrollTrigger reveals ===
+      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero headline lines
+        gsap.utils.toArray('.reveal-line').forEach(function(el) {
+          ScrollTrigger.create({
+            trigger: el,
+            start: 'top 85%',
+            onEnter: function() { el.classList.add('is-visible'); },
+            once: true
+          });
+        });
+
+        // Section fade-in
+        gsap.utils.toArray('.card-premium, .section-heading, .py-20 > .container-custom > .max-w-2xl').forEach(function(el) {
+          gsap.from(el, {
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 88%',
+              toggleActions: 'play none none none'
+            },
+            y: 32,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power3.out'
+          });
+        });
+
+        // Stats counter
+        gsap.utils.toArray('.text-3xl').forEach(function(el) {
+          if (el.textContent.includes('%') || el.textContent.includes('+') || el.textContent.includes('/')) {
+            ScrollTrigger.create({
+              trigger: el,
+              start: 'top 85%',
+              onEnter: function() {
+                gsap.from(el, { scale: 0.8, opacity: 0, duration: 0.6, ease: 'back.out(1.7)' });
+              },
+              once: true
+            });
+          }
+        });
+      }
+
+      // === 3D tilt on feature cards ===
+      document.querySelectorAll('.tilt-card').forEach(function(card) {
+        const inner = card.querySelector('.tilt-card-inner');
+        if (!inner) return;
+        card.addEventListener('mousemove', function(e) {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          inner.style.transform = 'rotateY(' + (x * 6) + 'deg) rotateX(' + (-y * 6) + 'deg) translateZ(8px)';
+        });
+        card.addEventListener('mouseleave', function() {
+          inner.style.transform = 'rotateY(0deg) rotateX(0deg) translateZ(0)';
+        });
+      });
+
+      // === Contact form validation + submission ===
+      const form = document.getElementById('contactForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const formSuccess = document.getElementById('formSuccess');
+      const formError = document.getElementById('formError');
+
+      function showError(fieldName, show) {
+        const el = form.querySelector('[data-error-for="' + fieldName + '"]');
+        const input = form.querySelector('[name="' + fieldName + '"]');
+        if (el) el.classList.toggle('hidden', !show);
+        if (input) input.classList.toggle('error', show);
+      }
+
+      function validateField(name, value) {
+        if (name === 'name') return value.trim().length >= 2;
+        if (name === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+        if (name === 'message') return value.trim().length >= 10;
+        return true;
+      }
+
+      form.querySelectorAll('[required]').forEach(function(input) {
+        input.addEventListener('blur', function() {
+          showError(input.name, !validateField(input.name, input.value));
+        });
+        input.addEventListener('input', function() {
+          if (input.classList.contains('error') && validateField(input.name, input.value)) {
+            showError(input.name, false);
+          }
+        });
+      });
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        formSuccess.classList.remove('show');
+        formError.classList.add('hidden');
+
+        let valid = true;
+        form.querySelectorAll('[required]').forEach(function(input) {
+          const ok = validateField(input.name, input.value);
+          showError(input.name, !ok);
+          if (!ok) valid = false;
+        });
+
+        if (!valid) return;
+
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+        submitBtn.innerHTML = 'Sending...';
+
+        // Simulate backend submission (replace with real endpoint)
+        // TODO: connect form action to backend endpoint
+        setTimeout(function() {
+          form.reset();
+          formSuccess.classList.add('show');
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+          submitBtn.innerHTML = 'Send message <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+          setTimeout(function() { formSuccess.classList.remove('show'); }, 6000);
+        }, 1200);
+      });
+
+      // === Smooth anchor scroll offset for fixed header ===
+      document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            const offset = 80;
+            const top = target.getBoundingClientRect().top + window.scrollY - offset;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>
