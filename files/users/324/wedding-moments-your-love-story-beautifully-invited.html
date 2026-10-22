@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wedding Moments — Your Love Story, Beautifully Invited</title>
+  <meta name="description" content="Create premium Indian wedding invitations. Explore designs, customize with live preview, and share with family and friends.">
+  <!-- Google Fonts: Cormorant Garamond (display) & Manrope (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Malayalam support font -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind via CDN (jsdelivr) -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ivory: #FDF8F4;
+      --champagne: #E8D5C0;
+      --blush: #F9E6E6;
+      --maroon: #4A1E2A;
+      --gold: #C6A87C;
+      --gold-light: #E5D5BC;
+      --ink: #2F1B22;
+      --ink-soft: #5E4B52;
+      --white: #FFFFFF;
+      --shadow-sm: 0 4px 14px rgba(74, 30, 42, 0.05);
+      --shadow-md: 0 12px 32px rgba(74, 30, 42, 0.08);
+      --shadow-lg: 0 24px 56px rgba(74, 30, 42, 0.12);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --focus-ring: 0 0 0 3px rgba(198, 168, 124, 0.5);
+    }
+
+    /* === Base === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: var(--ivory);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-display { font-family: 'Cormorant Garamond', serif; }
+    .font-malayalam { font-family: 'Noto Sans Malayalam', 'Manrope', sans-serif; }
+
+    /* === Typography Scale === */
+    h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; }
+    .text-display { font-size: clamp(2.8rem, 6vw, 5rem); }
+    .text-heading { font-size: clamp(2rem, 3.5vw, 3rem); }
+
+    /* === Focus & Accessibility === */
+    :focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      background: var(--maroon);
+      color: var(--white);
+      padding: 0.9rem 2rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      transition: all 0.25s ease;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+    .btn-primary:hover { background: #5e2a38; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--maroon);
+      padding: 0.9rem 2rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: 1.5px solid var(--champagne);
+      transition: all 0.25s ease;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      cursor: pointer;
+    }
+    .btn-secondary:hover { border-color: var(--gold); background: var(--blush); transform: translateY(-2px); }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), #B38F5E);
+      color: var(--white);
+      padding: 0.75rem 1.6rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.25s ease;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      border: none; cursor: pointer;
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(198, 168, 124, 0.4); }
+
+    /* === Cards === */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(198, 168, 124, 0.15);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    .card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: rgba(198, 168, 124, 0.35); }
+
+    /* === Section spacing === */
+    .section-pad { padding: 5rem 0; }
+    @media (max-width: 768px) { .section-pad { padding: 3.5rem 0; } }
+
+    /* === Nav === */
+    .nav-blur {
+      background: rgba(253, 248, 244, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(198, 168, 124, 0.15);
+    }
+
+    /* === Envelope Animation === */
+    .envelope-container { perspective: 1000px; }
+    .envelope {
+      position: relative; width: 100%; max-width: 480px; margin: 0 auto;
+      aspect-ratio: 4/3;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--champagne);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 2rem; text-align: center;
+      transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+    }
+    .envelope:hover { transform: translateY(-8px) rotateX(4deg); }
+    .envelope.open { transform: rotateX(0deg) scale(1.02); }
+
+    /* === Floral decorations (CSS only) === */
+    .floral-corner {
+      position: absolute; width: 120px; height: 120px; opacity: 0.25; pointer-events: none;
+      background: radial-gradient(circle at 30% 30%, var(--blush), transparent 70%);
+      border-radius: 50%;
+    }
+
+    /* === Malayalam text rendering === */
+    .malayalam-text { font-family: 'Noto Sans Malayalam', sans-serif; line-height: 1.8; }
+
+    /* === Gallery grid === */
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+
+    /* === Custom range / input styling === */
+    input, select, textarea {
+      font-family: 'Manrope', sans-serif;
+      border: 1.5px solid var(--champagne);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      width: 100%;
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-size: 0.95rem;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(198, 168, 124, 0.2);
+      outline: none;
+    }
+    label { font-size: 0.8rem; font-weight: 600; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; display: block; }
+
+    /* === Preview panel === */
+    .preview-panel {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--champagne);
+      padding: 2rem;
+      position: sticky; top: 6rem;
+    }
+
+    /* === Countdown === */
+    .countdown-unit { display: flex; flex-direction: column; align-items: center; min-width: 64px; }
+    .countdown-num { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700; color: var(--maroon); line-height: 1; }
+    .countdown-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); margin-top: 4px; }
+
+    /* === Map placeholder === */
+    .map-placeholder {
+      background: linear-gradient(135deg, #E8F0E8, #D4E4D4);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      min-height: 220px; position: relative; overflow: hidden;
+      border: 1px solid var(--champagne);
+    }
+    .map-placeholder::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(198,168,124,0.08) 30px, rgba(198,168,124,0.08) 31px);
+    }
+
+    /* === Music toggle === */
+    .music-toggle {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 50;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--maroon); color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-md); border: none; cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .music-toggle:hover { transform: scale(1.08); }
+
+    /* === Animations === */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up { animation: fadeUp 0.7s ease forwards; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .animate-float { animation: float 4s ease-in-out infinite; }
+
+    /* === Responsive tweaks === */
+    @media (max-width: 640px) {
+      .btn-primary, .btn-secondary { padding: 0.75rem 1.4rem; font-size: 0.85rem; }
+      .preview-panel { position: static; margin-top: 1.5rem; }
+      .countdown-num { font-size: 1.8rem; }
+      .countdown-unit { min-width: 48px; }
+    }
+
+    /* === Custom scrollbar (subtle) === */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--ivory); }
+    ::-webkit-scrollbar-thumb { background: var(--champagne); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== NAVIGATION ==================== -->
+  <header class="fixed top-0 left-0 right-0 z-40 nav-blur transition-all duration-300" id="navbar">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 group" aria-label="Wedding Moments home">
+        <span class="font-display text-2xl md:text-3xl font-bold" style="color: var(--maroon);">Wedding Moments</span>
+        <span class="hidden sm:inline-block text-xs tracking-widest uppercase" style="color: var(--gold);">Est. 2024</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#templates" class="text-sm font-medium transition-colors hover:text-[var(--maroon)]" style="color: var(--ink-soft);">Templates</a>
+        <a href="#how-it-works" class="text-sm font-medium transition-colors hover:text-[var(--maroon)]" style="color: var(--ink-soft);">How It Works</a>
+        <a href="#gallery" class="text-sm font-medium transition-colors hover:text-[var(--maroon)]" style="color: var(--ink-soft);">Gallery</a>
+        <a href="#testimonials" class="text-sm font-medium transition-colors hover:text-[var(--maroon)]" style="color: var(--ink-soft);">Testimonials</a>
+        <a href="#editor" class="btn-primary text-sm" style="padding: 0.6rem 1.4rem;">Create Invitation</a>
+      </nav>
+
+      <!-- Mobile menu button -->
+      <button class="md:hidden p-2 rounded-lg transition-colors" style="color: var(--maroon);" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu" id="mobile-menu-btn">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden px-4 pb-4 nav-blur" role="menu">
+      <nav class="flex flex-col gap-2" aria-label="Mobile navigation">
+        <a href="#templates" class="px-4 py-3 rounded-lg text-sm font-medium hover:bg-[var(--blush)] transition-colors" role="menuitem">Templates</a>
+        <a href="#how-it-works" class="px-4 py-3 rounded-lg text-sm font-medium hover:bg-[var(--blush)] transition-colors" role="menuitem">How It Works</a>
+        <a href="#gallery" class="px-4 py-3 rounded-lg text-sm font-medium hover:bg-[var(--blush)] transition-colors" role="menuitem">Gallery</a>
+        <a href="#testimonials" class="px-4 py-3 rounded-lg text-sm font-medium hover:bg-[var(--blush)] transition-colors" role="menuitem">Testimonials</a>
+        <a href="#editor" class="btn-primary justify-center mt-2" role="menuitem">Create Invitation</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="relative min-h-screen flex items-center pt-20 overflow-hidden" style="background: linear-gradient(160deg, var(--ivory) 0%, #F9EDE4 50%, #F5E3DA 100%);">
+    <!-- Decorative florals -->
+    <div class="floral-corner" style="top: 10%; right: 5%; width: 300px; height: 300px;" aria-hidden="true"></div>
+    <div class="floral-corner" style="bottom: 10%; left: 2%; width: 220px; height: 220px; background: radial-gradient(circle at 70% 30%, var(--champagne), transparent 70%);" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16 md:py-24 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <!-- Copy -->
+        <div class="text-center lg:text-left">
+          <p class="text-xs md:text-sm tracking-[0.25em] uppercase font-semibold mb-4 animate-fade-up" style="color: var(--gold); animation-delay: 0.1s;">Premium Digital Wedding Invitations</p>
+          <h1 class="text-display mb-6 animate-fade-up" style="color: var(--maroon); animation-delay: 0.2s;">
+            Your Special Day Deserves a <span style="color: var(--gold); font-style: italic;">Beautiful Invitation</span>
+          </h1>
+          <p class="text-lg md:text-xl mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed animate-fade-up" style="color: var(--ink-soft); animation-delay: 0.35s;">
+            Create unforgettable digital wedding invitations that tell your love story. Elegant designs, live customization, and effortless sharing — all in one place.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-up" style="animation-delay: 0.5s;">
+            <a href="#templates" class="btn-primary justify-center">
+              <i data-lucide="sparkles" class="w-4 h-4"></i> Explore Invitations
+            </a>
+            <a href="#editor" class="btn-secondary justify-center">
+              <i data-lucide="pen-line" class="w-4 h-4"></i> Create Your Invitation
+            </a>
+          </div>
+          <div class="mt-10 flex items-center gap-6 justify-center lg:justify-start animate-fade-up" style="animation-delay: 0.65s;">
+            <div class="flex -space-x-3">
+              <div class="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=80&h=80&fit=crop&crop=face');" aria-hidden="true"></div>
+              <div class="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=80&h=80&fit=crop&crop=face');" aria-hidden="true"></div>
+              <div class="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=face');" aria-hidden="true"></div>
+            </div>
+            <p class="text-sm" style="color: var(--ink-soft);"><strong style="color: var(--maroon);">2,400+</strong> couples invited their guests with us</p>
+          </div>
+        </div>
+
+        <!-- Hero visual — elegant layered invitation card -->
+        <div class="relative animate-fade-up" style="animation-delay: 0.4s;">
+          <div class="relative mx-auto" style="max-width: 420px;">
+            <!-- Back card -->
+            <div class="absolute inset-0 rounded-3xl transform rotate-6 scale-95 opacity-60" style="background: linear-gradient(135deg, var(--blush), var(--champagne));"></div>
+            <!-- Middle card -->
+            <div class="absolute inset-0 rounded-3xl transform -rotate-3 scale-97 opacity-80" style="background: linear-gradient(135deg, var(--champagne), var(--gold-light));"></div>
+            <!-- Front card -->
+            <div class="relative card p-8 text-center" style="border: 2px solid var(--champagne);">
+              <div class="mb-4 flex justify-center" aria-hidden="true">
+                <i data-lucide="flower-2" class="w-8 h-8" style="color: var(--gold);"></i>
+              </div>
+              <p class="text-xs tracking-[0.3em] uppercase font-semibold mb-3" style="color: var(--gold);">Together with families</p>
+              <h2 class="font-display text-3xl md:text-4xl font-bold mb-1" style="color: var(--maroon);">Anjali</h2>
+              <p class="font-display text-xl italic mb-1" style="color: var(--ink-soft);">&amp;</p>
+              <h2 class="font-display text-3xl md:text-4xl font-bold mb-4" style="color: var(--maroon);">Arjun</h2>
+              <div class="w-16 h-px mx-auto mb-4" style="background: var(--gold);"></div>
+              <p class="text-sm font-medium mb-1" style="color: var(--ink-soft);">20 December 2026</p>
+              <p class="text-xs" style="color: var(--ink-soft);">The Grand Auditorium, Kochi, Kerala</p>
+              <div class="mt-6 pt-4 border-t" style="border-color: var(--champagne);">
+                <p class="text-[10px] tracking-[0.25em] uppercase" style="color: var(--gold);">Sample Invitation — Demo Only</p>
+              </div>
+            </div>
+            <!-- Floating decorative elements -->
+            <div class="absolute -top-6 -right-6 animate-float" aria-hidden="true">
+              <i data-lucide="heart" class="w-10 h-10" style="color: var(--gold); opacity: 0.6;"></i>
+            </div>
+            <div class="absolute -bottom-4 -left-4 animate-float" style="animation-delay: 2s;" aria-hidden="true">
+              <i data-lucide="flower" class="w-8 h-8" style="color: var(--blush);"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FEATURED TEMPLATES ==================== -->
+  <section id="templates" class="section-pad" style="background: var(--white);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <p class="text-xs tracking-[0.25em] uppercase font-semibold mb-3" style="color: var(--gold);">Curated Designs</p>
+        <h2 class="text-heading mb-4" style="color: var(--maroon);">Invitation Templates for Every Love Story</h2>
+        <p class="max-w-2xl mx-auto text-base" style="color: var(--ink-soft);">Six premium designs inspired by India's rich wedding traditions — each one fully customizable to reflect your unique celebration.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="template-grid">
+        <!-- Template cards injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== HOW IT WORKS ==================== -->
+  <section id="how-it-works" class="section-pad" style="background: linear-gradient(180deg, var(--ivory), var(--blush));">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <p class="text-xs tracking-[0.25em] uppercase font-semibold mb-3" style="color: var(--gold);">Simple &amp; Elegant</p>
+        <h2 class="text-heading mb-4" style="color: var(--maroon);">How It Works</h2>
+        <p class="max-w-xl mx-auto" style="color: var(--ink-soft);">Four effortless steps to an invitation your guests will remember.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="text-center p-6 rounded-2xl transition-all duration-300 hover:bg-white hover:shadow-lg" style="background: rgba(255,255,255,0.5);">
+          <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5" style="background: var(--maroon);">
+            <i data-lucide="palette" class="w-6 h-6" style="color: var(--white);"></i>
+          </div>
+          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color: var(--gold);">Step 01</p>
+          <h3 class="font-display text-xl font-bold mb-2" style="color: var(--maroon);">Choose Your Design</h3>
+          <p class="text-sm" style="color: var(--ink-soft);">Browse six premium templates and pick the one that speaks to your story.</p>
+        </div>
+        <div class="text-center p-6 rounded-2xl transition-all duration-300 hover:bg-white hover:shadow-lg" style="background: rgba(255,255,255,0.5);">
+          <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5" style="background: var(--maroon);">
+            <i data-lucide="pen-line" class="w-6 h-6" style="color: var(--white);"></i>
+          </div>
+          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color: var(--gold);">Step 02</p>
+          <h3 class="font-display text-xl font-bold mb-2" style="color: var(--maroon);">Add Wedding Details</h3>
+          <p class="text-sm" style="color: var(--ink-soft);">Fill in names, dates, venue, and your personal message — watch it come alive.</p>
+        </div>
+        <div class="text-center p-6 rounded-2xl transition-all duration-300 hover:bg-white hover:shadow-lg" style="background: rgba(255,255,255,0.5);">
+          <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5" style="background: var(--maroon);">
+            <i data-lucide="eye" class="w-6 h-6" style="color: var(--white);"></i>
+          </div>
+          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color: var(--gold);">Step 03</p>
+          <h3 class="font-display text-xl font-bold mb-2" style="color: var(--maroon);">Preview Your Invitation</h3>
+          <p class="text-sm" style="color: var(--ink-soft);">See exactly how your invitation looks on every screen before sharing.</p>
+        </div>
+        <div class="text-center p-6 rounded-2xl transition-all duration-300 hover:bg-white hover:shadow-lg" style="background: rgba(255,255,255,0.5);">
+          <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5" style="background: var(--maroon);">
+            <i data-lucide="send" class="w-6 h-6" style="color: var(--white);"></i>
+          </div>
+          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color: var(--gold);">Step 04</p>
+          <h3 class="font-display text-xl font-bold mb-2" style="color: var(--maroon);">Share With Family</h3>
+          <p class="text-sm" style="color: var(--ink-soft);">Send via WhatsApp, copy the link, and invite everyone you love.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FEATURES ==================== -->
+  <section class="section-pad" style="background: var(--white);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <p class="text-xs tracking-[0.25em] uppercase font-semibold mb-3" style="color: var(--gold);">Everything You Need</p>
+        <h2 class="text-heading mb-4" style="color: var(--maroon);">Thoughtfully Crafted Features</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="flex gap-4 p-5 rounded-2xl transition-all duration-300 hover:shadow-md" style="background: var(--ivory);">
+          <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center" style="background: var(--blush);"><i data-lucide="user-round" class="w-5 h-5" style="color: var(--maroon);"></i></div>
+          <div><h4 class="font-semibold text-sm mb-1" style="color: var(--maroon);">Personalized Invitations</h4><p class="text-xs leading-relaxed" style="color: var(--ink-soft);">Every detail tailored to your names, families, and story.</p></div>
+        </div>
+        <div class="flex gap-4 p-5 rounded-2xl transition-all duration-300 hover:shadow-md" style="background: var(--ivory);">
+          <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center" style="background: var(--blush);"><i data-lucide="layout-grid" class="w-5 h-5" style="color: var(--maroon);"></i></div>
+          <div><h4 class="font-semibold text-sm mb-1" style="color: var(--maroon);">Multiple Wedding Themes</h4><p class="text-xs leading-relaxed" style="color: var(--ink-soft);">Hindu, Muslim, Christian, Kerala, Minimal, Royal — all covered.</p></div>
+        </div>
+        <div class="flex gap-4 p-5 rounded-2xl transition-all duration-300 hover:shadow-md" style="background: var(--ivory);">
+          <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center" style="background: var(--blush);"><i data-lucide="languages" class="w-5 h-5" style="color: var(--maroon);"></i></div>
+          <div><h4 class="font-semibold text-sm mb-1" style="color: var(--maroon);">Malayalam &amp; English</h4><p class="text-xs leading-relaxed" style="color: var(--ink-soft);">Full Unicode support for beautiful Malayalam typography.</p></div>
+        </div>
+        <div class="flex gap-4 p-5 rounded-2xl transition-all duration-300 hover:shadow-md" style="background: var(--ivory);">
+          <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center" style="background: var(--blush);"><i data-lucide="timer" class="w-5 h-5" style="color: var(--maroon);"></i></div>
+          <div><h4 class="font-semibold text-sm mb-1" style="color: var(--maroon);">Countdown Timer</h4><p class="text-xs leading-relaxed" style="color: var(--ink-soft);">Build excitement with a live countdown to your special day.</p></div>
+        </div>
+        <div class="flex gap-4 p-5 rounded-2xl transition-all duration-300 hover:shadow-md" style="background: var(--ivory);">
+          <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center" style="background: var(--blush);"><i data-lucide="map-pin" class="w-5 h-5" style="color: var(--maroon);"></i></div>
+          <div><h4 class="font-semibold text-sm mb-1" style="color: var(--maroon);">Google Maps Directions</h4><p class="text-xs leading-relaxed" style="color: var(--ink-soft);">Guests get one-tap navigation to your venue.</p></div>
+        </div>
+        <div class="flex gap-4 p-5 rounded-2xl transition-all duration-300 hover:shadow-md" style="background: var(--ivory);">
+          <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center" style="background: var(--blush);"><i data-lucide="check-circle" class="w-5 h-5" style="color: var(--maroon);"></i></div>
+          <div><h4 class="font-semibold text-sm mb-1" style="color: var(--maroon);">RSVP Confirmation</h4><p class="text-xs leading-relaxed" style="color: var(--ink-soft);">Guests confirm attendance directly on your invitation.</p></div>
+        </div>
+        <div class="flex gap-4 p-5 rounded-2xl transition-all duration-300 hover:shadow-md" style="background: var(--ivory);">
+          <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center" style="background: var(--blush);"><i data-lucide="message-circle" class="w-5 h-5" style="color: var(--maroon);"></i></div>
+          <div><h4 class="font-semibold text-sm mb-1" style="color: var(--maroon);">WhatsApp Sharing</h4><p class="text-xs leading-relaxed" style="color: var(--ink-soft);">Share your invitation in one tap with a personal message.</p></div>
+        </div>
+        <div class="flex gap-4 p-5 rounded-2xl transition-all duration-300 hover:shadow-md" style="background: var(--ivory);">
+          <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center" style="background: var(--blush);"><i data-lucide="camera" class="w-5 h-5" style="color: var(--maroon);"></i></div>
+          <div><h4 class="font-semibold text-sm mb-1" style="color: var(--maroon);">Couple Photos &amp; Story</h4><p class="text-xs leading-relaxed" style="color: var(--ink-soft);">Add your engagement photos and share how you met.</p></div>
+        </div>
+        <div class="flex gap-4 p-5 rounded-2xl transition-all duration-300 hover:shadow-md" style="background: var(--ivory);">
+          <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center" style="background: var(--blush);"><i data-lucide="calendar-days" class="w-5 h-5" style="color: var(--maroon);"></i></div>
+          <div><h4 class="font-semibold text-sm mb-1" style="color: var(--maroon);">Event Schedule</h4><p class="text-xs leading-relaxed" style="color: var(--ink-soft);">List all ceremonies — mehendi, sangeet, wedding, reception.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== GALLERY ==================== -->
+  <section id="gallery" class="section-pad" style="background: linear-gradient(180deg, var(--blush), var(--ivory));">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <p class="text-xs tracking-[0.25em] uppercase font-semibold mb-3" style="color: var(--gold);">Gallery</p>
+        <h2 class="text-heading mb-4" style="color: var(--maroon);">Moments We've Helped Celebrate</h2>
+        <p class="max-w-xl mx-auto" style="color: var(--ink-soft);">A glimpse into the invitations and weddings that have passed through our hands.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="card overflow-hidden group">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=600&fit=crop" alt="Elegant wedding invitation card on marble surface" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+          <div class="p-4"><p class="font-display text-lg font-semibold" style="color: var(--maroon);">Royal Gold Invitation</p><p class="text-xs" style="color: var(--ink-soft);">Sample design</p></div>
+        </div>
+        <div class="card overflow-hidden group">
+          <img src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=500&h=600&fit=crop" alt="Indian bride in red lehenga with jewelry" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+          <div class="p-4"><p class="font-display text-lg font-semibold" style="color: var(--maroon);">Traditional Bride</p><p class="text-xs" style="color: var(--ink-soft);">Sample photograph</p></div>
+        </div>
+        <div class="card overflow-hidden group">
+          <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=600&fit=crop" alt="Couple holding hands with wedding rings" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+          <div class="p-4"><p class="font-display text-lg font-semibold" style="color: var(--maroon);">The Promise</p><p class="text-xs" style="color: var(--ink-soft);">Sample photograph</p></div>
+        </div>
+        <div class="card overflow-hidden group">
+          <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=600&fit=crop" alt="Floral wedding decoration with marigold" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+          <div class="p-4"><p class="font-display text-lg font-semibold" style="color: var(--maroon);">Marigold Mandap</p><p class="text-xs" style="color: var(--ink-soft);">Sample decoration</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TESTIMONIALS ==================== -->
+  <section id="testimonials" class="section-pad" style="background: var(--white);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <p class="text-xs tracking-[0.25em] uppercase font-semibold mb-3" style="color: var(--gold);">Kind Words</p>
+        <h2 class="text-heading mb-4" style="color: var(--maroon);">What Couples Say</h2>
+        <p class="text-xs tracking-wider uppercase" style="color: var(--gold);">Demo content — sample testimonials</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card p-7 relative">
+          <i data-lucide="quote" class="w-8 h-8 mb-4" style="color: var(--champagne);" aria-hidden="true"></i>
+          <p class="text-sm leading-relaxed mb-6" style="color: var(--ink-soft);">"The live preview made it so easy to see exactly how our invitation would look. Our guests kept complimenting the design — it felt like a royal invitation!"</p>
+          <div class="flex items-center gap-3 pt-4 border-t" style="border-color: var(--ivory);">
+            <div class="w-10 h-10 rounded-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=face');" aria-hidden="true"></div>
+            <div><p class="font-semibold text-sm" style="color: var(--maroon);">Priya &amp; Karthik</p><p class="text-xs" style="color: var(--ink-soft);">Kochi, Kerala</p></div>
+          </div>
+          <span class="absolute top-4 right-4 text-[9px] tracking-widest uppercase px-2 py-1 rounded-full" style="background: var(--blush); color: var(--gold);">Demo</span>
+        </div>
+        <div class="card p-7 relative">
+          <i data-lucide="quote" class="w-8 h-8 mb-4" style="color: var(--champagne);" aria-hidden="true"></i>
+          <p class="text-sm leading-relaxed mb-6" style="color: var(--ink-soft);">"We wanted a Malayalam invitation that felt modern yet traditional. The typography was flawless on every device. Absolutely loved the experience."</p>
+          <div class="flex items-center gap-3 pt-4 border-t" style="border-color: var(--ivory);">
+            <div class="w-10 h-10 rounded-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=80&h=80&fit=crop&crop=face');" aria-hidden="true"></div>
+            <div><p class="font-semibold text-sm" style="color: var(--maroon);">Meera &amp; Rahul</p><p class="text-xs" style="color: var(--ink-soft);">Thrissur, Kerala</p></div>
+          </div>
+          <span class="absolute top-4 right-4 text-[9px] tracking-widest uppercase px-2 py-1 rounded-full" style="background: var(--blush); color: var(--gold);">Demo</span>
+        </div>
+        <div class="card p-7 relative">
+          <i data-lucide="quote" class="w-8 h-8 mb-4" style="color: var(--champagne);" aria-hidden="true"></i>
+          <p class="text-sm leading-relaxed mb-6" style="color: var(--ink-soft);">"The WhatsApp sharing feature was a game changer. We sent our invitation to 300+ guests in minutes. Elegant, simple, and stress-free."</p>
+          <div class="flex items-center gap-3 pt-4 border-t" style="border-color: var(--ivory);">
+            <div class="w-10 h-10 rounded-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=80&h=80&fit=crop&crop=face');" aria-hidden="true"></div>
+            <div><p class="font-semibold text-sm" style="color: var(--maroon);">Sneha &amp; Aditya</p><p class="text-xs" style="color: var(--ink-soft);">Bangalore, Karnataka</p></div>
+          </div>
+          <span class="absolute top-4 right-4 text-[9px] tracking-widest uppercase px-2 py-1 rounded-full" style="background: var(--blush); color: var(--gold);">Demo</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== INVITATION EDITOR ==================== -->
+  <section id="editor" class="section-pad" style="background: linear-gradient(180deg, var(--ivory), var(--blush));">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <p class="text-xs tracking-[0.25em] uppercase font-semibold mb-3" style="color: var(--gold);">Live Customization</p>
+        <h2 class="text-heading mb-4" style="color: var(--maroon);">Create Your Invitation</h2>
+        <p class="max-w-xl mx-auto" style="color: var(--ink-soft);">Fill in your details and watch the invitation come alive in real time.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Form -->
+        <div class="card p-6 md:p-8">
+          <form id="customizer-form" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="brideName">Bride's Name</label>
+                <input type="text" id="brideName" placeholder="e.g. Anjali" value="Anjali" required>
+                <p class="error-msg hidden text-xs mt-1" style="color: #b91c1c;">Please enter the bride's name</p>
+              </div>
+              <div>
+                <label for="groomName">Groom's Name</label>
+                <input type="text" id="groomName" placeholder="e.g. Arjun" value="Arjun" required>
+                <p class="error-msg hidden text-xs mt-1" style="color: #b91c1c;">Please enter the groom's name</p>
+              </div>
+              <div>
+                <label for="weddingDate">Wedding Date</label>
+                <input type="date" id="weddingDate" value="2026-12-20" required>
+              </div>
+              <div>
+                <label for="weddingTime">Wedding Time</label>
+                <input type="time" id="weddingTime" value="11:30" required>
+              </div>
+              <div class="sm:col-span-2">
+                <label for="weddingVenue">Wedding Venue</label>
+                <input type="text" id="weddingVenue" placeholder="e.g. The Grand Auditorium, Kochi, Kerala" value="The Grand Auditorium, Kochi, Kerala" required>
+              </div>
+              <div>
+                <label for="brideFamily">Bride's Family Details</label>
+                <input type="text" id="brideFamily" placeholder="D/o Mr. &amp; Mrs. Nair" value="D/o Mr. &amp; Mrs. Nair">
+              </div>
+              <div>
+                <label for="groomFamily">Groom's Family Details</label>
+                <input type="text" id="groomFamily" placeholder="S/o Mr. &amp; Mrs. Menon" value="S/o Mr. &amp; Mrs. Menon">
+              </div>
+              <div class="sm:col-span-2">
+                <label for="weddingMessage">Wedding Message</label>
+                <textarea id="weddingMessage" rows="3" placeholder="With hearts full of joy...">With hearts full of joy, we invite you to celebrate our wedding.</textarea>
+              </div>
+              <div>
+                <label for="languageSelect">Language</label>
+                <select id="languageSelect">
+                  <option value="english">English</option>
+                  <option value="malayalam">Malayalam</option>
+                </select>
+              </div>
+              <div>
+                <label for="templateSelect">Template</label>
+                <select id="templateSelect">
+                  <option value="traditional">Traditional Hindu</option>
+                  <option value="muslim">Elegant Muslim</option>
+                  <option value="christian">Christian</option>
+                  <option value="kerala">Kerala</option>
+                  <option value="minimal">Minimal Modern</option>
+                  <option value="royal">Royal Indian</option>
+                  <option value="malayalam-template">Malayalam</option>
+                </select>
+              </div>
+              <div class="sm:col-span-2">
+                <label for="couplePhoto">Couple Photo (demo upload)</label>
+                <input type="file" id="couplePhoto" accept="image/*" class="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[var(--maroon)] file:text-white hover:file:bg-[#5e2a38] file:transition-colors file:cursor-pointer">
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-3 mt-6">
+              <button type="submit" class="btn-primary"><i data-lucide="sparkles" class="w-4 h-4"></i> Preview Invitation</button>
+              <button type="button" id="resetBtn" class="btn-secondary"><i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset Demo</button>
+            </div>
+            <p id="formStatus" class="mt-4 text-sm font-medium hidden"></p>
+            <p class="mt-4 text-[11px] tracking-wide" style="color: var(--ink-soft);">This is a demo editor. No data is sent to a server.</p>
+          </form>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="preview-panel" id="live-preview">
+          <!-- Preview content injected/updated by JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SAMPLE INVITATION PAGE (Anjali & Arjun) ==================== -->
+  <section id="invitation" class="section-pad" style="background: linear-gradient(180deg, var(--white), var(--ivory));">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8">
+        <p class="text-xs tracking-[0.25em] uppercase font-semibold" style="color: var(--gold);">Sample Wedding Invitation — Demo Only</p>
+      </div>
+
+      <!-- Envelope opening card -->
+      <div class="envelope-container mb-12">
+        <div class="envelope" id="envelope-card" role="button" tabindex="0" aria-label="Open wedding invitation envelope">
+          <div class="mb-3" aria-hidden="true"><i data-lucide="mail" class="w-10 h-10" style="color: var(--gold);"></i></div>
+          <p class="text-xs tracking-[0.3em] uppercase font-semibold mb-2" style="color: var(--gold);">You're Invited</p>
+          <h3 class="font-display text-3xl md:text-4xl font-bold mb-1" style="color: var(--maroon);">Anjali &amp; Arjun</h3>
+          <p class="text-sm mb-3" style="color: var(--ink-soft);">20 December 2026 · 11:30 AM</p>
+          <div class="w-12 h-px mx-auto mb-3" style="background: var(--gold);"></div>
+          <p class="text-xs" style="color: var(--ink-soft);">Tap to open the invitation</p>
+        </div>
+        <!-- Hidden details revealed on open -->
+        <div id="envelope-details" class="hidden mt-8 space-y-8 animate-fade-up">
+          <!-- Couple names -->
+          <div class="text-center">
+            <p class="text-xs tracking-[0.3em] uppercase font-semibold mb-4" style="color: var(--gold);">Together with their families</p>
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-2" style="color: var(--maroon);">Anjali</h2>
+            <p class="font-display text-2xl italic mb-2" style="color: var(--ink-soft);">&amp;</p>
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color: var(--maroon);">Arjun</h2>
+            <p class="text-sm max-w-md mx-auto leading-relaxed" style="color: var(--ink-soft);">request the pleasure of your company as they begin their forever together.</p>
+          </div>
+
+          <!-- Malayalam message -->
+          <div class="p-6 rounded-2xl text-center" style="background: var(--blush);">
+            <p class="malayalam-text text-lg md:text-xl leading-relaxed" style="color: var(--maroon);">സ്നേഹപൂർവ്വം ക്ഷണിക്കുന്നു</p>
+            <p class="malayalam-text text-sm md:text-base mt-3 leading-relaxed" style="color: var(--ink-soft);">ഞങ്ങളുടെ ജീവിതത്തിലെ ഏറ്റവും മനോഹരമായ ദിനത്തിൽ നിങ്ങളുടെ സാന്നിധ്യവും പ്രാർത്ഥനയും സ്നേഹവും പ്രതീക്ഷിക്കുന്നു.</p>
+            <p class="text-[10px] tracking-widest uppercase mt-3" style="color: var(--gold);">Malayalam sample text</p>
+          </div>
+
+          <!-- Event details -->
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div class="card p-5 text-center">
+              <i data-lucide="calendar-heart" class="w-6 h-6 mx-auto mb-2" style="color: var(--gold);" aria-hidden="true"></i>
+              <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color: var(--gold);">Date</p>
+              <p class="font-display text-xl font-bold" style="color: var(--maroon);">20 December 2026</p>
+            </div>
+            <div class="card p-5 text-center">
+              <i data-lucide="clock" class="w-6 h-6 mx-auto mb-2" style="color: var(--gold);" aria-hidden="true"></i>
+              <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color: var(--gold);">Time</p>
+              <p class="font-display text-xl font-bold" style="color: var(--maroon);">11:30 AM</p>
+            </div>
+          </div>
+
+          <!-- Countdown -->
+          <div class="card p-6 text-center">
+            <p class="text-xs uppercase tracking-widest font-semibold mb-4" style="color: var(--gold);">Counting down to forever</p>
+            <div class="flex justify-center gap-6" id="countdown-display">
+              <div class="countdown-unit"><span class="countdown-num" id="cd-days">00</span><span class="countdown-label">Days</span></div>
+              <div class="countdown-unit"><span class="countdown-num" id="cd-hours">00</span><span class="countdown-label">Hours</span></div>
+              <div class="countdown-unit"><span class="countdown-num" id="cd-mins">00</span><span class="countdown-label">Minutes</span></div>
+              <div class="countdown-unit"><span class="countdown-num" id="cd-secs">00</span><span class="countdown-label">Seconds</span></div>
+            </div>
+          </div>
+
+          <!-- Venue & Map -->
+          <div class="card p-6">
+            <div class="flex items-start gap-3 mb-4">
+              <i data-lucide="map-pin" class="w-5 h-5 mt-0.5 shrink-0" style="color: var(--gold);" aria-hidden="true"></i>
+              <div>
+                <h4 class="font-display text-xl font-bold mb-1" style="color: var(--maroon);">The Grand Auditorium</h4>
+                <p class="text-sm" style="color: var(--ink-soft);">Marine Drive, Kochi, Kerala 682031</p>
+              </div>
+            </div>
+            <div class="map-placeholder mb-4">
+              <div class="text-center relative z-10">
+                <i data-lucide="map" class="w-8 h-8 mx-auto mb-2" style="color: var(--maroon);" aria-hidden="true"></i>
+                <p class="text-sm font-semibold" style="color: var(--maroon);">Map Preview (Demo)</p>
+                <p class="text-xs" style="color: var(--ink-soft);">Google Maps integration placeholder</p>
+              </div>
+            </div>
+            <a href="https://maps.google.com/?q=Marine+Drive+Kochi" target="_blank" rel="noopener" class="btn-secondary text-sm justify-center w-full">
+              <i data-lucide="navigation" class="w-4 h-4"></i> Get Directions
+            </a>
+          </div>
+
+          <!-- Event schedule -->
+          <div class="card p-6">
+            <h4 class="font-display text-xl font-bold mb-4" style="color: var(--maroon);">Wedding Schedule</h4>
+            <div class="space-y-4">
+              <div class="flex gap-4">
+                <div class="text-xs font-bold uppercase tracking-wider w-20 shrink-0 pt-1" style="color: var(--gold);">Mehendi</div>
+                <div><p class="font-semibold text-sm" style="color: var(--maroon);">18 Dec 2026 · 4:00 PM</p><p class="text-xs" style="color: var(--ink-soft);">Nair Residence, Kochi</p></div>
+              </div>
+              <div class="flex gap-4">
+                <div class="text-xs font-bold uppercase tracking-wider w-20 shrink-0 pt-1" style="color: var(--gold);">Sangeet</div>
+                <div><p class="font-semibold text-sm" style="color: var(--maroon);">19 Dec 2026 · 7:00 PM</p><p class="text-xs" style="color: var(--ink-soft);">The Grand Auditorium, Kochi</p></div>
+              </div>
+              <div class="flex gap-4">
+                <div class="text-xs font-bold uppercase tracking-wider w-20 shrink-0 pt-1" style="color: var(--gold);">Wedding</div>
+                <div><p class="font-semibold text-sm" style="color: var(--maroon);">20 Dec 2026 · 11:30 AM</p><p class="text-xs" style="color: var(--ink-soft);">The Grand Auditorium, Kochi</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RSVP form -->
+          <div class="card p-6">
+            <h4 class="font-display text-xl font-bold mb-4" style="color: var(--maroon);">RSVP</h4>
+            <form id="rsvp-form" novalidate>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="rsvpName">Your Name</label>
+                  <input type="text" id="rsvpName" placeholder="e.g. Lakshmi" required>
+                  <p class="error-msg hidden text-xs mt-1" style="color: #b91c1c;">Please enter your name</p>
+                </div>
+                <div>
+                  <label for="rsvpEmail">Email</label>
+                  <input type="email" id="rsvpEmail" placeholder="you@example.com" required>
+                  <p class="error-msg hidden text-xs mt-1" style="color: #b91c1c;">Please enter a valid email</p>
+                </div>
+                <div class="sm:col-span-2">
+                  <label for="rsvpGuests">Number of Guests</label>
+                  <select id="rsvpGuests">
+                    <option value="1">1 Guest</option>
+                    <option value="2">2 Guests</option>
+                    <option value="3">3 Guests</option>
+                    <option value="4">4 Guests</option>
+                    <option value="5+">5+ Guests</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn-primary mt-4 w-full justify-center"><i data-lucide="send" class="w-4 h-4"></i> Confirm RSVP (Demo)</button>
+              <p id="rsvpStatus" class="mt-3 text-sm font-medium hidden"></p>
+            </form>
+          </div>
+
+          <!-- Share -->
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <button id="whatsappShare" class="btn-gold justify-center"><i data-lucide="message-circle" class="w-4 h-4"></i> Share via WhatsApp</button>
+            <button id="copyLink" class="btn-secondary justify-center"><i data-lucide="link" class="w-4 h-4"></i> Copy Invitation Link</button>
+          </div>
+          <p class="text-center text-[10px] tracking-widest uppercase" style="color: var(--gold);">Demo content — No real invitations are sent</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MUSIC TOGGLE ==================== -->
+  <button class="music-toggle" id="musicToggle" aria-label="Toggle background music" aria-pressed="false">
+    <i data-lucide="music" class="w-5 h-5" id="musicIcon"></i>
+  </button>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="pt-16 pb-8" style="background: var(--maroon); color: var(--champagne);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <!-- Brand -->
+        <div class="lg:col-span-1">
+          <p class="font-display text-2xl font-bold mb-3" style="color: var(--white);">Wedding Moments</p>
+          <p class="text-sm leading-relaxed mb-4" style="color: var(--champagne);">Your Love Story, Beautifully Invited. Premium digital wedding invitations crafted for modern Indian celebrations.</p>
+          <div class="flex gap-3">
+            <a href="https://instagram.com" target="_blank" rel="noopener" class="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-white hover:bg-opacity-10" aria-label="Instagram"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+            <a href="https://facebook.com" target="_blank" rel="noopener" class="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-white hover:bg-opacity-10" aria-label="Facebook"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+            <a href="https://wa.me/919999999999" target="_blank" rel="noopener" class="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-white hover:bg-opacity-10" aria-label="WhatsApp"><i data-lucide="message-circle" class="w-4 h-4"></i></a>
+          </div>
+        </div>
+        <!-- Quick Links -->
+        <div>
+          <h4 class="font-semibold text-sm uppercase tracking-widest mb-4" style="color: var(--white);">Explore</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#templates" class="hover:text-white transition-colors">Templates</a></li>
+            <li><a href="#how-it-works" class="hover:text-white transition-colors">How It Works</a></li>
+            <li><a href="#gallery" class="hover:text-white transition-colors">Gallery</a></li>
+            <li><a href="#editor" class="hover:text-white transition-colors">Create Invitation</a></li>
+          </ul>
+        </div>
+        <!-- Company -->
+        <div>
+          <h4 class="font-semibold text-sm uppercase tracking-widest mb-4" style="color: var(--white);">Company</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Terms &amp; Conditions</a></li>
+          </ul>
+        </div>
+        <!-- Contact form -->
+        <div>
+          <h4 class="font-semibold text-sm uppercase tracking-widest mb-4" style="color: var(--white);">Get in Touch</h4>
+          <form id="footer-form" novalidate class="space-y-3">
+            <input type="text" id="footerName" placeholder="Your name" class="w-full text-sm" style="background: rgba(255,255,255,0.08); border-color: rgba(232,213,192,0.3); color: var(--white);" required aria-label="Your name">
+            <input type="email" id="footerEmail" placeholder="Email address" class="w-full text-sm" style="background: rgba(255,255,255,0.08); border-color: rgba(232,213,192,0.3); color: var(--white);" required aria-label="Email address">
+            <textarea id="footerMessage" rows="2" placeholder="Tell us about your wedding..." class="w-full text-sm" style="background: rgba(255,255,255,0.08); border-color: rgba(232,213,192,0.3); color: var(--white);" required aria-label="Your message"></textarea>
+            <button type="submit" class="btn-gold w-full justify-center text-sm">Send Message</button>
+            <p id="footerStatus" class="text-xs hidden"></p>
+            <!-- TODO: connect form action to backend endpoint -->
+          </form>
+        </div>
+      </div>
+      <div class="border-t pt-6 text-center" style="border-color: rgba(232,213,192,0.2);">
+        <p class="text-xs" style="color: rgba(232,213,192,0.6);">© 2024 Wedding Moments. All rights reserved. This is a demo website — sample data only.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ==================== DATA ====================
+    const templates = [
+      { id: 'traditional', name: 'Traditional Hindu Wedding', desc: 'Classic marigold and gold mandap-inspired design with sacred motifs.', img: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=350&fit=crop', tag: 'Hindu' },
+      { id: 'muslim', name: 'Elegant Muslim Wedding', desc: 'Refined emerald and gold palette with intricate arabesque patterns.', img: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=500&h=350&fit=crop', tag: 'Muslim' },
+      { id: 'christian', name: 'Christian Wedding', desc: 'Soft ivory and blush tones with delicate lace and floral details.', img: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=350&fit=crop', tag: 'Christian' },
+      { id: 'kerala', name: 'Kerala Wedding', desc: 'Kasavu-inspired elegance with gold borders and tropical warmth.', img: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=350&fit=crop', tag: 'Kerala' },
+      { id: 'minimal', name: 'Minimal Modern Wedding', desc: 'Clean lines and understated luxury for the contemporary couple.', img: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=350&fit=crop', tag: 'Minimal' },
+      { id: 'royal', name: 'Royal Indian Wedding', desc: 'Opulent maroon and gold with regal motifs and bold typography.', img: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=350&fit=crop', tag: 'Royal' }
+    ];
+
+    // ==================== RENDER TEMPLATE CARDS ====================
+    const templateGrid = document.getElementById('template-grid');
+    if (templateGrid) {
+      templates.forEach((t, i) => {
+        const card = document.createElement('div');
+        card.className = 'card group animate-fade-up';
+        card.style.animationDelay = `${i * 0.1}s`;
+        card.innerHTML = `
+          <div class="relative overflow-hidden h-52">
+            <img src="${t.img}" alt="${t.name} invitation preview" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <span class="absolute top-3 left-3 text-[10px] tracking-widest uppercase px-2.5 py-1 rounded-full font-semibold" style="background: var(--white); color: var(--gold);">${t.tag}</span>
+          </div>
+          <div class="p-5">
+            <h3 class="font-display text-xl font-bold mb-1" style="color: var(--maroon);">${t.name}</h3>
+            <p class="text-sm mb-4" style="color: var(--ink-soft);">${t.desc}</p>
+            <div class="flex gap-2">
+              <button class="btn-primary text-xs flex-1 justify-center" style="padding: 0.55rem 1rem;" onclick="scrollToEditor('${t.id}')">Customize</button>
+              <button class="btn-secondary text-xs flex-1 justify-center" style="padding: 0.55rem 1rem;" onclick="previewTemplate('${t.id}')">Preview</button>
+            </div>
+          </div>
+        `;
+        templateGrid.appendChild(card);
+      });
+    }
+
+    function scrollToEditor(templateId) {
+      const sel = document.getElementById('templateSelect');
+      if (sel) sel.value = templateId === 'malayalam-template' ? 'malayalam-template' : templateId;
+      document.getElementById('editor').scrollIntoView({ behavior: 'smooth' });
+      updatePreview();
+    }
+
+    function previewTemplate(templateId) {
+      document.getElementById('invitation').scrollIntoView({ behavior: 'smooth' });
+      const env = document.getElementById('envelope-card');
+      if (env && !env.classList.contains('open')) {
+        setTimeout(() => openEnvelope(), 400);
+      }
+    }
+
+    // ==================== NAVIGATION ====================
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuBtn) {
+      mobileMenuBtn.addEventListener('click', () => {
+        const expanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+        mobileMenuBtn.setAttribute('aria-expanded', !expanded);
+        mobileMenu.classList.toggle('hidden');
+        mobileMenuBtn.innerHTML = expanded ? '<i data-lucide="menu" class="w-6 h-6"></i>' : '<i data-lucide="x" class="w-6 h-6"></i>';
+        lucide.createIcons();
+      });
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          mobileMenuBtn.setAttribute('aria-expanded', 'false');
+          mobileMenuBtn.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+          lucide.createIcons();
+        });
+      });
+    }
+
+    // Sticky nav shadow
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 20) {
+        navbar.style.boxShadow = '0 4px 20px rgba(74,30,42,0.06)';
+      } else {
+        navbar.style.boxShadow = 'none';
+      }
+    });
+
+    // ==================== LIVE PREVIEW (EDITOR) ====================
+    const form = document.getElementById('customizer-form');
+    const previewPanel = document.getElementById('live-preview');
+
+    function getFormData() {
+      return {
+        bride: document.getElementById('brideName')?.value || 'Bride',
+        groom: document.getElementById('groomName')?.value || 'Groom',
+        date: document.getElementById('weddingDate')?.value || '',
+        time: document.getElementById('weddingTime')?.value || '',
+        venue: document.getElementById('weddingVenue')?.value || '',
+        brideFamily: document.getElementById('brideFamily')?.value || '',
+        groomFamily: document.getElementById('groomFamily')?.value || '',
+        message: document.getElementById('weddingMessage')?.value || '',
+        language: document.getElementById('languageSelect')?.value || 'english',
+        template: document.getElementById('templateSelect')?.value || 'traditional',
+        photo: document.getElementById('couplePhoto')?.files?.[0] || null
+      };
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return 'Date TBD';
+      try {
+        return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+      } catch(e) { return dateStr; }
+    }
+
+    function formatTime(timeStr) {
+      if (!timeStr) return 'Time TBD';
+      try {
+        const [h, m] = timeStr.split(':');
+        const hour = parseInt(h);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const h12 = hour % 12 || 12;
+        return `${h12}:${m} ${ampm}`;
+      } catch(e) { return timeStr; }
+    }
+
+    function updatePreview() {
+      if (!previewPanel) return;
+      const d = getFormData();
+      const isMalayalam = d.language === 'malayalam';
+      const dateFormatted = formatDate(d.date);
+      const timeFormatted = formatTime(d.time);
+
+      const malayalamInvite = 'സ്നേഹപൂർവ്വം ക്ഷണിക്കുന്നു';
+      const malayalamMsg = 'ഞങ്ങളുടെ ജീവിതത്തിലെ ഏറ്റവും മനോഹരമായ ദിനത്തിൽ നിങ്ങളുടെ സാന്നിധ്യവും പ്രാർത്ഥനയും സ്നേഹവും പ്രതീക്ഷിക്കുന്നു.';
+
+      previewPanel.innerHTML = `
+        <div class="text-center">
+          <div class="mb-3 flex justify-center" aria-hidden="true"><i data-lucide="flower-2" class="w-7 h-7" style="color: var(--gold);"></i></div>
+          <p class="text-[10px] tracking-[0.3em] uppercase font-semibold mb-4" style="color: var(--gold);">Together with families</p>
+          <h3 class="font-display text-3xl font-bold mb-1" style="color: var(--maroon);">${escapeHtml(d.bride)}</h3>
+          <p class="font-display text-lg italic mb-1" style="color: var(--ink-soft);">&amp;</p>
+          <h3 class="font-display text-3xl font-bold mb-4" style="color: var(--maroon);">${escapeHtml(d.groom)}</h3>
+          <div class="w-12 h-px mx-auto mb-4" style="background: var(--gold);"></div>
+          <p class="text-sm font-semibold mb-1" style="color: var(--maroon);">${dateFormatted}</p>
+          <p class="text-xs mb-3" style="color: var(--ink-soft);">${timeFormatted}</p>
+          <p class="text-sm mb-1" style="color: var(--ink-soft);">${escapeHtml(d.venue)}</p>
+          ${d.brideFamily ? `<p class="text-xs" style="color: var(--ink-soft);">${escapeHtml(d.brideFamily)}</p>` : ''}
+          ${d.groomFamily ? `<p class="text-xs mb-3" style="color: var(--ink-soft);">${escapeHtml(d.groomFamily)}</p>` : ''}
+          <div class="my-4 p-4 rounded-xl" style="background: var(--ivory);">
+            ${isMalayalam ? `<p class="malayalam-text text-base mb-2" style="color: var(--maroon);">${malayalamInvite}</p><p class="malayalam-text text-xs leading-relaxed" style="color: var(--ink-soft);">${malayalamMsg}</p>` : `<p class="text-sm italic" style="color: var(--ink-soft);">"${escapeHtml(d.message) || 'With hearts full of joy, we invite you to celebrate our wedding.'}"</p>`}
+          </div>
+          ${d.photo ? `<p class="text-xs" style="color: var(--gold);">Photo uploaded — demo preview</p>` : ''}
+          <div class="mt-4 pt-3 border-t" style="border-color: var(--champagne);">
+            <p class="text-[9px] tracking-[0.25em] uppercase" style="color: var(--gold);">Live Preview — Demo Only</p>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    if (form) {
+      form.addEventListener('input', updatePreview);
+      form.addEventListener('change', updatePreview);
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const status = document.getElementById('formStatus');
+        // Simple validation
+        const bride = document.getElementById('brideName');
+        const groom = document.getElementById('groomName');
+        let valid = true;
+        document.querySelectorAll('.error-msg').forEach(el => el.classList.add('hidden'));
+        if (!bride.value.trim()) { bride.closest('div').querySelector('.error-msg').classList.remove('hidden'); valid = false; }
+        if (!groom.value.trim()) { groom.closest('div').querySelector('.error-msg').classList.remove('hidden'); valid = false; }
+        if (!valid) {
+          status.textContent = 'Please fill in the required fields.';
+          status.style.color = '#b91c1c';
+          status.classList.remove('hidden');
+          return;
+        }
+        status.textContent = 'Preview updated successfully! Scroll down to see the sample invitation page.';
+        status.style.color = '#15803d';
+        status.classList.remove('hidden');
+        updatePreview();
+        setTimeout(() => {
+          document.getElementById('invitation').scrollIntoView({ behavior: 'smooth' });
+        }, 600);
+      });
+    }
+
+    document.getElementById('resetBtn')?.addEventListener('click', () => {
+      document.getElementById('brideName').value = 'Anjali';
+      document.getElementById('groomName').value = 'Arjun';
+      document.getElementById('weddingDate').value = '2026-12-20';
+      document.getElementById('weddingTime').value = '11:30';
+      document.getElementById('weddingVenue').value = 'The Grand Auditorium, Kochi, Kerala';
+      document.getElementById('brideFamily').value = 'D/o Mr. & Mrs. Nair';
+      document.getElementById('groomFamily').value = 'S/o Mr. & Mrs. Menon';
+      document.getElementById('weddingMessage').value = 'With hearts full of joy, we invite you to celebrate our wedding.';
+      document.getElementById('languageSelect').value = 'english';
+      document.getElementById('templateSelect').value = 'traditional';
+      document.getElementById('couplePhoto').value = '';
+      document.getElementById('formStatus').classList.add('hidden');
+      updatePreview();
+    });
+
+    // Initial preview render
+    updatePreview();
+
+    // ==================== ENVELOPE OPEN ====================
+    const envelopeCard = document.getElementById('envelope-card');
+    const envelopeDetails = document.getElementById('envelope-details');
+    let envelopeOpened = false;
+
+    function openEnvelope() {
+      if (envelopeOpened) return;
+      envelopeOpened = true;
+      envelopeCard.classList.add('open');
+      envelopeCard.style.transform = 'scale(0.95)';
+      envelopeCard.style.opacity = '0.5';
+      envelopeCard.style.pointerEvents = 'none';
+      setTimeout(() => {
+        envelopeCard.style.display = 'none';
+        envelopeDetails.classList.remove('hidden');
+        startCountdown();
+      }, 500);
+    }
+
+    if (envelopeCard) {
+      envelopeCard.addEventListener('click', openEnvelope);
+      envelopeCard.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); } });
+    }
+
+    // ==================== COUNTDOWN ====================
+    let countdownInterval;
+    function startCountdown() {
+      const target = new Date('2026-12-20T11:30:00').getTime();
+      function tick() {
+        const now = Date.now();
+        const diff = target - now;
+        if (diff <= 0) {
+          document.getElementById('cd-days').textContent = '00';
+          document.getElementById('cd-hours').textContent = '00';
+          document.getElementById('cd-mins').textContent = '00';
+          document.getElementById('cd-secs').textContent = '00';
+          return;
+        }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const mins = Math.floor((diff / (1000 * 60)) % 60);
+        const secs = Math.floor((diff / 1000) % 60);
+        document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+        document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+        document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+      }
+      tick();
+      countdownInterval = setInterval(tick, 1000);
+    }
+
+    // ==================== RSVP FORM ====================
+    document.getElementById('rsvp-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('rsvpName');
+      const email = document.getElementById('rsvpEmail');
+      const status = document.getElementById('rsvpStatus');
+      let valid = true;
+      document.querySelectorAll('#rsvp-form .error-msg').forEach(el => el.classList.add('hidden'));
+      if (!name.value.trim()) { name.closest('div').querySelector('.error-msg').classList.remove('hidden'); valid = false; }
+      if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        email.closest('div').querySelector('.error-msg').classList.remove('hidden'); valid = false;
+      }
+      if (!valid) {
+        status.textContent = 'Please correct the errors above.';
+        status.style.color = '#b91c1c';
+        status.classList.remove('hidden');
+        return;
+      }
+      status.textContent = 'Thank you! Your RSVP has been recorded (demo only — no real submission).';
+      status.style.color = '#15803d';
+      status.classList.remove('hidden');
+      document.getElementById('rsvpName').value = '';
+      document.getElementById('rsvpEmail').value = '';
+    });
+
+    // ==================== WHATSAPP SHARE ====================
+    document.getElementById('whatsappShare')?.addEventListener('click', () => {
+      const url = encodeURIComponent(window.location.href.split('#')[0] + '#invitation');
+      const text = encodeURIComponent('You are invited to the wedding of Anjali & Arjun — 20 December 2026 at The Grand Auditorium, Kochi. View invitation: ');
+      window.open(`https://wa.me/?text=${text}${url}`, '_blank');
+    });
+
+    // ==================== COPY LINK ====================
+    document.getElementById('copyLink')?.addEventListener('click', async () => {
+      const link = window.location.href.split('#')[0] + '#invitation';
+      try {
+        await navigator.clipboard.writeText(link);
+        const btn = document.getElementById('copyLink');
+        const original = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Copied!';
+        lucide.createIcons();
+        setTimeout(() => { btn.innerHTML = original; lucide.createIcons(); }, 2000);
+      } catch (err) {
+        prompt('Copy this link:', link);
+      }
+    });
+
+    // ==================== MUSIC TOGGLE ====================
+    let musicPlaying = false;
+    document.getElementById('musicToggle')?.addEventListener('click', function() {
+      musicPlaying = !musicPlaying;
+      this.setAttribute('aria-pressed', musicPlaying);
+      this.innerHTML = musicPlaying ? '<i data-lucide="pause" class="w-5 h-5"></i>' : '<i data-lucide="music" class="w-5 h-5"></i>';
+      lucide.createIcons();
+      // No actual audio — demo only
+    });
+
+    // ==================== FOOTER FORM ====================
+    document.getElementById('footer-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('footerName');
+      const email = document.getElementById('footerEmail');
+      const msg = document.getElementById('footerMessage');
+      const status = document.getElementById('footerStatus');
+      let valid = true;
+      if (!name.value.trim()) { valid = false; name.style.borderColor = '#f87171'; } else { name.style.borderColor = 'rgba(232,213,192,0.3)'; }
+      if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { valid = false; email.style.borderColor = '#f87171'; } else { email.style.borderColor = 'rgba(232,213,192,0.3)'; }
+      if (!msg.value.trim()) { valid = false; msg.style.borderColor = '#f87171'; } else { msg.style.borderColor = 'rgba(232,213,192,0.3)'; }
+      if (!valid) {
+        status.textContent = 'Please fill all fields correctly.';
+        status.style.color = '#fca5a5';
+        status.classList.remove('hidden');
+        return;
+      }
+      status.textContent = 'Thank you! We will get back to you soon. (Demo only)';
+      status.style.color = '#86efac';
+      status.classList.remove('hidden');
+      name.value = ''; email.value = ''; msg.value = '';
+    });
+
+    // ==================== INIT LUCIDE ====================
+    lucide.createIcons();
+  </script>
+</body>
+</html>
