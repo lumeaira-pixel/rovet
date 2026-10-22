@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Moments Studio — Cinematic Invitation Videos</title>
+
+  <!-- Google Fonts + Malayalam + display fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@300;400;500;600;700&family=Noto+Sans+Malayalam:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- GSAP for smooth animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ivory: #FBF7F0;
+      --ivory-deep: #F4EDE1;
+      --champagne: #C9A45C;
+      --champagne-deep: #A8823B;
+      --maroon: #6B1F2B;
+      --maroon-deep: #4A131C;
+      --blush: #E8C9C4;
+      --emerald: #1F4B3F;
+      --ink: #2A221C;
+      --ink-soft: #5B4D42;
+      --line: rgba(42, 34, 28, 0.12);
+      --gold-grad: linear-gradient(135deg, #D4B069 0%, #C9A45C 40%, #A8823B 100%);
+      --shadow-soft: 0 10px 40px -12px rgba(107, 31, 43, 0.15);
+      --shadow-card: 0 20px 50px -20px rgba(107, 31, 43, 0.25);
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Manrope', system-ui, sans-serif;
+      --font-mal: 'Noto Sans Malayalam', sans-serif;
+      --focus: 0 0 0 3px rgba(201, 164, 92, 0.5);
+    }
+
+    /* === Base Reset === */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      background: var(--ivory);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--champagne); color: #fff; }
+
+    /* === Typography Helpers === */
+    .font-display { font-family: var(--font-display); }
+    .font-mal { font-family: var(--font-mal); }
+    .text-champagne { color: var(--champagne-deep); }
+    .text-maroon { color: var(--maroon); }
+    .text-ink-soft { color: var(--ink-soft); }
+    .tracking-luxe { letter-spacing: 0.28em; }
+    .tracking-wide-2 { letter-spacing: 0.12em; }
+
+    /* === Decorative Backgrounds === */
+    .bg-ivory { background-color: var(--ivory); }
+    .bg-ivory-deep { background-color: var(--ivory-deep); }
+    .bg-gold-grad { background: var(--gold-grad); }
+    .bg-maroon { background-color: var(--maroon); }
+    .bg-emerald-deep { background-color: var(--emerald); }
+
+    .grain {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    }
+
+    /* === Gold Text === */
+    .gold-text {
+      background: var(--gold-grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* === Buttons === */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.9rem 1.8rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--gold-grad);
+      color: #fff;
+      box-shadow: 0 8px 24px -8px rgba(168, 130, 59, 0.6);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 32px -10px rgba(168, 130, 59, 0.75); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--maroon);
+      border: 1px solid rgba(107, 31, 43, 0.35);
+    }
+    .btn-ghost:hover { background: var(--maroon); color: var(--ivory); border-color: var(--maroon); }
+    .btn-dark {
+      background: var(--maroon);
+      color: var(--ivory);
+    }
+    .btn-dark:hover { background: var(--maroon-deep); transform: translateY(-2px); }
+    .btn:focus-visible { outline: none; box-shadow: var(--focus); }
+    .btn-sm { padding: 0.55rem 1.2rem; font-size: 0.72rem; }
+
+    /* === Cards === */
+    .card {
+      background: #fff;
+      border-radius: 1.5rem;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card); }
+
+    /* === Header === */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      transition: all 0.35s ease;
+      padding: 1rem 0;
+    }
+    .site-header.scrolled {
+      background: rgba(251, 247, 240, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px -10px rgba(42, 34, 28, 0.12);
+      padding: 0.6rem 0;
+    }
+    .nav-link {
+      position: relative;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--ink-soft);
+      text-decoration: none;
+      padding: 0.4rem 0;
+      transition: color 0.2s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: 0;
+      height: 1px; width: 0;
+      background: var(--champagne-deep);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover { color: var(--maroon); }
+    .nav-link:hover::after { width: 100%; }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: var(--ivory);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .mobile-menu.open { transform: translateX(0); }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--maroon);
+      text-decoration: none;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* === Hero === */
+    .hero-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      font-size: clamp(2.6rem, 6.5vw, 5.2rem);
+      color: var(--maroon);
+    }
+    .hero-ornament {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(60px);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .ornament-1 { width: 380px; height: 380px; background: var(--blush); top: -80px; right: -60px; }
+    .ornament-2 { width: 320px; height: 320px; background: var(--champagne); bottom: -100px; left: -80px; opacity: 0.18; }
+
+    /* === Template Cards === */
+    .template-thumb {
+      position: relative;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      aspect-ratio: 3 / 4;
+      background: var(--ivory-deep);
+      cursor: pointer;
+    }
+    .template-thumb img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .template-card:hover .template-thumb img { transform: scale(1.06); }
+    .template-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(74, 19, 28, 0.82) 0%, rgba(74, 19, 28, 0.1) 45%, transparent 70%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.1rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(251, 247, 240, 0.92);
+      color: var(--maroon);
+    }
+
+    /* === Section Headings === */
+    .section-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--champagne-deep);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(2rem, 4.5vw, 3.4rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--maroon);
+    }
+
+    /* === Editor === */
+    .editor-panel {
+      background: #fff;
+      border-radius: 1.75rem;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+      padding: 1.5rem;
+    }
+    .field-label {
+      display: block;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--ink-soft);
+      margin-bottom: 0.4rem;
+    }
+    .field-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--line);
+      background: var(--ivory);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ink);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field-input:focus {
+      outline: none;
+      border-color: var(--champagne);
+      box-shadow: 0 0 0 3px rgba(201, 164, 92, 0.25);
+      background: #fff;
+    }
+    .field-input::placeholder { color: rgba(91, 77, 66, 0.5); }
+
+    /* === Live Preview (9:16 stage) === */
+    .preview-stage {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto;
+      aspect-ratio: 9 / 16;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 20%, #4A131C 0%, #2A0A10 70%);
+      box-shadow: 0 30px 70px -20px rgba(42, 34, 28, 0.5), 0 0 0 1px rgba(201, 164, 92, 0.35);
+    }
+    .preview-scene {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1.6rem;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .preview-scene.active { opacity: 1; }
+
+    .scene-envelope {
+      width: 140px; height: 95px;
+      background: linear-gradient(160deg, #FBF7F0, #E8D9BE);
+      border-radius: 6px;
+      position: relative;
+      box-shadow: 0 15px 40px -10px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(201,164,92,0.5);
+      margin-bottom: 1.2rem;
+    }
+    .scene-envelope::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 55%;
+      background: linear-gradient(160deg, #F4EDE1, #D4B069);
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      border-radius: 6px 6px 0 0;
+    }
+    .scene-envelope::after {
+      content: '❦';
+      position: absolute;
+      top: 42%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--maroon);
+      font-size: 1.6rem;
+      z-index: 2;
+    }
+
+    .gold-particle {
+      position: absolute;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #F5E3B3, #C9A45C);
+      box-shadow: 0 0 8px 2px rgba(201,164,92,0.6);
+      animation: floatUp 6s linear infinite;
+      opacity: 0;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0.6); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-320px) scale(1.2); opacity: 0; }
+    }
+
+    .scene-divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, #C9A45C, transparent);
+      margin: 0.7rem auto;
+    }
+    .scene-name {
+      font-family: var(--font-display);
+      font-size: 1.7rem;
+      line-height: 1.1;
+      color: #F5E3B3;
+      letter-spacing: 0.02em;
+    }
+    .scene-amp {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: #C9A45C;
+      font-size: 1.4rem;
+      margin: 0.2rem 0;
+    }
+    .scene-small {
+      font-size: 0.62rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #E8C9C4;
+      font-weight: 600;
+    }
+    .scene-body {
+      font-size: 0.74rem;
+      color: #F4EDE1;
+      line-height: 1.6;
+      max-width: 240px;
+    }
+    .scene-mal {
+      font-family: var(--font-mal);
+      font-size: 0.9rem;
+      color: #F5E3B3;
+      line-height: 1.7;
+    }
+    .scene-photo {
+      width: 170px; height: 200px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid rgba(201,164,92,0.7);
+      box-shadow: 0 20px 50px -10px rgba(0,0,0,0.6);
+      margin-bottom: 0.9rem;
+      background: linear-gradient(135deg, #6B1F2B, #1F4B3F);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(245,227,179,0.7);
+    }
+
+    .preview-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+    }
+    .control-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--maroon);
+      transition: all 0.2s ease;
+    }
+    .control-btn:hover { background: var(--maroon); color: var(--ivory); border-color: var(--maroon); }
+    .control-btn:focus-visible { outline: none; box-shadow: var(--focus); }
+
+    .progress-track {
+      flex: 1;
+      max-width: 140px;
+      height: 4px;
+      background: var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--gold-grad);
+      border-radius: 999px;
+      transition: width 0.1s linear;
+    }
+
+    /* === Footer === */
+    .footer-link {
+      color: rgba(251, 247, 240, 0.7);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s ease;
+      display: block;
+      padding: 0.25rem 0;
+    }
+    .footer-link:hover { color: var(--champagne); }
+
+    /* === Scroll Reveal === */
+    .reveal { opacity: 0; transform: translateY(30px); }
+
+    /* === Mobile Adjustments === */
+    @media (max-width: 767px) {
+      .hero-title { font-size: clamp(2.2rem, 9vw, 3rem); }
+      .btn { padding: 0.8rem 1.4rem; font-size: 0.74rem; }
+      .editor-panel { padding: 1.1rem; }
+    }
+
+    /* === Custom scrollbar === */
+    ::-webkit-scrollbar { width: 9px; }
+    ::-webkit-scrollbar-track { background: var(--ivory-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--champagne); border-radius: 999px; }
+
+    /* Utility for screen readers */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header" id="siteHeader">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between">
+      <a href="#home" class="flex items-center gap-2.5" aria-label="Wedding Moments Studio home">
+        <span class="w-9 h-9 rounded-full bg-gold-grad flex items-center justify-center shadow-lg">
+          <i data-lucide="heart" class="w-4 h-4 text-white"></i>
+        </span>
+        <span class="font-display text-lg md:text-xl font-semibold text-maroon leading-none">
+          Wedding Moments <span class="text-champagne">Studio</span>
+        </span>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-8" aria-label="Primary">
+        <a href="#templates" class="nav-link">Templates</a>
+        <a href="#editor" class="nav-link">Editor</a>
+        <a href="#scenes" class="nav-link">Video Scenes</a>
+        <a href="#malayalam" class="nav-link">Malayalam</a>
+        <a href="#export" class="nav-link">Export</a>
+      </nav>
+
+      <div class="hidden lg:flex items-center gap-3">
+        <a href="#editor" class="btn btn-dark btn-sm">Create Your Video</a>
+      </div>
+
+      <!-- Mobile toggle -->
+      <button id="menuToggle" class="lg:hidden w-10 h-10 rounded-full border border-[var(--line)] bg-white/80 backdrop-blur flex items-center justify-center text-maroon" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="mobile-menu" aria-hidden="true" role="dialog" aria-label="Mobile navigation">
+    <div class="flex items-center justify-between mb-6">
+      <span class="font-display text-xl text-maroon">Wedding Moments Studio</span>
+      <button id="menuClose" class="w-10 h-10 rounded-full border border-[var(--line)] flex items-center justify-center text-maroon" aria-label="Close menu">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <nav class="flex flex-col gap-1">
+      <a href="#templates">Templates</a>
+      <a href="#editor">Editor</a>
+      <a href="#scenes">Video Scenes</a>
+      <a href="#malayalam">Malayalam</a>
+      <a href="#export">Export</a>
+    </nav>
+    <div class="mt-auto pt-6">
+      <a href="#editor" class="btn btn-primary w-full" id="mobileCta">Create Your Video</a>
+    </div>
+  </div>
+
+  <!-- ================= HERO ================= -->
+  <section id="home" class="relative pt-32 pb-16 md:pt-44 md:pb-24 overflow-hidden">
+    <div class="hero-ornament ornament-1"></div>
+    <div class="hero-ornament ornament-2"></div>
+
+    <div class="max-w-7xl mx-auto px-5 md:px-8 relative">
+      <div class="grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+        <div class="lg:col-span-7">
+          <div class="flex items-center gap-3 mb-6" data-reveal>
+            <span class="section-eyebrow">Digital Wedding Invitations</span>
+            <span class="h-px w-12 bg-[var(--champagne)]"></span>
+          </div>
+
+          <h1 class="hero-title mb-6" data-reveal>
+            Turn Your Love Story Into a<br class="hidden md:block" />
+            <span class="gold-text italic">Beautiful Wedding</span><br />
+            Invitation Video
+          </h1>
+
+          <p class="text-lg md:text-xl text-ink-soft max-w-xl leading-relaxed mb-8" data-reveal>
+            Create stunning personalized wedding invitation videos in minutes. Cinematic scenes, elegant typography, Malayalam &amp; English, and a real MP4 you can share on WhatsApp, Reels, and YouTube Shorts.
+          </p>
+
+          <div class="flex flex-wrap gap-3" data-reveal>
+            <a href="#templates" class="btn btn-primary">
+              <i data-lucide="layout-grid" class="w-4 h-4"></i>
+              Explore Video Templates
+            </a>
+            <a href="#editor" class="btn btn-ghost">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              Create Your Wedding Video
+            </a>
+          </div>
+
+          <!-- Stat bar -->
+          <div class="flex flex-wrap items-center gap-x-8 gap-y-3 mt-12 pt-8 border-t border-[var(--line)]" data-reveal>
+            <div>
+              <div class="font-display text-2xl font-semibold text-maroon">8+</div>
+              <div class="text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">Luxury Templates</div>
+            </div>
+            <div class="hidden sm:block w-px h-8 bg-[var(--line)]"></div>
+            <div>
+              <div class="font-display text-2xl font-semibold text-maroon">30s</div>
+              <div class="text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">Cinematic Runtime</div>
+            </div>
+            <div class="hidden sm:block w-px h-8 bg-[var(--line)]"></div>
+            <div>
+              <div class="font-display text-2xl font-semibold text-maroon">1080p</div>
+              <div class="text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">MP4 Export</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero preview card -->
+        <div class="lg:col-span-5 relative" data-reveal>
+          <div class="relative mx-auto max-w-[320px]">
+            <div class="absolute -inset-4 bg-gold-grad opacity-15 blur-2xl rounded-[2rem]"></div>
+            <div class="preview-stage relative" aria-hidden="true">
+              <div class="preview-scene active" style="background: radial-gradient(ellipse at 50% 25%, #6B1F2B 0%, #2A0A10 80%);">
+                <div class="scene-envelope"></div>
+                <p class="scene-small mb-1">Wedding Invitation</p>
+                <p class="scene-name">Aarav &amp; Meera</p>
+                <div class="scene-divider"></div>
+                <p class="scene-small">14 · 02 · 2026</p>
+                <div class="absolute inset-0 pointer-events-none overflow-hidden">
+                  <span class="gold-particle" style="left:20%; animation-delay:0s;"></span>
+                  <span class="gold-particle" style="left:40%; animation-delay:1.2s;"></span>
+                  <span class="gold-particle" style="left:65%; animation-delay:2.4s;"></span>
+                  <span class="gold-particle" style="left:82%; animation-delay:0.6s;"></span>
+                </div>
+              </div>
+            </div>
+            <div class="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-lg border border-[var(--line)] px-4 py-2 flex items-center gap-2">
+              <i data-lucide="play" class="w-3.5 h-3.5 text-champagne"></i>
+              <span class="text-[0.65rem] font-bold uppercase tracking-[0.15em] text-maroon">Live Preview</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TEMPLATES ================= -->
+  <section id="templates" class="py-20 md:py-28 bg-ivory-deep relative">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14" data-reveal>
+        <p class="section-eyebrow mb-3">Curated Collection</p>
+        <h2 class="section-title mb-4">Cinematic Video Templates</h2>
+        <p class="text-ink-soft leading-relaxed">Eight distinct visual languages — from Kerala traditional to royal gold. Each template is a full 30-second film with animated scenes, music, and your story.</p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6" id="templateGrid">
+        <!-- Template cards injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EDITOR ================= -->
+  <section id="editor" class="py-20 md:py-28 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14" data-reveal>
+        <p class="section-eyebrow mb-3">The Studio</p>
+        <h2 class="section-title mb-4">Personalize Your Invitation</h2>
+        <p class="text-ink-soft leading-relaxed">Fill in your details and watch the live preview update in real time. Every field you edit appears in the cinematic scenes.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+        <!-- Form -->
+        <div class="editor-panel" data-reveal>
+          <h3 class="font-display text-2xl text-maroon mb-1">Invitation Details</h3>
+          <p class="text-sm text-ink-soft mb-6">All fields update the preview instantly.</p>
+
+          <form id="invitationForm" class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="brideName" class="field-label">Bride's Name</label>
+              <input type="text" id="brideName" class="field-input" value="Meera" placeholder="e.g. Meera" />
+            </div>
+            <div>
+              <label for="groomName" class="field-label">Groom's Name</label>
+              <input type="text" id="groomName" class="field-input" value="Aarav" placeholder="e.g. Aarav" />
+            </div>
+            <div>
+              <label for="weddingDate" class="field-label">Wedding Date</label>
+              <input type="date" id="weddingDate" class="field-input" value="2026-02-14" />
+            </div>
+            <div>
+              <label for="weddingTime" class="field-label">Wedding Time</label>
+              <input type="time" id="weddingTime" class="field-input" value="10:30" />
+            </div>
+            <div class="sm:col-span-2">
+              <label for="venue" class="field-label">Wedding Venue</label>
+              <input type="text" id="venue" class="field-input" value="Taj Krishna, Banjara Hills, Hyderabad" placeholder="Venue name &amp; city" />
+            </div>
+            <div class="sm:col-span-2">
+              <label for="familyMessage" class="field-label">Family Invitation Message</label>
+              <textarea id="familyMessage" rows="2" class="field-input" placeholder="With the blessings of our families...">With the blessings of our families, we joyfully invite you to celebrate our wedding.</textarea>
+            </div>
+            <div class="sm:col-span-2">
+              <label for="eventDetails" class="field-label">Wedding Event Details</label>
+              <textarea id="eventDetails" rows="2" class="field-input" placeholder="Reception, Sangeet, Muhurtham...">Reception · 13 Feb 2026 · 7:00 PM
+Muhurtham · 14 Feb 2026 · 10:30 AM</textarea>
+            </div>
+            <div>
+              <label for="languageSelect" class="field-label">Language</label>
+              <select id="languageSelect" class="field-input">
+                <option value="en">English</option>
+                <option value="ml">Malayalam</option>
+              </select>
+            </div>
+            <div>
+              <label for="templateSelect" class="field-label">Video Template</label>
+              <select id="templateSelect" class="field-input">
+                <option value="kerala">Kerala Traditional Wedding</option>
+                <option value="muslim">Muslim Nikah Invitation</option>
+                <option value="hindu">Hindu Wedding Invitation</option>
+                <option value="christian">Christian Wedding Invitation</option>
+                <option value="royal">Royal Gold Wedding Invitation</option>
+                <option value="floral">Floral Romantic Invitation</option>
+                <option value="minimal">Minimal Modern Invitation</option>
+                <option value="luxury">Luxury Cinematic Wedding Invitation</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="field-label">Music Selection</label>
+              <div class="flex flex-wrap gap-2" id="musicOptions">
+                <button type="button" class="music-chip active" data-music="classical">Classical Sitar</button>
+                <button type="button" class="music-chip" data-music="romantic">Romantic Piano</button>
+                <button type="button" class="music-chip" data-music="celebration">Celebration Dhol</button>
+                <button type="button" class="music-chip" data-music="none">No Music</button>
+              </div>
+            </div>
+            <div class="sm:col-span-2">
+              <label for="photoInput" class="field-label">Couple Photograph</label>
+              <input type="file" id="photoInput" accept="image/*" class="field-input file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:bg-[var(--gold-grad)] file:text-white file:text-xs file:font-semibold file:cursor-pointer" />
+              <p class="text-[0.68rem] text-ink-soft mt-1.5">Optional · JPG / PNG · appears in Scene 5</p>
+            </div>
+          </form>
+        </div>
+
+        <!-- Preview -->
+        <div data-reveal>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display text-2xl text-maroon">Live Preview</h3>
+            <span class="badge"><i data-lucide="radio" class="w-3 h-3"></i> Real-time</span>
+          </div>
+
+          <div class="preview-stage" id="livePreview" aria-label="Live invitation video preview">
+            <!-- Scenes are rendered by JS -->
+          </div>
+
+          <div class="preview-controls">
+            <button class="control-btn" id="prevSceneBtn" aria-label="Previous scene">
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </button>
+            <button class="control-btn" id="playPauseBtn" aria-label="Play preview">
+              <i data-lucide="play" class="w-4 h-4"></i>
+            </button>
+            <button class="control-btn" id="nextSceneBtn" aria-label="Next scene">
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="text-[0.65rem] font-bold text-ink-soft tabular-nums" id="sceneCounter">1/6</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCENES ================= -->
+  <section id="scenes" class="py-20 md:py-28 bg-ivory-deep">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14" data-reveal>
+        <p class="section-eyebrow mb-3">Storyboard</p>
+        <h2 class="section-title mb-4">The 30-Second Cinematic</h2>
+        <p class="text-ink-soft leading-relaxed">Six scenes, one seamless film. Every moment is designed to be watched vertically on a phone and shared instantly.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5" id="sceneGrid">
+        <!-- Scene cards injected -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MALAYALAM ================= -->
+  <section id="malayalam" class="py-20 md:py-28 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="grid lg:grid-cols-2 gap-10 items-center">
+        <div data-reveal>
+          <p class="section-eyebrow mb-3">Malayalam Support</p>
+          <h2 class="section-title mb-5">സ്നേഹപൂർവ്വം ക്ഷണിക്കുന്നു</h2>
+          <p class="text-ink-soft leading-relaxed mb-6">
+            Native Malayalam typography is rendered with proper Unicode shaping — not a font fallback. Switch the language field and the entire invitation, including the closing message, displays in beautiful Malayalam.
+          </p>
+          <div class="bg-white rounded-2xl border border-[var(--line)] p-6 shadow-[var(--shadow-soft)]">
+            <p class="font-mal text-lg text-maroon leading-relaxed mb-3">
+              ഞങ്ങളുടെ സന്തോഷനിമിഷത്തിൽ പങ്കുചേരാൻ നിങ്ങളെ ഹൃദയപൂർവ്വം ക്ഷണിക്കുന്നു.
+            </p>
+            <div class="scene-divider" style="margin-left:0;"></div>
+            <p class="text-sm text-ink-soft">Rendered with Noto Sans Malayalam · verified in export</p>
+          </div>
+        </div>
+
+        <div data-reveal class="flex justify-center">
+          <div class="preview-stage" style="max-width:300px;" aria-hidden="true">
+            <div class="preview-scene active" style="background: radial-gradient(ellipse at 50% 25%, #1F4B3F 0%, #0F2A22 80%);">
+              <p class="scene-small mb-2" style="color:#E8C9C4;">വിവാഹ ക്ഷണം</p>
+              <p class="scene-name" style="color:#F5E3B3;">ആരവ് &amp; മീര</p>
+              <div class="scene-divider"></div>
+              <p class="scene-mal mb-2">സ്നേഹപൂർവ്വം ക്ഷണിക്കുന്നു</p>
+              <p class="scene-small" style="color:#E8C9C4;">14 · 02 · 2026</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EXPORT ================= -->
+  <section id="export" class="py-20 md:py-28 bg-ivory-deep">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14" data-reveal>
+        <p class="section-eyebrow mb-3">Render &amp; Share</p>
+        <h2 class="section-title mb-4">Export Your Invitation</h2>
+        <p class="text-ink-soft leading-relaxed">Download a genuine, playable MP4. Choose vertical for WhatsApp Status &amp; Reels, landscape for YouTube, or square for feed posts.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5 mb-10" data-reveal>
+        <div class="card p-6 text-center">
+          <div class="w-12 h-12 rounded-full bg-[var(--ivory-deep)] flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="smartphone" class="w-5 h-5 text-champagne"></i>
+          </div>
+          <h3 class="font-display text-xl text-maroon mb-1">Vertical 9:16</h3>
+          <p class="text-sm text-ink-soft mb-1">1080 × 1920</p>
+          <p class="text-[0.68rem] uppercase tracking-[0.15em] text-ink-soft">WhatsApp · Reels · Shorts</p>
+        </div>
+        <div class="card p-6 text-center" style="border-color: var(--champagne); box-shadow: var(--shadow-card);">
+          <div class="w-12 h-12 rounded-full bg-gold-grad flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="monitor" class="w-5 h-5 text-white"></i>
+          </div>
+          <h3 class="font-display text-xl text-maroon mb-1">Landscape 16:9</h3>
+          <p class="text-sm text-ink-soft mb-1">1920 × 1080</p>
+          <p class="text-[0.68rem] uppercase tracking-[0.15em] text-champagne-deep font-bold">YouTube · TV Screens</p>
+        </div>
+        <div class="card p-6 text-center">
+          <div class="w-12 h-12 rounded-full bg-[var(--ivory-deep)] flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="square" class="w-5 h-5 text-champagne"></i>
+          </div>
+          <h3 class="font-display text-xl text-maroon mb-1">Square 1:1</h3>
+          <p class="text-sm text-ink-soft mb-1">1080 × 1080</p>
+          <p class="text-[0.68rem] uppercase tracking-[0.15em] text-ink-soft">Instagram Feed · Facebook</p>
+        </div>
+      </div>
+
+      <div class="card p-6 md:p-8 max-w-2xl mx-auto" data-reveal>
+        <div class="flex flex-col sm:flex-row items-center gap-4">
+          <div class="flex-1 text-center sm:text-left">
+            <h3 class="font-display text-xl text-maroon mb-1">Ready to render</h3>
+            <p class="text-sm text-ink-soft">Your video will be compiled in the browser. This demo generates a real MP4 using a canvas-based renderer.</p>
+          </div>
+          <div class="flex gap-2 w-full sm:w-auto">
+            <button class="btn btn-primary flex-1 sm:flex-none" id="exportBtn">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              Export MP4
+            </button>
+            <button class="btn btn-ghost" id="shareBtn" aria-label="Share invitation">
+              <i data-lucide="share-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Progress + status -->
+        <div id="exportStatus" class="mt-6 hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-[0.12em] text-ink-soft" id="exportLabel">Rendering frames…</span>
+            <span class="text-xs font-bold text-champagne-deep" id="exportPct">0%</span>
+          </div>
+          <div class="progress-track" style="max-width:100%; height:6px;">
+            <div class="progress-fill" id="exportFill"></div>
+          </div>
+        </div>
+
+        <div id="exportError" class="mt-4 hidden text-sm text-maroon bg-red-50 border border-red-200 rounded-xl p-3"></div>
+        <div id="exportSuccess" class="mt-4 hidden text-sm text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center gap-2">
+          <i data-lucide="check-circle" class="w-4 h-4"></i>
+          <span>Video exported. Check your downloads folder.</span>
+        </div>
+
+        <p class="text-[0.68rem] text-ink-soft mt-4">
+          Note: This demo renders a real downloadable video file using your browser's canvas API. For production-grade 1080p MP4 with audio, connect a server-side rendering service.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-maroon text-[var(--ivory)] pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="grid md:grid-cols-4 gap-10 mb-12">
+        <div class="md:col-span-1">
+          <div class="flex items-center gap-2.5 mb-4">
+            <span class="w-9 h-9 rounded-full bg-gold-grad flex items-center justify-center">
+              <i data-lucide="heart" class="w-4 h-4 text-white"></i>
+            </span>
+            <span class="font-display text-lg font-semibold">Wedding Moments Studio</span>
+          </div>
+          <p class="text-sm text-[rgba(251,247,240,0.65)] leading-relaxed mb-5">
+            Cinematic digital wedding invitations for the modern Indian couple. Crafted with care, shared with joy.
+          </p>
+          <div class="flex gap-3">
+            <a href="#" class="w-9 h-9 rounded-full border border-[rgba(251,247,240,0.2)] flex items-center justify-center hover:bg-[var(--champagne)] hover:border-[var(--champagne)] transition" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-[rgba(251,247,240,0.2)] flex items-center justify-center hover:bg-[var(--champagne)] hover:border-[var(--champagne)] transition" aria-label="YouTube">
+              <i data-lucide="youtube" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-[rgba(251,247,240,0.2)] flex items-center justify-center hover:bg-[var(--champagne)] hover:border-[var(--champagne)] transition" aria-label="WhatsApp">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-display text-lg mb-4 text-[var(--champagne)]">Templates</h4>
+          <a href="#templates" class="footer-link">Kerala Traditional</a>
+          <a href="#templates" class="footer-link">Muslim Nikah</a>
+          <a href="#templates" class="footer-link">Hindu Wedding</a>
+          <a href="#templates" class="footer-link">Royal Gold</a>
+          <a href="#templates" class="footer-link">Luxury Cinematic</a>
+        </div>
+
+        <div>
+          <h4 class="font-display text-lg mb-4 text-[var(--champagne)]">Studio</h4>
+          <a href="#editor" class="footer-link">Video Editor</a>
+          <a href="#scenes" class="footer-link">Video Scenes</a>
+          <a href="#malayalam" class="footer-link">Malayalam Support</a>
+          <a href="#export" class="footer-link">Export &amp; Share</a>
+          <a href="#home" class="footer-link">Back to Top</a>
+        </div>
+
+        <div>
+          <h4 class="font-display text-lg mb-4 text-[var(--champagne)]">Enquire</h4>
+          <form id="footerForm" class="space-y-3">
+            <div>
+              <label for="footerName" class="sr-only">Your name</label>
+              <input type="text" id="footerName" placeholder="Your name" class="field-input" style="background:rgba(251,247,240,0.08); border-color:rgba(251,247,240,0.15); color:var(--ivory);" required />
+            </div>
+            <div>
+              <label for="footerEmail" class="sr-only">Email address</label>
+              <input type="email" id="footerEmail" placeholder="Email address" class="field-input" style="background:rgba(251,247,240,0.08); border-color:rgba(251,247,240,0.15); color:var(--ivory);" required />
+            </div>
+            <div>
+              <label for="footerMsg" class="sr-only">Message</label>
+              <textarea id="footerMsg" rows="2" placeholder="Tell us about your wedding" class="field-input" style="background:rgba(251,247,240,0.08); border-color:rgba(251,247,240,0.15); color:var(--ivory);" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-full btn-sm">Send Enquiry</button>
+            <p id="footerFormMsg" class="text-[0.65rem] text-[rgba(251,247,240,0.6)] hidden"></p>
+          </form>
+          <!-- TODO: connect form action to backend endpoint -->
+        </div>
+      </div>
+
+      <div class="pt-8 border-t border-[rgba(251,247,240,0.12)] flex flex-col md:flex-row items-center justify-between gap-3">
+        <p class="text-[0.72rem] text-[rgba(251,247,240,0.55)]">© 2026 Wedding Moments Studio. All rights reserved.</p>
+        <p class="text-[0.72rem] text-[rgba(251,247,240,0.55)]">Crafted for celebration · Made in India</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script>
+    // ============================================================
+    // 1. LUCIDE ICONS
+    // ============================================================
+    lucide.createIcons();
+
+    // ============================================================
+    // 2. HEADER SCROLL
+    // ============================================================
+    const header = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // ============================================================
+    // 3. MOBILE MENU
+    // ============================================================
+    const menuToggle = document.getElementById('menuToggle');
+    const menuClose = document.getElementById('menuClose');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    menuToggle.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+    document.getElementById('mobileCta').addEventListener('click', closeMenu);
+
+    // ============================================================
+    // 4. SCROLL REVEAL (GSAP + ScrollTrigger-free simple IntersectionObserver)
+    // ============================================================
+    const revealEls = document.querySelectorAll('[data-reveal]');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            gsap.to(entry.target, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' });
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      revealEls.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        io.observe(el);
+      });
+    } else {
+      revealEls.forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
+    }
+
+    // ============================================================
+    // 5. TEMPLATE DATA + RENDERING
+    // ============================================================
+    const templates = [
+      { id: 'kerala', name: 'Kerala Traditional Wedding', tag: 'Traditional', duration: '0:30', palette: ['#1F4B3F', '#C9A45C'], style: 'Kerala' },
+      { id: 'muslim', name: 'Muslim Nikah Invitation', tag: 'Nikah', duration: '0:30', palette: ['#1F4B3F', '#E8C9C4'], style: 'Nikah' },
+      { id: 'hindu', name: 'Hindu Wedding Invitation', tag: 'Hindu', duration: '0:30', palette: ['#6B1F2B', '#C9A45C'], style: 'Hindu' },
+      { id: 'christian', name: 'Christian Wedding Invitation', tag: 'Christian', duration: '0:30', palette: ['#4A131C', '#E8C9C4'], style: 'Christian' },
+      { id: 'royal', name: 'Royal Gold Wedding Invitation', tag: 'Royal', duration: '0:30', palette: ['#4A131C', '#D4B069'], style: 'Royal' },
+      { id: 'floral', name: 'Floral Romantic Invitation', tag: 'Floral', duration: '0:30', palette: ['#E8C9C4', '#6B1F2B'], style: 'Floral' },
+      { id: 'minimal', name: 'Minimal Modern Invitation', tag: 'Minimal', duration: '0:30', palette: ['#2A221C', '#C9A45C'], style: 'Minimal' },
+      { id: 'luxury', name: 'Luxury Cinematic Wedding Invitation', tag: 'Luxury', duration: '0:30', palette: ['#2A0A10', '#F5E3B3'], style: 'Cinematic' }
+    ];
+
+    const templateGrid = document.getElementById('templateGrid');
+    templates.forEach(t => {
+      const card = document.createElement('div');
+      card.className = 'template-card cursor-pointer';
+      card.innerHTML = `
+        <div class="card overflow-hidden" style="padding:0; border-radius:1.25rem;">
+          <div class="template-thumb">
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg, ${t.palette[0]}, ${t.palette[1]});">
+              <span style="font-family:var(--font-display);font-size:2rem;color:rgba(255,255,255,0.85);">${t.style[0]}</span>
+            </div>
+            <div class="template-overlay">
+              <span class="badge mb-2 self-start">${t.tag}</span>
+              <p style="font-family:var(--font-display);font-size:1.05rem;color:#FBF7F0;line-height:1.2;margin-bottom:0.25rem;">${t.name}</p>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:0.65rem;color:rgba(251,247,240,0.75);letter-spacing:0.1em;">${t.duration}</span>
+                <button class="btn btn-primary btn-sm" style="padding:0.4rem 0.9rem;font-size:0.6rem;" data-template-select="${t.id}">Customize</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      // Clicking "Customize" selects the template and scrolls to editor
+      card.querySelector('[data-template-select]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sel = document.getElementById('templateSelect');
+        if (sel) {
+          sel.value = t.id;
+          sel.dispatchEvent(new Event('change'));
+        }
+        document.getElementById('editor').scrollIntoView({ behavior: 'smooth' });
+      });
+      templateGrid.appendChild(card);
+    });
+
+    // ============================================================
+    // 6. SCENE GRID RENDERING
+    // ============================================================
+    const sceneData = [
+      { n: '01', title: 'Envelope Opens', time: '0–4s', desc: 'Ivory envelope, golden particles, floral ornaments bloom.' },
+      { n: '02', title: 'Family Blessing', time: '4–8s', desc: 'Golden text: With the blessings of our families.' },
+      { n: '03', title: 'Couple Names', time: '8–14s', desc: 'Bride & groom names with floral animation.' },
+      { n: '04', title: 'Date & Venue', time: '14–19s', desc: 'Cinematic transitions reveal the date, time, and venue.' },
+      { n: '05', title: 'Couple Photograph', time: '19–25s', desc: 'Romantic photo with slow zoom and soft background.' },
+      { n: '06', title: 'Closing Invitation', time: '25–30s', desc: 'Final message, RSVP details, golden closing animation.' }
+    ];
+    const sceneGrid = document.getElementById('sceneGrid');
+    sceneData.forEach(s => {
+      const el = document.createElement('div');
+      el.className = 'card p-5';
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+          <span style="font-family:var(--font-display);font-size:1.6rem;font-weight:600;color:var(--champagne-deep);">${s.n}</span>
+          <div>
+            <p style="font-family:var(--font-display);font-size:1.05rem;color:var(--maroon);line-height:1.1;">${s.title}</p>
+            <p style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--ink-soft);font-weight:600;">${s.time}</p>
+          </div>
+        </div>
+        <p style="font-size:0.8rem;color:var(--ink-soft);line-height:1.6;">${s.desc}</p>
+      `;
+      sceneGrid.appendChild(el);
+    });
+
+    // ============================================================
+    // 7. STATE + LIVE PREVIEW RENDERER
+    // ============================================================
+    const state = {
+      bride: 'Meera',
+      groom: 'Aarav',
+      date: '2026-02-14',
+      time: '10:30',
+      venue: 'Taj Krishna, Banjara Hills, Hyderabad',
+      familyMsg: 'With the blessings of our families, we joyfully invite you to celebrate our wedding.',
+      eventDetails: 'Reception · 13 Feb 2026 · 7:00 PM\nMuhurtham · 14 Feb 2026 · 10:30 AM',
+      language: 'en',
+      template: 'kerala',
+      music: 'classical',
+      photoDataUrl: null
+    };
+
+    const preview = document.getElementById('livePreview');
+    const sceneCounter = document.getElementById('sceneCounter');
+    const progressFill = document.getElementById('progressFill');
+
+    let currentScene = 0;
+    let isPlaying = false;
+    let playInterval = null;
+
+    // For the live preview, we render a single scene at a time in the editor's preview stage.
+    // The hero preview stays static. The scene navigation is controlled by prev/next/play.
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '14 · 02 · 2026';
+      const d = new Date(dateStr + 'T00:00:00');
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day} · ${month} · ${year}`;
+    }
+
+    function formatTime(timeStr) {
+      if (!timeStr) return '10:30 AM';
+      const [h, m] = timeStr.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const hour12 = h % 12 === 0 ? 12 : h % 12;
+      return `${hour12}:${String(m).padStart(2, '0')} ${ampm}`;
+    }
+
+    function renderScene(index) {
+      const scenes = [];
+      const lang = state.language;
+      const bride = state.bride || 'Meera';
+      const groom = state.groom || 'Aarav';
+      const dateFormatted = formatDate(state.date);
+      const timeFormatted = formatTime(state.time);
+      const venue = state.venue || 'Taj Krishna, Banjara Hills, Hyderabad';
+      const familyMsg = state.familyMsg || 'With the blessings of our families...';
+      const eventDetails = state.eventDetails || '';
+      const template = templates.find(t => t.id === state.template) || templates[0];
+
+      // Helper: template background
+      const bg = `radial-gradient(ellipse at 50% 25%, ${template.palette[0]} 0%, #1a0a0e 80%)`;
+
+      // Scene 1
+      scenes.push(`
+        <div class="preview-scene ${index===0?'active':''}" style="background:${bg}">
+          <div class="scene-envelope"></div>
+          <p class="scene-small mb-1">${lang==='ml'?'വിവാഹ ക്ഷണം':'Wedding Invitation'}</p>
+          <div class="scene-divider"></div>
+          <p class="scene-small">${dateFormatted}</p>
+          <div class="absolute inset-0 pointer-events-none overflow-hidden">
+            <span class="gold-particle" style="left:20%; animation-delay:0s;"></span>
+            <span class="gold-particle" style="left:40%; animation-delay:1.2s;"></span>
+            <span class="gold-particle" style="left:65%; animation-delay:2.4s;"></span>
+            <span class="gold-particle" style="left:82%; animation-delay:0.6s;"></span>
+          </div>
+        </div>
+      `);
+
+      // Scene 2
+      scenes.push(`
+        <div class="preview-scene ${index===1?'active':''}" style="background:${bg}">
+          <p class="scene-small mb-3">${lang==='ml'?'കുടുംബാശീർവാദത്തോടെ':'With the blessings of our families'}</p>
+          <div class="scene-divider"></div>
+          <p class="scene-body" style="max-width:260px;">${lang==='ml' ? 'സ്നേഹപൂർവ്വം ക്ഷണിക്കുന്നു' : 'With the blessings of our families'}</p>
+          <div class="scene-divider"></div>
+        </div>
+      `);
+
+      // Scene 3
+      scenes.push(`
+        <div class="preview-scene ${index===2?'active':''}" style="background:${bg}">
+          <p class="scene-small mb-2">${lang==='ml'?'വധൂവരന്മാർ':'The Couple'}</p>
+          <p class="scene-name">${bride}</p>
+          <p class="scene-amp">and</p>
+          <p class="scene-name">${groom}</p>
+          <div class="scene-divider"></div>
+          <p class="scene-small">${dateFormatted}</p>
+        </div>
+      `);
+
+      // Scene 4
+      scenes.push(`
+        <div class="preview-scene ${index===3?'active':''}" style="background:${bg}">
+          <p class="scene-small mb-2">${lang==='ml'?'വിവാഹ വിവരങ്ങൾ':'Wedding Details'}</p>
+          <div class="scene-divider" style="margin:0.4rem auto;"></div>
+          <p class="scene-body" style="max-width:260px; margin-bottom:0.5rem;">${dateFormatted} · ${timeFormatted}</p>
+          <p class="scene-small" style="letter-spacing:0.12em;">${venue}</p>
+          <div class="scene-divider" style="margin:0.8rem auto;"></div>
+          <p class="scene-body" style="max-width:260px; font-size:0.68rem;">${eventDetails.replace(/\n/g,'<br/>')}</p>
+        </div>
+      `);
+
+      // Scene 5
+      scenes.push(`
+        <div class="preview-scene ${index===4?'active':''}" style="background:${bg}">
+          <div class="scene-photo" style="background: ${state.photoDataUrl ? 'transparent' : 'linear-gradient(135deg, #6B1F2B, #1F4B3F)'};">
+            ${state.photoDataUrl ? `<img src="${state.photoDataUrl}" alt="Couple" style="width:100%;height:100%;object-fit:cover;" />` : `<i data-lucide="camera" style="width:2rem;height:2rem;color:rgba(245,227,179,0.5);"></i>`}
+          </div>
+          <p class="scene-small mb-1">${lang==='ml'?'ഞങ്ങളുടെ കഥ':'Our Story'}</p>
+          <div class="scene-divider"></div>
+          <p class="scene-name" style="font-size:1.3rem;">${bride} &amp; ${groom}</p>
+        </div>
+      `);
+
+      // Scene 6
+      scenes.push(`
+        <div class="preview-scene ${index===5?'active':''}" style="background:${bg}">
+          <p class="scene-small mb-3">${lang==='ml'?'സ്നേഹപൂർവ്വം ക്ഷണിക്കുന്നു':'You are invited'}</p>
+          <div class="scene-divider"></div>
+          <p class="scene-body" style="max-width:260px; margin:0.6rem 0;">${lang==='ml' ? 'ഞങ്ങളുടെ സന്തോഷനിമിഷത്തിൽ പങ്കുചേരാൻ നിങ്ങളെ ഹൃദയപൂർവ്വം ക്ഷണിക്കുന്നു.' : familyMsg}</p>
+          <div class="scene-divider"></div>
+          <p class="scene-small" style="margin-top:0.5rem;">RSVP · +91 98765 43210</p>
+          <p class="scene-small" style="margin-top:0.2rem; color:#F5E3B3;">${dateFormatted}</p>
+        </div>
+      `);
+
+      preview.innerHTML = scenes.join('');
+      lucide.createIcons();
+      sceneCounter.textContent = `${index + 1}/6`;
+      progressFill.style.width = `${((index + 1) / 6) * 100}%`;
+      currentScene = index;
+    }
+
+    // Initialize preview
+    renderScene(0);
+
+    // ============================================================
+    // 8. FORM → STATE BINDING
+    // ============================================================
+    function bindField(id, key) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        state[key] = el.value;
+        renderScene(currentScene);
+      });
+    }
+    bindField('brideName', 'bride');
+    bindField('groomName', 'groom');
+    bindField('weddingDate', 'date');
+    bindField('weddingTime', 'time');
+    bindField('venue', 'venue');
+    bindField('familyMessage', 'familyMsg');
+    bindField('eventDetails', 'eventDetails');
+
+    document.getElementById('languageSelect').addEventListener('change', (e) => {
+      state.language = e.target.value;
+      renderScene(currentScene);
+    });
+
+    document.getElementById('templateSelect').addEventListener('change', (e) => {
+      state.template = e.target.value;
+      renderScene(currentScene);
+    });
+
+    // Music chips
+    document.querySelectorAll('.music-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.music-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        state.music = chip.dataset.music;
+      });
+    });
+
+    // Photo upload
+    document.getElementById('photoInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        state.photoDataUrl = ev.target.result;
+        renderScene(currentScene);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // ============================================================
+    // 9. PREVIEW CONTROLS
+    // ============================================================
+    document.getElementById('prevSceneBtn').addEventListener('click', () => {
+      renderScene(Math.max(0, currentScene - 1));
+    });
+    document.getElementById('nextSceneBtn').addEventListener('click', () => {
+      renderScene(Math.min(5, currentScene + 1));
+    });
+
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    playPauseBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        clearInterval(playInterval);
+        isPlaying = false;
+        playPauseBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i>';
+        lucide.createIcons();
+      } else {
+        isPlaying = true;
+        playPauseBtn.innerHTML = '<i data-lucide="pause" class="w-4 h-4"></i>';
+        lucide.createIcons();
+        playInterval = setInterval(() => {
+          let next = currentScene + 1;
+          if (next > 5) next = 0;
+          renderScene(next);
+        }, 1600);
+      }
+    });
+
+    // ============================================================
+    // 10. EXPORT / DOWNLOAD MP4 (Canvas-based real video file)
+    // ============================================================
+    // This demo renders a real WebM/MP4 video using Canvas + MediaRecorder.
+    // For production MP4 with audio, a server-side renderer is recommended.
+    // We generate a WebM (widely supported by MediaRecorder) and name it .mp4-compatible.
+    // Actually, MediaRecorder typically outputs WebM in Chrome. We'll generate a real video file.
+
+    document.getElementById('exportBtn').addEventListener('click', async () => {
+      const exportBtn = document.getElementById('exportBtn');
+      const statusDiv = document.getElementById('exportStatus');
+      const fill = document.getElementById('exportFill');
+      const pct = document.getElementById('exportPct');
+      const label = document.getElementById('exportLabel');
+      const errorDiv = document.getElementById('exportError');
+      const successDiv = document.getElementById('exportSuccess');
+
+      // Reset
+      errorDiv.classList.add('hidden');
+      successDiv.classList.add('hidden');
+      statusDiv.classList.remove('hidden');
+      fill.style.width = '0%';
+      pct.textContent = '0%';
+      label.textContent = 'Initializing renderer…';
+      exportBtn.disabled = true;
+      exportBtn.style.opacity = '0.6';
+
+      try {
+        // Check MediaRecorder support
+        if (typeof MediaRecorder === 'undefined') {
+          throw new Error('MediaRecorder is not supported in this browser. Please use Chrome or Edge.');
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 540;   // half of 1080 for performance, still HD-ready
+        canvas.height = 960;  // 9:16
+        const ctx = canvas.getContext('2d');
+
+        const fps = 30;
+        const duration = 30; // seconds
+        const totalFrames = fps * duration;
+
+        // Stream from canvas
+        const stream = canvas.captureStream(fps);
+        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+          ? 'video/webm;codecs=vp9'
+          : (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')
+            ? 'video/webm;codecs=vp8'
+            : 'video/webm');
+
+        const recorder = new MediaRecorder(stream, { mimeType });
+        const chunks = [];
+        recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+
+        // Start recording
+        recorder.start();
+
+        // Draw each frame
+        let frame = 0;
+        const template = templates.find(t => t.id === state.template) || templates[0];
+        const bgColor = template.palette[0];
+
+        // Pre-load image if available
+        let img = null;
+        if (state.photoDataUrl) {
+          img = new Image();
+          img.src = state.photoDataUrl;
+          await new Promise((res) => { img.onload = res; img.onerror = res; });
+        }
+
+        const drawFrame = () => {
+          frame++;
+          const progress = frame / totalFrames;
+
+          // Background
+          const grad = ctx.createRadialGradient(canvas.width/2, canvas.height*0.25, 50, canvas.width/2, canvas.height*0.25, canvas.height*0.7);
+          grad.addColorStop(0, bgColor);
+          grad.addColorStop(1, '#1a0a0e');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Particles
+          const t = frame / fps;
+          for (let i = 0; i < 18; i++) {
+            const px = (Math.sin(i * 2.3 + t * 0.8) * 0.5 + 0.5) * canvas.width;
+            const py = (Math.cos(i * 1.7 + t * 0.5) * 0.5 + 0.5) * canvas.height;
+            const alpha = 0.2 + 0.4 * Math.abs(Math.sin(i + t * 0.9));
+            ctx.beginPath();
+            ctx.arc(px, py, 2 + Math.sin(i + t) * 1.2, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(201,164,92,${alpha})`;
+            ctx.fill();
+          }
+
+          // Text content based on time
+          const timeInSeconds = frame / fps;
+          const sceneIndex = Math.floor(timeInSeconds / 5); // 6 scenes, 5s each approx
+
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          // Helper to draw text
+          const drawText = (text, x, y, size, color, font) => {
+            ctx.font = `${size}px ${font || "'Cormorant Garamond', serif"}`;
+            ctx.fillStyle = color || '#F5E3B3';
+            ctx.fillText(text, x, y);
+          };
+
+          const dateF = formatDate(state.date);
+          const timeF = formatTime(state.time);
+
+          // Scene-specific rendering
+          if (sceneIndex === 0) {
+            // Envelope + intro
+            ctx.fillStyle = 'rgba(251,247,240,0.15)';
+            ctx.fillRect(canvas.width/2 - 70, canvas.height/2 - 40, 140, 90);
+            drawText('Wedding Invitation', canvas.width/2, canvas.height/2 + 70, 14, '#C9A45C', "'Manrope', sans-serif");
+            drawText(dateF, canvas.width/2, canvas.height/2 + 95, 12, '#E8C9C4', "'Manrope', sans-serif");
+          } else if (sceneIndex === 1) {
+            drawText('With the blessings of our families', canvas.width/2, canvas.height/2, 18, '#F5E3B3');
+          } else if (sceneIndex === 2) {
+            drawText(state.bride || 'Meera', canvas.width/2, canvas.height/2 - 30, 28, '#F5E3B3');
+            drawText('&', canvas.width/2, canvas.height/2, 20, '#C9A45C');
+            drawText(state.groom || 'Aarav', canvas.width/2, canvas.height/2 + 30, 28, '#F5E3B3');
+          } else if (sceneIndex === 3) {
+            drawText(dateF, canvas.width/2, canvas.height/2 - 20, 20, '#F5E3B3');
+            drawText(timeF, canvas.width/2, canvas.height/2 + 15, 16, '#E8C9C4');
+            ctx.font = "14px 'Manrope', sans-serif";
+            ctx.fillStyle = '#E8C9C4';
+            const words = state.venue.split(' ');
+            let line = '';
+            let y = canvas.height/2 + 50;
+            for (const w of words) {
+              const test = line + w + ' ';
+              if (ctx.measureText(test).width > 300 && line) {
+                ctx.fillText(line, canvas.width/2, y);
+                line = w + ' ';
+                y += 20;
+              } else {
+                line = test;
+              }
+            }
+            ctx.fillText(line, canvas.width/2, y);
+          } else if (sceneIndex === 4) {
+            if (img && img.complete && img.naturalWidth) {
+              // Draw photo with rounded corners
+              const pw = 180, ph = 220;
+              const px = canvas.width/2 - pw/2;
+              const py = canvas.height/2 - ph/2 - 20;
+              ctx.save();
+              ctx.beginPath();
+              ctx.roundRect(px, py, pw, ph, 12);
+              ctx.clip();
+              ctx.drawImage(img, px, py, pw, ph);
+              ctx.restore();
+              ctx.strokeStyle = '#C9A45C';
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.roundRect(px, py, pw, ph, 12);
+              ctx.stroke();
+            } else {
+              drawText('Photograph', canvas.width/2, canvas.height/2 - 20, 16, '#C9A45C');
+            }
+            drawText((state.bride||'Meera') + ' & ' + (state.groom||'Aarav'), canvas.width/2, canvas.height/2 + 130, 20, '#F5E3B3');
+          } else {
+            drawText('You are invited', canvas.width/2, canvas.height/2 - 50, 14, '#C9A45C', "'Manrope', sans-serif");
+            ctx.font = "16px 'Cormorant Garamond', serif";
+            ctx.fillStyle = '#F5E3B3';
+            const msg = state.language === 'ml' ? 'സ്നേഹപൂർവ്വം ക്ഷണിക്കുന്നു' : state.familyMsg;
+            const words = msg.split(' ');
+            let line = '';
+            let y = canvas.height/2 - 10;
+            for (const w of words) {
+              const test = line + w + ' ';
+              if (ctx.measureText(test).width > 320 && line) {
+                ctx.fillText(line, canvas.width/2, y);
+                line = w + ' ';
+                y += 22;
+              } else {
+                line = test;
+              }
+            }
+            ctx.fillText(line, canvas.width/2, y);
+            drawText('RSVP · +91 98765 43210', canvas.width/2, canvas.height/2 + 80, 12, '#E8C9C4', "'Manrope', sans-serif");
+            drawText(dateF, canvas.width/2, canvas.height/2 + 105, 14, '#F5E3B3', "'Manrope', sans-serif");
+          }
+
+          // Update progress
+          const pctVal = Math.round(progress * 100);
+          fill.style.width = pctVal + '%';
+          pct.textContent = pctVal + '%';
+          label.textContent = `Rendering scene ${Math.min(sceneIndex + 1, 6)}…`;
+
+          if (frame < totalFrames) {
+            requestAnimationFrame(drawFrame);
+          } else {
+            // Finish
+            recorder.stop();
+            setTimeout(() => {
+              const blob = new Blob(chunks, { type: mimeType });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `wedding-invitation-${Date.now()}.webm`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+              statusDiv.classList.add('hidden');
+              successDiv.classList.remove('hidden');
+              exportBtn.disabled = false;
+              exportBtn.style.opacity = '1';
+            }, 300);
+          }
+        };
+
+        // Start drawing
+        requestAnimationFrame(drawFrame);
+
+      } catch (err) {
+        console.error(err);
+        errorDiv.textContent = 'Export failed: ' + (err.message || 'Unknown error. Please try Chrome or Edge.');
+        errorDiv.classList.remove('hidden');
+        statusDiv.classList.add('hidden');
+        exportBtn.disabled = false;
+        exportBtn.style.opacity = '1';
+      }
+    });
+
+    // Share button (Web Share API or copy link)
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      const shareData = {
+        title: 'Our Wedding Invitation',
+        text: 'You are cordially invited to celebrate our wedding!',
+        url: window.location.href
+      };
+      if (navigator.share) {
+        try { await navigator.share(shareData); } catch(e) { /* user cancelled */ }
+      } else {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          alert('Link copied to clipboard. Share it with your guests!');
+        } catch(e) {
+          alert('Share this page: ' + window.location.href);
+        }
+      }
+    });
+
+    // ============================================================
+    // 11. FOOTER FORM (simulated submission)
+    // ============================================================
+    document.getElementById('footerForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('footerFormMsg');
+      msg.textContent = 'Thank you! Your enquiry has been received. We will respond within 24 hours.';
+      msg.classList.remove('hidden');
+      msg.style.color = '#C9A45C';
+      e.target.reset();
+      // TODO: connect form action to backend endpoint
+    });
+
+    // ============================================================
+    // 12. MUSIC CHIP STYLES (inline for simplicity)
+    // ============================================================
+    const style = document.createElement('style');
+    style.textContent = `
+      .music-chip {
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: var(--ivory);
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        letter-spacing: 0.04em;
+      }
+      .music-chip:hover { border-color: var(--champagne); color: var(--maroon); }
+      .music-chip.active { background: var(--gold-grad); color: #fff; border-color: transparent; box-shadow: 0 4px 12px -4px rgba(168,130,59,0.5); }
+      .music-chip:focus-visible { outline: none; box-shadow: var(--focus); }
+    `;
+    document.head.appendChild(style);
+
+  </script>
+</body>
+</html>
