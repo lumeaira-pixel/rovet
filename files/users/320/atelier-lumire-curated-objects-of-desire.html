@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATELIER LUMIÈRE — Curated Objects of Desire</title>
+  <!-- Creative direction: Warm ivory & charcoal with brass accents. Fonts: Instrument Serif (display) + Instrument Sans (body). Mood: quiet luxury, editorial, tactile. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ivory: '#FBF9F6',
+            charcoal: '#1E1C1A',
+            brass: '#B8976A',
+            'brass-light': '#D4BC97',
+            stone: '#E9E5DF',
+          },
+          fontFamily: {
+            serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+            sans: ['"Instrument Sans"', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1E1C1A;
+      --ivory: #FBF9F6;
+      --brass: #B8976A;
+      --brass-light: #D4BC97;
+      --stone: #E9E5DF;
+      --muted: #7A756E;
+      --focus-ring: #B8976A;
+    }
+
+    /* === Base === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      background-color: var(--ivory);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--brass); color: #fff; }
+
+    /* === Accessibility === */
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--ivory), 0 0 0 4px var(--focus-ring);
+      border-radius: 4px;
+    }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+    .skip-link {
+      position: absolute; top: -100px; left: 16px; z-index: 999;
+      background: var(--ink); color: var(--ivory);
+      padding: 12px 24px; border-radius: 8px;
+      font-weight: 600; transition: top 0.3s ease;
+    }
+    .skip-link:focus { top: 16px; }
+
+    /* === Typography === */
+    .font-display { font-family: 'Instrument Serif', Georgia, serif; }
+    .text-balance { text-wrap: balance; }
+    .text-pretty { text-wrap: pretty; }
+
+    .hero-headline {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(3rem, 8vw, 7.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      font-weight: 400;
+    }
+    .section-headline {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--brass);
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--ink); color: var(--ivory);
+      padding: 16px 32px; border-radius: 100px;
+      font-weight: 600; font-size: 0.95rem;
+      border: 1px solid var(--ink);
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      cursor: pointer; text-decoration: none;
+    }
+    .btn-primary:hover {
+      background: transparent; color: var(--ink);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px -8px rgba(30,28,26,0.25);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: transparent; color: var(--ink);
+      padding: 16px 32px; border-radius: 100px;
+      font-weight: 600; font-size: 0.95rem;
+      border: 1px solid rgba(30,28,26,0.2);
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      cursor: pointer; text-decoration: none;
+    }
+    .btn-outline:hover {
+      border-color: var(--brass);
+      background: rgba(184,151,106,0.06);
+      transform: translateY(-2px);
+    }
+    .btn-outline:active { transform: translateY(0) scale(0.98); }
+
+    /* === Cards === */
+    .product-card {
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), box-shadow 0.4s ease;
+      will-change: transform;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 64px -16px rgba(30,28,26,0.18);
+    }
+    .product-card .product-image {
+      transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+    .product-card:hover .product-image { transform: scale(1.05); }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Reveal animations === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), transform 0.8s cubic-bezier(0.4,0,0.2,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+    .reveal-stagger.visible > *:nth-child(1) { transition-delay: 0ms; }
+    .reveal-stagger.visible > *:nth-child(2) { transition-delay: 90ms; }
+    .reveal-stagger.visible > *:nth-child(3) { transition-delay: 180ms; }
+    .reveal-stagger.visible > *:nth-child(4) { transition-delay: 270ms; }
+    .reveal-stagger.visible > * { opacity: 1; transform: translateY(0); }
+
+    /* === Hero visual === */
+    .hero-visual {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      aspect-ratio: 4/5;
+      background: linear-gradient(145deg, #E9E5DF 0%, #D4BC97 50%, #B8976A 100%);
+    }
+    .hero-visual::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(30,28,26,0.4) 0%, transparent 50%);
+    }
+
+    /* === Sticky header === */
+    .site-header {
+      transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+      background: rgba(251,249,246,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .site-header.scrolled {
+      box-shadow: 0 1px 0 rgba(30,28,26,0.06);
+      background: rgba(251,249,246,0.95);
+    }
+
+    /* === Mobile menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .mobile-menu.open { transform: translateX(0); }
+
+    /* === Form === */
+    .form-field {
+      background: #fff;
+      border: 1px solid rgba(30,28,26,0.12);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      width: 100%;
+      font-family: inherit;
+    }
+    .form-field::placeholder { color: #A9A49D; }
+    .form-field:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184,151,106,0.15);
+    }
+    .form-field.error {
+      border-color: #C0392B;
+      box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
+    }
+    .form-error-msg {
+      font-size: 0.78rem;
+      color: #C0392B;
+      margin-top: 4px;
+      display: none;
+    }
+    .form-error-msg.show { display: block; }
+
+    /* === Rating stars === */
+    .stars { color: var(--brass); display: inline-flex; gap: 2px; }
+
+    /* === Reduced motion === */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+      .reveal, .reveal-stagger > * { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <!-- === HEADER === -->
+  <header class="site-header fixed top-0 left-0 right-0 z-50" id="header">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20">
+        <!-- Logo -->
+        <a href="#" class="font-display text-xl sm:text-2xl tracking-tight text-charcoal" aria-label="Atelier Lumière home">
+          Atelier <span class="italic text-brass">Lumière</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+          <a href="#collection" class="text-sm font-medium text-charcoal/70 hover:text-charcoal transition-colors duration-200">Collection</a>
+          <a href="#story" class="text-sm font-medium text-charcoal/70 hover:text-charcoal transition-colors duration-200">Our Story</a>
+          <a href="#craft" class="text-sm font-medium text-charcoal/70 hover:text-charcoal transition-colors duration-200">Craft</a>
+          <a href="#journal" class="text-sm font-medium text-charcoal/70 hover:text-charcoal transition-colors duration-200">Journal</a>
+        </nav>
+
+        <!-- Desktop CTA + Icons -->
+        <div class="hidden lg:flex items-center gap-4">
+          <button class="p-2 text-charcoal/60 hover:text-charcoal transition-colors duration-200" aria-label="Search">
+            <i data-lucide="search" style="width:18px;height:18px"></i>
+          </button>
+          <button class="p-2 text-charcoal/60 hover:text-charcoal transition-colors duration-200 relative" aria-label="Shopping bag">
+            <i data-lucide="shopping-bag" style="width:18px;height:18px"></i>
+            <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-brass text-white text-[10px] font-bold rounded-full flex items-center justify-center" aria-hidden="true">2</span>
+          </button>
+          <a href="#enquiry" class="btn-primary !py-2.5 !px-6 !text-sm">Enquire</a>
+        </div>
+
+        <!-- Mobile toggle -->
+        <div class="flex items-center gap-2 lg:hidden">
+          <button class="p-2 text-charcoal/60" aria-label="Shopping bag">
+            <i data-lucide="shopping-bag" style="width:20px;height:20px"></i>
+          </button>
+          <button class="p-2 text-charcoal" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu" id="menu-toggle">
+            <i data-lucide="menu" style="width:22px;height:22px"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- === MOBILE MENU === -->
+  <div class="mobile-menu fixed inset-0 z-[60] bg-ivory lg:hidden" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex flex-col h-full p-6">
+      <div class="flex items-center justify-between mb-12">
+        <span class="font-display text-xl">Atelier <span class="italic text-brass">Lumière</span></span>
+        <button class="p-2 text-charcoal" aria-label="Close menu" id="menu-close">
+          <i data-lucide="x" style="width:24px;height:24px"></i>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-6" aria-label="Mobile navigation">
+        <a href="#collection" class="font-display text-3xl text-charcoal hover:text-brass transition-colors duration-200">Collection</a>
+        <a href="#story" class="font-display text-3xl text-charcoal hover:text-brass transition-colors duration-200">Our Story</a>
+        <a href="#craft" class="font-display text-3xl text-charcoal hover:text-brass transition-colors duration-200">Craft</a>
+        <a href="#journal" class="font-display text-3xl text-charcoal hover:text-brass transition-colors duration-200">Journal</a>
+        <a href="#enquiry" class="font-display text-3xl text-charcoal hover:text-brass transition-colors duration-200">Enquire</a>
+      </nav>
+      <div class="mt-auto pt-8 border-t border-charcoal/10">
+        <p class="text-sm text-muted">Crafted in small batches. Shipped worldwide.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- === MAIN === -->
+  <main id="main">
+    <!-- === HERO === -->
+    <section class="relative pt-32 pb-20 sm:pt-40 sm:pb-28 overflow-hidden">
+      <!-- Background grain -->
+      <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E');" aria-hidden="true"></div>
+
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 relative">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <!-- Text -->
+          <div class="reveal">
+            <p class="eyebrow mb-6">The Winter Collection — 2025</p>
+            <h1 class="hero-headline text-charcoal text-balance">
+              Objects of<br />
+              <span class="italic text-brass">quiet</span> desire.
+            </h1>
+            <p class="mt-8 text-lg sm:text-xl text-charcoal/60 max-w-md text-pretty leading-relaxed">
+              Sculptural homeware, hand-finished in small batches. Each piece is made to be lived with, not looked at.
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row gap-4">
+              <a href="#collection" class="btn-primary">
+                Explore the collection
+                <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
+              </a>
+              <a href="#story" class="btn-outline">Our story</a>
+            </div>
+            <!-- Micro social proof -->
+            <div class="mt-12 flex items-center gap-6">
+              <div class="flex -space-x-3">
+                <div class="w-10 h-10 rounded-full border-2 border-ivory bg-stone flex items-center justify-center text-xs font-semibold text-charcoal/50">AL</div>
+                <div class="w-10 h-10 rounded-full border-2 border-ivory bg-brass/30 flex items-center justify-center text-xs font-semibold text-charcoal/50">MK</div>
+                <div class="w-10 h-10 rounded-full border-2 border-ivory bg-stone flex items-center justify-center text-xs font-semibold text-charcoal/50">JR</div>
+              </div>
+              <div>
+                <div class="stars" aria-label="5 out of 5 stars">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <p class="text-sm text-charcoal/50 mt-1">Trusted by 2,400+ collectors</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual -->
+          <div class="reveal" style="transition-delay: 150ms;">
+            <div class="hero-visual relative">
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center px-8">
+                  <div class="w-32 h-32 sm:w-48 sm:h-48 mx-auto rounded-full bg-ivory/20 backdrop-blur-sm border border-ivory/30 flex items-center justify-center mb-6">
+                    <i data-lucide="gem" style="width:48px;height:48px;color:#FBF9F6"></i>
+                  </div>
+                  <p class="font-display text-2xl sm:text-3xl text-ivory italic">The Vessel Series</p>
+                  <p class="text-ivory/70 text-sm mt-2">Hand-thrown stoneware</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === LOGO / MARQUEE BAR === -->
+    <section class="py-10 sm:py-14 border-y border-charcoal/8 overflow-hidden" aria-label="Featured in">
+      <div class="marquee-track">
+        <div class="flex items-center gap-16 sm:gap-24 px-8">
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Architectural Digest</span>
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Kinfolk</span>
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Cereal Magazine</span>
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Monocle</span>
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Wallpaper*</span>
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Dwell</span>
+        </div>
+        <div class="flex items-center gap-16 sm:gap-24 px-8" aria-hidden="true">
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Architectural Digest</span>
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Kinfolk</span>
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Cereal Magazine</span>
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Monocle</span>
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Wallpaper*</span>
+          <span class="font-display text-xl sm:text-2xl text-charcoal/30 italic whitespace-nowrap">Dwell</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- === COLLECTION === -->
+    <section id="collection" class="py-20 sm:py-28">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="reveal flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 sm:mb-16">
+          <div>
+            <p class="eyebrow mb-4">The Collection</p>
+            <h2 class="section-headline text-charcoal text-balance">Pieces with<br /><span class="italic text-brass">presence.</span></h2>
+          </div>
+          <a href="#" class="text-sm font-semibold text-charcoal/60 hover:text-brass transition-colors duration-200 flex items-center gap-2 group">
+            View all pieces
+            <i data-lucide="arrow-up-right" style="width:16px;height:16px" class="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+          </a>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <!-- Product 1 -->
+          <article class="product-card reveal-stagger group rounded-2xl overflow-hidden bg-white border border-charcoal/6">
+            <div class="relative aspect-[4/5] overflow-hidden bg-stone">
+              <div class="product-image absolute inset-0 flex items-center justify-center" style="background: linear-gradient(145deg, #E9E5DF, #D4BC97);">
+                <i data-lucide="circle-dot" style="width:64px;height:64px;color:#B8976A"></i>
+              </div>
+              <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-[11px] font-semibold tracking-wide uppercase px-3 py-1 rounded-full text-charcoal/70">New</span>
+            </div>
+            <div class="p-6">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="font-display text-xl text-charcoal">The Solstice Vase</h3>
+                  <p class="text-sm text-charcoal/50 mt-1">Hand-thrown stoneware</p>
+                </div>
+                <span class="text-sm font-semibold text-charcoal whitespace-nowrap">£185</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Product 2 -->
+          <article class="product-card reveal-stagger group rounded-2xl overflow-hidden bg-white border border-charcoal/6">
+            <div class="relative aspect-[4/5] overflow-hidden bg-stone">
+              <div class="product-image absolute inset-0 flex items-center justify-center" style="background: linear-gradient(145deg, #D4BC97, #B8976A);">
+                <i data-lucide="flame" style="width:64px;height:64px;color:#FBF9F6"></i>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="font-display text-xl text-charcoal">Ember Candle Holder</h3>
+                  <p class="text-sm text-charcoal/50 mt-1">Cast brass, patinated</p>
+                </div>
+                <span class="text-sm font-semibold text-charcoal whitespace-nowrap">£240</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Product 3 -->
+          <article class="product-card reveal-stagger group rounded-2xl overflow-hidden bg-white border border-charcoal/6">
+            <div class="relative aspect-[4/5] overflow-hidden bg-stone">
+              <div class="product-image absolute inset-0 flex items-center justify-center" style="background: linear-gradient(145deg, #E9E5DF, #B8976A);">
+                <i data-lucide="layers" style="width:64px;height:64px;color:#FBF9F6"></i>
+              </div>
+              <span class="absolute top-4 left-4 bg-brass text-white text-[11px] font-semibold tracking-wide uppercase px-3 py-1 rounded-full">Limited</span>
+            </div>
+            <div class="p-6">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h3 class="font-display text-xl text-charcoal">Stratum Serving Board</h3>
+                  <p class="text-sm text-charcoal/50 mt-1">English oak, oiled</p>
+                </div>
+                <span class="text-sm font-semibold text-charcoal whitespace-nowrap">£320</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- === STORY / ABOUT === -->
+    <section id="story" class="py-20 sm:py-28 bg-white">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div class="reveal order-2 lg:order-1">
+            <p class="eyebrow mb-4">Our Story</p>
+            <h2 class="section-headline text-charcoal text-balance mb-6">Made slowly.<br /><span class="italic text-brass">Made to last.</span></h2>
+            <p class="text-lg text-charcoal/60 leading-relaxed mb-6">
+              Atelier Lumière began in a small studio in the Cotswolds, founded on a simple conviction: that the objects we live with should be made with care, from materials that age beautifully.
+            </p>
+            <p class="text-base text-charcoal/50 leading-relaxed mb-8">
+              Every piece passes through the hands of a single maker — from the first sketch to the final polish. We work in small runs, never more than forty of a kind, so that nothing is rushed and nothing is wasted.
+            </p>
+            <div class="grid grid-cols-3 gap-6 pt-6 border-t border-charcoal/8">
+              <div>
+                <p class="font-display text-3xl sm:text-4xl text-charcoal">12</p>
+                <p class="text-xs text-charcoal/50 mt-1 tracking-wide uppercase">Years of craft</p>
+              </div>
+              <div>
+                <p class="font-display text-3xl sm:text-4xl text-charcoal">40</p>
+                <p class="text-xs text-charcoal/50 mt-1 tracking-wide uppercase">Max per run</p>
+              </div>
+              <div>
+                <p class="font-display text-3xl sm:text-4xl text-charcoal">100%</p>
+                <p class="text-xs text-charcoal/50 mt-1 tracking-wide uppercase">Handmade</p>
+              </div>
+            </div>
+          </div>
+          <div class="reveal order-1 lg:order-2" style="transition-delay: 120ms;">
+            <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-stone relative">
+              <div class="absolute inset-0 flex items-center justify-center" style="background: linear-gradient(160deg, #E9E5DF 0%, #D4BC97 100%);">
+                <div class="text-center">
+                  <div class="w-20 h-20 mx-auto rounded-full bg-ivory/30 backdrop-blur-sm border border-ivory/40 flex items-center justify-center mb-4">
+                    <i data-lucide="hand" style="width:32px;height:32px;color:#FBF9F6"></i>
+                  </div>
+                  <p class="font-display text-xl text-ivory italic">The workshop,<br />Gloucestershire</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === CRAFT / FEATURES === -->
+    <section id="craft" class="py-20 sm:py-28">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="reveal text-center max-w-2xl mx-auto mb-14 sm:mb-20">
+          <p class="eyebrow mb-4">The Craft</p>
+          <h2 class="section-headline text-charcoal text-balance">Four principles.<br /><span class="italic text-brass">Zero compromise.</span></h2>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div class="reveal-stagger p-8 rounded-2xl bg-white border border-charcoal/6 hover:border-brass/30 transition-colors duration-300">
+            <div class="w-12 h-12 rounded-xl bg-brass/10 flex items-center justify-center mb-6">
+              <i data-lucide="mountain" style="width:22px;height:22px;color:#B8976A"></i>
+            </div>
+            <h3 class="font-display text-xl text-charcoal mb-3">Honest materials</h3>
+            <p class="text-sm text-charcoal/50 leading-relaxed">Locally sourced stoneware, oak, and brass — chosen for how they age, not how they photograph.</p>
+          </div>
+          <div class="reveal-stagger p-8 rounded-2xl bg-white border border-charcoal/6 hover:border-brass/30 transition-colors duration-300">
+            <div class="w-12 h-12 rounded-xl bg-brass/10 flex items-center justify-center mb-6">
+              <i data-lucide="hand" style="width:22px;height:22px;color:#B8976A"></i>
+            </div>
+            <h3 class="font-display text-xl text-charcoal mb-3">Single-maker</h3>
+            <p class="text-sm text-charcoal/50 leading-relaxed">One pair of hands sees each piece from start to finish. No assembly lines, no shortcuts.</p>
+          </div>
+          <div class="reveal-stagger p-8 rounded-2xl bg-white border border-charcoal/6 hover:border-brass/30 transition-colors duration-300">
+            <div class="w-12 h-12 rounded-xl bg-brass/10 flex items-center justify-center mb-6">
+              <i data-lucide="recycle" style="width:22px;height:22px;color:#B8976A"></i>
+            </div>
+            <h3 class="font-display text-xl text-charcoal mb-3">Closed loop</h3>
+            <p class="text-sm text-charcoal/50 leading-relaxed">Every offcut is reclaimed. Every piece is repairable. Nothing leaves the studio as waste.</p>
+          </div>
+          <div class="reveal-stagger p-8 rounded-2xl bg-white border border-charcoal/6 hover:border-brass/30 transition-colors duration-300">
+            <div class="w-12 h-12 rounded-xl bg-brass/10 flex items-center justify-center mb-6">
+              <i data-lucide="clock" style="width:22px;height:22px;color:#B8976A"></i>
+            </div>
+            <h3 class="font-display text-xl text-charcoal mb-3">Built to outlast</h3>
+            <p class="text-sm text-charcoal/50 leading-relaxed">We guarantee every piece for life. If it fails, we repair or replace it — no questions asked.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === TESTIMONIALS === -->
+    <section class="py-20 sm:py-28 bg-white" aria-label="Testimonials">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="reveal text-center max-w-2xl mx-auto mb-14">
+          <p class="eyebrow mb-4">Words from collectors</p>
+          <h2 class="section-headline text-charcoal text-balance">Loved in<br /><span class="italic text-brass">real homes.</span></h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 sm:gap-8">
+          <blockquote class="reveal-stagger p-8 rounded-2xl bg-ivory border border-charcoal/6">
+            <div class="stars mb-4" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="text-charcoal/70 leading-relaxed text-pretty italic font-display text-lg">"The Solstice vase has become the centrepiece of our living room. You can feel the care in the weight of it."</p>
+            <footer class="mt-6 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-stone flex items-center justify-center text-xs font-semibold text-charcoal/50">EM</div>
+              <div>
+                <p class="text-sm font-semibold text-charcoal">Elena M.</p>
+                <p class="text-xs text-charcoal/40">London</p>
+              </div>
+            </footer>
+          </blockquote>
+
+          <blockquote class="reveal-stagger p-8 rounded-2xl bg-ivory border border-charcoal/6">
+            <div class="stars mb-4" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="text-charcoal/70 leading-relaxed text-pretty italic font-display text-lg">"I bought the Stratum board as a gift and ended up ordering a second for myself. It's the kind of object that makes you slow down."</p>
+            <footer class="mt-6 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-stone flex items-center justify-center text-xs font-semibold text-charcoal/50">JR</div>
+              <div>
+                <p class="text-sm font-semibold text-charcoal">James R.</p>
+                <p class="text-xs text-charcoal/40">Edinburgh</p>
+              </div>
+            </footer>
+          </blockquote>
+
+          <blockquote class="reveal-stagger p-8 rounded-2xl bg-ivory border border-charcoal/6">
+            <div class="stars mb-4" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="text-charcoal/70 leading-relaxed text-pretty italic font-display text-lg">"The candle holder is the only thing on my shelf I'd rescue in a fire. The patina is extraordinary."</p>
+            <footer class="mt-6 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-stone flex items-center justify-center text-xs font-semibold text-charcoal/50">SC</div>
+              <div>
+                <p class="text-sm font-semibold text-charcoal">Sofia C.</p>
+                <p class="text-xs text-charcoal/40">Copenhagen</p>
+              </div>
+            </footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- === CTA BANNER === -->
+    <section id="journal" class="py-20 sm:py-28">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="reveal relative rounded-3xl overflow-hidden bg-charcoal px-8 py-16 sm:px-16 sm:py-24 text-center">
+          <div class="absolute inset-0 opacity-20" style="background: radial-gradient(circle at 30% 20%, #B8976A 0%, transparent 60%), radial-gradient(circle at 80% 80%, #D4BC97 0%, transparent 50%);" aria-hidden="true"></div>
+          <div class="relative">
+            <p class="eyebrow text-brass-light mb-6">The Journal</p>
+            <h2 class="font-display text-3xl sm:text-5xl text-ivory text-balance max-w-2xl mx-auto leading-tight">
+              Stories from the studio, delivered twice a season.
+            </h2>
+            <p class="mt-6 text-ivory/60 max-w-md mx-auto text-pretty">
+              New releases, process notes, and the occasional studio visit. No noise, just the good stuff.
+            </p>
+            <form class="mt-10 max-w-md mx-auto flex flex-col sm:flex-row gap-3" id="newsletter-form" novalidate>
+              <label for="newsletter-email" class="sr-only">Email address</label>
+              <input type="email" id="newsletter-email" name="email" class="form-field !bg-ivory/10 !border-ivory/20 !text-ivory placeholder:text-ivory/40 flex-1" placeholder="Your email" required />
+              <button type="submit" class="btn-primary !bg-brass !border-brass !text-charcoal hover:!bg-brass-light hover:!border-brass-light whitespace-nowrap">
+                Subscribe
+              </button>
+            </form>
+            <p class="mt-4 text-xs text-ivory/30">No spam. Unsubscribe anytime.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === ENQUIRY / CONTACT === -->
+    <section id="enquiry" class="py-20 sm:py-28 bg-white">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+          <div class="reveal">
+            <p class="eyebrow mb-4">Enquiries</p>
+            <h2 class="section-headline text-charcoal text-balance mb-6">Looking for<br /><span class="italic text-brass">something rare?</span></h2>
+            <p class="text-lg text-charcoal/60 leading-relaxed mb-8 max-w-md">
+              We take on a limited number of bespoke commissions each year. Tell us what you have in mind and we'll be in touch within two working days.
+            </p>
+            <div class="space-y-4">
+              <div class="flex items-start gap-3">
+                <i data-lucide="mail" style="width:18px;height:18px;color:#B8976A;margin-top:3px"></i>
+                <div>
+                  <p class="text-sm font-semibold text-charcoal">Email</p>
+                  <p class="text-sm text-charcoal/50">studio@atelierlumiere.com</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <i data-lucide="map-pin" style="width:18px;height:18px;color:#B8976A;margin-top:3px"></i>
+                <div>
+                  <p class="text-sm font-semibold text-charcoal">Studio</p>
+                  <p class="text-sm text-charcoal/50">The Old Forge, Gloucestershire</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="reveal" style="transition-delay: 100ms;">
+            <form id="enquiry-form" class="space-y-5" novalidate>
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="enq-name" class="block text-sm font-medium text-charcoal mb-2">Name</label>
+                  <input type="text" id="enq-name" name="name" class="form-field" placeholder="Your name" required />
+                  <p class="form-error-msg" id="error-name">Please enter your name.</p>
+                </div>
+                <div>
+                  <label for="enq-email" class="block text-sm font-medium text-charcoal mb-2">Email</label>
+                  <input type="email" id="enq-email" name="email" class="form-field" placeholder="you@example.com" required />
+                  <p class="form-error-msg" id="error-email">Please enter a valid email.</p>
+                </div>
+              </div>
+              <div>
+                <label for="enq-phone" class="block text-sm font-medium text-charcoal mb-2">Phone <span class="text-charcoal/30 font-normal">(optional)</span></label>
+                <input type="tel" id="enq-phone" name="phone" class="form-field" placeholder="+44 7700 900000" />
+              </div>
+              <div>
+                <label for="enq-message" class="block text-sm font-medium text-charcoal mb-2">Message</label>
+                <textarea id="enq-message" name="message" rows="4" class="form-field resize-none" placeholder="Tell us about the piece you're after..." required></textarea>
+                <p class="form-error-msg" id="error-message">Please tell us a little about your enquiry.</p>
+              </div>
+              <button type="submit" class="btn-primary w-full justify-center" id="enquiry-submit">
+                Send enquiry
+                <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
+              </button>
+              <p class="text-xs text-charcoal/40 text-center" id="enquiry-status" role="status" aria-live="polite"></p>
+              <!-- TODO: connect form action to backend endpoint -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- === FOOTER === -->
+  <footer class="bg-charcoal text-ivory pt-16 sm:pt-20 pb-8">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-8 pb-14 border-b border-ivory/10">
+        <!-- Brand -->
+        <div class="lg:col-span-1">
+          <p class="font-display text-2xl mb-4">Atelier <span class="italic text-brass-light">Lumière</span></p>
+          <p class="text-sm text-ivory/50 leading-relaxed max-w-xs">
+            Sculptural homeware, hand-finished in small batches in the Cotswolds. Made to be lived with.
+          </p>
+          <div class="flex items-center gap-3 mt-6">
+            <a href="#" class="p-2 rounded-full border border-ivory/15 text-ivory/50 hover:text-ivory hover:border-ivory/40 transition-colors duration-200" aria-label="Instagram">
+              <i data-lucide="instagram" style="width:16px;height:16px"></i>
+            </a>
+            <a href="#" class="p-2 rounded-full border border-ivory/15 text-ivory/50 hover:text-ivory hover:border-ivory/40 transition-colors duration-200" aria-label="Pinterest">
+              <i data-lucide="bookmark" style="width:16px;height:16px"></i>
+            </a>
+            <a href="#" class="p-2 rounded-full border border-ivory/15 text-ivory/50 hover:text-ivory hover:border-ivory/40 transition-colors duration-200" aria-label="Journal">
+              <i data-lucide="pen-tool" style="width:16px;height:16px"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Shop -->
+        <div>
+          <h3 class="text-xs font-semibold tracking-wider uppercase text-ivory/40 mb-4">Shop</h3>
+          <ul class="space-y-3">
+            <li><a href="#collection" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">All pieces</a></li>
+            <li><a href="#collection" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">Vessels</a></li>
+            <li><a href="#collection" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">Tableware</a></li>
+            <li><a href="#collection" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">Lighting</a></li>
+            <li><a href="#collection" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">Limited runs</a></li>
+          </ul>
+        </div>
+
+        <!-- Studio -->
+        <div>
+          <h3 class="text-xs font-semibold tracking-wider uppercase text-ivory/40 mb-4">Studio</h3>
+          <ul class="space-y-3">
+            <li><a href="#story" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">Our story</a></li>
+            <li><a href="#craft" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">The craft</a></li>
+            <li><a href="#journal" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">Journal</a></li>
+            <li><a href="#enquiry" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">Commissions</a></li>
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div>
+          <h3 class="text-xs font-semibold tracking-wider uppercase text-ivory/40 mb-4">Support</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">Shipping & returns</a></li>
+            <li><a href="#" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">Care guide</a></li>
+            <li><a href="#" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">Lifetime guarantee</a></li>
+            <li><a href="#enquiry" class="text-sm text-ivory/60 hover:text-ivory transition-colors duration-200">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-ivory/30">&copy; 2025 Atelier Lumière. All rights reserved.</p>
+        <div class="flex items-center gap-6">
+          <a href="#" class="text-xs text-ivory/30 hover:text-ivory/60 transition-colors duration-200">Privacy</a>
+          <a href="#" class="text-xs text-ivory/30 hover:text-ivory/60 transition-colors duration-200">Terms</a>
+          <a href="#" class="text-xs text-ivory/30 hover:text-ivory/60 transition-colors duration-200">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- === SCRIPTS === -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize Lucide icons
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // === Sticky header shadow ===
+      const header = document.getElementById('header');
+      const onScroll = () => {
+        if (window.scrollY > 20) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      // === Mobile menu ===
+      const menuToggle = document.getElementById('menu-toggle');
+      const menuClose = document.getElementById('menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      function openMenu() {
+        mobileMenu.classList.add('open');
+        menuToggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMenu() {
+        mobileMenu.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      menuToggle.addEventListener('click', openMenu);
+      menuClose.addEventListener('click', closeMenu);
+
+      // Close mobile menu on link click
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Close on escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+          closeMenu();
+          menuToggle.focus();
+        }
+      });
+
+      // === Scroll reveal animations ===
+      const revealElements = document.querySelectorAll('.reveal, .reveal-stagger');
+      if ('IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+      } else {
+        // Fallback: show everything
+        revealElements.forEach(el => el.classList.add('visible'));
+      }
+
+      // === Newsletter form ===
+      const newsletterForm = document.getElementById('newsletter-form');
+      if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const emailInput = document.getElementById('newsletter-email');
+          const email = emailInput.value.trim();
+          if (!email || !email.includes('@')) {
+            emailInput.classList.add('error');
+            emailInput.focus();
+            return;
+          }
+          emailInput.classList.remove('error');
+          const btn = newsletterForm.querySelector('button');
+          btn.textContent = 'Subscribed';
+          btn.disabled = true;
+          emailInput.value = '';
+          setTimeout(() => {
+            btn.textContent = 'Subscribe';
+            btn.disabled = false;
+          }, 3000);
+        });
+        document.getElementById('newsletter-email').addEventListener('input', function () {
+          this.classList.remove('error');
+        });
+      }
+
+      // === Enquiry form ===
+      const enquiryForm = document.getElementById('enquiry-form');
+      if (enquiryForm) {
+        const nameInput = document.getElementById('enq-name');
+        const emailInput = document.getElementById('enq-email');
+        const messageInput = document.getElementById('enq-message');
+        const submitBtn = document.getElementById('enquiry-submit');
+        const statusEl = document.getElementById('enquiry-status');
+
+        function validateEmail(email) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function clearErrors() {
+          [nameInput, emailInput, messageInput].forEach(input => {
+            input.classList.remove('error');
+          });
+          ['error-name', 'error-email', 'error-message'].forEach(id => {
+            document.getElementById(id).classList.remove('show');
+          });
+        }
+
+        function showError(input, errorId) {
+          input.classList.add('error');
+          document.getElementById(errorId).classList.add('show');
+        }
+
+        enquiryForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          clearErrors();
+
+          let valid = true;
+
+          if (!nameInput.value.trim()) {
+            showError(nameInput, 'error-name');
+            valid = false;
+          }
+          if (!emailInput.value.trim() || !validateEmail(emailInput.value.trim())) {
+            showError(emailInput, 'error-email');
+            valid = false;
+          }
+          if (!messageInput.value.trim()) {
+            showError(messageInput, 'error-message');
+            valid = false;
+          }
+
+          if (!valid) {
+            const firstError = enquiryForm.querySelector('.form-field.error');
+            if (firstError) firstError.focus();
+            return;
+          }
+
+          // Simulate submission
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = 'Sending...';
+
+          const formData = {
+            name: nameInput.value.trim(),
+            email: emailInput.value.trim(),
+            phone: document.getElementById('enq-phone').value.trim(),
+            message: messageInput.value.trim()
+          };
+
+          // TODO: connect form action to backend endpoint
+          // fetch('submit', {
+          //   method: 'POST',
+          //   headers: { 'Content-Type': 'application/json' },
+          //   cache: 'no-store',
+          //   body: JSON.stringify({
+          //     url: window.location.host,
+          //     table: 'enquiries',
+          //     data: formData
+          //   })
+          // })
+          // .then(response => response.json())
+          // .then(data => { ... })
+          // .catch(error => { ... });
+
+          setTimeout(() => {
+            statusEl.textContent = 'Thank you — we will be in touch within two working days.';
+            statusEl.style.color = '#B8976A';
+            submitBtn.innerHTML = 'Sent';
+            submitBtn.disabled = true;
+            enquiryForm.reset();
+            setTimeout(() => {
+              submitBtn.innerHTML = 'Send enquiry <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-left:6px"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+              submitBtn.disabled = false;
+              statusEl.textContent = '';
+            }, 4000);
+          }, 800);
+        });
+
+        // Clear individual errors on input
+        [nameInput, emailInput, messageInput].forEach(input => {
+          input.addEventListener('input', function () {
+            this.classList.remove('error');
+            const errorMap = { 'enq-name': 'error-name', 'enq-email': 'error-email', 'enq-message': 'error-message' };
+            const errorId = errorMap[this.id];
+            if (errorId) document.getElementById(errorId).classList.remove('show');
+          });
+        });
+      }
+
+      // === Smooth anchor scroll offset for sticky header ===
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            const headerHeight = header.offsetHeight;
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
