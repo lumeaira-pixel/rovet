@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Fathih Arts Festival — Islamic College</title>
+  <!-- Tailwind CDN (jsdelivr) -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Display + Body + Arabic + Malayalam -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300..700&family=Noto+Naskh+Arabic:wght@400..700&family=Noto+Sans+Malayalam:wght@300..700&display=swap" rel="stylesheet">
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --emerald: #0B3B2C;
+      --emerald-deep: #072A1F;
+      --ivory: #FCFAF5;
+      --ivory-warm: #F6F2E8;
+      --charcoal: #1E1E1E;
+      --gold: #C6A44A;
+      --gold-light: #E2C97E;
+      --gold-muted: rgba(198, 164, 74, 0.18);
+      --border-hairline: rgba(11, 59, 44, 0.08);
+      --shadow-sm: 0 2px 8px rgba(11, 59, 44, 0.04);
+      --shadow-md: 0 8px 24px rgba(11, 59, 44, 0.06);
+      --shadow-lg: 0 16px 48px rgba(11, 59, 44, 0.08);
+      --radius-xl: 20px;
+      --radius-2xl: 28px;
+      --focus-ring: 0 0 0 3px rgba(198, 164, 74, 0.5);
+      --font-display: 'Instrument Serif', serif;
+      --font-body: 'Inter', sans-serif;
+      --font-arabic: 'Noto Naskh Arabic', serif;
+      --font-malayalam: 'Noto Sans Malayalam', sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      background: var(--ivory);
+      color: var(--charcoal);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* === Islamic Geometric Pattern (SVG Background) === */
+    .pattern-bg {
+      background-color: var(--ivory);
+      background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23C6A44A' stroke-opacity='0.07' stroke-width='0.8'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3Cpath d='M40 10L70 40L40 70L10 40Z'/%3E%3Ccircle cx='40' cy='40' r='18'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 80px 80px;
+    }
+    .pattern-fade { position: relative; }
+    .pattern-fade::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, var(--ivory) 85%);
+      pointer-events: none;
+    }
+    /* === Typography === */
+    .font-display { font-family: var(--font-display); }
+    .font-arabic { font-family: var(--font-arabic); direction: rtl; }
+    .font-malayalam { font-family: var(--font-malayalam); }
+    h1, h2, h3 { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.02em; }
+    /* === Glass & Cards === */
+    .glass {
+      background: rgba(252, 250, 245, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(198, 164, 74, 0.12);
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(198, 164, 74, 0.3);
+    }
+    .card-3d { transform-style: preserve-3d; perspective: 800px; }
+    /* === Buttons === */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 24px; border-radius: 999px;
+      font-weight: 500; font-size: 0.9rem;
+      transition: all 0.2s ease-out;
+      border: none; cursor: pointer; text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--emerald);
+      color: var(--ivory);
+      box-shadow: 0 4px 14px rgba(11, 59, 44, 0.2);
+    }
+    .btn-primary:hover { background: var(--emerald-deep); box-shadow: 0 6px 20px rgba(11, 59, 44, 0.3); transform: translateY(-1px); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-gold {
+      background: var(--gold);
+      color: var(--charcoal);
+      box-shadow: 0 4px 14px rgba(198, 164, 74, 0.25);
+    }
+    .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--emerald);
+      border: 1.5px solid var(--emerald);
+    }
+    .btn-outline:hover { background: var(--emerald); color: var(--ivory); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--charcoal);
+    }
+    .btn-ghost:hover { background: var(--gold-muted); }
+    /* === Focus States === */
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 6px;
+    }
+    /* === Navigation === */
+    .nav-link {
+      position: relative; padding: 6px 0; color: var(--charcoal);
+      font-weight: 450; font-size: 0.9rem; text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1.5px;
+      background: var(--gold); transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+    .nav-link:hover { color: var(--emerald); }
+    /* === Section Styling === */
+    .section-label {
+      display: inline-block; font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold);
+      margin-bottom: 12px;
+    }
+    /* === Tables === */
+    .premium-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .premium-table th {
+      text-align: left; padding: 12px 16px; font-weight: 500;
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--emerald); border-bottom: 1px solid var(--border-hairline);
+    }
+    .premium-table td {
+      padding: 14px 16px; border-bottom: 1px solid rgba(11, 59, 44, 0.04);
+    }
+    .premium-table tbody tr:hover { background: rgba(198, 164, 74, 0.04); }
+    .medal { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; font-size: 0.7rem; font-weight: 700; }
+    .medal-1 { background: var(--gold); color: var(--charcoal); }
+    .medal-2 { background: #B0B7C3; color: white; }
+    .medal-3 { background: #CD7F32; color: white; }
+    /* === Admin Table CRUD === */
+    .admin-table td, .admin-table th { padding: 10px 12px; font-size: 0.85rem; }
+    .admin-table .btn-xs { padding: 4px 12px; font-size: 0.75rem; }
+    /* === Skeleton / Loading === */
+    .skeleton { background: linear-gradient(90deg, #f0ece4 25%, #faf8f2 50%, #f0ece4 75%); background-size: 200% 100%; animation: shimmer 1.8s infinite; border-radius: 8px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    /* === Toast === */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast {
+      padding: 12px 20px; border-radius: 12px; background: var(--emerald); color: var(--ivory);
+      font-size: 0.85rem; box-shadow: var(--shadow-lg); animation: slideIn 0.3s ease-out;
+      display: flex; align-items: center; gap: 8px;
+    }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    /* === Responsive Tables === */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
+    /* === Hero Geometric Accent === */
+    .hero-geo { position: absolute; right: -5%; top: 10%; width: 55%; height: 90%; opacity: 0.12; pointer-events: none; }
+    /* === Champion Highlight === */
+    .champion-card {
+      background: linear-gradient(135deg, rgba(198, 164, 74, 0.12) 0%, rgba(11, 59, 44, 0.04) 100%);
+      border: 1.5px solid rgba(198, 164, 74, 0.3);
+    }
+    /* === Language Switcher === */
+    .lang-btn { padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; border: 1px solid transparent; background: transparent; cursor: pointer; }
+    .lang-btn.active { background: var(--gold-muted); border-color: var(--gold); color: var(--emerald); font-weight: 600; }
+    /* === Score Number === */
+    .score-number { font-family: var(--font-display); font-size: 2.4rem; line-height: 1; color: var(--emerald); }
+    /* === Mobile Nav Fix === */
+    @media (max-width: 768px) {
+      .btn { padding: 8px 18px; font-size: 0.85rem; }
+      .hero-geo { display: none; }
+    }
+    /* === RTL Support === */
+    [dir="rtl"] .nav-link::after { left: auto; right: 0; }
+    [dir="rtl"] .premium-table th { text-align: right; }
+    /* === Animate in === */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- ============ HEADER ============ -->
+  <header id="siteHeader" class="sticky top-0 z-50 transition-all duration-300 glass border-b border-transparent" style="border-bottom-color: var(--border-hairline);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-3 group" aria-label="Al-Fathih Arts Festival Home">
+          <span class="w-10 h-10 rounded-full bg-[#0B3B2C] flex items-center justify-center text-[#C6A44A] font-display text-xl shadow-sm">ف</span>
+          <div class="leading-tight">
+            <span class="font-display text-lg tracking-tight text-[#0B3B2C]">Al-Fathih</span>
+            <span class="block text-[0.6rem] uppercase tracking-[0.2em] text-[#C6A44A] font-medium">Arts Festival</span>
+          </div>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden lg:flex items-center gap-7" aria-label="Main navigation">
+          <a href="#home" class="nav-link active">Home</a>
+          <a href="#results" class="nav-link">Live Results</a>
+          <a href="#scoreboard" class="nav-link">Scoreboard</a>
+          <a href="#schedule" class="nav-link">Schedule</a>
+          <a href="#teams" class="nav-link">Teams</a>
+          <a href="#generators" class="nav-link">Generators</a>
+          <a href="#about" class="nav-link">About</a>
+          <a href="#admin" class="nav-link">Admin</a>
+        </nav>
+
+        <!-- Right Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Search -->
+          <div class="hidden sm:flex items-center relative">
+            <i data-lucide="search" class="absolute left-3 w-4 h-4 text-gray-400"></i>
+            <input type="text" id="globalSearch" placeholder="Search events, teams..." class="pl-9 pr-3 py-2 text-sm rounded-full border border-[rgba(11,59,44,0.08)] bg-white/60 focus:outline-none focus:border-[#C6A44A] w-40 lg:w-52 transition-all" aria-label="Search">
+          </div>
+          <!-- Notifications -->
+          <button class="relative p-2 rounded-full hover:bg-[rgba(198,164,74,0.12)] transition-colors" aria-label="Notifications" id="notifBtn">
+            <i data-lucide="bell" class="w-5 h-5 text-[#0B3B2C]"></i>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-[#C6A44A] rounded-full"></span>
+          </button>
+          <!-- Language -->
+          <div class="hidden sm:flex items-center gap-1 rounded-full border border-[rgba(11,59,44,0.08)] p-0.5 bg-white/50" role="group" aria-label="Language switcher">
+            <button class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
+            <button class="lang-btn" data-lang="ml" aria-pressed="false">ML</button>
+            <button class="lang-btn" data-lang="ar" aria-pressed="false">AR</button>
+          </div>
+          <!-- Mobile Menu Toggle -->
+          <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg hover:bg-[rgba(198,164,74,0.12)]" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+            <i data-lucide="menu" class="w-6 h-6 text-[#0B3B2C]"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="lg:hidden hidden border-t border-[rgba(11,59,44,0.06)] bg-[rgba(252,250,245,0.98)] backdrop-blur-xl px-4 py-4 space-y-1">
+      <a href="#home" class="block px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[rgba(198,164,74,0.12)]">Home</a>
+      <a href="#results" class="block px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[rgba(198,164,74,0.12)]">Live Results</a>
+      <a href="#scoreboard" class="block px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[rgba(198,164,74,0.12)]">Scoreboard</a>
+      <a href="#schedule" class="block px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[rgba(198,164,74,0.12)]">Schedule</a>
+      <a href="#teams" class="block px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[rgba(198,164,74,0.12)]">Teams</a>
+      <a href="#generators" class="block px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[rgba(198,164,74,0.12)]">Generators</a>
+      <a href="#about" class="block px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[rgba(198,164,74,0.12)]">About</a>
+      <a href="#admin" class="block px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[rgba(198,164,74,0.12)]">Admin</a>
+      <div class="pt-3 border-t border-[rgba(11,59,44,0.06)] flex items-center gap-2">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="ml">ML</button>
+        <button class="lang-btn" data-lang="ar">AR</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO SECTION ============ -->
+    <section id="home" class="relative overflow-hidden pattern-bg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-28 relative">
+        <!-- Geometric accent -->
+        <svg class="hero-geo" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M200 0L400 200L200 400L0 200L200 0Z" stroke="#0B3B2C" stroke-width="1"/>
+          <path d="M200 50L350 200L200 350L50 200L200 50Z" stroke="#C6A44A" stroke-width="0.8"/>
+          <circle cx="200" cy="200" r="80" stroke="#0B3B2C" stroke-width="0.8"/>
+          <path d="M200 120L280 200L200 280L120 200L200 120Z" stroke="#C6A44A" stroke-width="0.6"/>
+        </svg>
+        <div class="relative z-10 max-w-3xl">
+          <span class="section-label">Islamic College · Academic Year 2025–26</span>
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-display leading-[1.05] tracking-tight text-[#0B3B2C] mb-6">
+            Al-Fathih <br class="hidden sm:block">Arts Festival
+          </h1>
+          <p class="text-lg sm:text-xl text-[#2d4a3e] max-w-xl leading-relaxed mb-3 font-light">
+            Where tradition meets creativity. A celebration of Islamic art, calligraphy, and contemporary expression.
+          </p>
+          <p class="font-arabic text-xl text-[#C6A44A] mb-8">الفنون في ضوء الإيمان</p>
+          <!-- Countdown -->
+          <div class="flex flex-wrap gap-4 mb-10" id="countdown" aria-label="Countdown to festival">
+            <div class="flex flex-col items-center"><span class="score-number text-3xl" id="cd-days">14</span><span class="text-xs uppercase tracking-widest text-[#0B3B2C]/60">Days</span></div>
+            <div class="flex flex-col items-center"><span class="score-number text-3xl" id="cd-hours">08</span><span class="text-xs uppercase tracking-widest text-[#0B3B2C]/60">Hours</span></div>
+            <div class="flex flex-col items-center"><span class="score-number text-3xl" id="cd-mins">42</span><span class="text-xs uppercase tracking-widest text-[#0B3B2C]/60">Mins</span></div>
+            <div class="flex flex-col items-center"><span class="score-number text-3xl" id="cd-secs">19</span><span class="text-xs uppercase tracking-widest text-[#0B3B2C]/60">Secs</span></div>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a href="#results" class="btn btn-primary"><i data-lucide="award" class="w-4 h-4"></i> Live Results</a>
+            <a href="#scoreboard" class="btn btn-outline"><i data-lucide="bar-chart-3" class="w-4 h-4"></i> View Scoreboard</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STATS BAR ============ -->
+    <section class="border-y border-[rgba(11,59,44,0.06)] bg-white/40 backdrop-blur-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div><p class="score-number">32</p><p class="text-xs uppercase tracking-widest text-[#0B3B2C]/60 mt-1">Events</p></div>
+          <div><p class="score-number">8</p><p class="text-xs uppercase tracking-widest text-[#0B3B2C]/60 mt-1">Teams</p></div>
+          <div><p class="score-number">420</p><p class="text-xs uppercase tracking-widest text-[#0B3B2C]/60 mt-1">Participants</p></div>
+          <div><p class="score-number">3</p><p class="text-xs uppercase tracking-widest text-[#0B3B2C]/60 mt-1">Days</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEATURED EVENTS ============ -->
+    <section class="py-16 lg:py-24 pattern-bg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-end justify-between mb-10 gap-4">
+          <div>
+            <span class="section-label">Programme Highlights</span>
+            <h2 class="text-3xl lg:text-4xl font-display text-[#0B3B2C]">Featured Events</h2>
+          </div>
+          <a href="#schedule" class="btn btn-ghost text-sm">View full schedule <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card 1 -->
+          <article class="card p-6 fade-up">
+            <span class="inline-block text-xs font-semibold uppercase tracking-wider text-[#C6A44A] mb-3">Calligraphy</span>
+            <h3 class="text-2xl font-display text-[#0B3B2C] mb-2">Arabic Calligraphy</h3>
+            <p class="text-sm text-[#4a5e55] leading-relaxed mb-4">Master the art of the reed pen. Traditional Thuluth and Naskh scripts judged by master calligraphers.</p>
+            <div class="flex items-center justify-between text-xs text-[#0B3B2C]/60">
+              <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> Dec 18</span>
+              <span class="flex items-center gap-1"><i data-lucide="users" class="w-3.5 h-3.5"></i> 48 registered</span>
+            </div>
+          </article>
+          <!-- Card 2 -->
+          <article class="card p-6 fade-up" style="transition-delay: 0.05s;">
+            <span class="inline-block text-xs font-semibold uppercase tracking-wider text-[#C6A44A] mb-3">Literature</span>
+            <h3 class="text-2xl font-display text-[#0B3B2C] mb-2">Quranic Recitation</h3>
+            <p class="text-sm text-[#4a5e55] leading-relaxed mb-4">Tajweed and melodic recitation categories for both memorisers and students of the Qur'an.</p>
+            <div class="flex items-center justify-between text-xs text-[#0B3B2C]/60">
+              <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> Dec 18</span>
+              <span class="flex items-center gap-1"><i data-lucide="users" class="w-3.5 h-3.5"></i> 62 registered</span>
+            </div>
+          </article>
+          <!-- Card 3 -->
+          <article class="card p-6 fade-up" style="transition-delay: 0.1s;">
+            <span class="inline-block text-xs font-semibold uppercase tracking-wider text-[#C6A44A] mb-3">Visual Arts</span>
+            <h3 class="text-2xl font-display text-[#0B3B2C] mb-2">Geometric Design</h3>
+            <p class="text-sm text-[#4a5e55] leading-relaxed mb-4">Create intricate Islamic geometric patterns using compass and straightedge — pure mathematical beauty.</p>
+            <div class="flex items-center justify-between text-xs text-[#0B3B2C]/60">
+              <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> Dec 19</span>
+              <span class="flex items-center gap-1"><i data-lucide="users" class="w-3.5 h-3.5"></i> 35 registered</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LIVE SCORE PREVIEW & CHAMPION ============ -->
+    <section id="scoreboard" class="py-16 lg:py-24 bg-white/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-3 gap-8">
+          <!-- Champion -->
+          <div class="card champion-card p-8 flex flex-col justify-between fade-up">
+            <div>
+              <span class="section-label">Current Champion</span>
+              <div class="flex items-center gap-4 mt-3">
+                <div class="w-14 h-14 rounded-full bg-[#0B3B2C] flex items-center justify-center text-[#C6A44A] font-display text-2xl">N</div>
+                <div>
+                  <h3 class="text-2xl font-display text-[#0B3B2C]">Noor House</h3>
+                  <p class="text-sm text-[#0B3B2C]/60">Defending champions</p>
+                </div>
+              </div>
+              <div class="mt-6">
+                <span class="score-number">287</span>
+                <span class="text-sm text-[#0B3B2C]/60 ml-2">total points</span>
+              </div>
+            </div>
+            <div class="mt-6 flex gap-2">
+              <span class="medal medal-1">1</span><span class="text-sm">14 first-place finishes</span>
+            </div>
+          </div>
+
+          <!-- Top Teams Table -->
+          <div class="lg:col-span-2 card p-6 fade-up" style="transition-delay: 0.05s;">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xl font-display text-[#0B3B2C]">Team Rankings</h3>
+              <button class="btn btn-ghost text-xs" onclick="refreshScoreboard()"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh</button>
+            </div>
+            <div class="table-wrap">
+              <table class="premium-table">
+                <thead><tr><th>Rank</th><th>Team</th><th>Points</th><th>1st</th><th>2nd</th><th>3rd</th></tr></thead>
+                <tbody id="scoreboardBody">
+                  <!-- populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LIVE RESULTS ============ -->
+    <section id="results" class="py-16 lg:py-24 pattern-bg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-end justify-between mb-8 gap-4">
+          <div>
+            <span class="section-label">Updated Live</span>
+            <h2 class="text-3xl lg:text-4xl font-display text-[#0B3B2C]">Live Results</h2>
+          </div>
+          <div class="flex gap-2">
+            <select id="resultFilter" class="text-sm rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 bg-white/70 focus:outline-none focus:border-[#C6A44A]" aria-label="Filter results by event">
+              <option value="">All Events</option>
+              <option>Arabic Calligraphy</option>
+              <option>Quranic Recitation</option>
+              <option>Geometric Design</option>
+              <option>Poetry</option>
+            </select>
+            <button class="btn btn-ghost text-sm" onclick="window.print()"><i data-lucide="printer" class="w-4 h-4"></i> Print</button>
+          </div>
+        </div>
+        <div class="card p-6 fade-up">
+          <div class="table-wrap">
+            <table class="premium-table">
+              <thead><tr><th>Event</th><th>Position</th><th>Participant</th><th>Team</th><th>Points</th><th>Status</th></tr></thead>
+              <tbody id="resultsBody">
+                <!-- populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GENERATORS (Poster + Certificate) ============ -->
+    <section id="generators" class="py-16 lg:py-24 bg-white/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <span class="section-label">Creative Tools</span>
+          <h2 class="text-3xl lg:text-4xl font-display text-[#0B3B2C]">Poster & Certificate Generators</h2>
+          <p class="text-sm text-[#4a5e55] max-w-xl mx-auto mt-3">Premium templates for announcements, winners, and achievements — export-ready for print and social media.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Poster Generator -->
+          <div class="card p-8 fade-up">
+            <div class="flex items-center gap-3 mb-5">
+              <span class="w-11 h-11 rounded-xl bg-[#0B3B2C] flex items-center justify-center"><i data-lucide="image" class="w-5 h-5 text-[#C6A44A]"></i></span>
+              <div><h3 class="text-xl font-display text-[#0B3B2C]">Poster Builder</h3><p class="text-xs text-[#0B3B2C]/60">Winner announcements, schedules, champion posters</p></div>
+            </div>
+            <div class="aspect-[4/5] rounded-xl bg-gradient-to-br from-[#0B3B2C] to-[#12382b] flex flex-col items-center justify-center p-6 text-center relative overflow-hidden mb-5">
+              <svg class="absolute inset-0 w-full h-full opacity-[0.08]" viewBox="0 0 200 200" aria-hidden="true"><path d="M100 0L200 100L100 200L0 100L100 0Z" stroke="#C6A44A" stroke-width="0.5"/><circle cx="100" cy="100" r="40" stroke="#C6A44A" stroke-width="0.4"/></svg>
+              <p class="font-display text-2xl text-[#FCFAF5] leading-tight relative z-10">Winner Announcement</p>
+              <p class="text-[#C6A44A] text-xs tracking-widest uppercase mt-2 relative z-10">Template Preview</p>
+            </div>
+            <button class="btn btn-gold w-full" onclick="alert('Poster generator is in demo mode. The full version connects to a canvas-based editor.')"><i data-lucide="layout-template" class="w-4 h-4"></i> Open Poster Builder</button>
+          </div>
+          <!-- Certificate Generator -->
+          <div class="card p-8 fade-up" style="transition-delay: 0.05s;">
+            <div class="flex items-center gap-3 mb-5">
+              <span class="w-11 h-11 rounded-xl bg-[#C6A44A] flex items-center justify-center"><i data-lucide="file-badge" class="w-5 h-5 text-[#0B3B2C]"></i></span>
+              <div><h3 class="text-xl font-display text-[#0B3B2C]">Certificate Generator</h3><p class="text-xs text-[#0B3B2C]/60">Winner, participation, appreciation — with QR verification</p></div>
+            </div>
+            <div class="aspect-[4/3] rounded-xl bg-[#FCFAF5] border-2 border-dashed border-[#C6A44A]/40 flex flex-col items-center justify-center p-6 text-center mb-5">
+              <i data-lucide="award" class="w-10 h-10 text-[#C6A44A] mb-3"></i>
+              <p class="font-display text-xl text-[#0B3B2C]">Certificate of Achievement</p>
+              <p class="text-xs text-[#0B3B2C]/50 mt-1">Landscape A4 · Customisable</p>
+            </div>
+            <button class="btn btn-outline w-full" onclick="generateCertificate()"><i data-lucide="download" class="w-4 h-4"></i> Generate Sample Certificate</button>
+            <p class="text-[0.65rem] text-center text-[#0B3B2C]/40 mt-3">Full system supports CSV import, bulk PDF export, and unique QR verification.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCHEDULE ============ -->
+    <section id="schedule" class="py-16 lg:py-24 pattern-bg">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <span class="section-label">Festival Timeline</span>
+          <h2 class="text-3xl lg:text-4xl font-display text-[#0B3B2C]">Event Schedule</h2>
+        </div>
+        <div class="space-y-3" id="scheduleList">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TEAMS ============ -->
+    <section id="teams" class="py-16 lg:py-24 bg-white/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <span class="section-label">Participating Houses</span>
+          <h2 class="text-3xl lg:text-4xl font-display text-[#0B3B2C]">Teams</h2>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5" id="teamsGrid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ADMIN DASHBOARD ============ -->
+    <section id="admin" class="py-16 lg:py-24 pattern-bg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-end justify-between mb-8 gap-4">
+          <div>
+            <span class="section-label">Secure Access</span>
+            <h2 class="text-3xl lg:text-4xl font-display text-[#0B3B2C]">Admin Dashboard</h2>
+            <p class="text-sm text-[#4a5e55] mt-1">All data is stored locally in your browser for demonstration. Full version uses Supabase with RLS.</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-outline text-sm" onclick="exportCSV()"><i data-lucide="download" class="w-4 h-4"></i> Export CSV</button>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-4 gap-6">
+          <!-- Sidebar Tabs -->
+          <div class="lg:col-span-1">
+            <div class="card p-3 space-y-1">
+              <button class="admin-tab w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium bg-[rgba(198,164,74,0.12)] text-[#0B3B2C]" data-tab="events" aria-selected="true">Events</button>
+              <button class="admin-tab w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[rgba(198,164,74,0.08)]" data-tab="teams-admin" aria-selected="false">Teams</button>
+              <button class="admin-tab w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[rgba(198,164,74,0.08)]" data-tab="results-admin" aria-selected="false">Results</button>
+              <button class="admin-tab w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[rgba(198,164,74,0.08)]" data-tab="settings" aria-selected="false">Scoring Rules</button>
+            </div>
+            <div class="card p-4 mt-4">
+              <p class="text-xs font-medium text-[#0B3B2C] mb-2">Role</p>
+              <select id="adminRole" class="w-full text-sm rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 bg-white/70">
+                <option>Super Admin</option><option>Result Controller</option><option>Event Manager</option><option>Viewer</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Main Panel -->
+          <div class="lg:col-span-3 card p-6">
+            <!-- Events Tab -->
+            <div id="tab-events" class="admin-panel">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-display text-[#0B3B2C]">Manage Events</h3>
+                <button class="btn btn-primary text-xs" onclick="openModal('event')"><i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Event</button>
+              </div>
+              <div class="table-wrap">
+                <table class="premium-table admin-table">
+                  <thead><tr><th>Name</th><th>Category</th><th>Date</th><th>Actions</th></tr></thead>
+                  <tbody id="adminEventsBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Teams Tab -->
+            <div id="tab-teams-admin" class="admin-panel hidden">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-display text-[#0B3B2C]">Manage Teams</h3>
+                <button class="btn btn-primary text-xs" onclick="openModal('team')"><i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Team</button>
+              </div>
+              <div class="table-wrap">
+                <table class="premium-table admin-table">
+                  <thead><tr><th>Name</th><th>Captain</th><th>Points</th><th>Actions</th></tr></thead>
+                  <tbody id="adminTeamsBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Results Tab -->
+            <div id="tab-results-admin" class="admin-panel hidden">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-display text-[#0B3B2C]">Manage Results</h3>
+                <button class="btn btn-primary text-xs" onclick="openModal('result')"><i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Result</button>
+              </div>
+              <div class="table-wrap">
+                <table class="premium-table admin-table">
+                  <thead><tr><th>Event</th><th>Participant</th><th>Position</th><th>Status</th><th>Actions</th></tr></thead>
+                  <tbody id="adminResultsBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Settings Tab -->
+            <div id="tab-settings" class="admin-panel hidden">
+              <h3 class="text-lg font-display text-[#0B3B2C] mb-4">Scoring Rules</h3>
+              <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 rounded-lg bg-white/50">
+                  <span class="text-sm font-medium">1st Place Points</span>
+                  <input type="number" id="points1" value="5" class="w-20 text-center rounded-lg border border-[rgba(11,59,44,0.1)] px-2 py-1.5 text-sm">
+                </div>
+                <div class="flex items-center justify-between p-4 rounded-lg bg-white/50">
+                  <span class="text-sm font-medium">2nd Place Points</span>
+                  <input type="number" id="points2" value="3" class="w-20 text-center rounded-lg border border-[rgba(11,59,44,0.1)] px-2 py-1.5 text-sm">
+                </div>
+                <div class="flex items-center justify-between p-4 rounded-lg bg-white/50">
+                  <span class="text-sm font-medium">3rd Place Points</span>
+                  <input type="number" id="points3" value="1" class="w-20 text-center rounded-lg border border-[rgba(11,59,44,0.1)] px-2 py-1.5 text-sm">
+                </div>
+                <button class="btn btn-primary text-sm mt-2" onclick="saveScoringRules()">Save Rules</button>
+              </div>
+              <div class="mt-8">
+                <h4 class="text-sm font-semibold text-[#0B3B2C] mb-3">Activity Log</h4>
+                <div id="activityLog" class="space-y-2 text-xs text-[#0B3B2C]/60 max-h-40 overflow-y-auto"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section id="about" class="py-16 lg:py-24 bg-white/50">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span class="section-label">Our Story</span>
+        <h2 class="text-3xl lg:text-4xl font-display text-[#0B3B2C] mb-6">About the Festival</h2>
+        <p class="text-[#4a5e55] leading-relaxed max-w-2xl mx-auto">
+          The Al-Fathih Arts Festival is the flagship cultural event of our Islamic College, celebrating the intersection of faith and artistic expression. For over two decades, it has brought together students from across the region to compete, create, and connect through calligraphy, recitation, poetry, visual arts, and performance. This year's theme, <em>"Light of Tradition, Voice of Tomorrow,"</em> invites participants to honour the past while shaping the future.
+        </p>
+        <p class="font-arabic text-[#C6A44A] text-lg mt-4">نور التراث وصوت الغد</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-[#0B3B2C] text-[#FCFAF5]/80 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-10 mb-12">
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-10 h-10 rounded-full bg-[#C6A44A] flex items-center justify-center text-[#0B3B2C] font-display text-xl">ف</span>
+            <span class="font-display text-lg text-[#FCFAF5]">Al-Fathih Arts Festival</span>
+          </div>
+          <p class="text-sm leading-relaxed max-w-md text-[#FCFAF5]/60">A celebration of Islamic art and contemporary creativity at the Islamic College. December 18–20, 2025.</p>
+          <div class="flex gap-3 mt-6">
+            <a href="#" class="w-9 h-9 rounded-full border border-[#FCFAF5]/20 flex items-center justify-center hover:bg-[#C6A44A] hover:text-[#0B3B2C] transition-colors" aria-label="Instagram"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full border border-[#FCFAF5]/20 flex items-center justify-center hover:bg-[#C6A44A] hover:text-[#0B3B2C] transition-colors" aria-label="YouTube"><i data-lucide="youtube" class="w-4 h-4"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full border border-[#FCFAF5]/20 flex items-center justify-center hover:bg-[#C6A44A] hover:text-[#0B3B2C] transition-colors" aria-label="Twitter"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-[#FCFAF5] mb-4 uppercase tracking-wider">Festival</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#results" class="hover:text-[#C6A44A] transition-colors">Live Results</a></li>
+            <li><a href="#scoreboard" class="hover:text-[#C6A44A] transition-colors">Scoreboard</a></li>
+            <li><a href="#schedule" class="hover:text-[#C6A44A] transition-colors">Schedule</a></li>
+            <li><a href="#teams" class="hover:text-[#C6A44A] transition-colors">Teams</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-[#FCFAF5] mb-4 uppercase tracking-wider">Resources</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#generators" class="hover:text-[#C6A44A] transition-colors">Poster Generator</a></li>
+            <li><a href="#generators" class="hover:text-[#C6A44A] transition-colors">Certificate Generator</a></li>
+            <li><a href="#admin" class="hover:text-[#C6A44A] transition-colors">Admin Dashboard</a></li>
+            <li><a href="#about" class="hover:text-[#C6A44A] transition-colors">About</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-[#FCFAF5]/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#FCFAF5]/40">
+        <p>&copy; 2025 Islamic College. All rights reserved.</p>
+        <p>Designed with respect for tradition & modernity.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ MODAL (Add/Edit) ============ -->
+  <div id="modalOverlay" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="bg-[#FCFAF5] rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+      <button id="modalClose" class="absolute top-4 right-4 p-1 rounded-lg hover:bg-[rgba(198,164,74,0.12)]" aria-label="Close"><i data-lucide="x" class="w-5 h-5"></i></button>
+      <h3 id="modalTitle" class="text-xl font-display text-[#0B3B2C] mb-4">Add Item</h3>
+      <form id="modalForm" class="space-y-4">
+        <div id="modalFields"></div>
+        <div class="flex gap-2 pt-2">
+          <button type="submit" class="btn btn-primary flex-1 text-sm">Save</button>
+          <button type="button" id="modalCancel" class="btn btn-ghost flex-1 text-sm">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    /* ============================================================
+       LOCAL STORAGE DATA LAYER (Admin CRUD Demo)
+       ============================================================ */
+    const DB_KEY = 'alfathih_festival_v1';
+
+    // Seed data (only if no data exists)
+    function getDefaultData() {
+      return {
+        events: [
+          { id: 'e1', name: 'Arabic Calligraphy', category: 'Calligraphy', date: '2025-12-18' },
+          { id: 'e2', name: 'Quranic Recitation', category: 'Literature', date: '2025-12-18' },
+          { id: 'e3', name: 'Geometric Design', category: 'Visual Arts', date: '2025-12-19' },
+          { id: 'e4', name: 'Poetry', category: 'Literature', date: '2025-12-19' },
+          { id: 'e5', name: 'Islamic Architecture', category: 'Visual Arts', date: '2025-12-20' }
+        ],
+        teams: [
+          { id: 't1', name: 'Noor House', captain: 'Ahmed Al-Rashid', points: 287 },
+          { id: 't2', name: 'Ilm House', captain: 'Fatima Zahra', points: 254 },
+          { id: 't3', name: 'Falah House', captain: 'Omar Hassan', points: 231 },
+          { id: 't4', name: 'Sabr House', captain: 'Aisha Rahman', points: 198 },
+          { id: 't5', name: 'Hikmah House', captain: 'Yusuf Ali', points: 176 }
+        ],
+        results: [
+          { id: 'r1', event: 'Arabic Calligraphy', participant: 'Ahmed Al-Rashid', team: 'Noor House', position: 1, status: 'Published', points: 5, regNo: 'IC2025-001' },
+          { id: 'r2', event: 'Arabic Calligraphy', participant: 'Fatima Zahra', team: 'Ilm House', position: 2, status: 'Published', points: 3, regNo: 'IC2025-012' },
+          { id: 'r3', event: 'Quranic Recitation', participant: 'Omar Hassan', team: 'Falah House', position: 1, status: 'Published', points: 5, regNo: 'IC2025-034' },
+          { id: 'r4', event: 'Geometric Design', participant: 'Aisha Rahman', team: 'Sabr House', position: 1, status: 'Pending', points: 5, regNo: 'IC2025-056' },
+          { id: 'r5', event: 'Poetry', participant: 'Yusuf Ali', team: 'Hikmah House', position: 3, status: 'Published', points: 1, regNo: 'IC2025-078' }
+        ],
+        scoring: { first: 5, second: 3, third: 1 },
+        logs: [
+          { time: new Date().toISOString(), action: 'System initialized with sample data.' }
+        ]
+      };
+    }
+
+    function loadData() {
+      try {
+        const stored = localStorage.getItem(DB_KEY);
+        if (stored) return JSON.parse(stored);
+      } catch (e) { console.warn('Data load error', e); }
+      const data = getDefaultData();
+      saveData(data);
+      return data;
+    }
+
+    function saveData(data) {
+      try { localStorage.setItem(DB_KEY, JSON.stringify(data)); } catch (e) { console.warn('Save error', e); }
+    }
+
+    let db = loadData();
+
+    // Recalculate team points from published results
+    function recalcTeamPoints() {
+      const pointsMap = {};
+      db.teams.forEach(t => pointsMap[t.name] = 0);
+      db.results.forEach(r => {
+        if (r.status === 'Published' && r.team && pointsMap[r.team] !== undefined) {
+          pointsMap[r.team] += (r.points || 0);
+        }
+      });
+      db.teams.forEach(t => { t.points = pointsMap[t.name] || 0; });
+      saveData(db);
+    }
+    recalcTeamPoints();
+
+    /* ============================================================
+       RENDER PUBLIC SECTIONS
+       ============================================================ */
+
+    // Render Scoreboard
+    function renderScoreboard() {
+      const tbody = document.getElementById('scoreboardBody');
+      if (!tbody) return;
+      const sorted = [...db.teams].sort((a, b) => b.points - a.points);
+      tbody.innerHTML = sorted.map((team, i) => {
+        const firsts = db.results.filter(r => r.team === team.name && r.position === 1 && r.status === 'Published').length;
+        const seconds = db.results.filter(r => r.team === team.name && r.position === 2 && r.status === 'Published').length;
+        const thirds = db.results.filter(r => r.team === team.name && r.position === 3 && r.status === 'Published').length;
+        return `<tr>
+          <td><span class="font-semibold">${i + 1}</span></td>
+          <td class="font-medium">${team.name}</td>
+          <td class="font-semibold text-[#0B3B2C]">${team.points}</td>
+          <td>${firsts}</td><td>${seconds}</td><td>${thirds}</td>
+        </tr>`;
+      }).join('');
+      // Update champion card
+      if (sorted.length) {
+        const champ = document.querySelector('.champion-card h3');
+        const champPoints = document.querySelector('.champion-card .score-number');
+        if (champ) champ.textContent = sorted[0].name;
+        if (champPoints) champPoints.textContent = sorted[0].points;
+      }
+    }
+
+    // Render Results
+    function renderResults() {
+      const tbody = document.getElementById('resultsBody');
+      if (!tbody) return;
+      const filter = document.getElementById('resultFilter')?.value || '';
+      const filtered = filter ? db.results.filter(r => r.event === filter) : db.results;
+      tbody.innerHTML = filtered.map(r => {
+        const medalClass = r.position === 1 ? 'medal-1' : r.position === 2 ? 'medal-2' : 'medal-3';
+        const medalIcon = r.position <= 3 ? `<span class="medal ${medalClass}">${r.position}</span>` : `${r.position}`;
+        const statusBadge = r.status === 'Published'
+          ? '<span class="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded-full">Published</span>'
+          : r.status === 'Pending'
+            ? '<span class="text-xs font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">Pending</span>'
+            : '<span class="text-xs font-medium text-red-700 bg-red-50 px-2 py-0.5 rounded-full">Corrected</span>';
+        return `<tr>
+          <td class="font-medium">${r.event}</td>
+          <td>${medalIcon}</td>
+          <td>${r.participant}</td>
+          <td>${r.team}</td>
+          <td>${r.points || 0}</td>
+          <td>${statusBadge}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // Render Teams Grid
+    function renderTeams() {
+      const grid = document.getElementById('teamsGrid');
+      if (!grid) return;
+      grid.innerHTML = db.teams.map(t => `
+        <div class="card p-5 text-center fade-up">
+          <div class="w-12 h-12 rounded-full bg-[#0B3B2C] flex items-center justify-center text-[#C6A44A] font-display text-lg mx-auto mb-3">${t.name.charAt(0)}</div>
+          <h3 class="font-display text-lg text-[#0B3B2C]">${t.name}</h3>
+          <p class="text-xs text-[#0B3B2C]/60">Captain: ${t.captain}</p>
+          <p class="score-number text-xl mt-2">${t.points} <span class="text-xs font-body text-[#0B3B2C]/50">pts</span></p>
+        </div>
+      `).join('');
+    }
+
+    // Render Schedule
+    function renderSchedule() {
+      const list = document.getElementById('scheduleList');
+      if (!list) return;
+      const dates = {};
+      db.events.forEach(e => {
+        if (!dates[e.date]) dates[e.date] = [];
+        dates[e.date].push(e);
+      });
+      const sortedDates = Object.keys(dates).sort();
+      list.innerHTML = sortedDates.map(date => `
+        <div class="card p-5 fade-up">
+          <p class="text-xs font-semibold uppercase tracking-widest text-[#C6A44A] mb-2">${new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
+          <div class="space-y-2">
+            ${dates[date].map(e => `<div class="flex items-center justify-between text-sm"><span class="font-medium">${e.name}</span><span class="text-[#0B3B2C]/50 text-xs">${e.category}</span></div>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ============================================================
+       RENDER ADMIN PANELS
+       ============================================================ */
+    function renderAdmin() {
+      // Events
+      const eventsBody = document.getElementById('adminEventsBody');
+      if (eventsBody) {
+        eventsBody.innerHTML = db.events.map(e => `
+          <tr>
+            <td class="font-medium">${e.name}</td>
+            <td>${e.category}</td>
+            <td>${e.date}</td>
+            <td class="flex gap-1">
+              <button class="btn btn-ghost btn-xs" onclick="openModal('event', '${e.id}')"><i data-lucide="pencil" class="w-3 h-3"></i></button>
+              <button class="btn btn-ghost btn-xs text-red-600" onclick="deleteItem('event', '${e.id}')"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      }
+      // Teams
+      const teamsBody = document.getElementById('adminTeamsBody');
+      if (teamsBody) {
+        teamsBody.innerHTML = db.teams.map(t => `
+          <tr>
+            <td class="font-medium">${t.name}</td>
+            <td>${t.captain}</td>
+            <td>${t.points}</td>
+            <td class="flex gap-1">
+              <button class="btn btn-ghost btn-xs" onclick="openModal('team', '${t.id}')"><i data-lucide="pencil" class="w-3 h-3"></i></button>
+              <button class="btn btn-ghost btn-xs text-red-600" onclick="deleteItem('team', '${t.id}')"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      }
+      // Results
+      const resultsBody = document.getElementById('adminResultsBody');
+      if (resultsBody) {
+        resultsBody.innerHTML = db.results.map(r => `
+          <tr>
+            <td>${r.event}</td>
+            <td>${r.participant}</td>
+            <td>${r.position}</td>
+            <td>${r.status}</td>
+            <td class="flex gap-1">
+              <button class="btn btn-ghost btn-xs" onclick="openModal('result', '${r.id}')"><i data-lucide="pencil" class="w-3 h-3"></i></button>
+              <button class="btn btn-ghost btn-xs text-red-600" onclick="deleteItem('result', '${r.id}')"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      }
+      // Activity log
+      const logEl = document.getElementById('activityLog');
+      if (logEl) {
+        logEl.innerHTML = db.logs.slice(-10).reverse().map(l => `<p>${new Date(l.time).toLocaleString()} — ${l.action}</p>`).join('');
+      }
+      lucide.createIcons();
+    }
+
+    /* ============================================================
+       MODAL CRUD
+       ============================================================ */
+    let currentEditType = null;
+    let currentEditId = null;
+
+    function openModal(type, id = null) {
+      currentEditType = type;
+      currentEditId = id;
+      const modal = document.getElementById('modalOverlay');
+      const title = document.getElementById('modalTitle');
+      const fields = document.getElementById('modalFields');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      if (type === 'event') {
+        const ev = id ? db.events.find(e => e.id === id) : { name: '', category: '', date: '' };
+        title.textContent = id ? 'Edit Event' : 'Add Event';
+        fields.innerHTML = `
+          <div><label class="block text-xs font-medium mb-1">Event Name</label><input name="name" value="${ev.name}" required class="w-full rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 text-sm"></div>
+          <div><label class="block text-xs font-medium mb-1">Category</label><input name="category" value="${ev.category}" required class="w-full rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 text-sm"></div>
+          <div><label class="block text-xs font-medium mb-1">Date</label><input name="date" type="date" value="${ev.date}" required class="w-full rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 text-sm"></div>
+        `;
+      } else if (type === 'team') {
+        const tm = id ? db.teams.find(t => t.id === id) : { name: '', captain: '', points: 0 };
+        title.textContent = id ? 'Edit Team' : 'Add Team';
+        fields.innerHTML = `
+          <div><label class="block text-xs font-medium mb-1">Team Name</label><input name="name" value="${tm.name}" required class="w-full rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 text-sm"></div>
+          <div><label class="block text-xs font-medium mb-1">Captain</label><input name="captain" value="${tm.captain}" required class="w-full rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 text-sm"></div>
+          <div><label class="block text-xs font-medium mb-1">Points</label><input name="points" type="number" value="${tm.points}" class="w-full rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 text-sm"></div>
+        `;
+      } else if (type === 'result') {
+        const rs = id ? db.results.find(r => r.id === id) : { event: '', participant: '', team: '', position: 1, status: 'Pending', points: 5, regNo: '' };
+        title.textContent = id ? 'Edit Result' : 'Add Result';
+        const eventOptions = db.events.map(e => `<option value="${e.name}" ${rs.event === e.name ? 'selected' : ''}>${e.name}</option>`).join('');
+        const teamOptions = db.teams.map(t => `<option value="${t.name}" ${rs.team === t.name ? 'selected' : ''}>${t.name}</option>`).join('');
+        fields.innerHTML = `
+          <div><label class="block text-xs font-medium mb-1">Event</label><select name="event" class="w-full rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 text-sm">${eventOptions}</select></div>
+          <div><label class="block text-xs font-medium mb-1">Participant</label><input name="participant" value="${rs.participant}" required class="w-full rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 text-sm"></div>
+          <div><label class="block text-xs font-medium mb-1">Team</label><select name="team" class="w-full rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 text-sm">${teamOptions}</select></div>
+          <div><label class="block text-xs font-medium mb-1">Position</label><input name="position" type="number" min="1" max="3" value="${rs.position}" class="w-full rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 text-sm"></div>
+          <div><label class="block text-xs font-medium mb-1">Status</label><select name="status" class="w-full rounded-lg border border-[rgba(11,59,44,0.1)] px-3 py-2 text-sm">
+            <option value="Pending" ${rs.status === 'Pending' ? 'selected' : ''}>Pending</option>
+            <option value="Published" ${rs.status === 'Published' ? 'selected' : ''}>Published</option>
+            <option value="Corrected" ${rs.status === 'Corrected' ? 'selected' : ''}>Corrected</option>
+          </select></div>
+        `;
+      }
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.add('hidden');
+      document.getElementById('modalOverlay').classList.remove('flex');
+      currentEditType = null; currentEditId = null;
+    }
+
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    document.getElementById('modalCancel').addEventListener('click', closeModal);
+    document.getElementById('modalOverlay').addEventListener('click', (e) => { if (e.target.id === 'modalOverlay') closeModal(); });
+
+    document.getElementById('modalForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      const type = currentEditType;
+      const id = currentEditId;
+
+      if (type === 'event') {
+        if (id) {
+          const ev = db.events.find(x => x.id === id);
+          Object.assign(ev, { name: data.name, category: data.category, date: data.date });
+        } else {
+          db.events.push({ id: 'e' + Date.now(), name: data.name, category: data.category, date: data.date });
+        }
+        db.logs.push({ time: new Date().toISOString(), action: `${id ? 'Updated' : 'Created'} event: ${data.name}` });
+      } else if (type === 'team') {
+        if (id) {
+          const tm = db.teams.find(x => x.id === id);
+          Object.assign(tm, { name: data.name, captain: data.captain, points: parseInt(data.points) || 0 });
+        } else {
+          db.teams.push({ id: 't' + Date.now(), name: data.name, captain: data.captain, points: parseInt(data.points) || 0 });
+        }
+        db.logs.push({ time: new Date().toISOString(), action: `${id ? 'Updated' : 'Created'} team: ${data.name}` });
+      } else if (type === 'result') {
+        const pointsMap = { 1: db.scoring.first, 2: db.scoring.second, 3: db.scoring.third };
+        const pts = pointsMap[parseInt(data.position)] || 0;
+        if (id) {
+          const rs = db.results.find(x => x.id === id);
+          Object.assign(rs, { event: data.event, participant: data.participant, team: data.team, position: parseInt(data.position), status: data.status, points: pts });
+        } else {
+          db.results.push({ id: 'r' + Date.now(), event: data.event, participant: data.participant, team: data.team, position: parseInt(data.position), status: data.status, points: pts, regNo: '' });
+        }
+        db.logs.push({ time: new Date().toISOString(), action: `${id ? 'Updated' : 'Created'} result for ${data.participant}` });
+      }
+
+      recalcTeamPoints();
+      saveData(db);
+      closeModal();
+      refreshAll();
+      showToast('Saved successfully');
+    });
+
+    function deleteItem(type, id) {
+      if (!confirm('Are you sure you want to delete this item?')) return;
+      if (type === 'event') db.events = db.events.filter(x => x.id !== id);
+      if (type === 'team') db.teams = db.teams.filter(x => x.id !== id);
+      if (type === 'result') db.results = db.results.filter(x => x.id !== id);
+      db.logs.push({ time: new Date().toISOString(), action: `Deleted ${type} ${id}` });
+      recalcTeamPoints();
+      saveData(db);
+      refreshAll();
+      showToast('Deleted');
+    }
+
+    function saveScoringRules() {
+      db.scoring.first = parseInt(document.getElementById('points1').value) || 5;
+      db.scoring.second = parseInt(document.getElementById('points2').value) || 3;
+      db.scoring.third = parseInt(document.getElementById('points3').value) || 1;
+      // Recalculate existing result points
+      db.results.forEach(r => {
+        if (r.position === 1) r.points = db.scoring.first;
+        else if (r.position === 2) r.points = db.scoring.second;
+        else if (r.position === 3) r.points = db.scoring.third;
+      });
+      recalcTeamPoints();
+      saveData(db);
+      refreshAll();
+      showToast('Scoring rules saved');
+    }
+
+    /* ============================================================
+       UTILITIES
+       ============================================================ */
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> ${msg}`;
+      container.appendChild(toast);
+      lucide.createIcons();
+      setTimeout(() => { toast.remove(); }, 3000);
+    }
+
+    function refreshScoreboard() {
+      recalcTeamPoints();
+      renderScoreboard();
+      renderTeams();
+      showToast('Scoreboard refreshed');
+    }
+
+    function generateCertificate() {
+      showToast('Certificate generated (demo)');
+    }
+
+    function exportCSV() {
+      let csv = 'Type,Name/Event,Detail,Points\n';
+      db.teams.forEach(t => { csv += `Team,${t.name},Captain: ${t.captain},${t.points}\n`; });
+      db.results.forEach(r => { csv += `Result,${r.event},${r.participant} (${r.team}) - Pos ${r.position},${r.points}\n`; });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'alfathih-data.csv';
+      a.click();
+      showToast('CSV exported');
+    }
+
+    /* ============================================================
+       UI INTERACTIONS
+       ============================================================ */
+    // Admin Tabs
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => { t.classList.remove('bg-[rgba(198,164,74,0.12)]', 'text-[#0B3B2C]'); t.setAttribute('aria-selected', 'false'); });
+        tab.classList.add('bg-[rgba(198,164,74,0.12)]', 'text-[#0B3B2C]');
+        tab.setAttribute('aria-selected', 'true');
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
+        const target = document.getElementById('tab-' + tab.dataset.tab);
+        if (target) target.classList.remove('hidden');
+      });
+    });
+
+    // Mobile Menu
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileBtn.addEventListener('click', () => {
+      const expanded = mobileBtn.getAttribute('aria-expanded') === 'true';
+      mobileBtn.setAttribute('aria-expanded', !expanded);
+      mobileMenu.classList.toggle('hidden');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      mobileBtn.setAttribute('aria-expanded', 'false');
+    }));
+
+    // Language Switcher (demo — updates UI direction only)
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.lang-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+        btn.classList.add('active'); btn.setAttribute('aria-pressed', 'true');
+        const lang = btn.dataset.lang;
+        if (lang === 'ar') document.documentElement.dir = 'rtl';
+        else document.documentElement.dir = 'ltr';
+        showToast(`Language switched to ${lang.toUpperCase()} (demo)`);
+      });
+    });
+
+    // Countdown (demo — fixed target)
+    function updateCountdown() {
+      const target = new Date('2025-12-18T09:00:00').getTime();
+      const now = Date.now();
+      const diff = Math.max(0, target - now);
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const secs = Math.floor((diff % (1000 * 60)) / 1000);
+      document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+      document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+      document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+    }
+    setInterval(updateCountdown, 1000); updateCountdown();
+
+    // Fade-up on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Nav active state
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+
+    // Search (simple filter demo)
+    document.getElementById('globalSearch')?.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('#scoreboardBody tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+
+    // Result filter
+    document.getElementById('resultFilter')?.addEventListener('change', renderResults);
+
+    // Admin role (demo)
+    document.getElementById('adminRole')?.addEventListener('change', (e) => {
+      if (e.target.value === 'Viewer') {
+        showToast('Viewer mode: editing disabled');
+        document.querySelectorAll('.admin-panel button.btn-primary').forEach(b => b.disabled = true);
+      } else {
+        document.querySelectorAll('.admin-panel button.btn-primary').forEach(b => b.disabled = false);
+      }
+    });
+
+    /* ============================================================
+       INITIAL RENDER
+       ============================================================ */
+    function refreshAll() {
+      renderScoreboard();
+      renderResults();
+      renderTeams();
+      renderSchedule();
+      renderAdmin();
+    }
+    refreshAll();
+
+    // Set scoring input values
+    document.getElementById('points1').value = db.scoring.first;
+    document.getElementById('points2').value = db.scoring.second;
+    document.getElementById('points3').value = db.scoring.third;
+
+    // Initialize icons again after dynamic content
+    lucide.createIcons();
+  </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"4b49338e71254543a909fa9a3b4ed6cd","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
