@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Moments — Luxury Digital Invitations</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ivory: #FDFBF7;
+      --champagne: #E8D5B0;
+      --champagne-deep: #C9A96A;
+      --blush: #F4D9D6;
+      --maroon: #5C1A1B;
+      --maroon-deep: #3E1112;
+      --emerald: #1F4D3A;
+      --emerald-light: #2E6B51;
+      --ink: #2A1A1B;
+      --gold-gradient: linear-gradient(135deg, #E8D5B0 0%, #C9A96A 40%, #F5E6C8 70%, #B8924A 100%);
+      --shadow-soft: 0 10px 40px -10px rgba(92, 26, 27, 0.15);
+      --shadow-lift: 0 20px 60px -15px rgba(92, 26, 27, 0.25);
+      --focus-ring: 0 0 0 3px rgba(201, 169, 106, 0.6);
+      --radius-card: 1.5rem;
+    }
+
+    /* === Base === */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--ivory);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .font-script { font-family: 'Great Vibes', cursive; }
+    .font-malayalam { font-family: 'Noto Sans Malayalam', sans-serif; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+    a, button { transition: all 0.2s ease; }
+    :focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 4px; }
+
+    /* === Texture & Ornaments === */
+    .bg-grain {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    }
+    .gold-border {
+      border: 1px solid transparent;
+      background: linear-gradient(var(--ivory), var(--ivory)) padding-box,
+                  var(--gold-gradient) border-box;
+    }
+    .divider-ornament {
+      display: flex; align-items: center; justify-content: center; gap: 1rem;
+      color: var(--champagne-deep);
+    }
+    .divider-ornament::before, .divider-ornament::after {
+      content: ''; height: 1px; width: 60px;
+      background: linear-gradient(90deg, transparent, var(--champagne-deep), transparent);
+    }
+
+    /* === Header === */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      transition: all 0.3s ease;
+    }
+    .site-header.scrolled {
+      background: rgba(253, 251, 247, 0.92);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(201, 169, 106, 0.2), 0 8px 30px -15px rgba(92,26,27,0.15);
+    }
+    .site-header.scrolled .header-inner { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+    .header-inner { padding-top: 1.1rem; padding-bottom: 1.1rem; transition: all 0.3s ease; }
+
+    /* === Buttons === */
+    .btn-gold {
+      background: var(--gold-gradient);
+      color: var(--maroon-deep);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border-radius: 999px;
+      padding: 0.85rem 2rem;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      box-shadow: 0 4px 20px -4px rgba(201, 169, 106, 0.6);
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -6px rgba(201, 169, 106, 0.8); }
+    .btn-gold:active { transform: translateY(0) scale(0.98); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--maroon);
+      font-weight: 500;
+      border: 1.5px solid rgba(201, 169, 106, 0.7);
+      border-radius: 999px;
+      padding: 0.85rem 2rem;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-outline:hover { background: rgba(232, 213, 176, 0.25); border-color: var(--champagne-deep); }
+    .btn-outline:active { transform: scale(0.98); }
+
+    .btn-whatsapp {
+      background: #25D366; color: #fff; font-weight: 600;
+      border-radius: 999px; padding: 0.75rem 1.5rem;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      box-shadow: 0 4px 16px -2px rgba(37, 211, 102, 0.5);
+    }
+    .btn-whatsapp:hover { background: #1ebe5a; transform: translateY(-2px); }
+
+    /* === Hero === */
+    .hero-section {
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 20%, rgba(244, 217, 214, 0.4), transparent),
+        radial-gradient(ellipse 60% 50% at 20% 80%, rgba(232, 213, 176, 0.35), transparent),
+        var(--ivory);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-floral {
+      position: absolute; pointer-events: none; opacity: 0.18;
+      color: var(--champagne-deep);
+    }
+    .hero-headline {
+      font-size: clamp(2.5rem, 6vw, 4.75rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--maroon-deep);
+    }
+    .text-reveal-word { display: inline-block; overflow: hidden; vertical-align: bottom; }
+    .text-reveal-word span {
+      display: inline-block;
+      transform: translateY(110%);
+      animation: revealUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes revealUp { to { transform: translateY(0); } }
+
+    /* === Template Gallery === */
+    .template-card {
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: var(--shadow-soft);
+      background: var(--ivory);
+    }
+    .template-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lift);
+    }
+    .template-thumb {
+      aspect-ratio: 3 / 4;
+      position: relative;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .template-thumb::after {
+      content: ''; position: absolute; inset: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 0.75rem;
+      pointer-events: none;
+    }
+    .template-thumb .tpl-names {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      line-height: 1.2;
+    }
+    .template-thumb .tpl-sub {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+    .tpl-1 { background: linear-gradient(160deg, #FDF6E3 0%, #F4E4C1 50%, #EAD7A8 100%); color: var(--maroon); }
+    .tpl-2 { background: linear-gradient(160deg, #1F4D3A 0%, #2E6B51 100%); color: #F5E6C8; }
+    .tpl-3 { background: linear-gradient(160deg, #FDFBF7 0%, #F4D9D6 100%); color: var(--maroon); }
+    .tpl-4 { background: linear-gradient(160deg, #F8F4EE 0%, #E8D5B0 100%); color: var(--emerald); }
+    .tpl-5 { background: linear-gradient(160deg, #5C1A1B 0%, #3E1112 100%); color: #E8D5B0; }
+    .tpl-6 { background: linear-gradient(160deg, #FAFAFB 0%, #ECE9E3 100%); color: var(--ink); }
+    .tpl-7 { background: linear-gradient(160deg, #F9E8E6 0%, #F4D9D6 60%, #EFC5C1 100%); color: var(--maroon); }
+    .tpl-8 { background: linear-gradient(160deg, #2A1A1B 0%, #5C1A1B 100%); color: #F5E6C8; }
+
+    /* === Customizer === */
+    .customizer-panel {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(201, 169, 106, 0.25);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-soft);
+    }
+    .form-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--maroon);
+      margin-bottom: 0.35rem;
+    }
+    .form-input {
+      width: 100%;
+      border: 1px solid rgba(201, 169, 106, 0.4);
+      border-radius: 0.75rem;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.9rem;
+      background: rgba(253, 251, 247, 0.8);
+      color: var(--ink);
+      transition: all 0.2s ease;
+    }
+    .form-input:focus {
+      border-color: var(--champagne-deep);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(201, 169, 106, 0.2);
+      outline: none;
+    }
+    .form-input.error { border-color: #C0392B; box-shadow: 0 0 0 3px rgba(192,57,43,0.15); }
+    .form-input::placeholder { color: rgba(42, 26, 27, 0.35); }
+
+    /* === Live Card Preview === */
+    .card-preview-wrap {
+      perspective: 1400px;
+    }
+    .live-card {
+      aspect-ratio: 3 / 4.2;
+      border-radius: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 70px -20px rgba(92, 26, 27, 0.4);
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      transform-style: preserve-3d;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+    .live-card::before {
+      content: ''; position: absolute; inset: 0.75rem;
+      border: 1px solid rgba(201, 169, 106, 0.45);
+      border-radius: 0.9rem;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .live-card::after {
+      content: ''; position: absolute; inset: 1rem;
+      border: 0.5px solid rgba(201, 169, 106, 0.25);
+      border-radius: 0.6rem;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .live-card-inner { position: relative; z-index: 3; }
+
+    /* === Envelope Experience === */
+    .envelope-stage {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 60vh;
+      perspective: 1200px;
+    }
+    .envelope {
+      width: min(340px, 82vw);
+      aspect-ratio: 4 / 3;
+      position: relative;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease;
+    }
+    .envelope:hover { transform: translateY(-6px) rotateX(2deg); }
+    .envelope-body {
+      position: absolute; inset: 0;
+      background: linear-gradient(160deg, #F5E6C8, #E8D5B0);
+      border-radius: 0.5rem;
+      box-shadow: 0 20px 50px -15px rgba(92,26,27,0.4);
+      overflow: hidden;
+    }
+    .envelope-body::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 5c3 8 10 10 10 10s-7 2-10 10c-3-8-10-10-10-10s7-2 10-10z' fill='%23C9A96A' opacity='0.12'/%3E%3C/svg%3E");
+    }
+    .envelope-flap {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 55%;
+      background: linear-gradient(180deg, #EAD7A8, #D4BC85);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      transition: transform 0.9s cubic-bezier(0.6, -0.2, 0.3, 1.4);
+      z-index: 5;
+      border-radius: 0.5rem 0.5rem 0 0;
+    }
+    .envelope.open .envelope-flap { transform: rotateX(180deg); }
+    .envelope-seal {
+      position: absolute; top: 42%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 3.5rem; height: 3.5rem;
+      background: radial-gradient(circle at 35% 30%, #8A2E2F, var(--maroon-deep));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--champagne);
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 12px rgba(62,17,18,0.5), inset 0 0 0 2px rgba(232,213,176,0.4);
+      z-index: 6;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .envelope.open .envelope-seal { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+    .envelope-letter {
+      position: absolute; left: 6%; right: 6%; bottom: 8%;
+      height: 82%;
+      background: var(--ivory);
+      border-radius: 0.25rem;
+      box-shadow: 0 -4px 20px rgba(92,26,27,0.15);
+      z-index: 3;
+      transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .envelope.open .envelope-letter { transform: translateY(-60%); }
+
+    /* === Countdown === */
+    .countdown-box {
+      background: linear-gradient(160deg, rgba(255,255,255,0.9), rgba(244,217,214,0.4));
+      border: 1px solid rgba(201, 169, 106, 0.35);
+      border-radius: 1rem;
+      padding: 0.9rem 0.5rem;
+      text-align: center;
+      min-width: 68px;
+    }
+    .countdown-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1;
+      color: var(--maroon);
+    }
+    .countdown-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--champagne-deep);
+      font-weight: 600;
+      margin-top: 0.2rem;
+    }
+
+    /* === Gold Particles === */
+    .gold-particle {
+      position: absolute;
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #F5E6C8, #C9A96A);
+      pointer-events: none;
+      animation: floatUp linear infinite;
+      opacity: 0;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-200px) scale(0.3); opacity: 0; }
+    }
+
+    /* === Floating WhatsApp === */
+    .fab-whatsapp {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 40;
+      width: 3.5rem; height: 3.5rem;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      box-shadow: 0 8px 24px -4px rgba(37, 211, 102, 0.6);
+      transition: all 0.25s ease;
+    }
+    .fab-whatsapp:hover { transform: scale(1.1) translateY(-2px); }
+
+    /* === Animations === */
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-on-scroll.visible { opacity: 1; transform: translateY(0); }
+
+    /* === How It Works === */
+    .step-card {
+      position: relative;
+      padding: 2rem 1.5rem;
+      border-radius: var(--radius-card);
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(201, 169, 106, 0.2);
+      transition: all 0.3s ease;
+    }
+    .step-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-soft); border-color: rgba(201,169,106,0.5); }
+    .step-number {
+      width: 3rem; height: 3rem;
+      border-radius: 50%;
+      background: var(--gold-gradient);
+      color: var(--maroon-deep);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    /* === Category Cards === */
+    .category-card {
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      position: relative;
+      min-height: 280px;
+      display: flex; align-items: flex-end;
+      padding: 1.75rem;
+      transition: all 0.35s ease;
+      cursor: pointer;
+    }
+    .category-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lift); }
+    .cat-malayalam { background: linear-gradient(160deg, var(--emerald) 0%, var(--emerald-light) 60%, #3D7A5E 100%); }
+    .cat-english { background: linear-gradient(160deg, var(--maroon-deep) 0%, var(--maroon) 60%, #7A2E2F 100%); }
+
+    /* === Modal / Overlay === */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(42, 26, 27, 0.6);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: var(--ivory);
+      border-radius: var(--radius-card);
+      max-width: 900px;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: 0 40px 100px -20px rgba(42,26,27,0.5);
+      transform: scale(0.95) translateY(10px);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+
+    /* === RSVP === */
+    .rsvp-input {
+      width: 100%;
+      border: 1px solid rgba(201, 169, 106, 0.4);
+      border-radius: 0.75rem;
+      padding: 0.8rem 1rem;
+      font-size: 0.95rem;
+      background: #fff;
+      transition: all 0.2s;
+    }
+    .rsvp-input:focus { border-color: var(--champagne-deep); box-shadow: 0 0 0 3px rgba(201,169,106,0.2); outline: none; }
+
+    /* === Toast === */
+    .toast {
+      position: fixed; bottom: 5.5rem; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--maroon-deep);
+      color: var(--champagne);
+      padding: 0.8rem 1.5rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: 0 10px 30px -5px rgba(0,0,0,0.3);
+      opacity: 0; pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 200;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* === Mobile nav === */
+    .mobile-nav {
+      position: fixed; top: 0; right: 0; bottom: 0;
+      width: min(320px, 85vw);
+      background: var(--ivory);
+      z-index: 60;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: -20px 0 60px -20px rgba(42,26,27,0.3);
+      padding: 2rem;
+      display: flex; flex-direction: column;
+    }
+    .mobile-nav.open { transform: translateX(0); }
+    .mobile-nav-overlay {
+      position: fixed; inset: 0; background: rgba(42,26,27,0.4);
+      backdrop-filter: blur(4px); z-index: 55;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .mobile-nav-overlay.open { opacity: 1; pointer-events: all; }
+
+    /* === Customizer Preview Card variants === */
+    .preview-theme-royal { background: linear-gradient(160deg, #FDF6E3, #F4E4C1 55%, #EAD7A8); color: var(--maroon); }
+    .preview-theme-emerald { background: linear-gradient(160deg, #1F4D3A, #2E6B51); color: #F5E6C8; }
+    .preview-theme-blush { background: linear-gradient(160deg, #FDFBF7, #F4D9D6); color: var(--maroon); }
+    .preview-theme-maroon { background: linear-gradient(160deg, #5C1A1B, #3E1112); color: #E8D5B0; }
+    .preview-theme-ivory { background: linear-gradient(160deg, #FAFAFB, #ECE9E3); color: var(--ink); }
+    .preview-theme-rose { background: linear-gradient(160deg, #F9E8E6, #F4D9D6 60%, #EFC5C1); color: var(--maroon); }
+
+    /* === Responsive tweaks === */
+    @media (max-width: 640px) {
+      .header-inner { padding-top: 0.8rem; padding-bottom: 0.8rem; }
+      .btn-gold, .btn-outline { padding: 0.7rem 1.4rem; font-size: 0.85rem; }
+      .fab-whatsapp { width: 3rem; height: 3rem; bottom: 1rem; right: 1rem; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ivory: '#FDFBF7',
+            champagne: '#E8D5B0',
+            'champagne-deep': '#C9A96A',
+            blush: '#F4D9D6',
+            maroon: '#5C1A1B',
+            'maroon-deep': '#3E1112',
+            emerald: '#1F4D3A',
+          },
+          fontFamily: {
+            display: ['Cormorant Garamond', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+            script: ['Great Vibes', 'cursive'],
+            malayalam: ['Noto Sans Malayalam', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-grain">
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#home" class="flex items-center gap-2.5 group" aria-label="Wedding Moments home">
+        <svg width="34" height="34" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <circle cx="20" cy="20" r="19" stroke="#C9A96A" stroke-width="1.2"/>
+          <path d="M20 9c2.5 5.5 8 7.5 8 7.5s-5.5 2-8 7.5c-2.5-5.5-8-7.5-8-7.5s5.5-2 8-7.5z" fill="#C9A96A" opacity="0.9"/>
+          <circle cx="20" cy="20" r="2" fill="#5C1A1B"/>
+        </svg>
+        <div class="leading-tight">
+          <span class="font-display text-lg sm:text-xl font-bold text-maroon-deep tracking-tight">Wedding Moments</span>
+          <span class="block text-[0.55rem] tracking-[0.25em] uppercase text-champagne-deep font-medium">Digital Invitations</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-8" aria-label="Primary">
+        <a href="#templates" class="text-sm font-medium text-maroon/80 hover:text-maroon transition">Templates</a>
+        <a href="#how-it-works" class="text-sm font-medium text-maroon/80 hover:text-maroon transition">How It Works</a>
+        <a href="#customizer" class="text-sm font-medium text-maroon/80 hover:text-maroon transition">Customize</a>
+        <a href="#experience" class="text-sm font-medium text-maroon/80 hover:text-maroon transition">Experience</a>
+        <a href="#malayalam" class="text-sm font-medium text-maroon/80 hover:text-maroon transition">Malayalam</a>
+      </nav>
+
+      <div class="hidden lg:flex items-center gap-3">
+        <a href="https://wa.me/919999999999?text=Hi%2C%20I%27m%20interested%20in%20a%20digital%20wedding%20invitation" target="_blank" rel="noopener" class="btn-whatsapp text-sm" aria-label="Contact us on WhatsApp">
+          <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
+        </a>
+        <a href="#customizer" class="btn-gold text-sm">
+          <i data-lucide="sparkles" class="w-4 h-4"></i> Create Invitation
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-full hover:bg-champagne/30 transition" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+        <i data-lucide="menu" class="w-6 h-6 text-maroon-deep"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
+  <nav id="mobileNav" class="mobile-nav" aria-label="Mobile">
+    <div class="flex items-center justify-between mb-8">
+      <span class="font-display text-lg font-bold text-maroon-deep">Menu</span>
+      <button id="mobileMenuClose" class="p-2 rounded-full hover:bg-champagne/30 transition" aria-label="Close menu">
+        <i data-lucide="x" class="w-5 h-5 text-maroon-deep"></i>
+      </button>
+    </div>
+    <div class="flex flex-col gap-1">
+      <a href="#templates" class="py-3 px-3 rounded-xl text-maroon font-medium hover:bg-champagne/25 transition">Templates</a>
+      <a href="#how-it-works" class="py-3 px-3 rounded-xl text-maroon font-medium hover:bg-champagne/25 transition">How It Works</a>
+      <a href="#customizer" class="py-3 px-3 rounded-xl text-maroon font-medium hover:bg-champagne/25 transition">Customize</a>
+      <a href="#experience" class="py-3 px-3 rounded-xl text-maroon font-medium hover:bg-champagne/25 transition">Experience</a>
+      <a href="#malayalam" class="py-3 px-3 rounded-xl text-maroon font-medium hover:bg-champagne/25 transition">Malayalam</a>
+      <a href="#rsvp" class="py-3 px-3 rounded-xl text-maroon font-medium hover:bg-champagne/25 transition">RSVP</a>
+    </div>
+    <div class="mt-auto pt-6 flex flex-col gap-3">
+      <a href="https://wa.me/919999999999" target="_blank" rel="noopener" class="btn-whatsapp justify-center text-sm">
+        <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp Us
+      </a>
+      <a href="#customizer" class="btn-gold justify-center text-sm">Create Invitation</a>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section id="home" class="hero-section pt-28 sm:pt-32 pb-16 sm:pb-24 relative">
+    <!-- Floral ornaments -->
+    <svg class="hero-floral w-40 h-40 sm:w-64 sm:h-64 -top-6 -left-10 sm:-left-16" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+      <path d="M100 20c15 30 50 45 50 45s-35 15-50 45c-15-30-50-45-50-45s35-15 50-45z" stroke="currentColor" stroke-width="1"/>
+      <circle cx="100" cy="65" r="4" fill="currentColor"/>
+    </svg>
+    <svg class="hero-floral w-48 h-48 sm:w-72 sm:h-72 -bottom-10 -right-12 sm:-right-20 rotate-180" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+      <path d="M100 20c15 30 50 45 50 45s-35 15-50 45c-15-30-50-45-50-45s35-15 50-45z" stroke="currentColor" stroke-width="1"/>
+      <path d="M100 60c8 16 26 24 26 24s-18 8-26 24c-8-16-26-24-26-24s18-8 26-24z" stroke="currentColor" stroke-width="0.8"/>
+    </svg>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <!-- Left content -->
+        <div class="text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/60 border border-champagne-deep/30 mb-6 reveal-on-scroll">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse"></span>
+            <span class="text-[0.7rem] font-semibold tracking-[0.15em] uppercase text-emerald">Premium Digital Invitations</span>
+          </div>
+
+          <h1 class="hero-headline font-display mb-6">
+            <span class="text-reveal-word"><span style="animation-delay:0.1s">Make</span></span>
+            <span class="text-reveal-word"><span style="animation-delay:0.2s">Your</span></span>
+            <span class="text-reveal-word"><span style="animation-delay:0.3s">Wedding</span></span><br class="hidden sm:block"/>
+            <span class="text-reveal-word"><span style="animation-delay:0.4s">Invitation</span></span>
+            <span class="text-reveal-word"><span style="animation-delay:0.5s" class="font-script text-champagne-deep" style="font-size:1.1em">Unforgettable</span></span>
+          </h1>
+
+          <p class="text-base sm:text-lg text-ink/70 max-w-lg mx-auto lg:mx-0 mb-8 leading-relaxed reveal-on-scroll" style="transition-delay:0.15s">
+            Handcrafted digital invitation cards that blend Indian tradition with modern elegance.
+            Share your special day on WhatsApp in a way your guests will never forget.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start reveal-on-scroll" style="transition-delay:0.25s">
+            <a href="#templates" class="btn-gold justify-center text-base">
+              <i data-lucide="layout-grid" class="w-5 h-5"></i> Explore Designs
+            </a>
+            <a href="#customizer" class="btn-outline justify-center text-base">
+              <i data-lucide="pen-tool" class="w-5 h-5"></i> Create Your Invitation
+            </a>
+          </div>
+
+          <!-- Social proof stats -->
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-6 sm:gap-8 mt-10 pt-8 border-t border-champagne-deep/20 reveal-on-scroll" style="transition-delay:0.35s">
+            <div>
+              <div class="font-display text-2xl sm:text-3xl font-bold text-maroon">8+</div>
+              <div class="text-[0.65rem] tracking-[0.15em] uppercase text-ink/50 font-medium">Designs</div>
+            </div>
+            <div class="w-px h-8 bg-champagne-deep/30"></div>
+            <div>
+              <div class="font-display text-2xl sm:text-3xl font-bold text-maroon">2</div>
+              <div class="text-[0.65rem] tracking-[0.15em] uppercase text-ink/50 font-medium">Languages</div>
+            </div>
+            <div class="w-px h-8 bg-champagne-deep/30"></div>
+            <div>
+              <div class="font-display text-2xl sm:text-3xl font-bold text-maroon">100%</div>
+              <div class="text-[0.65rem] tracking-[0.15em] uppercase text-ink/50 font-medium">Handcrafted</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right visual: floating preview cards -->
+        <div class="relative hidden lg:block" aria-hidden="true">
+          <div class="relative w-full max-w-md mx-auto" style="perspective: 1200px;">
+            <!-- Back card -->
+            <div class="absolute top-8 left-0 w-64 aspect-[3/4] rounded-2xl shadow-xl rotate-[-8deg] opacity-70"
+                 style="background: linear-gradient(160deg, #1F4D3A, #2E6B51);">
+              <div class="absolute inset-3 border border-white/20 rounded-xl"></div>
+              <div class="h-full flex flex-col items-center justify-center text-center p-6">
+                <div class="font-script text-3xl text-champagne">A &amp; R</div>
+                <div class="text-[0.55rem] tracking-[0.2em] uppercase text-champagne/70 mt-2">Nikah Invitation</div>
+              </div>
+            </div>
+            <!-- Front card -->
+            <div class="relative ml-auto w-72 aspect-[3/4] rounded-2xl shadow-2xl overflow-hidden animate-[float_6s_ease-in-out_infinite]"
+                 style="background: linear-gradient(160deg, #FDF6E3, #F4E4C1 55%, #EAD7A8);">
+              <div class="absolute inset-3 border border-champagne-deep/50 rounded-xl"></div>
+              <div class="absolute inset-5 border border-champagne-deep/25 rounded-lg"></div>
+              <div class="h-full flex flex-col items-center justify-center text-center p-8 relative z-10">
+                <div class="text-[0.55rem] tracking-[0.3em] uppercase text-maroon/60 mb-3">Together Forever</div>
+                <div class="font-script text-4xl text-maroon leading-tight">Anjali</div>
+                <div class="text-champagne-deep my-1">&amp;</div>
+                <div class="font-script text-4xl text-maroon leading-tight">Arjun</div>
+                <div class="w-12 h-px bg-champagne-deep/50 my-4"></div>
+                <div class="text-[0.65rem] tracking-[0.2em] uppercase text-maroon/70">20 December 2026</div>
+                <div class="text-[0.6rem] tracking-[0.15em] uppercase text-maroon/50 mt-1">Kerala</div>
+              </div>
+            </div>
+            <!-- Decorative gold ring -->
+            <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full border-2 border-champagne-deep/40"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TEMPLATES GALLERY ========== -->
+  <section id="templates" class="py-16 sm:py-24 bg-white/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12 reveal-on-scroll">
+        <div class="divider-ornament mb-4">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 2c1.5 3 5 4.5 5 4.5s-3.5 1.5-5 4.5c-1.5-3-5-4.5-5-4.5s3.5-1.5 5-4.5z"/></svg>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-maroon-deep mb-3">Invitation Card Templates</h2>
+        <p class="text-ink/60 text-sm sm:text-base">Eight distinct designs, each crafted to reflect your unique love story and cultural heritage.</p>
+      </div>
+
+      <div id="templateGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+        <!-- Template 1 -->
+        <div class="template-card reveal-on-scroll" data-template="kerala" tabindex="0" role="button" aria-label="Select Kerala Traditional Wedding template">
+          <div class="template-thumb tpl-1">
+            <div class="tpl-names">Anjali &amp; Arjun</div>
+            <div class="w-8 h-px bg-current opacity-40 my-2"></div>
+            <div class="tpl-sub">Kerala Traditional</div>
+          </div>
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-display font-semibold text-maroon-deep text-sm">Kerala Traditional</h3>
+              <p class="text-[0.7rem] text-ink/50">Kasavu-inspired elegance</p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-champagne-deep"></i>
+          </div>
+        </div>
+
+        <!-- Template 2 -->
+        <div class="template-card reveal-on-scroll" data-template="nikah" tabindex="0" role="button" aria-label="Select Muslim Nikah template" style="transition-delay:0.05s">
+          <div class="template-thumb tpl-2">
+            <div class="tpl-names">Ayesha &amp; Fahad</div>
+            <div class="w-8 h-px bg-current opacity-40 my-2"></div>
+            <div class="tpl-sub">Nikah Ceremony</div>
+          </div>
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-display font-semibold text-maroon-deep text-sm">Muslim Nikah</h3>
+              <p class="text-[0.7rem] text-ink/50">Emerald &amp; gold</p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-champagne-deep"></i>
+          </div>
+        </div>
+
+        <!-- Template 3 -->
+        <div class="template-card reveal-on-scroll" data-template="hindu" tabindex="0" role="button" aria-label="Select Hindu Wedding template" style="transition-delay:0.1s">
+          <div class="template-thumb tpl-3">
+            <div class="tpl-names">Meera &amp; Karthik</div>
+            <div class="w-8 h-px bg-current opacity-40 my-2"></div>
+            <div class="tpl-sub">Hindu Vivah</div>
+          </div>
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-display font-semibold text-maroon-deep text-sm">Hindu Wedding</h3>
+              <p class="text-[0.7rem] text-ink/50">Blush &amp; maroon</p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-champagne-deep"></i>
+          </div>
+        </div>
+
+        <!-- Template 4 -->
+        <div class="template-card reveal-on-scroll" data-template="christian" tabindex="0" role="button" aria-label="Select Christian Wedding template" style="transition-delay:0.15s">
+          <div class="template-thumb tpl-4">
+            <div class="tpl-names">Maria &amp; Thomas</div>
+            <div class="w-8 h-px bg-current opacity-40 my-2"></div>
+            <div class="tpl-sub">Holy Matrimony</div>
+          </div>
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-display font-semibold text-maroon-deep text-sm">Christian Wedding</h3>
+              <p class="text-[0.7rem] text-ink/50">Ivory &amp; emerald</p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-champagne-deep"></i>
+          </div>
+        </div>
+
+        <!-- Template 5 -->
+        <div class="template-card reveal-on-scroll" data-template="royal" tabindex="0" role="button" aria-label="Select Royal Gold template" style="transition-delay:0.2s">
+          <div class="template-thumb tpl-5">
+            <div class="tpl-names">Saanvi &amp; Vivaan</div>
+            <div class="w-8 h-px bg-current opacity-40 my-2"></div>
+            <div class="tpl-sub">Royal Gold</div>
+          </div>
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-display font-semibold text-maroon-deep text-sm">Royal Gold</h3>
+              <p class="text-[0.7rem] text-ink/50">Maroon &amp; gold leaf</p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-champagne-deep"></i>
+          </div>
+        </div>
+
+        <!-- Template 6 -->
+        <div class="template-card reveal-on-scroll" data-template="minimal" tabindex="0" role="button" aria-label="Select Minimal Modern template" style="transition-delay:0.25s">
+          <div class="template-thumb tpl-6">
+            <div class="tpl-names">Diya &amp; Kabir</div>
+            <div class="w-8 h-px bg-current opacity-40 my-2"></div>
+            <div class="tpl-sub">Minimal Modern</div>
+          </div>
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-display font-semibold text-maroon-deep text-sm">Minimal Modern</h3>
+              <p class="text-[0.7rem] text-ink/50">Clean &amp; contemporary</p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-champagne-deep"></i>
+          </div>
+        </div>
+
+        <!-- Template 7 -->
+        <div class="template-card reveal-on-scroll" data-template="floral" tabindex="0" role="button" aria-label="Select Floral Romantic template" style="transition-delay:0.3s">
+          <div class="template-thumb tpl-7">
+            <div class="tpl-names">Ishita &amp; Rohan</div>
+            <div class="w-8 h-px bg-current opacity-40 my-2"></div>
+            <div class="tpl-sub">Floral Romantic</div>
+          </div>
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-display font-semibold text-maroon-deep text-sm">Floral Romantic</h3>
+              <p class="text-[0.7rem] text-ink/50">Blush rose garden</p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-champagne-deep"></i>
+          </div>
+        </div>
+
+        <!-- Template 8 -->
+        <div class="template-card reveal-on-scroll" data-template="video" tabindex="0" role="button" aria-label="Select Luxury Video Style template" style="transition-delay:0.35s">
+          <div class="template-thumb tpl-8 relative">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-12 h-12 rounded-full border border-champagne/50 flex items-center justify-center">
+                <i data-lucide="play" class="w-5 h-5 text-champagne fill-champagne"></i>
+              </div>
+            </div>
+            <div class="tpl-names mt-auto relative z-10">Naina &amp; Aditya</div>
+            <div class="tpl-sub relative z-10">Luxury Video</div>
+          </div>
+          <div class="p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-display font-semibold text-maroon-deep text-sm">Luxury Video</h3>
+              <p class="text-[0.7rem] text-ink/50">Cinematic invitation</p>
+            </div>
+            <i data-lucide="arrow-up-right" class="w-4 h-4 text-champagne-deep"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== HOW IT WORKS ========== -->
+  <section id="how-it-works" class="py-16 sm:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12 reveal-on-scroll">
+        <div class="divider-ornament mb-4">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 2c1.5 3 5 4.5 5 4.5s-3.5 1.5-5 4.5c-1.5-3-5-4.5-5-4.5s3.5-1.5 5-4.5z"/></svg>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-maroon-deep mb-3">How It Works</h2>
+        <p class="text-ink/60 text-sm sm:text-base">From choosing a design to sharing on WhatsApp — it takes just minutes.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="step-card reveal-on-scroll">
+          <div class="step-number">1</div>
+          <h3 class="font-display text-lg font-semibold text-maroon-deep mb-2">Choose a Design</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">Browse our collection of eight handcrafted templates, each inspired by Indian wedding traditions.</p>
+        </div>
+        <div class="step-card reveal-on-scroll" style="transition-delay:0.08s">
+          <div class="step-number">2</div>
+          <h3 class="font-display text-lg font-semibold text-maroon-deep mb-2">Customize Details</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">Add your names, wedding date, venue, and personal message. Choose colors and fonts that reflect your style.</p>
+        </div>
+        <div class="step-card reveal-on-scroll" style="transition-delay:0.16s">
+          <div class="step-number">3</div>
+          <h3 class="font-display text-lg font-semibold text-maroon-deep mb-2">Preview Live</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">See your invitation come to life in real time. Make adjustments until every detail feels perfect.</p>
+        </div>
+        <div class="step-card reveal-on-scroll" style="transition-delay:0.24s">
+          <div class="step-number">4</div>
+          <h3 class="font-display text-lg font-semibold text-maroon-deep mb-2">Share on WhatsApp</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">Send your animated invitation link directly to guests on WhatsApp. No app downloads required.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CATEGORIES ========== -->
+  <section class="py-16 sm:py-20 bg-white/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-10 reveal-on-scroll">
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-maroon-deep mb-3">Invitations in Your Language</h2>
+        <p class="text-ink/60 text-sm sm:text-base">Beautiful typography, authentic cultural details, and proper text rendering in both Malayalam and English.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-5 sm:gap-6">
+        <div class="category-card cat-malayalam reveal-on-scroll" data-category="malayalam" tabindex="0" role="button" aria-label="Browse Malayalam invitations">
+          <div>
+            <div class="text-[0.65rem] tracking-[0.25em] uppercase text-champagne/80 mb-2 font-semibold">Malayalam</div>
+            <h3 class="font-display text-2xl sm:text-3xl font-bold text-white mb-2">മലയാളം ക്ഷണക്കത്ത്</h3>
+            <p class="text-sm text-champagne/70 mb-4">Traditional Kerala wedding invitations with authentic Malayalam typography.</p>
+            <span class="inline-flex items-center gap-2 text-champagne text-sm font-medium group">
+              Explore <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+            </span>
+          </div>
+        </div>
+        <div class="category-card cat-english reveal-on-scroll" data-category="english" tabindex="0" role="button" aria-label="Browse English invitations" style="transition-delay:0.1s">
+          <div>
+            <div class="text-[0.65rem] tracking-[0.25em] uppercase text-champagne/80 mb-2 font-semibold">English</div>
+            <h3 class="font-display text-2xl sm:text-3xl font-bold text-white mb-2">English Invitations</h3>
+            <p class="text-sm text-champagne/70 mb-4">Elegant English wedding cards for modern Indian celebrations.</p>
+            <span class="inline-flex items-center gap-2 text-champagne text-sm font-medium group">
+              Explore <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CUSTOMIZER ========== -->
+  <section id="customizer" class="py-16 sm:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-10 reveal-on-scroll">
+        <div class="divider-ornament mb-4">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 2c1.5 3 5 4.5 5 4.5s-3.5 1.5-5 4.5c-1.5-3-5-4.5-5-4.5s3.5-1.5 5-4.5z"/></svg>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-maroon-deep mb-3">Customize Your Invitation</h2>
+        <p class="text-ink/60 text-sm sm:text-base">Fill in your details and watch your invitation come to life in the live preview.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-5 gap-6 lg:gap-8 items-start">
+        <!-- Form panel -->
+        <div class="customizer-panel p-5 sm:p-7 lg:col-span-3 reveal-on-scroll">
+          <form id="customizerForm" class="space-y-4" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="brideName" class="form-label">Bride's Name</label>
+                <input type="text" id="brideName" class="form-input" placeholder="Anjali" value="Anjali" maxlength="30" />
+              </div>
+              <div>
+                <label for="groomName" class="form-label">Groom's Name</label>
+                <input type="text" id="groomName" class="form-input" placeholder="Arjun" value="Arjun" maxlength="30" />
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="weddingDate" class="form-label">Wedding Date</label>
+                <input type="date" id="weddingDate" class="form-input" value="2026-12-20" />
+              </div>
+              <div>
+                <label for="weddingTime" class="form-label">Wedding Time</label>
+                <input type="time" id="weddingTime" class="form-input" value="11:30" />
+              </div>
+            </div>
+
+            <div>
+              <label for="venueName" class="form-label">Venue Name</label>
+              <input type="text" id="venueName" class="form-input" placeholder="Sample Wedding Auditorium" value="Sample Wedding Auditorium" maxlength="60" />
+            </div>
+            <div>
+              <label for="venueAddress" class="form-label">Venue Address</label>
+              <input type="text" id="venueAddress" class="form-input" placeholder="Kochi, Kerala" value="Kochi, Kerala" maxlength="80" />
+            </div>
+
+            <div>
+              <label for="inviteMessage" class="form-label">Invitation Message</label>
+              <textarea id="inviteMessage" class="form-input" rows="2" placeholder="Join us as we celebrate our union..." maxlength="160">Join us as we celebrate our union in the presence of family and friends.</textarea>
+            </div>
+
+            <div class="grid sm:grid-cols-3 gap-4">
+              <div>
+                <label for="languageSelect" class="form-label">Language</label>
+                <select id="languageSelect" class="form-input">
+                  <option value="english">English</option>
+                  <option value="malayalam">Malayalam</option>
+                </select>
+              </div>
+              <div>
+                <label for="themeSelect" class="form-label">Background</label>
+                <select id="themeSelect" class="form-input">
+                  <option value="royal">Royal Gold</option>
+                  <option value="emerald">Emerald</option>
+                  <option value="blush">Blush Pink</option>
+                  <option value="maroon">Deep Maroon</option>
+                  <option value="ivory">Ivory White</option>
+                  <option value="rose">Rose Floral</option>
+                </select>
+              </div>
+              <div>
+                <label for="fontSelect" class="form-label">Font Style</label>
+                <select id="fontSelect" class="form-input">
+                  <option value="display">Cormorant Serif</option>
+                  <option value="script">Great Vibes Script</option>
+                  <option value="sans">Inter Sans</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2.5 pt-2">
+              <button type="button" id="resetBtn" class="btn-outline text-sm !py-2.5 !px-4">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset
+              </button>
+              <button type="button" id="saveDraftBtn" class="btn-outline text-sm !py-2.5 !px-4">
+                <i data-lucide="save" class="w-4 h-4"></i> Save Draft
+              </button>
+              <button type="button" id="previewBtn" class="btn-gold text-sm !py-2.5 !px-4 ml-auto">
+                <i data-lucide="eye" class="w-4 h-4"></i> Preview
+              </button>
+              <button type="button" id="downloadBtn" class="btn-outline text-sm !py-2.5 !px-4" title="Print-friendly view">
+                <i data-lucide="printer" class="w-4 h-4"></i> Print
+              </button>
+            </div>
+            <p class="text-[0.7rem] text-ink/40 pt-1">Demo information only. Nothing is published or sent — this is a preview builder.</p>
+          </form>
+        </div>
+
+        <!-- Live preview -->
+        <div class="lg:col-span-2 reveal-on-scroll" style="transition-delay:0.1s">
+          <div class="sticky top-24">
+            <div class="text-center mb-3">
+              <span class="inline-flex items-center gap-1.5 text-[0.65rem] font-semibold tracking-[0.15em] uppercase text-emerald">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse"></span> Live Preview
+              </span>
+            </div>
+            <div class="card-preview-wrap">
+              <div id="liveCard" class="live-card preview-theme-royal">
+                <div class="live-card-inner w-full">
+                  <div id="previewTopLabel" class="text-[0.55rem] tracking-[0.3em] uppercase opacity-60 mb-2">Together Forever</div>
+                  <div id="previewBride" class="font-script text-3xl sm:text-4xl leading-tight">Anjali</div>
+                  <div id="previewAmp" class="text-champagne-deep text-lg my-0.5 font-display">&amp;</div>
+                  <div id="previewGroom" class="font-script text-3xl sm:text-4xl leading-tight">Arjun</div>
+                  <div class="w-12 h-px bg-champagne-deep/50 mx-auto my-3"></div>
+                  <div id="previewDate" class="text-[0.65rem] tracking-[0.2em] uppercase opacity-80">20 December 2026</div>
+                  <div id="previewTime" class="text-[0.6rem] tracking-[0.15em] uppercase opacity-60 mt-1">11:30 AM</div>
+                  <div id="previewVenue" class="text-[0.6rem] tracking-[0.1em] uppercase opacity-60 mt-2 px-2 leading-relaxed">Sample Wedding Auditorium</div>
+                  <div id="previewMessage" class="text-[0.6rem] opacity-50 mt-2 px-3 leading-relaxed italic font-sans">Join us as we celebrate our union.</div>
+                </div>
+              </div>
+            </div>
+            <p class="text-center text-[0.65rem] text-ink/40 mt-3">Demo preview. Photos upload is a demo-only feature.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ENVELOPE EXPERIENCE ========== -->
+  <section id="experience" class="py-16 sm:py-24 bg-white/50 relative overflow-hidden">
+    <div id="particleContainer" class="absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div class="text-center max-w-2xl mx-auto mb-10 reveal-on-scroll">
+        <div class="divider-ornament mb-4">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 2c1.5 3 5 4.5 5 4.5s-3.5 1.5-5 4.5c-1.5-3-5-4.5-5-4.5s3.5-1.5 5-4.5z"/></svg>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-maroon-deep mb-3">The Invitation Experience</h2>
+        <p class="text-ink/60 text-sm sm:text-base">Guests receive a link. They tap. An envelope opens. Your wedding card unfolds with music, countdown, and directions.</p>
+      </div>
+
+      <div class="envelope-stage reveal-on-scroll">
+        <div id="envelope" class="envelope" tabindex="0" role="button" aria-label="Open the demo wedding invitation envelope">
+          <div class="envelope-body"></div>
+          <div class="envelope-letter">
+            <div class="text-center">
+              <div class="font-script text-2xl text-maroon">Anjali &amp; Arjun</div>
+              <div class="text-[0.6rem] tracking-[0.2em] uppercase text-maroon/50 mt-1">Open Invitation</div>
+            </div>
+          </div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-seal">A&amp;A</div>
+        </div>
+        <p class="text-sm text-ink/50 mt-6 flex items-center gap-2">
+          <i data-lucide="mouse-pointer-click" class="w-4 h-4"></i>
+          Click the envelope to open the demo invitation
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MALAYALAM CARD ========== -->
+  <section id="malayalam" class="py-16 sm:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div class="reveal-on-scroll">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald/10 border border-emerald/20 mb-4">
+            <i data-lucide="languages" class="w-3.5 h-3.5 text-emerald"></i>
+            <span class="text-[0.65rem] font-semibold tracking-[0.15em] uppercase text-emerald">Malayalam Template</span>
+          </div>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-maroon-deep mb-4">A Premium Malayalam Invitation</h2>
+          <p class="text-ink/60 text-sm sm:text-base mb-6 leading-relaxed">
+            Designed with authentic Kerala aesthetics and rendered in the beautiful Noto Sans Malayalam typeface.
+            Every character, every ligature, every detail — rendered correctly on every device.
+          </p>
+          <div class="bg-white/70 border border-champagne-deep/25 rounded-2xl p-5 sm:p-6 font-malayalam text-emerald leading-relaxed">
+            <p class="text-lg sm:text-xl font-semibold mb-2">സ്നേഹപൂർവ്വം ക്ഷണിക്കുന്നു</p>
+            <p class="text-sm opacity-80">ഞങ്ങളുടെ ജീവിതത്തിലെ ഏറ്റവും മനോഹരമായ ദിനത്തിൽ നിങ്ങളുടെ സാന്നിധ്യവും പ്രാർത്ഥനയും സ്നേഹവും പ്രതീക്ഷിക്കുന്നു.</p>
+            <div class="w-10 h-px bg-champagne-deep/40 my-4"></div>
+            <p class="text-xs tracking-wider uppercase opacity-60">അഞ്ജലി &amp; അർജുൻ · ഡിസംബർ 20, 2026</p>
+          </div>
+          <a href="#customizer" class="btn-gold mt-6 text-sm" onclick="document.getElementById('languageSelect').value='malayalam';updatePreview();">
+            <i data-lucide="pen-tool" class="w-4 h-4"></i> Customize in Malayalam
+          </a>
+        </div>
+
+        <!-- Malayalam demo card -->
+        <div class="reveal-on-scroll" style="transition-delay:0.1s">
+          <div class="relative max-w-sm mx-auto">
+            <div class="live-card preview-theme-emerald font-malayalam" style="aspect-ratio:3/4.2;">
+              <div class="live-card-inner w-full">
+                <div class="text-[0.55rem] tracking-[0.3em] uppercase opacity-60 mb-3">വിവാഹ ക്ഷണം</div>
+                <div class="font-script text-4xl leading-tight" style="color:#F5E6C8;">അഞ്ജലി</div>
+                <div class="text-champagne text-lg my-1 font-display">&amp;</div>
+                <div class="font-script text-4xl leading-tight" style="color:#F5E6C8;">അർജുൻ</div>
+                <div class="w-12 h-px bg-champagne/50 mx-auto my-4"></div>
+                <div class="text-[0.65rem] tracking-[0.2em] uppercase opacity-80">ഡിസംബർ 20, 2026</div>
+                <div class="text-[0.6rem] tracking-[0.15em] uppercase opacity-60 mt-1">രാവിലെ 11:30</div>
+                <div class="text-[0.6rem] tracking-[0.1em] uppercase opacity-60 mt-2 px-2 leading-relaxed">സാമ്പിൾ വെഡ്ഡിംഗ് ഓഡിറ്റോറിയം</div>
+                <div class="text-[0.55rem] opacity-50 mt-3 px-3 leading-relaxed">സ്നേഹപൂർവ്വം ക്ഷണിക്കുന്നു</div>
+              </div>
+            </div>
+            <div class="absolute -bottom-3 -right-3 px-3 py-1.5 bg-maroon-deep text-champagne text-[0.6rem] tracking-[0.15em] uppercase rounded-full font-semibold shadow-lg">
+              Demo Only
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RSVP ========== -->
+  <section id="rsvp" class="py-16 sm:py-24 bg-white/50">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8 reveal-on-scroll">
+        <div class="divider-ornament mb-4">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 2c1.5 3 5 4.5 5 4.5s-3.5 1.5-5 4.5c-1.5-3-5-4.5-5-4.5s3.5-1.5 5-4.5z"/></svg>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-maroon-deep mb-3">RSVP</h2>
+        <p class="text-ink/60 text-sm">Let us know you're coming. This is a demo form — nothing is sent to a server.</p>
+      </div>
+
+      <form id="rsvpForm" class="customizer-panel p-6 sm:p-8 space-y-4 reveal-on-scroll" novalidate>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label for="rsvpName" class="form-label">Full Name</label>
+            <input type="text" id="rsvpName" class="rsvp-input" placeholder="Your name" required />
+          </div>
+          <div>
+            <label for="rsvpEmail" class="form-label">Email</label>
+            <input type="email" id="rsvpEmail" class="rsvp-input" placeholder="you@example.com" required />
+          </div>
+        </div>
+        <div>
+          <label for="rsvpAttendance" class="form-label">Will you attend?</label>
+          <select id="rsvpAttendance" class="rsvp-input">
+            <option value="yes">Yes, I will be there</option>
+            <option value="no">Regretfully, I cannot attend</option>
+            <option value="maybe">Not sure yet</option>
+          </select>
+        </div>
+        <div>
+          <label for="rsvpGuests" class="form-label">Number of Guests</label>
+          <select id="rsvpGuests" class="rsvp-input">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5+">5+</option>
+          </select>
+        </div>
+        <div>
+          <label for="rsvpMessage" class="form-label">Message (optional)</label>
+          <textarea id="rsvpMessage" class="rsvp-input" rows="3" placeholder="Warm wishes for the couple..."></textarea>
+        </div>
+        <button type="submit" class="btn-gold w-full justify-center">
+          <i data-lucide="send" class="w-4 h-4"></i> Send RSVP
+        </button>
+        <p class="text-[0.7rem] text-ink/40 text-center">Demo form. Your response is not stored or sent.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========== CTA BANNER ========== -->
+  <section class="py-16 sm:py-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="relative rounded-3xl overflow-hidden p-8 sm:p-14 text-center reveal-on-scroll"
+           style="background: linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 60%, #7A2E2F 100%);">
+        <div class="absolute inset-0 opacity-10" aria-hidden="true">
+          <svg width="100%" height="100%" viewBox="0 0 400 200" preserveAspectRatio="none">
+            <path d="M0 100 Q100 0 200 100 T400 100" stroke="#E8D5B0" fill="none" stroke-width="1"/>
+            <path d="M0 150 Q100 50 200 150 T400 150" stroke="#E8D5B0" fill="none" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="relative">
+          <div class="font-script text-3xl sm:text-4xl text-champagne mb-3">Your love story deserves this</div>
+          <h2 class="font-display text-2xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">Create Your Digital Wedding Invitation</h2>
+          <p class="text-champagne/70 text-sm sm:text-base max-w-lg mx-auto mb-8">Choose a template, add your details, and share the magic on WhatsApp. Free to preview and design.</p>
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="#customizer" class="btn-gold justify-center">
+              <i data-lucide="sparkles" class="w-5 h-5"></i> Start Customizing
+            </a>
+            <a href="https://wa.me/919999999999" target="_blank" rel="noopener" class="btn-whatsapp justify-center">
+              <i data-lucide="message-circle" class="w-5 h-5"></i> Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="bg-maroon-deep text-champagne/80 pt-14 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-10 border-b border-champagne/10">
+        <div class="sm:col-span-2 lg:col-span-1">
+          <div class="flex items-center gap-2.5 mb-4">
+            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <circle cx="20" cy="20" r="19" stroke="#C9A96A" stroke-width="1.2"/>
+              <path d="M20 9c2.5 5.5 8 7.5 8 7.5s-5.5 2-8 7.5c-2.5-5.5-8-7.5-8-7.5s5.5-2 8-7.5z" fill="#C9A96A" opacity="0.9"/>
+              <circle cx="20" cy="20" r="2" fill="#FDFBF7"/>
+            </svg>
+            <div class="leading-tight">
+              <span class="font-display text-lg font-bold text-white">Wedding Moments</span>
+              <span class="block text-[0.55rem] tracking-[0.25em] uppercase text-champagne/60">Digital Invitations</span>
+            </div>
+          </div>
+          <p class="text-sm text-champagne/60 leading-relaxed max-w-xs">Handcrafted digital wedding invitations that blend Indian tradition with modern digital experiences.</p>
+        </div>
+
+        <div>
+          <h3 class="text-[0.7rem] tracking-[0.2em] uppercase text-champagne/50 font-semibold mb-4">Templates</h3>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#templates" class="hover:text-white transition">Kerala Traditional</a></li>
+            <li><a href="#templates" class="hover:text-white transition">Muslim Nikah</a></li>
+            <li><a href="#templates" class="hover:text-white transition">Hindu Wedding</a></li>
+            <li><a href="#templates" class="hover:text-white transition">Christian Wedding</a></li>
+            <li><a href="#templates" class="hover:text-white transition">Royal Gold</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-[0.7rem] tracking-[0.2em] uppercase text-champagne/50 font-semibold mb-4">Platform</h3>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#customizer" class="hover:text-white transition">Customizer</a></li>
+            <li><a href="#how-it-works" class="hover:text-white transition">How It Works</a></li>
+            <li><a href="#experience" class="hover:text-white transition">Invitation Experience</a></li>
+            <li><a href="#malayalam" class="hover:text-white transition">Malayalam Cards</a></li>
+            <li><a href="#rsvp" class="hover:text-white transition">RSVP</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-[0.7rem] tracking-[0.2em] uppercase text-champagne/50 font-semibold mb-4">Contact</h3>
+          <a href="https://wa.me/919999999999" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-sm hover:text-white transition mb-2">
+            <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp Us
+          </a>
+          <p class="text-sm text-champagne/60 mt-1">Demo contact: +91 99999 99999</p>
+          <p class="text-xs text-champagne/40 mt-4 leading-relaxed">This is a demonstration website. All invitation details shown are demo information only.</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 text-xs text-champagne/40">
+        <p>&copy; 2026 Wedding Moments. Demo project.</p>
+        <p class="flex items-center gap-1.5"><i data-lucide="heart" class="w-3.5 h-3.5 text-champagne/50"></i> Crafted for Indian weddings</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== FLOATING WHATSAPP ========== -->
+  <a href="https://wa.me/919999999999?text=Hi%2C%20I%27d%20like%20to%20know%20more%20about%20digital%20wedding%20invitations" target="_blank" rel="noopener" class="fab-whatsapp" aria-label="Chat with us on WhatsApp">
+    <i data-lucide="message-circle" class="w-6 h-6"></i>
+  </a>
+
+  <!-- ========== ENVELOPE INVITATION MODAL ========== -->
+  <div id="inviteModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Demo wedding invitation" aria-hidden="true">
+    <div class="modal-box p-0">
+      <div class="relative">
+        <button id="closeInviteModal" class="absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/80 backdrop-blur flex items-center justify-center hover:bg-white transition" aria-label="Close invitation">
+          <i data-lucide="x" class="w-4 h-4 text-maroon"></i>
+        </button>
+
+        <div id="inviteContent" class="bg-grain">
+          <!-- Invitation card -->
+          <div class="p-5 sm:p-10">
+            <div class="text-center mb-6">
+              <div class="font-script text-2xl sm:text-3xl text-champagne-deep">Together with our families</div>
+              <div class="divider-ornament my-3">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 2c1.5 3 5 4.5 5 4.5s-3.5 1.5-5 4.5c-1.5-3-5-4.5-5-4.5s3.5-1.5 5-4.5z"/></svg>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-6 items-center max-w-2xl mx-auto">
+              <div class="text-center sm:text-right">
+                <div class="font-script text-4xl sm:text-5xl text-maroon leading-tight">Anjali</div>
+                <div class="text-[0.6rem] tracking-[0.2em] uppercase text-champagne-deep mt-1">The Bride</div>
+              </div>
+              <div class="text-center">
+                <div class="text-3xl text-champagne-deep font-display">&amp;</div>
+              </div>
+              <div class="text-center sm:text-left sm:col-start-2">
+                <div class="font-script text-4xl sm:text-5xl text-maroon leading-tight">Arjun</div>
+                <div class="text-[0.6rem] tracking-[0.2em] uppercase text-champagne-deep mt-1">The Groom</div>
+              </div>
+            </div>
+
+            <p class="text-center text-sm text-ink/60 max-w-md mx-auto mt-6 italic">Join us as we celebrate our union in the presence of family and friends.</p>
+
+            <!-- Details -->
+            <div class="max-w-md mx-auto mt-8 grid grid-cols-3 gap-3 text-center">
+              <div class="p-3 rounded-xl bg-white/60 border border-champagne-deep/20">
+                <i data-lucide="calendar" class="w-4 h-4 mx-auto text-champagne-deep mb-1"></i>
+                <div class="text-[0.65rem] font-semibold text-maroon">20 Dec 2026</div>
+                <div class="text-[0.55rem] tracking-wider uppercase text-ink/40">Date</div>
+              </div>
+              <div class="p-3 rounded-xl bg-white/60 border border-champagne-deep/20">
+                <i data-lucide="clock" class="w-4 h-4 mx-auto text-champagne-deep mb-1"></i>
+                <div class="text-[0.65rem] font-semibold text-maroon">11:30 AM</div>
+                <div class="text-[0.55rem] tracking-wider uppercase text-ink/40">Time</div>
+              </div>
+              <div class="p-3 rounded-xl bg-white/60 border border-champagne-deep/20">
+                <i data-lucide="map-pin" class="w-4 h-4 mx-auto text-champagne-deep mb-1"></i>
+                <div class="text-[0.65rem] font-semibold text-maroon">Kerala</div>
+                <div class="text-[0.55rem] tracking-wider uppercase text-ink/40">Venue</div>
+              </div>
+            </div>
+            <div class="text-center mt-3">
+              <div class="text-[0.7rem] tracking-[0.1em] uppercase text-ink/50">Sample Wedding Auditorium</div>
+              <div class="text-[0.65rem] text-ink/40">Kochi, Kerala</div>
+            </div>
+
+            <!-- Countdown -->
+            <div class="mt-8">
+              <div class="text-center text-[0.6rem] tracking-[0.25em] uppercase text-champagne-deep font-semibold mb-3">Countdown to the Wedding</div>
+              <div id="countdown" class="flex justify-center gap-2 sm:gap-3 flex-wrap">
+                <div class="countdown-box"><div class="countdown-num" id="cdDays">000</div><div class="countdown-label">Days</div></div>
+                <div class="countdown-box"><div class="countdown-num" id="cdHours">00</div><div class="countdown-label">Hours</div></div>
+                <div class="countdown-box"><div class="countdown-num" id="cdMins">00</div><div class="countdown-label">Mins</div></div>
+                <div class="countdown-box"><div class="countdown-num" id="cdSecs">00</div><div class="countdown-label">Secs</div></div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-8 flex flex-wrap gap-2.5 justify-center">
+              <a href="https://maps.google.com/?q=Kochi,Kerala" target="_blank" rel="noopener" class="btn-outline text-sm !py-2.5 !px-4">
+                <i data-lucide="map-pin" class="w-4 h-4"></i> Get Directions
+              </a>
+              <button id="musicToggle" class="btn-outline text-sm !py-2.5 !px-4" aria-pressed="false">
+                <i data-lucide="music" class="w-4 h-4"></i> Play Music
+              </button>
+              <button id="shareWhatsapp" class="btn-whatsapp text-sm !py-2.5 !px-4">
+                <i data-lucide="share-2" class="w-4 h-4"></i> Share
+              </button>
+              <button id="copyLink" class="btn-outline text-sm !py-2.5 !px-4">
+                <i data-lucide="copy" class="w-4 h-4"></i> Copy Link
+              </button>
+            </div>
+            <p class="text-center text-[0.6rem] text-ink/40 mt-4">Demo invitation. All names, dates, and venues are sample information only.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    // ===== Lucide icons =====
+    lucide.createIcons();
+
+    // ===== Header scroll =====
+    const header = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // ===== Mobile nav =====
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+
+    function openMobileNav() {
+      mobileNav.classList.add('open');
+      mobileNavOverlay.classList.add('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileNav() {
+      mobileNav.classList.remove('open');
+      mobileNavOverlay.classList.remove('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    mobileMenuBtn.addEventListener('click', openMobileNav);
+    mobileMenuClose.addEventListener('click', closeMobileNav);
+    mobileNavOverlay.addEventListener('click', closeMobileNav);
+    mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileNav));
+
+    // ===== Scroll reveal =====
+    const revealEls = document.querySelectorAll('.reveal-on-scroll');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => io.observe(el));
+
+    // ===== Toast helper =====
+    let toastTimer;
+    const toastEl = document.getElementById('toast');
+    function showToast(msg) {
+      toastEl.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i> ' + msg;
+      lucide.createIcons();
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+    }
+
+    // ===== Customizer logic =====
+    const brideInput = document.getElementById('brideName');
+    const groomInput = document.getElementById('groomName');
+    const dateInput = document.getElementById('weddingDate');
+    const timeInput = document.getElementById('weddingTime');
+    const venueInput = document.getElementById('venueName');
+    const addressInput = document.getElementById('venueAddress');
+    const messageInput = document.getElementById('inviteMessage');
+    const languageSelect = document.getElementById('languageSelect');
+    const themeSelect = document.getElementById('themeSelect');
+    const fontSelect = document.getElementById('fontSelect');
+
+    const liveCard = document.getElementById('liveCard');
+    const previewBride = document.getElementById('previewBride');
+    const previewGroom = document.getElementById('previewGroom');
+    const previewDate = document.getElementById('previewDate');
+    const previewTime = document.getElementById('previewTime');
+    const previewVenue = document.getElementById('previewVenue');
+    const previewMessage = document.getElementById('previewMessage');
+
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    function formatDate(val) {
+      if (!val) return '20 December 2026';
+      const parts = val.split('-');
+      if (parts.length !== 3) return '20 December 2026';
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+      if (isNaN(y) || isNaN(m) || isNaN(d) || m < 0 || m > 11) return '20 December 2026';
+      return d + ' ' + MONTHS[m] + ' ' + y;
+    }
+
+    function formatTime(val) {
+      if (!val) return '11:30 AM';
+      const parts = val.split(':');
+      if (parts.length !== 2) return '11:30 AM';
+      let h = parseInt(parts[0], 10);
+      const min = parts[1];
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      if (h === 0) h = 12;
+      return h + ':' + min + ' ' + ampm;
+    }
+
+    function updatePreview() {
+      const bride = brideInput.value.trim() || 'Anjali';
+      const groom = groomInput.value.trim() || 'Arjun';
+      previewBride.textContent = bride;
+      previewGroom.textContent = groom;
+      previewDate.textContent = formatDate(dateInput.value);
+      previewTime.textContent = formatTime(timeInput.value);
+      previewVenue.textContent = venueInput.value.trim() || 'Sample Wedding Auditorium';
+      previewMessage.textContent = messageInput.value.trim() || 'Join us as we celebrate our union.';
+
+      // Theme classes
+      liveCard.className = 'live-card preview-theme-' + themeSelect.value;
+
+      // Font
+      const fontMap = {
+        display: { font: "'Cormorant Garamond', serif" },
+        script: { font: "'Great Vibes', cursive" },
+        sans: { font: "'Inter', sans-serif" },
+      };
+      const selectedFont = fontMap[fontSelect.value] || fontMap.display;
+      previewBride.style.fontFamily = selectedFont.font;
+      previewGroom.style.fontFamily = selectedFont.font;
+
+      // Language: swap Malayalam preview text
+      if (languageSelect.value === 'malayalam') {
+        previewBride.style.fontFamily = "'Noto Sans Malayalam', sans-serif";
+        previewGroom.style.fontFamily = "'Noto Sans Malayalam', sans-serif";
+        previewBride.textContent = 'അഞ്ജലി';
+        previewGroom.textContent = 'അർജുൻ';
+        previewDate.textContent = 'ഡിസംബർ 20, 2026';
+        previewTime.textContent = 'രാവിലെ 11:30';
+        previewVenue.textContent = venueInput.value.trim() || 'സാമ്പിൾ വെഡ്ഡിംഗ് ഓഡിറ്റോറിയം';
+        previewMessage.textContent = 'സ്നേഹപൂർവ്വം ക്ഷണിക്കുന്നു';
+      }
+
+      // Save draft
+      saveDraft();
+    }
+
+    function saveDraft() {
+      const data = {
+        bride: brideInput.value,
+        groom: groomInput.value,
+        date: dateInput.value,
+        time: timeInput.value,
+        venue: venueInput.value,
+        address: addressInput.value,
+        message: messageInput.value,
+        language: languageSelect.value,
+        theme: themeSelect.value,
+        font: fontSelect.value,
+      };
+      try { localStorage.setItem('wm_draft', JSON.stringify(data)); } catch (e) {}
+    }
+
+    function loadDraft() {
+      try {
+        const raw = localStorage.getItem('wm_draft');
+        if (!raw) return;
+        const d = JSON.parse(raw);
+        if (d.bride !== undefined) brideInput.value = d.bride;
+        if (d.groom !== undefined) groomInput.value = d.groom;
+        if (d.date !== undefined) dateInput.value = d.date;
+        if (d.time !== undefined) timeInput.value = d.time;
+        if (d.venue !== undefined) venueInput.value = d.venue;
+        if (d.address !== undefined) addressInput.value = d.address;
+        if (d.message !== undefined) messageInput.value = d.message;
+        if (d.language !== undefined) languageSelect.value = d.language;
+        if (d.theme !== undefined) themeSelect.value = d.theme;
+        if (d.font !== undefined) fontSelect.value = d.font;
+      } catch (e) {}
+    }
+
+    function resetCustomizer() {
+      brideInput.value = 'Anjali';
+      groomInput.value = 'Arjun';
+      dateInput.value = '2026-12-20';
+      timeInput.value = '11:30';
+      venueInput.value = 'Sample Wedding Auditorium';
+      addressInput.value = 'Kochi, Kerala';
+      messageInput.value = 'Join us as we celebrate our union in the presence of family and friends.';
+      languageSelect.value = 'english';
+      themeSelect.value = 'royal';
+      fontSelect.value = 'display';
+      updatePreview();
+      showToast('Customization reset to demo defaults');
+    }
+
+    loadDraft();
+    updatePreview();
+
+    // Attach listeners
+    [brideInput, groomInput, dateInput, timeInput, venueInput, addressInput, messageInput, languageSelect, themeSelect, fontSelect]
+      .forEach(el => el.addEventListener('input', updatePreview));
+
+    document.getElementById('resetBtn').addEventListener('click', resetCustomizer);
+    document.getElementById('saveDraftBtn').addEventListener('click', () => {
+      saveDraft();
+      showToast('Draft saved locally in your browser');
+    });
+    document.getElementById('previewBtn').addEventListener('click', () => {
+      openInviteModal();
+    });
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      showToast('Print dialog opening — save as PDF or print your card');
+      setTimeout(() => window.print(), 400);
+    });
+
+    // ===== Template selection =====
+    document.querySelectorAll('.template-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const tpl = card.getAttribute('data-template');
+        const map = {
+          kerala: { theme: 'royal', font: 'script' },
+          nikah: { theme: 'emerald', font: 'display' },
+          hindu: { theme: 'blush', font: 'display' },
+          christian: { theme: 'ivory', font: 'display' },
+          royal: { theme: 'maroon', font: 'display' },
+          minimal: { theme: 'ivory', font: 'sans' },
+          floral: { theme: 'rose', font: 'script' },
+          video: { theme: 'maroon', font: 'script' },
+        };
+        const cfg = map[tpl] || map.kerala;
+        themeSelect.value = cfg.theme;
+        fontSelect.value = cfg.font;
+        updatePreview();
+        document.getElementById('customizer').scrollIntoView({ behavior: 'smooth' });
+        showToast('Template applied — customize your details below');
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    });
+
+    // ===== Category cards =====
+    document.querySelectorAll('.category-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const cat = card.getAttribute('data-category');
+        document.getElementById('customizer').scrollIntoView({ behavior: 'smooth' });
+        if (cat === 'malayalam') {
+          languageSelect.value = 'malayalam';
+          themeSelect.value = 'emerald';
+          updatePreview();
+          showToast('Malayalam template selected');
+        } else {
+          languageSelect.value = 'english';
+          updatePreview();
+        }
+      });
+    });
+
+    // ===== Envelope experience =====
+    const envelope = document.getElementById('envelope');
+    let envelopeOpened = false;
+    envelope.addEventListener('click', () => {
+      if (envelopeOpened) return;
+      envelopeOpened = true;
+      envelope.classList.add('open');
+      setTimeout(() => {
+        openInviteModal();
+        envelopeOpened = false;
+        envelope.classList.remove('open');
+      }, 950);
+    });
+    envelope.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        envelope.click();
+      }
+    });
+
+    // ===== Modal =====
+    const inviteModal = document.getElementById('inviteModal');
+    let countdownInterval = null;
+
+    function openInviteModal() {
+      inviteModal.classList.add('active');
+      inviteModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      startCountdown();
+      spawnParticles();
+      document.getElementById('closeInviteModal').focus();
+    }
+    function closeInviteModal() {
+      inviteModal.classList.remove('active');
+      inviteModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      stopMusic();
+      if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+    }
+    document.getElementById('closeInviteModal').addEventListener('click', closeInviteModal);
+    inviteModal.addEventListener('click', (e) => {
+      if (e.target === inviteModal) closeInviteModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && inviteModal.classList.contains('active')) closeInviteModal();
+    });
+
+    // ===== Countdown =====
+    function startCountdown() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      const target = new Date('2026-12-20T11:30:00').getTime();
+      function tick() {
+        const now = Date.now();
+        const diff = target - now;
+        const dEl = document.getElementById('cdDays');
+        const hEl = document.getElementById('cdHours');
+        const mEl = document.getElementById('cdMins');
+        const sEl = document.getElementById('cdSecs');
+        if (!dEl) return;
+        if (diff <= 0) {
+          dEl.textContent = '000'; hEl.textContent = '00'; mEl.textContent = '00'; sEl.textContent = '00';
+          return;
+        }
+        const days = Math.floor(diff / 86400000);
+        const hours = Math.floor((diff % 86400000) / 3600000);
+        const mins = Math.floor((diff % 3600000) / 60000);
+        const secs = Math.floor((diff % 60000) / 1000);
+        dEl.textContent = String(days).padStart(3, '0');
+        hEl.textContent = String(hours).padStart(2, '0');
+        mEl.textContent = String(mins).padStart(2, '0');
+        sEl.textContent = String(secs).padStart(2, '0');
+      }
+      tick();
+      countdownInterval = setInterval(tick, 1000);
+    }
+
+    // ===== Gold particles =====
+    function spawnParticles() {
+      const container = document.getElementById('particleContainer');
+      if (!container) return;
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        p.className = 'gold-particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.top = (60 + Math.random() * 40) + '%';
+        p.style.animationDuration = (3 + Math.random() * 3) + 's';
+        p.style.animationDelay = (Math.random() * 2) + 's';
+        p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+        container.appendChild(p);
+        setTimeout(() => p.remove(), 7000);
+      }
+    }
+
+    // ===== Music toggle (demo tone) =====
+    let audioCtx = null;
+    let musicPlaying = false;
+    let musicNodes = [];
+
+    function playMusic() {
+      try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const notes = [261.63, 329.63, 392.00, 523.25];
+        notes.forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          gain.gain.value = 0.04;
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 4);
+          musicNodes.push(osc);
+        });
+        musicPlaying = true;
+      } catch (e) {}
+    }
+    function stopMusic() {
+      musicNodes.forEach(n => { try { n.stop(); } catch (e) {} });
+      musicNodes = [];
+      musicPlaying = false;
+      const btn = document.getElementById('musicToggle');
+      if (btn) {
+        btn.setAttribute('aria-pressed', 'false');
+        btn.innerHTML = '<i data-lucide="music" class="w-4 h-4"></i> Play Music';
+        lucide.createIcons();
+      }
+    }
+    document.getElementById('musicToggle').addEventListener('click', () => {
+      const btn = document.getElementById('musicToggle');
+      if (musicPlaying) {
+        stopMusic();
+        showToast('Music stopped');
+      } else {
+        playMusic();
+        btn.setAttribute('aria-pressed', 'true');
+        btn.innerHTML = '<i data-lucide="volume-x" class="w-4 h-4"></i> Stop Music';
+        lucide.createIcons();
+        showToast('Playing a soft demo tone');
+      }
+    });
+
+    // ===== Share & copy =====
+    document.getElementById('shareWhatsapp').addEventListener('click', () => {
+      const text = encodeURIComponent('You are invited to the wedding of Anjali & Arjun — 20 December 2026, Sample Wedding Auditorium, Kerala (Demo invitation)');
+      window.open('https://wa.me/?text=' + text, '_blank');
+      showToast('WhatsApp share opened — demo link');
+    });
+    document.getElementById('copyLink').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        showToast('Demo link copied to clipboard');
+      } catch (e) {
+        showToast('Copy not supported — use your browser address bar');
+      }
+    });
+
+    // ===== RSVP form =====
+    document.getElementById('rsvpForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('rsvpName');
+      const email = document.getElementById('rsvpEmail');
+      let valid = true;
+      [name, email].forEach(f => f.classList.remove('error'));
+      if (!name.value.trim()) { name.classList.add('error'); valid = false; }
+      if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        email.classList.add('error'); valid = false;
+      }
+      if (!valid) {
+        showToast('Please fill in your name and a valid email');
+        return;
+      }
+      showToast('RSVP received (demo only — nothing was sent)');
+      document.getElementById('rsvpForm').reset();
+    });
+
+    // ===== Date / time defaults =====
+    if (!dateInput.value) dateInput.value = '2026-12-20';
+    if (!timeInput.value) timeInput.value = '11:30';
+  </script>
+</body>
+</html>
