@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOIR Coffee — Your Daily Ritual, Reimagined</title>
+  <!-- Creative direction: Warm espresso brown, cream, muted copper. Editorial, cinematic, generous whitespace. Fonts: Instrument Serif + Inter. Light premium UI. -->
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --espresso: #2B1D14;
+      --espresso-light: #3E2C1F;
+      --cream: #F8F3EE;
+      --cream-dark: #EFE6DC;
+      --copper: #B87D5A;
+      --copper-light: #D4A574;
+      --copper-muted: #A87452;
+      --ink: #1A1410;
+      --muted: #6B5B4F;
+      --line: rgba(43, 29, 20, 0.1);
+      --shadow-sm: 0 2px 8px rgba(43, 29, 20, 0.06);
+      --shadow-md: 0 8px 30px rgba(43, 29, 20, 0.09);
+      --shadow-lg: 0 20px 60px rgba(43, 29, 20, 0.12);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    /* === Reset & Base === */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* === Typography === */
+    .font-display { font-family: var(--font-display); }
+    .text-espresso { color: var(--espresso); }
+    .text-copper { color: var(--copper); }
+    .text-muted { color: var(--muted); }
+    .text-cream { color: var(--cream); }
+
+    /* === Layout Utilities === */
+    .container-narrow { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    @media (min-width: 768px) { .container-narrow { padding: 0 48px; } }
+
+    /* === Focus States === */
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--cream), 0 0 0 5px var(--copper);
+      border-radius: 4px;
+    }
+
+    /* === Skip Link === */
+    .skip-link {
+      position: absolute; top: -100%; left: 16px; z-index: 1000;
+      background: var(--espresso); color: var(--cream);
+      padding: 12px 24px; border-radius: 0 0 8px 8px;
+      font-size: 0.875rem; font-weight: 600;
+      transition: top 0.2s;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* === Navigation === */
+    .nav-sticky {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      transition: background 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease;
+      padding: 20px 0;
+    }
+    .nav-sticky.scrolled {
+      background: rgba(248, 243, 238, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 var(--line);
+      padding: 12px 0;
+    }
+    .nav-link {
+      position: relative;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--espresso);
+      padding: 6px 0;
+      transition: color 0.2s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1.5px;
+      background: var(--copper);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:hover { color: var(--copper-muted); }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--espresso);
+      color: var(--cream);
+      padding: 12px 28px;
+      border-radius: 100px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      border: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(43, 29, 20, 0.15);
+    }
+    .btn-primary:hover {
+      background: var(--espresso-light);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(43, 29, 20, 0.25);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent;
+      color: var(--espresso);
+      padding: 12px 28px;
+      border-radius: 100px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1.5px solid var(--espresso);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-outline:hover {
+      background: var(--espresso);
+      color: var(--cream);
+      transform: translateY(-1px);
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: 200;
+      background: var(--cream);
+      display: flex; flex-direction: column;
+      padding: 24px;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mobile-menu.open { transform: translateX(0); }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--espresso);
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+      transition: color 0.2s, padding-left 0.3s;
+    }
+    .mobile-menu a:hover { color: var(--copper); padding-left: 8px; }
+
+    /* === Hero === */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 0 80px;
+      overflow: hidden;
+      background: var(--cream);
+    }
+    .hero-bg-shape {
+      position: absolute;
+      top: -20%; right: -10%;
+      width: 70vw; height: 70vw;
+      max-width: 900px; max-height: 900px;
+      background: radial-gradient(circle, rgba(184, 125, 90, 0.12) 0%, rgba(248, 243, 238, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-img-wrap {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      aspect-ratio: 4/5;
+    }
+    .hero-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .hero-img-wrap:hover img { transform: scale(1.03); }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--espresso);
+    }
+    .hero-headline .line { display: block; overflow: hidden; }
+    .hero-headline .line span {
+      display: block;
+      transform: translateY(110%);
+      transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .hero-headline.revealed .line span { transform: translateY(0); }
+    .hero-headline .line:nth-child(2) span { transition-delay: 0.12s; }
+    .hero-headline .line:nth-child(3) span { transition-delay: 0.24s; }
+
+    /* === Section Reveal === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* === Product Cards === */
+    .product-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s;
+      position: relative;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+    .product-card .img-wrap {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      background: var(--cream-dark);
+    }
+    .product-card .img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .product-card:hover .img-wrap img { transform: scale(1.05); }
+    .product-tag {
+      position: absolute; top: 16px; left: 16px;
+      background: rgba(248, 243, 238, 0.92);
+      backdrop-filter: blur(8px);
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--espresso);
+    }
+
+    /* === Editorial Section === */
+    .editorial-img {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .editorial-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .editorial-img:hover img { transform: scale(1.03); }
+
+    /* === Gallery === */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    }
+    .gallery-item {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      aspect-ratio: 1;
+      position: relative;
+    }
+    .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
+    @media (max-width: 768px) {
+      .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 1; }
+    }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .gallery-item:hover img { transform: scale(1.06); }
+    .gallery-item::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(43,29,20,0.3), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .gallery-item:hover::after { opacity: 1; }
+
+    /* === Café Experience === */
+    .cafe-card {
+      background: var(--espresso);
+      border-radius: var(--radius-xl);
+      padding: 48px;
+      color: var(--cream);
+      position: relative;
+      overflow: hidden;
+    }
+    @media (max-width: 768px) { .cafe-card { padding: 32px 24px; } }
+    .cafe-card::before {
+      content: '';
+      position: absolute; top: -50%; right: -20%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(184,125,90,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hours-row {
+      display: flex; justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(248, 243, 238, 0.12);
+      font-size: 0.9rem;
+    }
+    .hours-row:last-child { border-bottom: none; }
+
+    /* === Form === */
+    .form-input {
+      width: 100%;
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      font-size: 0.9rem;
+      color: var(--ink);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: var(--font-body);
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--copper);
+      box-shadow: 0 0 0 3px rgba(184, 125, 90, 0.12);
+    }
+    .form-input.error { border-color: #C0392B; }
+    .form-error {
+      color: #C0392B;
+      font-size: 0.75rem;
+      margin-top: 4px;
+      display: none;
+    }
+    .form-error.visible { display: block; }
+
+    /* === Footer === */
+    .footer-link {
+      color: rgba(248, 243, 238, 0.6);
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      display: inline-block;
+      padding: 2px 0;
+    }
+    .footer-link:hover { color: var(--copper-light); }
+
+    .social-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(248, 243, 238, 0.2);
+      color: var(--cream);
+      transition: all 0.3s;
+    }
+    .social-icon:hover {
+      background: var(--copper);
+      border-color: var(--copper);
+      transform: translateY(-2px);
+    }
+
+    /* === Success Message === */
+    .form-success {
+      display: none;
+      background: rgba(184, 125, 90, 0.1);
+      border: 1px solid var(--copper);
+      border-radius: var(--radius-sm);
+      padding: 24px;
+      text-align: center;
+      animation: fadeInUp 0.5s ease;
+    }
+    .form-success.visible { display: block; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === Divider === */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--line), transparent);
+    }
+
+    /* === Marquee === */
+    .marquee {
+      overflow: hidden;
+      white-space: nowrap;
+      display: flex;
+    }
+    .marquee-content {
+      display: flex;
+      animation: marquee 30s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Reduced Motion === */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .hero-headline .line span { transform: none; transition: none; }
+      .marquee-content { animation: none; }
+      * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <!-- ============================================
+       NAVIGATION
+       ============================================ -->
+  <nav id="navbar" class="nav-sticky" aria-label="Main navigation">
+    <div class="container-narrow flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2" aria-label="NOIR Coffee home">
+        <span class="font-display text-2xl tracking-tight text-espresso" style="letter-spacing: 0.08em;">NOIR</span>
+        <span class="text-xs font-medium tracking-widest uppercase text-copper hidden sm:inline" style="letter-spacing: 0.2em;">Coffee</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#collection" class="nav-link">Collection</a>
+        <a href="#philosophy" class="nav-link">Philosophy</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#cafe" class="nav-link">Café</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </div>
+
+      <!-- Desktop CTA -->
+      <div class="hidden md:flex items-center gap-4">
+        <a href="#collection" class="btn-primary">
+          Explore Our Coffee
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button id="mobile-toggle" class="md:hidden p-2 text-espresso" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-menu" class="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex items-center justify-between mb-8">
+      <span class="font-display text-2xl text-espresso" style="letter-spacing: 0.08em;">NOIR</span>
+      <button id="mobile-close" class="p-2 text-espresso" aria-label="Close menu">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+    </div>
+    <nav class="flex flex-col" aria-label="Mobile menu links">
+      <a href="#collection" class="mobile-link">Collection</a>
+      <a href="#philosophy" class="mobile-link">Philosophy</a>
+      <a href="#gallery" class="mobile-link">Gallery</a>
+      <a href="#cafe" class="mobile-link">Café</a>
+      <a href="#contact" class="mobile-link">Contact</a>
+    </nav>
+    <div class="mt-auto pt-8">
+      <a href="#collection" class="btn-primary w-full justify-center mobile-link" style="justify-content: center;">
+        Explore Our Coffee
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- ============================================
+       HERO
+       ============================================ -->
+  <header id="main" class="hero">
+    <div class="hero-bg-shape" aria-hidden="true"></div>
+    <div class="container-narrow relative z-10 w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <!-- Text -->
+        <div class="lg:col-span-6">
+          <p class="text-xs font-semibold tracking-widest uppercase text-copper mb-6" style="letter-spacing: 0.2em;">Specialty Coffee · Est. 2024</p>
+          <h1 class="hero-headline mb-8" id="hero-headline">
+            <span class="line"><span>Your Daily Ritual,</span></span>
+            <span class="line"><span>Reimagined.</span></span>
+          </h1>
+          <p class="text-muted text-base md:text-lg leading-relaxed max-w-md mb-10 reveal" style="max-width: 420px;">
+            Single-origin beans, slow-roasted in small batches. A coffee experience crafted for the senses — from the first aroma to the final sip.
+          </p>
+          <div class="flex flex-wrap gap-4 reveal reveal-delay-1">
+            <a href="#collection" class="btn-primary">
+              Shop the Collection
+              <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+            </a>
+            <a href="#philosophy" class="btn-outline">
+              Our Philosophy
+            </a>
+          </div>
+        </div>
+
+        <!-- Image -->
+        <div class="lg:col-span-6 reveal reveal-delay-2">
+          <div class="hero-img-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=1200&auto=format&fit=crop"
+              alt="Cinematic close-up of freshly brewed espresso in a ceramic cup with crema"
+              loading="eager"
+              width="800" height="1000"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================
+       MARQUEE STRIP
+       ============================================ -->
+  <div class="py-6 border-y" style="border-color: var(--line); background: var(--cream-dark);" aria-hidden="true">
+    <div class="marquee">
+      <div class="marquee-content">
+        <span class="font-display text-lg md:text-xl text-espresso-light px-8 flex items-center gap-8">
+          Single Origin <span class="text-copper">·</span> Small Batch <span class="text-copper">·</span> Slow Roasted <span class="text-copper">·</span> Ethically Sourced <span class="text-copper">·</span> Crafted with Intention <span class="text-copper">·</span>
+        </span>
+        <span class="font-display text-lg md:text-xl text-espresso-light px-8 flex items-center gap-8">
+          Single Origin <span class="text-copper">·</span> Small Batch <span class="text-copper">·</span> Slow Roasted <span class="text-copper">·</span> Ethically Sourced <span class="text-copper">·</span> Crafted with Intention <span class="text-copper">·</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       FEATURED COLLECTION
+       ============================================ -->
+  <section id="collection" class="py-20 md:py-32 bg-cream">
+    <div class="container-narrow">
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+        <div class="reveal">
+          <p class="text-xs font-semibold tracking-widest uppercase text-copper mb-4" style="letter-spacing: 0.2em;">The Collection</p>
+          <h2 class="font-display text-4xl md:text-5xl lg:text-6xl text-espresso leading-tight" style="letter-spacing: -0.02em;">
+            Three expressions<br>of origin.
+          </h2>
+        </div>
+        <p class="text-muted max-w-sm text-sm leading-relaxed reveal reveal-delay-1">
+          Each roast tells the story of its soil, its altitude, its hands. Choose the one that speaks to your ritual.
+        </p>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Product 1 -->
+        <article class="product-card reveal">
+          <div class="img-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800&auto=format&fit=crop"
+              alt="NOIR Ethiopian Yirgacheffe coffee beans in a ceramic bowl"
+              loading="lazy" width="800" height="600"
+            />
+          </div>
+          <div class="p-6 md:p-8">
+            <span class="product-tag">Light Roast</span>
+            <h3 class="font-display text-2xl text-espresso mb-2">Yirgacheffe</h3>
+            <p class="text-muted text-sm leading-relaxed mb-6" style="min-height: 3.5em;">
+              Jasmine, bergamot, and stone fruit. A delicate Ethiopian profile with a tea-like finish.
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="font-display text-xl text-espresso">$24</span>
+              <button class="btn-outline text-xs px-5 py-2.5 add-to-cart" data-product="Yirgacheffe" aria-label="Add Yirgacheffe to selection">
+                Select
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product 2 -->
+        <article class="product-card reveal reveal-delay-1">
+          <div class="img-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1587734195503-904fca47e0e9?q=80&w=800&auto=format&fit=crop"
+              alt="NOIR Colombian Huila coffee beans with rich dark tones"
+              loading="lazy" width="800" height="600"
+            />
+          </div>
+          <div class="p-6 md:p-8">
+            <span class="product-tag">Medium Roast</span>
+            <h3 class="font-display text-2xl text-espresso mb-2">Huila Reserve</h3>
+            <p class="text-muted text-sm leading-relaxed mb-6" style="min-height: 3.5em;">
+              Caramel, red apple, and cocoa. A balanced Colombian cup with a velvet body.
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="font-display text-xl text-espresso">$26</span>
+              <button class="btn-outline text-xs px-5 py-2.5 add-to-cart" data-product="Huila Reserve" aria-label="Add Huila Reserve to selection">
+                Select
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product 3 -->
+        <article class="product-card reveal reveal-delay-2">
+          <div class="img-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=800&auto=format&fit=crop"
+              alt="NOIR Sumatra Mandheling dark roasted coffee beans"
+              loading="lazy" width="800" height="600"
+            />
+          </div>
+          <div class="p-6 md:p-8">
+            <span class="product-tag">Dark Roast</span>
+            <h3 class="font-display text-2xl text-espresso mb-2">Mandheling</h3>
+            <p class="text-muted text-sm leading-relaxed mb-6" style="min-height: 3.5em;">
+              Cedar, dark chocolate, and molasses. A bold Sumatran roast with a syrupy depth.
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="font-display text-xl text-espresso">$28</span>
+              <button class="btn-outline text-xs px-5 py-2.5 add-to-cart" data-product="Mandheling" aria-label="Add Mandheling to selection">
+                Select
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Selection Toast -->
+      <div id="selection-toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 bg-espresso text-cream px-6 py-3 rounded-full text-sm font-medium shadow-xl opacity-0 pointer-events-none transition-all duration-300" role="status" aria-live="polite">
+        Added to your selection
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PHILOSOPHY / EDITORIAL
+       ============================================ -->
+  <section id="philosophy" class="py-20 md:py-32" style="background: var(--cream-dark);">
+    <div class="container-narrow">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Image -->
+        <div class="editorial-img reveal" style="aspect-ratio: 3/4;">
+          <img
+            src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1200&auto=format&fit=crop"
+            alt="Barista carefully pouring water over coffee grounds in a pour-over setup"
+            loading="lazy" width="800" height="1066"
+          />
+        </div>
+
+        <!-- Text -->
+        <div class="reveal reveal-delay-1">
+          <p class="text-xs font-semibold tracking-widest uppercase text-copper mb-6" style="letter-spacing: 0.2em;">Our Philosophy</p>
+          <h2 class="font-display text-4xl md:text-5xl lg:text-6xl text-espresso leading-tight mb-8" style="letter-spacing: -0.02em;">
+            Coffee is a<br>practice, not<br>a product.
+          </h2>
+          <div class="space-y-6 text-muted text-sm md:text-base leading-relaxed">
+            <p>
+              NOIR was born from a simple conviction: that the best cup of coffee is the one you slow down for. We work directly with growers who share our obsession with quality — not volume.
+            </p>
+            <p>
+              Every batch is roasted by hand, tasted by our team, and calibrated to reveal the character of its origin. No shortcuts, no blends that hide imperfections. Just the honest expression of the bean.
+            </p>
+            <p>
+              We believe in the ritual: the grind, the bloom, the pause before the first sip. That moment of stillness is what we're really in the business of creating.
+            </p>
+          </div>
+          <div class="mt-10">
+            <a href="#gallery" class="btn-primary">
+              See Our Process
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       GALLERY
+       ============================================ -->
+  <section id="gallery" class="py-20 md:py-32 bg-cream">
+    <div class="container-narrow">
+      <div class="mb-16 reveal">
+        <p class="text-xs font-semibold tracking-widest uppercase text-copper mb-4" style="letter-spacing: 0.2em;">The Gallery</p>
+        <h2 class="font-display text-4xl md:text-5xl lg:text-6xl text-espresso leading-tight" style="letter-spacing: -0.02em;">
+          Moments,<br>steeped in craft.
+        </h2>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="gallery-item reveal">
+          <img
+            src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"
+            alt="Latte art being poured into a ceramic cup"
+            loading="lazy" width="800" height="800"
+          />
+        </div>
+        <div class="gallery-item reveal reveal-delay-1">
+          <img
+            src="https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=800&auto=format&fit=crop"
+            alt="Coffee beans scattered on a wooden surface"
+            loading="lazy" width="600" height="600"
+          />
+        </div>
+        <div class="gallery-item reveal reveal-delay-2">
+          <img
+            src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=800&auto=format&fit=crop"
+            alt="Steam rising from a freshly brewed cup of black coffee"
+            loading="lazy" width="600" height="600"
+          />
+        </div>
+        <div class="gallery-item reveal reveal-delay-1">
+          <img
+            src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?q=80&w=800&auto=format&fit=crop"
+            alt="Coffee brewing equipment arranged on a counter"
+            loading="lazy" width="600" height="600"
+          />
+        </div>
+        <div class="gallery-item reveal reveal-delay-2">
+          <img
+            src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=800&auto=format&fit=crop"
+            alt="Close-up of coffee beans being ground"
+            loading="lazy" width="600" height="600"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CAFÉ EXPERIENCE
+       ============================================ -->
+  <section id="cafe" class="py-20 md:py-32" style="background: var(--cream-dark);">
+    <div class="container-narrow">
+      <div class="cafe-card reveal">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+          <!-- Left: Info -->
+          <div>
+            <p class="text-xs font-semibold tracking-widest uppercase mb-6" style="letter-spacing: 0.2em; color: var(--copper-light);">The Café</p>
+            <h2 class="font-display text-4xl md:text-5xl text-cream leading-tight mb-6" style="letter-spacing: -0.02em;">
+              A room for<br>slow mornings.
+            </h2>
+            <p class="text-sm leading-relaxed mb-8" style="color: rgba(248, 243, 238, 0.7);">
+              Our flagship tasting room in the Arts District is an invitation to stay a while. Warm light, vinyl records, and a bar built for conversation. No rush, no queues — just coffee at its own pace.
+            </p>
+
+            <!-- Fictional Location -->
+            <div class="flex items-start gap-3 mb-8">
+              <i data-lucide="map-pin" class="w-5 h-5 mt-0.5 flex-shrink-0" style="color: var(--copper-light);"></i>
+              <div>
+                <p class="text-sm font-medium text-cream">The Arts District</p>
+                <p class="text-sm" style="color: rgba(248, 243, 238, 0.6);">1247 S. Fictional Avenue, Los Angeles, CA 90013</p>
+                <p class="text-xs mt-1" style="color: rgba(248, 243, 238, 0.4);">Fictional location for demonstration purposes</p>
+              </div>
+            </div>
+
+            <a href="#contact" class="btn-outline inline-flex" style="border-color: var(--copper-light); color: var(--copper-light);">
+              Plan Your Visit
+              <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+
+          <!-- Right: Hours -->
+          <div>
+            <h3 class="text-sm font-semibold tracking-widest uppercase mb-6" style="letter-spacing: 0.15em; color: rgba(248, 243, 238, 0.5);">Opening Hours</h3>
+            <div class="hours-row">
+              <span style="color: rgba(248, 243, 238, 0.7);">Monday — Thursday</span>
+              <span class="text-cream font-medium">7:00 — 17:00</span>
+            </div>
+            <div class="hours-row">
+              <span style="color: rgba(248, 243, 238, 0.7);">Friday — Saturday</span>
+              <span class="text-cream font-medium">7:00 — 19:00</span>
+            </div>
+            <div class="hours-row">
+              <span style="color: rgba(248, 243, 238, 0.7);">Sunday</span>
+              <span class="text-cream font-medium">8:00 — 16:00</span>
+            </div>
+            <p class="text-xs mt-6" style="color: rgba(248, 243, 238, 0.4);">
+              Holiday hours may vary. This is a fictional café concept for a design demonstration.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CONTACT
+       ============================================ -->
+  <section id="contact" class="py-20 md:py-32 bg-cream">
+    <div class="container-narrow">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+        <!-- Left: Info -->
+        <div class="reveal">
+          <p class="text-xs font-semibold tracking-widest uppercase text-copper mb-6" style="letter-spacing: 0.2em;">Get in Touch</p>
+          <h2 class="font-display text-4xl md:text-5xl lg:text-6xl text-espresso leading-tight mb-8" style="letter-spacing: -0.02em;">
+            Let's talk<br>coffee.
+          </h2>
+          <p class="text-muted text-sm leading-relaxed mb-10 max-w-md">
+            Whether you're curious about wholesale, planning a visit, or just want to say hello — we read every message.
+          </p>
+
+          <!-- Contact Details -->
+          <div class="space-y-6">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--cream-dark);">
+                <i data-lucide="mail" class="w-4 h-4 text-espresso"></i>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-espresso">Email</p>
+                <p class="text-sm text-muted">hello@noircoffee.fictional</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--cream-dark);">
+                <i data-lucide="map-pin" class="w-4 h-4 text-espresso"></i>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-espresso">Café Address</p>
+                <p class="text-sm text-muted">1247 S. Fictional Avenue, Los Angeles</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--cream-dark);">
+                <i data-lucide="clock" class="w-4 h-4 text-espresso"></i>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-espresso">Response Time</p>
+                <p class="text-sm text-muted">Within 24–48 hours, Monday–Friday</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <div class="mt-10">
+            <p class="text-xs font-semibold tracking-widest uppercase text-muted mb-4" style="letter-spacing: 0.15em;">Follow Along</p>
+            <div class="flex gap-3">
+              <a href="#" class="social-icon" style="border-color: var(--line); color: var(--espresso);" aria-label="NOIR Coffee on Instagram">
+                <i data-lucide="instagram" class="w-4 h-4"></i>
+              </a>
+              <a href="#" class="social-icon" style="border-color: var(--line); color: var(--espresso);" aria-label="NOIR Coffee on Twitter">
+                <i data-lucide="twitter" class="w-4 h-4"></i>
+              </a>
+              <a href="#" class="social-icon" style="border-color: var(--line); color: var(--espresso);" aria-label="NOIR Coffee on Pinterest">
+                <i data-lucide="image" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="reveal reveal-delay-1">
+          <form id="contact-form" novalidate>
+            <div class="space-y-5">
+              <!-- Name -->
+              <div>
+                <label for="name" class="block text-sm font-medium text-espresso mb-2">Name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required aria-required="true" />
+                <p class="form-error" id="name-error">Please enter your name.</p>
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label for="email" class="block text-sm font-medium text-espresso mb-2">Email</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required aria-required="true" />
+                <p class="form-error" id="email-error">Please enter a valid email address.</p>
+              </div>
+
+              <!-- Subject -->
+              <div>
+                <label for="subject" class="block text-sm font-medium text-espresso mb-2">Subject</label>
+                <select id="subject" name="subject" class="form-input" required aria-required="true">
+                  <option value="">Select a topic</option>
+                  <option value="wholesale">Wholesale Inquiry</option>
+                  <option value="visit">Café Visit</option>
+                  <option value="collaboration">Collaboration</option>
+                  <option value="other">Other</option>
+                </select>
+                <p class="form-error" id="subject-error">Please select a subject.</p>
+              </div>
+
+              <!-- Message -->
+              <div>
+                <label for="message" class="block text-sm font-medium text-espresso mb-2">Message</label>
+                <textarea id="message" name="message" rows="5" class="form-input" placeholder="Tell us what's on your mind…" required aria-required="true"></textarea>
+                <p class="form-error" id="message-error">Please write a message.</p>
+              </div>
+
+              <!-- Submit -->
+              <button type="submit" class="btn-primary w-full justify-center" id="submit-btn">
+                Send Message
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </form>
+
+          <!-- Success Message -->
+          <div id="form-success" class="form-success" role="status" aria-live="polite">
+            <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style="background: var(--copper);">
+              <i data-lucide="check" class="w-6 h-6 text-white"></i>
+            </div>
+            <h3 class="font-display text-xl text-espresso mb-2">Thank you for reaching out.</h3>
+            <p class="text-sm text-muted">This is a fictional demonstration — no message was actually sent. We appreciate your interest in NOIR Coffee.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="pt-20 pb-10" style="background: var(--espresso);">
+    <div class="container-narrow">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+        <!-- Brand -->
+        <div class="md:col-span-5">
+          <span class="font-display text-3xl text-cream block mb-4" style="letter-spacing: 0.08em;">NOIR</span>
+          <p class="text-sm leading-relaxed max-w-xs" style="color: rgba(248, 243, 238, 0.6);">
+            Specialty coffee for the deliberate drinker. Roasted with intention, served with care.
+          </p>
+          <p class="text-xs mt-6" style="color: rgba(248, 243, 238, 0.35);">
+            NOIR Coffee is a fictional brand created for a website design demonstration. All imagery is used for illustrative purposes.
+          </p>
+        </div>
+
+        <!-- Explore -->
+        <div class="md:col-span-2">
+          <h4 class="text-xs font-semibold tracking-widest uppercase mb-5" style="letter-spacing: 0.15em; color: rgba(248, 243, 238, 0.4);">Explore</h4>
+          <ul class="space-y-3">
+            <li><a href="#collection" class="footer-link">Collection</a></li>
+            <li><a href="#philosophy" class="footer-link">Philosophy</a></li>
+            <li><a href="#gallery" class="footer-link">Gallery</a></li>
+            <li><a href="#cafe" class="footer-link">Café</a></li>
+          </ul>
+        </div>
+
+        <!-- Connect -->
+        <div class="md:col-span-2">
+          <h4 class="text-xs font-semibold tracking-widest uppercase mb-5" style="letter-spacing: 0.15em; color: rgba(248, 243, 238, 0.4);">Connect</h4>
+          <ul class="space-y-3">
+            <li><a href="#contact" class="footer-link">Contact</a></li>
+            <li><a href="#" class="footer-link">Wholesale</a></li>
+            <li><a href="#" class="footer-link">Instagram</a></li>
+            <li><a href="#" class="footer-link">Pinterest</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal -->
+        <div class="md:col-span-3">
+          <h4 class="text-xs font-semibold tracking-widest uppercase mb-5" style="letter-spacing: 0.15em; color: rgba(248, 243, 238, 0.4);">Legal</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="footer-link">Privacy Policy</a></li>
+            <li><a href="#" class="footer-link">Terms of Service</a></li>
+            <li><a href="#" class="footer-link">Accessibility</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4" style="border-top: 1px solid rgba(248, 243, 238, 0.1);">
+        <p class="text-xs" style="color: rgba(248, 243, 238, 0.35);">
+          &copy; 2024 NOIR Coffee. All rights reserved. Fictional concept for demonstration.
+        </p>
+        <p class="text-xs" style="color: rgba(248, 243, 238, 0.35);">
+          Designed with intention.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================
+       SCRIPTS
+       ============================================ -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // === Navbar Scroll ===
+    const navbar = document.getElementById('navbar');
+    const handleScroll = () => {
+      if (window.scrollY > 40) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    // === Mobile Menu ===
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileClose = document.getElementById('mobile-close');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      mobileToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      mobileClose.focus();
+    }
+
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      mobileToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      mobileToggle.focus();
+    }
+
+    mobileToggle.addEventListener('click', openMenu);
+    mobileClose.addEventListener('click', closeMenu);
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        closeMenu();
+      });
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        closeMenu();
+      }
+    });
+
+    // === Hero Headline Animation ===
+    const heroHeadline = document.getElementById('hero-headline');
+    setTimeout(() => {
+      heroHeadline.classList.add('revealed');
+    }, 300);
+
+    // === Scroll Reveal ===
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // === Product Selection Toast ===
+    const toast = document.getElementById('selection-toast');
+    let toastTimeout;
+
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const product = this.dataset.product;
+        toast.textContent = product + ' added to your selection';
+        toast.style.opacity = '1';
+        toast.style.pointerEvents = 'auto';
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.pointerEvents = 'none';
+        }, 2500);
+
+        // Button feedback
+        const originalText = this.textContent;
+        this.textContent = 'Selected';
+        this.style.background = 'var(--espresso)';
+        this.style.color = 'var(--cream)';
+        setTimeout(() => {
+          this.textContent = originalText;
+          this.style.background = '';
+          this.style.color = '';
+        }, 1500);
+      });
+    });
+
+    // === Contact Form Validation ===
+    const form = document.getElementById('contact-form');
+    const formSuccess = document.getElementById('form-success');
+    const submitBtn = document.getElementById('submit-btn');
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function showError(fieldId, show) {
+      const errorEl = document.getElementById(fieldId + '-error');
+      const inputEl = document.getElementById(fieldId);
+      if (show) {
+        errorEl.classList.add('visible');
+        if (inputEl) inputEl.classList.add('error');
+        if (inputEl) inputEl.setAttribute('aria-invalid', 'true');
+      } else {
+        errorEl.classList.remove('visible');
+        if (inputEl) inputEl.classList.remove('error');
+        if (inputEl) inputEl.removeAttribute('aria-invalid');
+      }
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      let isValid = true;
+
+      // Name
+      const name = document.getElementById('name').value.trim();
+      if (!name) {
+        showError('name', true);
+        isValid = false;
+      } else {
+        showError('name', false);
+      }
+
+      // Email
+      const email = document.getElementById('email').value.trim();
+      if (!email || !validateEmail(email)) {
+        showError('email', true);
+        isValid = false;
+      } else {
+        showError('email', false);
+      }
+
+      // Subject
+      const subject = document.getElementById('subject').value;
+      if (!subject) {
+        showError('subject', true);
+        isValid = false;
+      } else {
+        showError('subject', false);
+      }
+
+      // Message
+      const message = document.getElementById('message').value.trim();
+      if (!message) {
+        showError('message', true);
+        isValid = false;
+      } else {
+        showError('message', false);
+      }
+
+      if (!isValid) {
+        // Focus first error
+        const firstError = form.querySelector('.form-input.error');
+        if (firstError) firstError.focus();
+        return;
+      }
+
+      // Simulate submission
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Sending…';
+      lucide.createIcons();
+
+      setTimeout(() => {
+        form.style.display = 'none';
+        formSuccess.classList.add('visible');
+        formSuccess.focus();
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send Message <i data-lucide="send" class="w-4 h-4"></i>';
+        lucide.createIcons();
+      }, 900);
+    });
+
+    // Live clearing of errors
+    ['name', 'email', 'subject', 'message'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', () => {
+          showError(id, false);
+        });
+        el.addEventListener('change', () => {
+          showError(id, false);
+        });
+      }
+    });
+
+    // === Smooth scroll for anchor links (already handled by CSS, but ensure offset) ===
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const navHeight = navbar.offsetHeight;
+          const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 10;
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
