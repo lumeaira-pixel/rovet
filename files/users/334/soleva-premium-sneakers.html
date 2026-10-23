@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLEVA — Premium Sneakers</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#08090c;--card:#14161b;--white:#f7f7f8;--muted:#a4a7b0;--line:#ffffff20}
+body{background:var(--bg);color:var(--white);font-family:Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:12px;z-index:10;margin:12px auto;
+width:94%;max-width:1250px;display:flex;align-items:center;
+justify-content:space-between;gap:14px;padding:15px 22px;
+border:1px solid var(--line);border-radius:24px;
+background:#ffffff0d;backdrop-filter:blur(24px)}
+.logo{font-size:23px;font-weight:900;letter-spacing:3px}
+.links{display:flex;gap:22px;color:#ddd;font-size:13px}
+.actions{display:flex;gap:9px}
+.glass{border:1px solid var(--line);background:#ffffff12;
+color:white;border-radius:15px;padding:11px 15px}
+.hero{margin:22px auto;width:94%;max-width:1250px;min-height:440px;
+border-radius:30px;overflow:hidden;position:relative;
+display:flex;align-items:center;padding:clamp(25px,6vw,75px);
+background:linear-gradient(90deg,#08090cf5,#08090c70),
+url('https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1800&q=85') center/cover}
+.hero-content{max-width:560px}
+.eyebrow{color:#c3c6cf;letter-spacing:4px;font-size:11px}
+h1{font-size:clamp(42px,7vw,82px);line-height:.98;
+letter-spacing:-3px;margin:22px 0}
+.hero p{color:#d0d0d5;line-height:1.7;max-width:390px}
+.primary{background:white;color:#08090c;border:0;border-radius:14px;
+padding:15px 22px;font-weight:800;margin-top:24px}
+.primary:hover{transform:translateY(-2px);box-shadow:0 8px 35px #ffffff22}
+.section{max-width:1250px;width:94%;margin:75px auto}
+.section-head{display:flex;justify-content:space-between;align-items:center;
+gap:15px;margin-bottom:25px}
+h2{font-size:clamp(25px,4vw,36px);letter-spacing:-1px}
+.muted{color:var(--muted);font-size:13px;line-height:1.7}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:25px}
+.filter{border:1px solid var(--line);background:transparent;color:#ddd;
+padding:10px 15px;border-radius:30px}
+.filter.active,.filter:hover{background:white;color:black}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px}
+.product{min-width:0;background:var(--card);border:1px solid #ffffff0b;
+border-radius:22px;overflow:hidden;transition:.25s}
+.product:hover{transform:translateY(-5px);border-color:#ffffff35}
+.photo{height:210px;position:relative;background:#202127;overflow:hidden}
+.photo img{width:100%;height:100%;object-fit:cover;transition:.4s}
+.product:hover img{transform:scale(1.06)}
+.heart{position:absolute;top:12px;right:12px;border:1px solid #ffffff35;
+background:#101116bb;color:white;border-radius:50%;width:36px;height:36px}
+.info{padding:16px}
+.info h3{font-size:15px;margin:9px 0}
+.category{font-size:11px;color:var(--muted)}
+.price{font-weight:800;margin-top:12px}
+.info select{width:100%;margin-top:12px;background:#202127;color:white;
+border:1px solid var(--line);padding:10px;border-radius:10px}
+.add{width:100%;margin-top:10px;border:1px solid #ffffff40;
+background:#ffffff12;color:white;border-radius:11px;padding:12px}
+.add:hover{background:white;color:black}
+.search{width:100%;max-width:290px;background:#ffffff0c;
+border:1px solid var(--line);border-radius:12px;color:white;padding:12px}
+.promo{padding:35px;border:1px solid var(--line);border-radius:24px;
+background:linear-gradient(120deg,#1e2029,#0b0c10)}
+.promo p{margin-top:12px}
+footer{border-top:1px solid var(--line);padding:35px 5%;
+color:var(--muted);font-size:13px;line-height:2}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+background:#f5f5f5;color:#111;padding:13px 20px;border-radius:14px;
+z-index:30;display:none;box-shadow:0 8px 35px #0008}
+#cartPanel{position:fixed;right:0;top:0;height:100dvh;width:min(410px,100%);
+background:#111319;border-left:1px solid var(--line);z-index:25;
+padding:24px;transform:translateX(105%);transition:.3s;overflow:auto}
+#cartPanel.open{transform:translateX(0)}
+.cart-row{padding:16px 0;border-bottom:1px solid var(--line);
+display:flex;justify-content:space-between;gap:12px}
+.cart-row button{color:#ffb4b4;background:none;border:0;margin-top:8px}
+.cart-total{margin-top:22px;font-size:20px;font-weight:bold}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.links{gap:10px}.photo{height:190px}}
+@media(max-width:560px){
+ nav{padding:12px}.links{display:none}.logo{font-size:19px}
+ .hero{min-height:420px;background-position:60% center}
+ h1{letter-spacing:-2px}.section{margin:52px auto}
+ .photo{height:145px}.info{padding:11px}.info h3{font-size:13px}
+ .search{max-width:100%}.section-head{align-items:flex-start;flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+<nav>
+  <a class="logo" href="#">SOLEVA.</a>
+  <div class="links">
+    <a href="#home">Home</a><a href="#shop">Shop</a>
+    <a href="#new">New Arrivals</a><a href="#about">About</a>
+  </div>
+  <div class="actions">
+    <button class="glass" onclick="document.getElementById('search').focus()">⌕</button>
+    <button class="glass" onclick="showCart()">Bag (<span id="count">0</span>)</button>
+  </div>
+</nav>
+
+<header class="hero" id="home">
+  <div class="hero-content">
+    <div class="eyebrow">THE NEW STANDARD · 2026</div>
+    <h1>STEP INTO<br>THE FUTURE.</h1>
+    <p>Premium sneakers. Exceptional comfort.
+    A statement with every step.</p>
+    <a class="primary" style="display:inline-block" href="#shop">EXPLORE COLLECTION ↗</a>
+  </div>
+</header>
+
+<section class="section" id="shop">
+  <div class="section-head">
+    <div><p class="eyebrow">CURATED FOR YOU</p><h2 style="margin-top:10px">The Collection.</h2></div>
+    <input class="search" id="search" placeholder="Search sneakers..." oninput="render()">
+  </div>
+  <div class="filters">
+    <button class="filter active" onclick="setCategory('All',this)">All</button>
+    <button class="filter" onclick="setCategory('Running',this)">Running</button>
+    <button class="filter" onclick="setCategory('Lifestyle',this)">Lifestyle</button>
+    <button class="filter" onclick="setCategory('Streetwear',this)">Streetwear</button>
+  </div>
+  <div class="grid" id="products"></div>
+</section>
+
+<section class="section" id="new">
+  <div class="promo">
+    <p class="eyebrow">DESIGNED TO MOVE</p>
+    <h2 style="margin-top:14px">Your next favourite<br>starts here.</h2>
+    <p class="muted">Discover your style. Find your fit. Make every step count.</p>
+    <a class="primary" style="display:inline-block" href="#shop">SHOP ALL SNEAKERS ↗</a>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <p class="eyebrow">THE SOLEVA DIFFERENCE</p>
+  <h2 style="margin:12px 0">Less noise. More style.</h2>
+  <p class="muted">A clean, modern sneaker-shopping experience
+  built around comfort, design and everyday expression.</p>
+</section>
+
+<footer>
+  <div class="logo" style="color:white">SOLEVA.</div>
+  <p>Step into your own.</p>
+  <p>Contact · Shipping · Returns · Privacy</p>
+  <p>© 2026 SOLEVA. Demo storefront. Replace sample products and contact information before launch.</p>
+</footer>
+
+<aside id="cartPanel">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h2>Your Bag</h2><button class="glass" onclick="hideCart()">✕</button>
+  </div>
+  <div id="cartItems"></div>
+  <div class="cart-total" id="total">Total: ₹0</div>
+  <button class="primary" style="width:100%" onclick="checkout()">CONTINUE TO CHECKOUT</button>
+  <p class="muted" style="margin-top:12px">Demo only. No real payment is processed.</p>
+</aside>
+<div id="toast"></div>
+
+<script>
+const products = [
+ {id:1,name:"Velocity One",cat:"Running",price:3499,
+ img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=700&q=80"},
+ {id:2,name:"Urban Shadow",cat:"Streetwear",price:4299,
+ img:"https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=700&q=80"},
+ {id:3,name:"Cloud Runner",cat:"Running",price:2999,
+ img:"https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&w=700&q=80"},
+ {id:4,name:"Classic Motion",cat:"Lifestyle",price:3799,
+ img:"https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?auto=format&fit=crop&w=700&q=80"},
+ {id:5,name:"Mono Street",cat:"Streetwear",price:4599,
+ img:"https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=700&q=80"},
+ {id:6,name:"Everyday Flex",cat:"Lifestyle",price:2699,
+ img:"https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?auto=format&fit=crop&w=700&q=80"},
+ {id:7,name:"Sprint Pro",cat:"Running",price:3999,
+ img:"https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=700&q=80"},
+ {id:8,name:"Night Shift",cat:"Streetwear",price:4899,
+ img:"https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=700&q=80"}
+];
+let category="All",cart=[],wish=new Set();
+
+function render(){
+ const q=document.getElementById("search").value.toLowerCase();
+ const shown=products.filter(p=>(category==="All"||p.cat===category)&&
+ p.name.toLowerCase().includes(q));
+ document.getElementById("products").innerHTML=shown.map(p=>`
+ <article class="product">
+ <div class="photo"><img src="${p.img}" alt="${p.name}" loading="lazy">
+ <button class="heart" aria-label="Toggle wishlist" onclick="toggleWish(${p.id},this)">${wish.has(p.id)?"♥":"♡"}</button></div>
+ <div class="info"><div class="category">${p.cat.toUpperCase()}</div>
+ <h3>${p.name}</h3><div class="price">₹${p.price.toLocaleString("en-IN")}</div>
+ <select id="size-${p.id}" aria-label="Choose shoe size for ${p.name}">
+ <option value="">Choose size (UK)</option>
+ ${[6,7,8,9,10].map(s=>`<option value="${s}">UK ${s}</option>`).join("")}
+ </select>
+ <button class="add" onclick="addCart(${p.id})">ADD TO BAG +</button>
+ </div></article>`).join("")||'<p class="muted">No sneakers found.</p>';
+}
+function setCategory(c,btn){
+ category=c;
+ document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");render();
+}
+function toggleWish(id,btn){
+ if(wish.has(id))wish.delete(id);else wish.add(id);
+ btn.textContent=wish.has(id)?"♥":"♡";
+ notify(wish.has(id)?"Added to wishlist":"Removed from wishlist");
+}
+function addCart(id){
+ const size=document.getElementById("size-"+id).value;
+ if(!size){notify("Please choose your shoe size.");return}
+ const p=products.find(x=>x.id===id);
+ const existing=cart.find(x=>x.id===id&&x.size===size);
+ if(existing)existing.qty++;
+ else cart.push({...p,size,qty:1});
+ updateCart();notify(p.name+" added to your bag.");
+}
+function updateCart(){
+ document.getElementById("count").textContent=cart.reduce((s,p)=>s+p.qty,0);
+ document.getElementById("cartItems").innerHTML=cart.length?cart.map(p=>`
+ <div class="cart-row"><div><strong>${p.name}</strong>
+ <p class="muted">UK ${p.size} · ₹${p.price.toLocaleString("en-IN")} × ${p.qty}</p>
+ <button onclick="removeItem(${p.id},'${p.size}')">Remove</button></div>
+ <div><button class="glass" onclick="changeQty(${p.id},'${p.size}',-1)">−</button>
+ <button class="glass" onclick="changeQty(${p.id},'${p.size}',1)">+</button></div></div>`).join("")
+ :'<p class="muted" style="margin-top:25px">Your bag is empty. Find your next favourite pair.</p>';
+ const total=cart.reduce((s,p)=>s+p.price*p.qty,0);
+ document.getElementById("total").textContent="Total: ₹"+total.toLocaleString("en-IN");
+}
+function changeQty(id,size,delta){
+ const p=cart.find(x=>x.id===id&&x.size===size);
+ if(!p)return;
+ p.qty+=delta;if(p.qty<=0)cart=cart.filter(x=>x!==p);
+ updateCart();
+}
+function removeItem(id,size){cart=cart.filter(x=>!(x.id===id&&x.size===size));updateCart()}
+function showCart(){document.getElementById("cartPanel").classList.add("open")}
+function hideCart(){document.getElementById("cartPanel").classList.remove("open")}
+function notify(msg){
+ const t=document.getElementById("toast");t.textContent=msg;t.style.display="block";
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>t.style.display="none",2300);
+}
+function checkout(){
+ if(!cart.length){notify("Your bag is empty.");return}
+ notify("Demo checkout only. Payment is not connected.");
+}
+render();updateCart();
+</script>
+</body>
+</html>
