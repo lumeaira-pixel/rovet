@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mazali · Perinthalmanna · Premium Dining</title>
+  <!-- Tailwind + custom design system: warm cream, brass, deep charcoal, elegant serif/sans -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1e1b18;
+      --cream: #fdfaf5;
+      --cream-2: #f8f3ec;
+      --brass: #b78b4b;
+      --brass-light: #dbb87c;
+      --charcoal: #2e2a26;
+      --line: #e7dfd5;
+      --shadow-sm: 0 8px 20px rgba(0,0,0,0.02), 0 2px 8px rgba(0,0,0,0.02);
+      --shadow-md: 0 18px 35px -12px rgba(0,0,0,0.08), 0 8px 18px -8px rgba(0,0,0,0.04);
+      --shadow-lg: 0 35px 50px -20px rgba(0,0,0,0.12);
+      --radius-card: 2rem;
+      --radius-btn: 3rem;
+    }
+
+    /* === Base & Typography === */
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, .font-display {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .font-display-italic {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    /* === Custom Utility & Components === */
+    .container-custom {
+      max-width: 1280px;
+      margin-inline: auto;
+      padding-inline: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .container-custom { padding-inline: 2.5rem; }
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--ink);
+      color: white;
+      font-weight: 500;
+      padding: 0.85rem 2rem;
+      border-radius: var(--radius-btn);
+      transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid transparent;
+    }
+    .btn-primary:hover {
+      background: #342f2a;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 500;
+      padding: 0.85rem 2rem;
+      border-radius: var(--radius-btn);
+      border: 1px solid var(--line);
+      transition: all 0.25s ease;
+    }
+    .btn-outline:hover {
+      border-color: var(--brass);
+      background: rgba(183, 139, 75, 0.04);
+      transform: translateY(-2px);
+    }
+
+    .card-premium {
+      background: white;
+      border-radius: var(--radius-card);
+      border: 1px solid rgba(231, 223, 213, 0.5);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.35s cubic-bezier(0.2, 0, 0, 1);
+    }
+    .card-premium:hover {
+      box-shadow: var(--shadow-md);
+      border-color: rgba(183, 139, 75, 0.2);
+      transform: translateY(-4px);
+    }
+
+    /* === Micro Animations === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s cubic-bezier(0.2, 0, 0, 1), transform 0.9s cubic-bezier(0.2, 0, 0, 1);
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+
+    /* Hero text reveal */
+    .hero-title span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px);
+      animation: fadeUp 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    .hero-title span:nth-child(2) { animation-delay: 0.15s; }
+    .hero-title span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* marquee */
+    .marquee-track {
+      display: flex;
+      gap: 2rem;
+      animation: scrollX 40s linear infinite;
+      width: max-content;
+    }
+    @keyframes scrollX {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* focus states */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: 3px solid var(--brass);
+      outline-offset: 3px;
+      border-radius: 0.5rem;
+    }
+
+    /* form inputs */
+    .form-input {
+      width: 100%;
+      background: white;
+      border: 1px solid var(--line);
+      padding: 0.9rem 1.2rem;
+      border-radius: 1.5rem;
+      font-size: 0.95rem;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-input:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 4px rgba(183, 139, 75, 0.1);
+      outline: none;
+    }
+
+    /* rating stars */
+    .star-filled { color: var(--brass); fill: var(--brass); }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#fdfaf5',
+            brass: '#b78b4b',
+            ink: '#1e1b18',
+            line: '#e7dfd5'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Playfair Display', 'serif']
+          },
+        }
+      }
+    }
+  </script>
+</head>
+<body class="antialiased">
+
+  <!-- === Header / Nav === -->
+  <header class="sticky top-0 z-50 bg-cream/80 backdrop-blur-xl border-b border-line/60 transition-all duration-300">
+    <div class="container-custom flex items-center justify-between py-4 md:py-5">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 group" aria-label="Mazali home">
+        <span class="font-display text-2xl md:text-3xl font-bold tracking-tight text-ink">Mazali</span>
+        <span class="hidden sm:block text-[0.6rem] uppercase tracking-[0.3em] text-brass font-semibold border-l border-line pl-3 ml-1">Perinthalmanna</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-ink/70" aria-label="Primary">
+        <a href="#menu" class="hover:text-ink transition-colors">Menu</a>
+        <a href="#gallery" class="hover:text-ink transition-colors">Gallery</a>
+        <a href="#reviews" class="hover:text-ink transition-colors">Reviews</a>
+        <a href="#location" class="hover:text-ink transition-colors">Location</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#reserve" class="btn-primary text-sm px-5 py-2.5 hidden sm:inline-flex">
+          Reserve
+          <i data-lucide="arrow-right" size="16"></i>
+        </a>
+        <!-- Mobile menu button -->
+        <button id="mobileMenuBtn" class="md:hidden w-10 h-10 flex items-center justify-center rounded-full border border-line text-ink" aria-label="Open menu" aria-expanded="false">
+          <i data-lucide="menu" size="20"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu overlay -->
+    <div id="mobileMenu" class="md:hidden hidden fixed inset-0 top-[73px] bg-cream/95 backdrop-blur-xl z-40 border-t border-line px-6 py-8 flex flex-col gap-6 text-lg font-medium transition-all">
+      <a href="#menu" class="mobile-nav-link py-2 border-b border-line/50">Menu</a>
+      <a href="#gallery" class="mobile-nav-link py-2 border-b border-line/50">Gallery</a>
+      <a href="#reviews" class="mobile-nav-link py-2 border-b border-line/50">Reviews</a>
+      <a href="#location" class="mobile-nav-link py-2 border-b border-line/50">Location</a>
+      <a href="#reserve" class="mobile-nav-link btn-primary mt-4 text-center justify-center">Reserve a table</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- === Hero === -->
+    <section class="relative pt-10 md:pt-16 pb-16 md:pb-24 overflow-hidden">
+      <!-- Decorative gradient -->
+      <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-brass/10 via-transparent to-transparent rounded-full blur-3xl -z-10" aria-hidden="true"></div>
+      <div class="container-custom grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 bg-white border border-line px-4 py-1.5 rounded-full text-xs font-medium tracking-wide mb-6 shadow-sm">
+            <i data-lucide="star" size="14" class="star-filled"></i>
+            <span>4.4 · 1,015+ Zomato reviews</span>
+            <span class="w-px h-4 bg-line mx-1"></span>
+            <span class="text-ink/60">Perinthalmanna · Palakkad</span>
+          </div>
+          <h1 class="hero-title font-display text-[clamp(2.8rem,8vw,5.5rem)] leading-[1.05] tracking-tight text-ink mb-6">
+            <span class="block">Where every</span>
+            <span class="block text-brass">flavour</span>
+            <span class="block">tells a story.</span>
+          </h1>
+          <p class="text-ink/70 text-base md:text-lg max-w-md mb-8 leading-relaxed">
+            From the slow-cooked biryanis of Malabar to the sizzle of our wok-tossed Chinese — Mazali brings Perinthalmanna a dining experience that lingers.
+          </p>
+          <div class="flex flex-wrap items-center gap-4">
+            <a href="#reserve" class="btn-primary">
+              Reserve a table
+              <i data-lucide="calendar" size="16"></i>
+            </a>
+            <a href="#menu" class="btn-outline">
+              Explore menu
+              <i data-lucide="utensils" size="16"></i>
+            </a>
+          </div>
+        </div>
+        <!-- Hero image with soft parallax effect via CSS -->
+        <div class="relative">
+          <div class="absolute -inset-4 bg-gradient-to-tr from-brass/10 to-transparent rounded-[3rem] blur-2xl -z-10" aria-hidden="true"></div>
+          <img
+            src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?q=80&w=1000&auto=format&fit=crop"
+            alt="Mazali signature biryani and dining spread"
+            class="w-full h-auto rounded-[3rem] shadow-2xl object-cover aspect-[4/5] md:aspect-[5/6]"
+            loading="eager"
+            fetchpriority="high"
+          />
+          <!-- floating badge -->
+          <div class="absolute -bottom-5 -left-5 md:bottom-8 md:-left-8 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/40 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center text-brass">
+              <i data-lucide="flame" size="20"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-ink/50">Since 2016</p>
+              <p class="text-sm font-semibold text-ink">Malabar's finest</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === Social Proof / Ratings Bar === -->
+    <section class="border-y border-line/60 py-5 bg-white/50">
+      <div class="container-custom flex flex-wrap justify-center md:justify-between items-center gap-6 text-sm">
+        <div class="flex items-center gap-2">
+          <i data-lucide="award" size="18" class="text-brass"></i>
+          <span class="font-medium">4.1 ★ on Google · 12K+ reviews</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="zap" size="18" class="text-brass"></i>
+          <span class="font-medium">₹750 for two (approx.)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="map-pin" size="18" class="text-brass"></i>
+          <span class="font-medium">Perinthalmanna, Malappuram</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="phone" size="18" class="text-brass"></i>
+          <span class="font-medium">+91 95267 15566</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- === Menu Section === -->
+    <section id="menu" class="py-20 md:py-28">
+      <div class="container-custom">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-6 reveal">
+          <div>
+            <p class="text-brass font-medium tracking-[0.2em] uppercase text-xs mb-3">Taste the tradition</p>
+            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl text-ink leading-[1.1] max-w-xl">Crafted with<br>passion & spice</h2>
+          </div>
+          <a href="#" class="btn-outline text-sm self-start md:self-auto">
+            Download full menu
+            <i data-lucide="download" size="16"></i>
+          </a>
+        </div>
+
+        <!-- Menu Highlights Grid (3 cards) -->
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+          <!-- Card 1: Biryani -->
+          <article class="card-premium p-6 md:p-8 reveal stagger-1">
+            <div class="flex items-start justify-between mb-5">
+              <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center text-brass">
+                <i data-lucide="drumstick" size="24"></i>
+              </div>
+              <span class="text-xs font-semibold bg-brass/10 text-brass px-3 py-1 rounded-full">Signature</span>
+            </div>
+            <h3 class="font-display text-2xl mb-2">Malabar Chicken Biryani</h3>
+            <p class="text-ink/60 text-sm leading-relaxed mb-5">Slow-cooked Kaima rice, tender chicken, fried onions, and our secret spice blend. A Perinthalmanna favourite.</p>
+            <div class="flex items-center justify-between pt-2 border-t border-line/70">
+              <span class="font-semibold text-lg">₹280</span>
+              <span class="text-xs text-ink/40">Serves 1–2</span>
+            </div>
+          </article>
+
+          <!-- Card 2: Thali -->
+          <article class="card-premium p-6 md:p-8 reveal stagger-2">
+            <div class="flex items-start justify-between mb-5">
+              <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center text-brass">
+                <i data-lucide="utensils-crossed" size="24"></i>
+              </div>
+              <span class="text-xs font-semibold bg-brass/10 text-brass px-3 py-1 rounded-full">Best value</span>
+            </div>
+            <h3 class="font-display text-2xl mb-2">Mazali Sadya Thali</h3>
+            <p class="text-ink/60 text-sm leading-relaxed mb-5">12-item vegetarian feast — avial, thoran, pachadi, payasam, and more. A complete Kerala experience.</p>
+            <div class="flex items-center justify-between pt-2 border-t border-line/70">
+              <span class="font-semibold text-lg">₹320</span>
+              <span class="text-xs text-ink/40">Unlimited rice</span>
+            </div>
+          </article>
+
+          <!-- Card 3: Chinese / Noodles -->
+          <article class="card-premium p-6 md:p-8 reveal stagger-3">
+            <div class="flex items-start justify-between mb-5">
+              <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center text-brass">
+                <i data-lucide="flame" size="24"></i>
+              </div>
+              <span class="text-xs font-semibold bg-brass/10 text-brass px-3 py-1 rounded-full">Chef's pick</span>
+            </div>
+            <h3 class="font-display text-2xl mb-2">Chilli Garlic Noodles</h3>
+            <p class="text-ink/60 text-sm leading-relaxed mb-5">Wok-tossed hakka noodles with crunchy vegetables and a fiery chilli-garlic sauce. Comfort in a bowl.</p>
+            <div class="flex items-center justify-between pt-2 border-t border-line/70">
+              <span class="font-semibold text-lg">₹210</span>
+              <span class="text-xs text-ink/40">Veg / Chicken +₹40</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Small note -->
+        <p class="text-center text-ink/40 text-sm mt-10 reveal">Full menu includes South Indian, North Indian, Seafood, Chinese, and Biryani specialities.</p>
+      </div>
+    </section>
+
+    <!-- === Gallery === -->
+    <section id="gallery" class="py-20 md:py-28 bg-white/40 border-y border-line/40">
+      <div class="container-custom">
+        <div class="text-center max-w-2xl mx-auto mb-12 md:mb-16 reveal">
+          <p class="text-brass font-medium tracking-[0.2em] uppercase text-xs mb-3">A feast for the eyes</p>
+          <h2 class="font-display text-4xl md:text-5xl text-ink">Moments at Mazali</h2>
+          <p class="text-ink/60 mt-4">From sizzling plates to the warm ambience — step inside our world.</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+          <!-- Using placeholder food/dining images with consistent aspect ratios -->
+          <div class="reveal rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group">
+            <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=600&auto=format&fit=crop" alt="Mazali biryani close-up" class="w-full h-full object-cover aspect-square transition-transform duration-700 group-hover:scale-105" loading="lazy">
+          </div>
+          <div class="reveal stagger-1 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group">
+            <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600&auto=format&fit=crop" alt="Restaurant interior with warm lighting" class="w-full h-full object-cover aspect-square transition-transform duration-700 group-hover:scale-105" loading="lazy">
+          </div>
+          <div class="reveal stagger-2 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group">
+            <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?q=80&w=600&auto=format&fit=crop" alt="South Indian thali served on banana leaf" class="w-full h-full object-cover aspect-square transition-transform duration-700 group-hover:scale-105" loading="lazy">
+          </div>
+          <div class="reveal stagger-3 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group">
+            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop" alt="Elegant table setting at Mazali" class="w-full h-full object-cover aspect-square transition-transform duration-700 group-hover:scale-105" loading="lazy">
+          </div>
+          <div class="reveal stagger-1 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group">
+            <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=600&auto=format&fit=crop" alt="Falooda dessert" class="w-full h-full object-cover aspect-square transition-transform duration-700 group-hover:scale-105" loading="lazy">
+          </div>
+          <div class="reveal stagger-2 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group">
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=600&auto=format&fit=crop" alt="Chef plating a dish" class="w-full h-full object-cover aspect-square transition-transform duration-700 group-hover:scale-105" loading="lazy">
+          </div>
+          <div class="reveal stagger-3 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group">
+            <img src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?q=80&w=600&auto=format&fit=crop" alt="Fresh juice and mocktails" class="w-full h-full object-cover aspect-square transition-transform duration-700 group-hover:scale-105" loading="lazy">
+          </div>
+          <div class="reveal rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group">
+            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=600&auto=format&fit=crop" alt="Grilled seafood platter" class="w-full h-full object-cover aspect-square transition-transform duration-700 group-hover:scale-105" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === Reviews === -->
+    <section id="reviews" class="py-20 md:py-28">
+      <div class="container-custom">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 gap-6 reveal">
+          <div>
+            <p class="text-brass font-medium tracking-[0.2em] uppercase text-xs mb-3">What our guests say</p>
+            <h2 class="font-display text-4xl md:text-5xl text-ink leading-[1.1]">Loved by<br>Perinthalmanna</h2>
+          </div>
+          <div class="flex items-center gap-3 bg-white border border-line px-5 py-3 rounded-full shadow-sm">
+            <div class="flex -space-x-1">
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star-half" size="16" class="star-filled"></i>
+            </div>
+            <span class="text-sm font-medium">4.1 · 12K+ reviews</span>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+          <!-- Review 1 -->
+          <div class="card-premium p-6 md:p-8 reveal stagger-1">
+            <div class="flex items-center gap-1 mb-4">
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+            </div>
+            <p class="text-ink/80 text-sm leading-relaxed mb-6">“Authentic cuisine, great presentation. Mazali is excellent — worth every rupee. The biryani is easily the best in Malappuram.”</p>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-brass/10 flex items-center justify-center text-brass font-semibold text-sm">A</div>
+              <div>
+                <p class="text-sm font-semibold">Abdu Rahman</p>
+                <p class="text-xs text-ink/40">Google review · 2 weeks ago</p>
+              </div>
+            </div>
+          </div>
+          <!-- Review 2 -->
+          <div class="card-premium p-6 md:p-8 reveal stagger-2">
+            <div class="flex items-center gap-1 mb-4">
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+            </div>
+            <p class="text-ink/80 text-sm leading-relaxed mb-6">“The iftar special was incredible. So much variety, and the service was warm and quick. Mazali never disappoints.”</p>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-brass/10 flex items-center justify-center text-brass font-semibold text-sm">S</div>
+              <div>
+                <p class="text-sm font-semibold">Shahana P.</p>
+                <p class="text-xs text-ink/40">Zomato · 1 month ago</p>
+              </div>
+            </div>
+          </div>
+          <!-- Review 3 -->
+          <div class="card-premium p-6 md:p-8 reveal stagger-3">
+            <div class="flex items-center gap-1 mb-4">
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+              <i data-lucide="star" size="16" class="star-filled"></i>
+            </div>
+            <p class="text-ink/80 text-sm leading-relaxed mb-6">“We celebrated our anniversary here. The ambience is lovely, and the staff made us feel special. Must-try: falooda and chilli noodles.”</p>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-brass/10 flex items-center justify-center text-brass font-semibold text-sm">J</div>
+              <div>
+                <p class="text-sm font-semibold">Jaseela M.</p>
+                <p class="text-xs text-ink/40">Tripadvisor · 3 weeks ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === Location & Reservation (Split) === -->
+    <section id="location" class="py-20 md:py-28 bg-white/50 border-y border-line/40">
+      <div class="container-custom grid md:grid-cols-2 gap-12 md:gap-16 items-start">
+        <!-- Location info -->
+        <div class="reveal">
+          <p class="text-brass font-medium tracking-[0.2em] uppercase text-xs mb-3">Find us</p>
+          <h2 class="font-display text-4xl md:text-5xl text-ink leading-[1.1] mb-6">Right in the heart<br>of Perinthalmanna</h2>
+          <p class="text-ink/60 mb-8 max-w-md leading-relaxed">Easy to reach, easier to remember. Drop by for lunch, dinner, or a late-evening chai.</p>
+
+          <div class="space-y-5">
+            <div class="flex gap-4 items-start">
+              <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center text-brass shrink-0">
+                <i data-lucide="map-pin" size="18"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-ink">Mazali Restaurant</p>
+                <p class="text-sm text-ink/60">Near Calicut Road, Perinthalmanna,<br>Malappuram, Kerala 679322</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center text-brass shrink-0">
+                <i data-lucide="phone" size="18"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-ink">Reservations & takeaway</p>
+                <p class="text-sm text-ink/60">+91 95267 15566<br>+91 95268 15566</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <div class="w-10 h-10 rounded-full bg-brass/10 flex items-center justify-center text-brass shrink-0">
+                <i data-lucide="clock" size="18"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-ink">Opening hours</p>
+                <p class="text-sm text-ink/60">Mon – Sun · 11:00 AM – 11:00 PM</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simple map placeholder / static map style -->
+          <div class="mt-8 rounded-2xl overflow-hidden border border-line shadow-sm aspect-[16/9] bg-cream-2 flex items-center justify-center relative">
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-80"></div>
+            <div class="relative z-10 bg-white/90 backdrop-blur-sm px-6 py-4 rounded-xl shadow-md flex items-center gap-3">
+              <i data-lucide="map" size="20" class="text-brass"></i>
+              <span class="text-sm font-medium">Open in Google Maps</span>
+              <i data-lucide="arrow-up-right" size="16" class="text-ink/40"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reservation Form -->
+        <div id="reserve" class="reveal stagger-2">
+          <div class="card-premium p-6 md:p-10">
+            <h3 class="font-display text-3xl md:text-4xl text-ink mb-2">Reserve a table</h3>
+            <p class="text-ink/50 text-sm mb-8">We'll confirm your booking by phone within 10 minutes.</p>
+
+            <form id="reservationForm" class="space-y-5" novalidate>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="name" class="block text-sm font-medium mb-1.5 text-ink/70">Full name *</label>
+                  <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required>
+                  <p class="text-xs text-red-500 mt-1 hidden error-msg">Please enter your name</p>
+                </div>
+                <div>
+                  <label for="phone" class="block text-sm font-medium mb-1.5 text-ink/70">Phone *</label>
+                  <input type="tel" id="phone" name="phone" class="form-input" placeholder="+91 98765 43210" required>
+                  <p class="text-xs text-red-500 mt-1 hidden error-msg">Please enter a valid phone number</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="date" class="block text-sm font-medium mb-1.5 text-ink/70">Date *</label>
+                  <input type="date" id="date" name="date" class="form-input" required>
+                  <p class="text-xs text-red-500 mt-1 hidden error-msg">Please select a date</p>
+                </div>
+                <div>
+                  <label for="time" class="block text-sm font-medium mb-1.5 text-ink/70">Time *</label>
+                  <input type="time" id="time" name="time" class="form-input" required>
+                  <p class="text-xs text-red-500 mt-1 hidden error-msg">Please select a time</p>
+                </div>
+              </div>
+              <div>
+                <label for="guests" class="block text-sm font-medium mb-1.5 text-ink/70">Guests</label>
+                <select id="guests" name="guests" class="form-input">
+                  <option value="1">1 guest</option>
+                  <option value="2" selected>2 guests</option>
+                  <option value="3">3 guests</option>
+                  <option value="4">4 guests</option>
+                  <option value="5">5 guests</option>
+                  <option value="6+">6+ guests</option>
+                </select>
+              </div>
+              <div>
+                <label for="notes" class="block text-sm font-medium mb-1.5 text-ink/70">Special requests</label>
+                <textarea id="notes" name="notes" rows="2" class="form-input" placeholder="Allergies, celebrations, seating preference..."></textarea>
+              </div>
+              <button type="submit" class="btn-primary w-full justify-center mt-2">
+                Confirm reservation
+                <i data-lucide="calendar-check" size="16"></i>
+              </button>
+              <p id="formSuccess" class="text-sm text-green-700 bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-center hidden">
+                <i data-lucide="check-circle" size="16" class="inline mr-1"></i> Thank you! Your table request has been sent. We'll call you shortly to confirm.
+              </p>
+              <p id="formError" class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-center hidden">
+                <i data-lucide="alert-circle" size="16" class="inline mr-1"></i> Something went wrong. Please try again or call us.
+              </p>
+            </form>
+            <!-- TODO: connect form action to backend endpoint -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === CTA Banner === -->
+    <section class="py-20 md:py-28">
+      <div class="container-custom">
+        <div class="bg-ink text-cream rounded-[3rem] px-6 py-16 md:px-16 md:py-24 text-center relative overflow-hidden reveal">
+          <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--brass-light)_0%,_transparent_50%)] opacity-10" aria-hidden="true"></div>
+          <p class="text-brass-light font-medium tracking-[0.2em] uppercase text-xs mb-4">Come hungry, leave happy</p>
+          <h2 class="font-display text-4xl md:text-6xl lg:text-7xl text-cream leading-[1.05] max-w-3xl mx-auto mb-6">A table is waiting<br>just for you.</h2>
+          <p class="text-cream/60 max-w-md mx-auto mb-10">Reserve online or call us directly. Walk-ins welcome too.</p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a href="#reserve" class="bg-white text-ink font-medium px-8 py-3.5 rounded-full hover:bg-cream transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+              <i data-lucide="calendar" size="16"></i>
+              Reserve now
+            </a>
+            <a href="tel:+919526715566" class="border border-cream/30 text-cream font-medium px-8 py-3.5 rounded-full hover:bg-cream/10 transition-all flex items-center gap-2">
+              <i data-lucide="phone" size="16"></i>
+              +91 95267 15566
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- === Footer === -->
+  <footer class="border-t border-line/60 bg-white/50 pt-16 pb-8">
+    <div class="container-custom">
+      <div class="grid md:grid-cols-4 gap-10 md:gap-8 mb-16">
+        <!-- Brand -->
+        <div class="md:col-span-2">
+          <span class="font-display text-3xl font-bold tracking-tight text-ink">Mazali</span>
+          <p class="text-ink/50 text-sm mt-4 max-w-xs leading-relaxed">Perinthalmanna's home for soulful Malabar cuisine, sizzling Chinese, and warm hospitality. Since 2016.</p>
+          <div class="flex gap-3 mt-6">
+            <a href="#" class="w-9 h-9 rounded-full border border-line flex items-center justify-center text-ink/50 hover:text-brass hover:border-brass transition-colors" aria-label="Instagram">
+              <i data-lucide="instagram" size="16"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-line flex items-center justify-center text-ink/50 hover:text-brass hover:border-brass transition-colors" aria-label="Facebook">
+              <i data-lucide="facebook" size="16"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-line flex items-center justify-center text-ink/50 hover:text-brass hover:border-brass transition-colors" aria-label="Tripadvisor">
+              <i data-lucide="map-pin" size="16"></i>
+            </a>
+          </div>
+        </div>
+        <!-- Links -->
+        <div>
+          <h4 class="font-medium text-ink mb-4">Explore</h4>
+          <ul class="space-y-2.5 text-sm text-ink/60">
+            <li><a href="#menu" class="hover:text-brass transition-colors">Menu</a></li>
+            <li><a href="#gallery" class="hover:text-brass transition-colors">Gallery</a></li>
+            <li><a href="#reviews" class="hover:text-brass transition-colors">Reviews</a></li>
+            <li><a href="#location" class="hover:text-brass transition-colors">Location</a></li>
+          </ul>
+        </div>
+        <!-- Contact / Small form -->
+        <div>
+          <h4 class="font-medium text-ink mb-4">Quick enquiry</h4>
+          <form id="footerForm" class="space-y-2.5" novalidate>
+            <div class="relative">
+              <input type="email" id="footerEmail" class="form-input py-2.5 text-sm" placeholder="Your email" required>
+              <p class="text-xs text-red-500 mt-1 hidden error-msg">Enter a valid email</p>
+            </div>
+            <button type="submit" class="btn-primary w-full text-sm py-2.5 justify-center">
+              Get in touch
+              <i data-lucide="send" size="14"></i>
+            </button>
+            <p id="footerSuccess" class="text-xs text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-center hidden">Thanks! We'll respond soon.</p>
+            <!-- TODO: connect form action to backend endpoint -->
+          </form>
+        </div>
+      </div>
+      <div class="border-t border-line/60 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-ink/40">
+        <p>© 2025 Mazali Restaurant, Perinthalmanna. All rights reserved.</p>
+        <div class="flex gap-5">
+          <a href="#" class="hover:text-ink transition-colors">Privacy</a>
+          <a href="#" class="hover:text-ink transition-colors">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // === Mobile Menu ===
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      const isHidden = mobileMenu.classList.contains('hidden');
+      if (isHidden) {
+        mobileMenu.classList.remove('hidden');
+        mobileMenuBtn.setAttribute('aria-expanded', 'true');
+        mobileMenuBtn.innerHTML = '<i data-lucide="x" size="20"></i>';
+      } else {
+        mobileMenu.classList.add('hidden');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        mobileMenuBtn.innerHTML = '<i data-lucide="menu" size="20"></i>';
+      }
+      lucide.createIcons();
+    });
+
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        mobileMenuBtn.innerHTML = '<i data-lucide="menu" size="20"></i>';
+        lucide.createIcons();
+      });
+    });
+
+    // === Intersection Observer for reveal animations ===
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+
+    revealElements.forEach(el => observer.observe(el));
+
+    // === Form Validation & Submission (Reservation) ===
+    const reservationForm = document.getElementById('reservationForm');
+    const formSuccess = document.getElementById('formSuccess');
+    const formError = document.getElementById('formError');
+
+    reservationForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let isValid = true;
+
+      // Clear previous error states
+      document.querySelectorAll('#reservationForm .error-msg').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('#reservationForm .form-input').forEach(el => el.classList.remove('border-red-400'));
+
+      // Validate name
+      const name = document.getElementById('name');
+      if (!name.value.trim()) {
+        name.classList.add('border-red-400');
+        name.parentElement.querySelector('.error-msg')?.classList.remove('hidden');
+        isValid = false;
+      }
+
+      // Validate phone (basic)
+      const phone = document.getElementById('phone');
+      if (!phone.value.trim() || phone.value.length < 10) {
+        phone.classList.add('border-red-400');
+        phone.parentElement.querySelector('.error-msg')?.classList.remove('hidden');
+        isValid = false;
+      }
+
+      // Validate date
+      const date = document.getElementById('date');
+      if (!date.value) {
+        date.classList.add('border-red-400');
+        date.parentElement.querySelector('.error-msg')?.classList.remove('hidden');
+        isValid = false;
+      }
+
+      // Validate time
+      const time = document.getElementById('time');
+      if (!time.value) {
+        time.classList.add('border-red-400');
+        time.parentElement.querySelector('.error-msg')?.classList.remove('hidden');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Build form data
+      const formData = {
+        name: name.value.trim(),
+        phone: phone.value.trim(),
+        date: date.value,
+        time: time.value,
+        guests: document.getElementById('guests').value,
+        notes: document.getElementById('notes').value.trim()
+      };
+
+      // Simulate submission (static site) - replace with real fetch to /submit
+      // For demo, we'll just show success. In production, uncomment the fetch below.
+      /*
+      fetch('submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({
+          url: window.location.host,
+          table: 'reservations',
+          data: formData
+        })
+      })
+      .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+      .then(() => { ... success ... })
+      .catch(() => { ... error ... });
+      */
+
+      // Simulate success
+      formSuccess.classList.remove('hidden');
+      formError.classList.add('hidden');
+      reservationForm.reset();
+
+      setTimeout(() => {
+        formSuccess.classList.add('hidden');
+      }, 6000);
+    });
+
+    // === Footer quick enquiry form ===
+    const footerForm = document.getElementById('footerForm');
+    const footerSuccess = document.getElementById('footerSuccess');
+    const footerEmail = document.getElementById('footerEmail');
+
+    footerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let isValid = true;
+
+      footerEmail.classList.remove('border-red-400');
+      footerEmail.parentElement.querySelector('.error-msg')?.classList.add('hidden');
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!footerEmail.value.trim() || !emailRegex.test(footerEmail.value.trim())) {
+        footerEmail.classList.add('border-red-400');
+        footerEmail.parentElement.querySelector('.error-msg')?.classList.remove('hidden');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Simulate submission
+      footerSuccess.classList.remove('hidden');
+      footerForm.reset();
+      setTimeout(() => footerSuccess.classList.add('hidden'), 5000);
+    });
+
+    // === Smooth scroll for anchor links (optional, CSS handles it) ===
+    // Already set via CSS scroll-behavior: smooth on body
+
+    // === Update date input min to today ===
+    const dateInput = document.getElementById('date');
+    if (dateInput) {
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.setAttribute('min', today);
+    }
+  </script>
+</body>
+</html>
