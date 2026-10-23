@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AisleNova Digital Hypermarket — Walk‑through Virtual Store</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Instrument Serif + Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    /* === DESIGN TOKENS === */
+    :root {
+      --ink: #0F1A1A;
+      --cream: #FAFAF7;
+      --surface: #FFFFFF;
+      --forest: #1B3B2E;
+      --forest-light: #2A5A44;
+      --gold: #C9A84C;
+      --gold-soft: #E8D9A8;
+      --border: rgba(27, 59, 46, 0.12);
+      --shadow-sm: 0 2px 8px rgba(15, 26, 26, 0.04);
+      --shadow-md: 0 8px 24px rgba(15, 26, 26, 0.08);
+      --shadow-lg: 0 16px 48px rgba(15, 26, 26, 0.12);
+      --radius: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* === TYPOGRAPHY === */
+    h1, h2, h3, .serif { font-family: 'Instrument Serif', serif; font-weight: 400; }
+
+    /* === 3D CANVAS === */
+    #scene-container {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: #E8E6E0;
+    }
+    #scene-container canvas { display: block; }
+
+    /* === UI OVERLAY === */
+    .ui-layer {
+      position: relative;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .ui-layer > * { pointer-events: auto; }
+
+    /* === HEADER === */
+    .header-glass {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+    }
+    .header-glass.shrink { padding: 8px 24px; background: rgba(255,255,255,0.95); }
+    .logo-lockup { display: flex; align-items: center; gap: 10px; }
+    .logo-mark {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--forest);
+      display: grid; place-items: center;
+      color: var(--gold);
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+    }
+    .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); }
+    .logo-text span { color: var(--forest); }
+
+    /* === BUTTONS === */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--forest);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 14px; font-weight: 600;
+      border: none; cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-primary:hover { background: var(--forest-light); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: transparent;
+      color: var(--forest);
+      padding: 8px 14px;
+      border-radius: 100px;
+      font-size: 13px; font-weight: 500;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-ghost:hover { background: rgba(27,59,46,0.05); border-color: var(--forest); }
+    .btn-ghost:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+    /* === ENTRY SCREEN === */
+    #entry-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0F1A1A 0%, #1B3B2E 60%, #0F1A1A 100%);
+      color: white;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+    #entry-screen.hidden { opacity: 0; visibility: hidden; }
+    .entry-content { text-align: center; max-width: 700px; padding: 24px; }
+    .entry-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold-soft);
+      padding: 6px 16px; border-radius: 100px;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .entry-title {
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    .entry-title em { font-style: italic; color: var(--gold); }
+    .entry-sub {
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      line-height: 1.6;
+      color: rgba(255,255,255,0.7);
+      max-width: 480px;
+      margin: 0 auto 40px;
+    }
+    .entry-cta {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: var(--gold);
+      color: var(--ink);
+      padding: 16px 40px;
+      border-radius: 100px;
+      font-size: 16px; font-weight: 700;
+      border: none; cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: -0.01em;
+    }
+    .entry-cta:hover { background: var(--gold-soft); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(201,168,76,0.35); }
+    .entry-cta:active { transform: scale(0.97); }
+    .entry-cta:focus-visible { outline: 2px solid white; outline-offset: 4px; }
+
+    /* === MAIN STORE UI === */
+    #store-ui {
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.6s ease 0.3s, visibility 0.6s;
+    }
+    #store-ui.visible { opacity: 1; visibility: visible; }
+
+    /* === HUD === */
+    .hud-bottom {
+      position: fixed;
+      bottom: 20px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 110;
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(20px);
+      padding: 8px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      pointer-events: auto;
+    }
+    .hud-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 8px 14px;
+      border-radius: 100px;
+      border: none; background: transparent;
+      color: var(--ink);
+      font-size: 10px; font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .hud-btn:hover { background: rgba(27,59,46,0.06); }
+    .hud-btn:active { transform: scale(0.94); }
+    .hud-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .hud-btn svg { width: 20px; height: 20px; }
+    .hud-divider { width: 1px; height: 28px; background: var(--border); }
+
+    /* === CART BADGE === */
+    .cart-badge {
+      position: absolute; top: -4px; right: -4px;
+      background: var(--gold);
+      color: var(--ink);
+      font-size: 10px; font-weight: 700;
+      min-width: 18px; height: 18px;
+      border-radius: 100px;
+      display: grid; place-items: center;
+      padding: 0 4px;
+    }
+
+    /* === DEPARTMENT BAR === */
+    .dept-bar {
+      position: fixed;
+      top: 76px; left: 0; right: 0;
+      z-index: 90;
+      padding: 8px 24px;
+      display: flex; gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      pointer-events: auto;
+    }
+    .dept-bar::-webkit-scrollbar { display: none; }
+    .dept-chip {
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      font-size: 12px; font-weight: 500;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .dept-chip:hover { border-color: var(--forest); background: white; }
+    .dept-chip.active { background: var(--forest); color: white; border-color: var(--forest); }
+    .dept-chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .dept-chip svg { width: 14px; height: 14px; }
+
+    /* === PRODUCT PANEL === */
+    .product-panel {
+      position: fixed;
+      right: 0; top: 0; bottom: 0;
+      width: 100%; max-width: 420px;
+      background: var(--surface);
+      z-index: 150;
+      box-shadow: -16px 0 48px rgba(15,26,26,0.15);
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+    .product-panel.open { transform: translateX(0); }
+    .panel-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 36px; height: 36px;
+      border-radius: 100px;
+      background: rgba(0,0,0,0.06);
+      border: none; cursor: pointer;
+      display: grid; place-items: center;
+      z-index: 2;
+      transition: background 0.2s;
+    }
+    .panel-close:hover { background: rgba(0,0,0,0.12); }
+    .panel-close:focus-visible { outline: 2px solid var(--gold); }
+
+    .panel-image {
+      width: 100%; aspect-ratio: 1;
+      background: #F4F2EC;
+      display: grid; place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel-image img {
+      width: 75%; height: 75%;
+      object-fit: contain;
+      transition: transform 0.4s ease;
+    }
+    .panel-image:hover img { transform: scale(1.05); }
+
+    /* === SEARCH MODAL === */
+    .search-modal {
+      position: fixed; inset: 0;
+      z-index: 300;
+      background: rgba(15,26,26,0.5);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: flex-start; justify-content: center;
+      padding-top: 12vh;
+      opacity: 0; visibility: hidden;
+      transition: all 0.25s ease;
+    }
+    .search-modal.open { opacity: 1; visibility: visible; }
+    .search-box {
+      width: 100%; max-width: 560px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      transform: translateY(-12px);
+      transition: transform 0.25s ease;
+    }
+    .search-modal.open .search-box { transform: translateY(0); }
+    .search-input-wrap {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .search-input-wrap input {
+      flex: 1; border: none; outline: none;
+      font-size: 16px; font-family: inherit;
+      background: transparent;
+    }
+
+    /* === CART DRAWER === */
+    .cart-drawer {
+      position: fixed; right: 0; top: 0; bottom: 0;
+      width: 100%; max-width: 440px;
+      background: var(--surface);
+      z-index: 160;
+      box-shadow: -16px 0 48px rgba(15,26,26,0.15);
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex; flex-direction: column;
+    }
+    .cart-drawer.open { transform: translateX(0); }
+
+    /* === MINI MAP === */
+    .minimap {
+      position: fixed;
+      bottom: 100px; right: 20px;
+      z-index: 100;
+      width: 160px; height: 120px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: var(--shadow-md);
+      pointer-events: auto;
+    }
+    .minimap-grid {
+      width: 100%; height: 100%;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 3px;
+    }
+    .minimap-cell {
+      border-radius: 3px;
+      background: rgba(27,59,46,0.08);
+      transition: all 0.2s;
+    }
+    .minimap-cell.active { background: var(--forest); }
+    .minimap-label {
+      font-size: 9px; font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--forest);
+      margin-bottom: 4px;
+    }
+
+    /* === LOADING === */
+    #loader {
+      position: fixed; inset: 0; z-index: 400;
+      background: var(--forest);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+    #loader.hidden { opacity: 0; visibility: hidden; }
+    .loader-ring {
+      width: 48px; height: 48px;
+      border: 3px solid rgba(255,255,255,0.15);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-text { color: rgba(255,255,255,0.6); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* === TOAST === */
+    .toast {
+      position: fixed; bottom: 100px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--forest);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 500;
+      opacity: 0; visibility: hidden;
+      transition: all 0.3s ease;
+      display: flex; align-items: center; gap: 8px;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .header-glass { padding: 10px 16px; }
+      .logo-text { font-size: 15px; }
+      .logo-mark { width: 34px; height: 34px; font-size: 18px; }
+      .btn-primary { padding: 8px 16px; font-size: 13px; }
+      .dept-bar { top: 64px; padding: 6px 16px; }
+      .hud-bottom { bottom: 12px; padding: 6px; gap: 4px; }
+      .hud-btn { padding: 6px 10px; font-size: 9px; }
+      .hud-btn svg { width: 18px; height: 18px; }
+      .minimap { width: 120px; height: 90px; bottom: 84px; right: 12px; }
+      .product-panel { max-width: 100%; }
+      .cart-drawer { max-width: 100%; }
+      .toast { bottom: 88px; font-size: 12px; padding: 10px 18px; }
+    }
+
+    /* === A11Y === */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); border: 0;
+    }
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+    /* === SCROLLBAR === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(27,59,46,0.2); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <div class="loader-ring"></div>
+    <div class="loader-text">Entering AisleNova…</div>
+  </div>
+
+  <!-- ENTRY SCREEN -->
+  <div id="entry-screen">
+    <div class="entry-content">
+      <div class="entry-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Digital Hypermarket
+      </div>
+      <h1 class="entry-title">Step inside <em>AisleNova</em></h1>
+      <p class="entry-sub">Walk through our premium virtual supermarket. Explore fully stocked aisles, discover products on realistic shelves, and shop as if you were here in person.</p>
+      <button class="entry-cta" id="enter-btn">
+        Enter the Store
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- 3D CANVAS -->
+  <div id="scene-container"></div>
+
+  <!-- STORE UI -->
+  <div id="store-ui">
+
+    <!-- HEADER -->
+    <header class="header-glass" id="header">
+      <div class="logo-lockup">
+        <div class="logo-mark">A</div>
+        <div>
+          <div class="logo-text">Aisle<span>Nova</span></div>
+          <div style="font-size:10px;color:rgba(27,59,46,0.5);letter-spacing:0.08em;text-transform:uppercase;font-weight:500;">Digital Hypermarket</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="btn-ghost" id="search-open-btn" aria-label="Search products">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span style="display:none;" class="sm:inline">Search</span>
+        </button>
+        <button class="btn-primary" id="cart-open-btn" style="position:relative;" aria-label="Open cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+          <span>Cart</span>
+          <span class="cart-badge" id="cart-count">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- DEPARTMENT BAR -->
+    <div class="dept-bar" id="dept-bar" role="navigation" aria-label="Departments">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- MINI MAP -->
+    <div class="minimap" id="minimap" aria-label="Store map">
+      <div class="minimap-label">Store Map</div>
+      <div class="minimap-grid" id="minimap-grid">
+        <div class="minimap-cell active"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+        <div class="minimap-cell"></div>
+      </div>
+    </div>
+
+    <!-- HUD BOTTOM -->
+    <div class="hud-bottom" role="toolbar" aria-label="Store navigation controls">
+      <button class="hud-btn" id="mode-3d-btn" aria-label="3D Mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        <span>3D</span>
+      </button>
+      <div class="hud-divider"></div>
+      <button class="hud-btn" id="mode-2d-btn" aria-label="2D Aisle Mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <span>Aisles</span>
+      </button>
+      <div class="hud-divider"></div>
+      <button class="hud-btn" id="help-btn" aria-label="Help">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Help</span>
+      </button>
+    </div>
+
+    <!-- PRODUCT PANEL -->
+    <div class="product-panel" id="product-panel" role="dialog" aria-modal="true" aria-label="Product details">
+      <button class="panel-close" id="panel-close-btn" aria-label="Close product panel">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div id="panel-content"></div>
+    </div>
+
+    <!-- CART DRAWER -->
+    <div class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
+      <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <h2 style="font-size:24px;letter-spacing:-0.02em;">Your Cart</h2>
+          <p style="font-size:12px;color:rgba(27,59,46,0.5);margin-top:2px;" id="cart-item-count">0 items</p>
+        </div>
+        <button class="panel-close" id="cart-close-btn" style="position:static;" aria-label="Close cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:16px 24px;" id="cart-items"></div>
+      <div style="padding:20px 24px;border-top:1px solid var(--border);background:var(--cream);">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:14px;">
+          <span style="color:rgba(27,59,46,0.6);">Subtotal</span>
+          <span style="font-weight:600;" id="cart-subtotal">₹0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:16px;font-size:14px;">
+          <span style="color:rgba(27,59,46,0.6);">Delivery</span>
+          <span style="font-weight:600;color:var(--forest);">FREE</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:16px;font-size:18px;font-weight:700;">
+          <span>Total</span>
+          <span id="cart-total">₹0</span>
+        </div>
+        <button class="btn-primary" style="width:100%;justify-content:center;padding:14px;" id="checkout-btn">
+          Proceed to Checkout
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+        <p style="font-size:11px;color:rgba(27,59,46,0.4);text-align:center;margin-top:10px;">Demo checkout — no live payment configured</p>
+      </div>
+    </div>
+
+    <!-- SEARCH MODAL -->
+    <div class="search-modal" id="search-modal" role="dialog" aria-modal="true" aria-label="Search products">
+      <div class="search-box">
+        <div class="search-input-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(27,59,46,0.4)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="search-input" placeholder="Search for products, brands…" autocomplete="off" aria-label="Search products">
+          <button class="panel-close" id="search-close-btn" style="position:static;width:30px;height:30px;" aria-label="Close search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div id="search-results" style="max-height:50vh;overflow-y:auto;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toast-msg">Added to cart</span>
+  </div>
+
+  <script>
+    // ============================================================
+    // AISLENOVA DIGITAL HYPERMARKET — Interactive Virtual Store
+    // ============================================================
+
+    // === PRODUCT DATA ===
+    const DEPARTMENTS = [
+      { id: 'cleaning', name: 'Cleaning & Household', icon: 'spray-can', aisle: 1, color: '#3B82F6' },
+      { id: 'laundry', name: 'Laundry & Fabric Care', icon: 'shirt', aisle: 2, color: '#8B5CF6' },
+      { id: 'grocery', name: 'Groceries & Staples', icon: 'wheat', aisle: 3, color: '#F59E0B' },
+      { id: 'oils', name: 'Cooking Oils', icon: 'droplet', aisle: 4, color: '#EF4444' },
+      { id: 'snacks', name: 'Snacks & Biscuits', icon: 'cookie', aisle: 5, color: '#EC4899' },
+      { id: 'beverages', name: 'Beverages & Water', icon: 'cup-soda', aisle: 6, color: '#06B6D4' },
+      { id: 'personal', name: 'Personal Care', icon: 'heart', aisle: 7, color: '#F97316' },
+      { id: 'kitchen', name: 'Kitchen Essentials', icon: 'utensils', aisle: 8, color: '#10B981' },
+      { id: 'produce', name: 'Fruits & Vegetables', icon: 'apple', aisle: 9, color: '#84CC16' },
+      { id: 'offers', name: 'Special Offers', icon: 'tag', aisle: 10, color: '#C9A84C' },
+    ];
+
+    const PRODUCTS = [
+      // Cleaning
+      { id: 1, dept: 'cleaning', name: 'Harpic Power Plus Toilet Cleaner', brand: 'Harpic', qty: '1L', price: 199, mrp: 245, discount: 19, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&q=80', placeholder: true },
+      { id: 2, dept: 'cleaning', name: 'Lizol Citrus Floor Cleaner', brand: 'Lizol', qty: '2L', price: 349, mrp: 420, discount: 17, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&q=80', placeholder: true },
+      { id: 3, dept: 'cleaning', name: 'Colin Glass Cleaner Spray', brand: 'Colin', qty: '500ml', price: 149, mrp: 180, discount: 17, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&q=80', placeholder: true },
+      { id: 4, dept: 'cleaning', name: 'Dettol Disinfectant Spray', brand: 'Dettol', qty: '225ml', price: 249, mrp: 299, discount: 17, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&q=80', placeholder: true },
+      { id: 5, dept: 'cleaning', name: 'Vim Dishwash Gel Lemon', brand: 'Vim', qty: '750ml', price: 179, mrp: 210, discount: 15, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&q=80', placeholder: true },
+      { id: 6, dept: 'cleaning', name: 'Scotch-Brite Scrub Pad', brand: 'Scotch-Brite', qty: '3 pcs', price: 99, mrp: 120, discount: 18, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&q=80', placeholder: true },
+      // Laundry
+      { id: 7, dept: 'laundry', name: 'Surf Excel Easy Wash Detergent', brand: 'Surf Excel', qty: '1kg', price: 249, mrp: 310, discount: 20, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&q=80', placeholder: true },
+      { id: 8, dept: 'laundry', name: 'Ariel Matic Front Load', brand: 'Ariel', qty: '2kg', price: 599, mrp: 720, discount: 17, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&q=80', placeholder: true },
+      { id: 9, dept: 'laundry', name: 'Comfort Fabric Conditioner', brand: 'Comfort', qty: '1L', price: 299, mrp: 349, discount: 14, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&q=80', placeholder: true },
+      { id: 10, dept: 'laundry', name: 'Rin Advanced Detergent Bar', brand: 'Rin', qty: '5 x 250g', price: 125, mrp: 150, discount: 17, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&q=80', placeholder: true },
+      // Grocery
+      { id: 11, dept: 'grocery', name: 'India Gate Basmati Rice', brand: 'India Gate', qty: '5kg', price: 649, mrp: 780, discount: 17, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=80', placeholder: true },
+      { id: 12, dept: 'grocery', name: 'Aashirvaad Whole Wheat Atta', brand: 'Aashirvaad', qty: '5kg', price: 289, mrp: 340, discount: 15, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80', placeholder: true },
+      { id: 13, dept: 'grocery', name: 'Tata Sampann Toor Dal', brand: 'Tata Sampann', qty: '1kg', price: 189, mrp: 220, discount: 14, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=80', placeholder: true },
+      { id: 14, dept: 'grocery', name: 'Fortune Chana Dal', brand: 'Fortune', qty: '1kg', price: 129, mrp: 150, discount: 14, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80', placeholder: true },
+      // Oils
+      { id: 15, dept: 'oils', name: 'Fortune Sunlite Refined Sunflower Oil', brand: 'Fortune', qty: '1L', price: 149, mrp: 180, discount: 17, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80', placeholder: true },
+      { id: 16, dept: 'oils', name: 'Saffola Gold Blended Oil', brand: 'Saffola', qty: '1L', price: 189, mrp: 220, discount: 14, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80', placeholder: true },
+      { id: 17, dept: 'oils', name: 'Dhara Mustard Oil', brand: 'Dhara', qty: '1L', price: 169, mrp: 199, discount: 15, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80', placeholder: true },
+      // Snacks
+      { id: 18, dept: 'snacks', name: 'Britannia Good Day Cashew', brand: 'Britannia', qty: '200g', price: 49, mrp: 60, discount: 18, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400&q=80', placeholder: true },
+      { id: 19, dept: 'snacks', name: 'Lay\'s Classic Salted Chips', brand: 'Lay\'s', qty: '52g', price: 20, mrp: 25, discount: 20, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&q=80', placeholder: true },
+      { id: 20, dept: 'snacks', name: 'Parle-G Gold Biscuits', brand: 'Parle', qty: '1kg', price: 120, mrp: 140, discount: 14, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400&q=80', placeholder: true },
+      { id: 21, dept: 'snacks', name: 'Haldiram\'s Aloo Bhujia', brand: 'Haldiram\'s', qty: '400g', price: 89, mrp: 110, discount: 19, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&q=80', placeholder: true },
+      // Beverages
+      { id: 22, dept: 'beverages', name: 'Tata Tea Premium', brand: 'Tata Tea', qty: '500g', price: 249, mrp: 290, discount: 14, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80', placeholder: true },
+      { id: 23, dept: 'beverages', name: 'Nescafe Classic Instant Coffee', brand: 'Nescafe', qty: '100g', price: 299, mrp: 350, discount: 15, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80', placeholder: true },
+      { id: 24, dept: 'beverages', name: 'Bisleri Mineral Water', brand: 'Bisleri', qty: '2L', price: 20, mrp: 25, discount: 20, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=400&q=80', placeholder: true },
+      { id: 25, dept: 'beverages', name: 'Real Mixed Fruit Juice', brand: 'Real', qty: '1L', price: 110, mrp: 130, discount: 15, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=400&q=80', placeholder: true },
+      // Personal Care
+      { id: 26, dept: 'personal', name: 'Dove Beauty Bar', brand: 'Dove', qty: '100g x 3', price: 199, mrp: 240, discount: 17, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400&q=80', placeholder: true },
+      { id: 27, dept: 'personal', name: 'Colgate Strong Teeth Toothpaste', brand: 'Colgate', qty: '200g', price: 109, mrp: 130, discount: 16, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400&q=80', placeholder: true },
+      { id: 28, dept: 'personal', name: 'Head & Shoulders Shampoo', brand: 'Head & Shoulders', qty: '340ml', price: 349, mrp: 420, discount: 17, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400&q=80', placeholder: true },
+      { id: 29, dept: 'personal', name: 'Nivea Body Lotion', brand: 'Nivea', qty: '400ml', price: 399, mrp: 475, discount: 16, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400&q=80', placeholder: true },
+      // Kitchen
+      { id: 30, dept: 'kitchen', name: 'Prestige Non-Stick Tawa', brand: 'Prestige', qty: '28cm', price: 899, mrp: 1200, discount: 25, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80', placeholder: true },
+      { id: 31, dept: 'kitchen', name: 'Milton Thermosteel Flask', brand: 'Milton', qty: '1L', price: 649, mrp: 850, discount: 24, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80', placeholder: true },
+      { id: 32, dept: 'kitchen', name: 'Hawkins Pressure Cooker', brand: 'Hawkins', qty: '3L', price: 1499, mrp: 1899, discount: 21, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80', placeholder: true },
+      // Produce
+      { id: 33, dept: 'produce', name: 'Fresh Tomatoes', brand: 'Farm Fresh', qty: '1kg', price: 40, mrp: 60, discount: 33, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&q=80', placeholder: true },
+      { id: 34, dept: 'produce', name: 'Bananas Robusta', brand: 'Farm Fresh', qty: '1 dozen', price: 60, mrp: 80, discount: 25, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&q=80', placeholder: true },
+      { id: 35, dept: 'produce', name: 'Onions', brand: 'Farm Fresh', qty: '1kg', price: 35, mrp: 50, discount: 30, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&q=80', placeholder: true },
+      // Offers
+      { id: 36, dept: 'offers', name: 'Combo: Harpic + Lizol + Colin', brand: 'AisleNova Combo', qty: '3 items', price: 599, mrp: 845, discount: 29, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&q=80', placeholder: true },
+      { id: 37, dept: 'offers', name: 'Family Snack Pack — 5 Items', brand: 'AisleNova Combo', qty: '5 items', price: 199, mrp: 275, discount: 28, stock: 'In Stock', img: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&q=80', placeholder: true },
+    ];
+
+    // === STATE ===
+    let cart = [];
+    let activeDept = 'cleaning';
+    let is3DMode = true;
+    let scene, camera, renderer;
+    let productMeshes = [];
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    let cameraAngle = 0;
+    let cameraTargetAngle = 0;
+    let cameraHeight = 1.6;
+
+    // === UTILS ===
+    function formatINR(n) { return '₹' + n.toLocaleString('en-IN'); }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    // === CART LOGIC ===
+    function addToCart(productId, qty = 1) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+      const existing = cart.find(c => c.id === productId);
+      if (existing) { existing.qty += qty; }
+      else { cart.push({ ...product, qty }); }
+      updateCartUI();
+      showToast(`${product.name} added to cart`);
+    }
+
+    function removeFromCart(productId) {
+      cart = cart.filter(c => c.id !== productId);
+      updateCartUI();
+    }
+
+    function updateQty(productId, delta) {
+      const item = cart.find(c => c.id === productId);
+      if (!item) return;
+      item.qty = Math.max(1, item.qty + delta);
+      if (item.qty <= 0) removeFromCart(productId);
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const count = cart.reduce((s, c) => s + c.qty, 0);
+      const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+      document.getElementById('cart-count').textContent = count;
+      document.getElementById('cart-item-count').textContent = count + ' item' + (count !== 1 ? 's' : '');
+      document.getElementById('cart-subtotal').textContent = formatINR(subtotal);
+      document.getElementById('cart-total').textContent = formatINR(subtotal);
+
+      const container = document.getElementById('cart-items');
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:48px 0;color:rgba(27,59,46,0.4);">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;display:block;opacity:0.5;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+            <p style="font-size:14px;">Your cart is empty</p>
+            <p style="font-size:12px;margin-top:4px;">Explore the aisles to add products</p>
+          </div>`;
+        return;
+      }
+      container.innerHTML = cart.map(item => `
+        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+          <div style="width:60px;height:60px;border-radius:10px;background:#F4F2EC;overflow:hidden;flex-shrink:0;">
+            <img src="${item.img}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+          </div>
+          <div style="flex:1;min-width:0;">
+            <p style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</p>
+            <p style="font-size:11px;color:rgba(27,59,46,0.5);">${item.brand} · ${item.qty}</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <button onclick="updateQty(${item.id},-1)" style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:white;cursor:pointer;font-size:14px;display:grid;place-items:center;" aria-label="Decrease quantity">−</button>
+                <span style="font-size:13px;font-weight:600;min-width:16px;text-align:center;">${item.qty}</span>
+                <button onclick="updateQty(${item.id},1)" style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:white;cursor:pointer;font-size:14px;display:grid;place-items:center;" aria-label="Increase quantity">+</button>
+              </div>
+              <span style="font-size:13px;font-weight:700;">${formatINR(item.price * item.qty)}</span>
+            </div>
+          </div>
+          <button onclick="removeFromCart(${item.id})" style="color:rgba(27,59,46,0.3);background:none;border:none;cursor:pointer;padding:4px;" aria-label="Remove item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // === PRODUCT PANEL ===
+    function openProductPanel(productId) {
+      const p = PRODUCTS.find(pr => pr.id === productId);
+      if (!p) return;
+      const panel = document.getElementById('product-panel');
+      const content = document.getElementById('panel-content');
+      const related = PRODUCTS.filter(pr => pr.dept === p.dept && pr.id !== p.id).slice(0, 3);
+
+      content.innerHTML = `
+        <div class="panel-image">
+          <img src="${p.img}" alt="${p.name}" onerror="this.style.display='none';this.parentElement.innerHTML+='<span style=\\'font-size:14px;color:rgba(27,59,46,0.4);padding:20px;text-align:center;\\'>Product image placeholder</span>'">
+        </div>
+        <div style="padding:24px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--forest);background:rgba(27,59,46,0.07);padding:3px 8px;border-radius:4px;">${p.brand}</span>
+            ${p.discount ? `<span style="font-size:11px;font-weight:700;color:#DC2626;background:#FEE2E2;padding:3px 8px;border-radius:4px;">${p.discount}% OFF</span>` : ''}
+          </div>
+          <h2 style="font-size:22px;letter-spacing:-0.02em;margin-bottom:8px;">${p.name}</h2>
+          <p style="font-size:13px;color:rgba(27,59,46,0.5);margin-bottom:16px;">${p.qty} · ${p.stock}</p>
+          <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:20px;">
+            <span style="font-size:28px;font-weight:800;letter-spacing:-0.03em;">${formatINR(p.price)}</span>
+            ${p.mrp ? `<span style="font-size:16px;color:rgba(27,59,46,0.4);text-decoration:line-through;">${formatINR(p.mrp)}</span>` : ''}
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:20px;">
+            <button onclick="addToCart(${p.id},1);" class="btn-primary" style="flex:1;justify-content:center;padding:14px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+              Add to Cart
+            </button>
+          </div>
+          ${related.length ? `
+          <div>
+            <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:rgba(27,59,46,0.4);margin-bottom:12px;">You may also like</p>
+            <div style="display:flex;gap:10px;">
+              ${related.map(r => `
+                <div onclick="openProductPanel(${r.id})" style="flex:1;cursor:pointer;border-radius:10px;overflow:hidden;border:1px solid var(--border);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--forest)'" onmouseout="this.style.borderColor='var(--border)'">
+                  <div style="aspect-ratio:1;background:#F4F2EC;overflow:hidden;">
+                    <img src="${r.img}" alt="${r.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+                  </div>
+                  <div style="padding:8px;">
+                    <p style="font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name}</p>
+                    <p style="font-size:11px;color:var(--forest);font-weight:700;">${formatINR(r.price)}</p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>` : ''}
+        </div>
+      `;
+      panel.classList.add('open');
+      panel.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeProductPanel() {
+      document.getElementById('product-panel').classList.remove('open');
+      document.getElementById('product-panel').setAttribute('aria-hidden', 'true');
+    }
+
+    // === DEPARTMENT BAR ===
+    function renderDeptBar() {
+      const bar = document.getElementById('dept-bar');
+      bar.innerHTML = DEPARTMENTS.map(d => `
+        <button class="dept-chip ${d.id === activeDept ? 'active' : ''}" data-dept="${d.id}" role="tab" aria-selected="${d.id === activeDept}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          ${d.name}
+        </button>
+      `).join('');
+
+      bar.querySelectorAll('.dept-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          activeDept = chip.dataset.dept;
+          renderDeptBar();
+          highlightDept(activeDept);
+          if (is3DMode) moveCameraToDept(activeDept);
+        });
+      });
+    }
+
+    // === MINI MAP ===
+    function updateMinimap(deptId) {
+      const cells = document.querySelectorAll('.minimap-cell');
+      cells.forEach(c => c.classList.remove('active'));
+      const idx = DEPARTMENTS.findIndex(d => d.id === deptId);
+      if (idx >= 0 && cells[idx]) cells[idx].classList.add('active');
+    }
+
+    // === 3D SCENE ===
+    function init3D() {
+      const container = document.getElementById('scene-container');
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xE8E6E0);
+      scene.fog = new THREE.Fog(0xE8E6E0, 20, 50);
+
+      camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(0, 1.6, 12);
+      camera.lookAt(0, 1.6, 0);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      // Lighting
+      const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+      scene.add(ambient);
+
+      const mainLight = new THREE.DirectionalLight(0xfff8e7, 0.9);
+      mainLight.position.set(10, 15, 10);
+      mainLight.castShadow = true;
+      mainLight.shadow.mapSize.set(2048, 2048);
+      mainLight.shadow.camera.left = -20;
+      mainLight.shadow.camera.right = 20;
+      mainLight.shadow.camera.top = 20;
+      mainLight.shadow.camera.bottom = -20;
+      scene.add(mainLight);
+
+      const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
+      fillLight.position.set(-10, 8, -10);
+      scene.add(fillLight);
+
+      // Ceiling lights
+      for (let i = 0; i < 6; i++) {
+        const spot = new THREE.PointLight(0xfff8e7, 0.5, 25);
+        spot.position.set(0, 8, -i * 8 + 16);
+        scene.add(spot);
+      }
+
+      // Floor
+      const floorGeo = new THREE.PlaneGeometry(40, 60);
+      const floorMat = new THREE.MeshStandardMaterial({ color: 0xD4D0C8, roughness: 0.3, metalness: 0.1 });
+      const floor = new THREE.Mesh(floorGeo, floorMat);
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.z = -14;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      // Ceiling
+      const ceilGeo = new THREE.PlaneGeometry(40, 60);
+      const ceilMat = new THREE.MeshStandardMaterial({ color: 0xF0EDE6, roughness: 1 });
+      const ceiling = new THREE.Mesh(ceilGeo, ceilMat);
+      ceiling.rotation.x = Math.PI / 2;
+      ceiling.position.y = 4;
+      ceiling.position.z = -14;
+      scene.add(ceiling);
+
+      // Walls
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0xE8E4DC, roughness: 0.9 });
+      const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(60, 8), wallMat);
+      leftWall.rotation.y = Math.PI / 2;
+      leftWall.position.set(-19, 4, -14);
+      scene.add(leftWall);
+      const rightWall = new THREE.Mesh(new THREE.PlaneGeometry(60, 8), wallMat);
+      rightWall.rotation.y = -Math.PI / 2;
+      rightWall.position.set(19, 4, -14);
+      scene.add(rightWall);
+
+      // Entrance sign
+      const signMat = new THREE.MeshStandardMaterial({ color: 0x1B3B2E, roughness: 0.5 });
+      const signGeo = new THREE.BoxGeometry(10, 1.2, 0.3);
+      const sign = new THREE.Mesh(signGeo, signMat);
+      sign.position.set(0, 3.2, 10);
+      scene.add(sign);
+
+      // Sign text using canvas texture
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024; canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#1B3B2E';
+      ctx.fillRect(0, 0, 1024, 128);
+      ctx.fillStyle = '#C9A84C';
+      ctx.font = 'bold 52px "Instrument Serif", serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('AisleNova Digital Hypermarket', 512, 64);
+      const texture = new THREE.CanvasTexture(canvas);
+      const signFace = new THREE.Mesh(new THREE.PlaneGeometry(10, 1.2), new THREE.MeshBasicMaterial({ map: texture }));
+      signFace.position.set(0, 3.2, 10.16);
+      scene.add(signFace);
+
+      // Aisles — gondola shelving
+      const shelfMat = new THREE.MeshStandardMaterial({ color: 0xC4BEB4, roughness: 0.7, metalness: 0.2 });
+      const shelfHighlight = new THREE.MeshStandardMaterial({ color: 0x1B3B2E, roughness: 0.6 });
+
+      for (let aisle = 0; aisle < 10; aisle++) {
+        const zPos = 6 - aisle * 3.2;
+        const xOffset = (aisle % 2 === 0) ? -5 : 5;
+
+        // Gondola unit
+        const gondolaGroup = new THREE.Group();
+
+        // Back panel
+        const back = new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.8, 0.15), shelfMat);
+        back.position.set(0, 1.4, 0);
+        back.castShadow = true;
+        back.receiveShadow = true;
+        gondolaGroup.add(back);
+
+        // Shelves
+        for (let s = 0; s < 4; s++) {
+          const shelfY = 0.4 + s * 0.65;
+          const shelf = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.06, 0.6), shelfMat);
+          shelf.position.set(0, shelfY, 0.35);
+          shelf.castShadow = true;
+          shelf.receiveShadow = true;
+          gondolaGroup.add(shelf);
+
+          // Products on shelf
+          const numProducts = 5;
+          for (let p = 0; p < numProducts; p++) {
+            const pX = -1.5 + p * 0.75;
+            const pGeo = new THREE.BoxGeometry(0.45, 0.5, 0.35);
+            const pColor = new THREE.Color().setHSL((aisle * 0.1 + p * 0.05) % 1, 0.5, 0.55);
+            const pMat = new THREE.MeshStandardMaterial({ color: pColor, roughness: 0.6 });
+            const pMesh = new THREE.Mesh(pGeo, pMat);
+            pMesh.position.set(pX, shelfY + 0.28, 0.35);
+            pMesh.castShadow = true;
+            pMesh.userData = { aisle, shelf: s, product: p, deptId: DEPARTMENTS[aisle]?.id };
+            gondolaGroup.add(pMesh);
+            productMeshes.push(pMesh);
+          }
+        }
+
+        gondolaGroup.position.set(xOffset, 0, zPos);
+        scene.add(gondolaGroup);
+
+        // Aisle sign
+        if (aisle % 2 === 0) {
+          const signCanvas = document.createElement('canvas');
+          signCanvas.width = 512; signCanvas.height = 128;
+          const sCtx = signCanvas.getContext('2d');
+          sCtx.fillStyle = '#1B3B2E';
+          sCtx.fillRect(0, 0, 512, 128);
+          sCtx.fillStyle = '#FFFFFF';
+          sCtx.font = 'bold 36px Inter, sans-serif';
+          sCtx.textAlign = 'center';
+          sCtx.textBaseline = 'middle';
+          sCtx.fillText(`Aisle ${aisle + 1}`, 256, 50);
+          sCtx.font = '24px Inter, sans-serif';
+          sCtx.fillStyle = '#C9A84C';
+          sCtx.fillText(DEPARTMENTS[aisle]?.name || '', 256, 90);
+          const sTex = new THREE.CanvasTexture(signCanvas);
+          const aSign = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.6), new THREE.MeshBasicMaterial({ map: sTex, side: THREE.DoubleSide }));
+          aSign.position.set(xOffset, 3.0, zPos);
+          scene.add(aSign);
+        }
+      }
+
+      // Checkout counters
+      const counterMat = new THREE.MeshStandardMaterial({ color: 0xE8E4DC, roughness: 0.8 });
+      for (let c = 0; c < 3; c++) {
+        const counter = new THREE.Mesh(new THREE.BoxGeometry(3, 1, 1.2), counterMat);
+        counter.position.set(-8 + c * 4, 0.5, 10);
+        counter.castShadow = true;
+        scene.add(counter);
+      }
+
+      // Shopping carts
+      const cartMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.5, metalness: 0.6 });
+      for (let c = 0; c < 4; c++) {
+        const cartGroup = new THREE.Group();
+        const basket = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.5, 0.8), cartMat);
+        basket.position.y = 0.6;
+        basket.castShadow = true;
+        cartGroup.add(basket);
+        const handle = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.05, 0.05), cartMat);
+        handle.position.set(0, 0.85, -0.35);
+        cartGroup.add(handle);
+        cartGroup.position.set(7 + c * 1.5, 0, 8);
+        scene.add(cartGroup);
+      }
+
+      // Resize handler
+      window.addEventListener('resize', onResize);
+      animate();
+    }
+
+    function onResize() {
+      if (!camera || !renderer) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (!renderer || !scene || !camera) return;
+
+      // Smooth camera rotation
+      cameraAngle += (cameraTargetAngle - cameraAngle) * 0.08;
+
+      if (is3DMode) {
+        // Subtle idle movement
+        const t = Date.now() * 0.0002;
+        camera.position.x = Math.sin(cameraAngle) * 0.3;
+        camera.position.y = cameraHeight + Math.sin(t * 2) * 0.01;
+        camera.rotation.y = cameraAngle;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    function moveCameraToDept(deptId) {
+      const idx = DEPARTMENTS.findIndex(d => d.id === deptId);
+      if (idx < 0) return;
+      const zPos = 6 - idx * 3.2;
+      cameraTargetAngle = (idx % 2 === 0) ? 0.15 : -0.15;
+      camera.position.z = zPos + 4;
+      camera.position.x = 0;
+      updateMinimap(deptId);
+    }
+
+    function highlightDept(deptId) {
+      const idx = DEPARTMENTS.findIndex(d => d.id === deptId);
+      if (idx < 0) return;
+      const zPos = 6 - idx * 3.2;
+      cameraTargetAngle = (idx % 2 === 0) ? 0.1 : -0.1;
+      camera.position.z = zPos + 3.5;
+      camera.position.x = 0;
+      updateMinimap(deptId);
+    }
+
+    // === 2D MODE ===
+    function toggleMode(mode) {
+      is3DMode = mode === '3d';
+      document.getElementById('scene-container').style.opacity = is3DMode ? '1' : '0.15';
+      document.getElementById('mode-3d-btn').style.background = is3DMode ? 'rgba(27,59,46,0.08)' : 'transparent';
+      document.getElementById('mode-2d-btn').style.background = !is3DMode ? 'rgba(27,59,46,0.08)' : 'transparent';
+      showToast(is3DMode ? '3D Walk-through Mode' : '2D Aisle Browsing Mode');
+    }
+
+    // === SEARCH ===
+    function openSearch() {
+      document.getElementById('search-modal').classList.add('open');
+      setTimeout(() => document.getElementById('search-input').focus(), 100);
+    }
+    function closeSearch() {
+      document.getElementById('search-modal').classList.remove('open');
+      document.getElementById('search-input').value = '';
+      document.getElementById('search-results').innerHTML = '';
+    }
+
+    function handleSearch(query) {
+      const results = document.getElementById('search-results');
+      if (!query.trim()) { results.innerHTML = ''; return; }
+      const q = query.toLowerCase();
+      const matches = PRODUCTS.filter(p =>
+        p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q) || p.dept.toLowerCase().includes(q)
+      ).slice(0, 8);
+
+      if (matches.length === 0) {
+        results.innerHTML = `<div style="padding:24px;text-align:center;color:rgba(27,59,46,0.4);font-size:14px;">No products found for "${query}"</div>`;
+        return;
+      }
+
+      results.innerHTML = matches.map(p => `
+        <div onclick="openProductPanel(${p.id});closeSearch();" style="display:flex;gap:12px;padding:12px 20px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.15s;" onmouseover="this.style.background='#F8F7F4'" onmouseout="this.style.background='transparent'">
+          <div style="width:44px;height:44px;border-radius:8px;background:#F4F2EC;overflow:hidden;flex-shrink:0;">
+            <img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+          </div>
+          <div style="flex:1;min-width:0;">
+            <p style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</p>
+            <p style="font-size:11px;color:rgba(27,59,46,0.5);">${p.brand} · ${p.qty}</p>
+          </div>
+          <span style="font-size:14px;font-weight:700;">${formatINR(p.price)}</span>
+        </div>
+      `).join('');
+    }
+
+    // === INIT ===
+    document.addEventListener('DOMContentLoaded', () => {
+      // Init Lucide icons
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+
+      // Loader
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('hidden');
+      }, 1500);
+
+      // Render departments
+      renderDeptBar();
+      updateMinimap('cleaning');
+
+      // Init 3D
+      try {
+        init3D();
+      } catch (e) {
+        console.warn('3D init failed, falling back to 2D mode');
+        toggleMode('2d');
+      }
+
+      // Entry button
+      document.getElementById('enter-btn').addEventListener('click', () => {
+        document.getElementById('entry-screen').classList.add('hidden');
+        document.getElementById('store-ui').classList.add('visible');
+        setTimeout(() => {
+          if (camera) {
+            camera.position.set(0, 1.6, 8);
+            cameraTargetAngle = 0;
+          }
+        }, 300);
+      });
+
+      // Header shrink on scroll
+      window.addEventListener('scroll', () => {
+        document.getElementById('header').classList.toggle('shrink', window.scrollY > 50);
+      });
+
+      // Search
+      document.getElementById('search-open-btn').addEventListener('click', openSearch);
+      document.getElementById('search-close-btn').addEventListener('click', closeSearch);
+      document.getElementById('search-input').addEventListener('input', (e) => handleSearch(e.target.value));
+      document.getElementById('search-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('search-modal')) closeSearch();
+      });
+
+      // Cart
+      document.getElementById('cart-open-btn').addEventListener('click', () => {
+        document.getElementById('cart-drawer').classList.add('open');
+      });
+      document.getElementById('cart-close-btn').addEventListener('click', () => {
+        document.getElementById('cart-drawer').classList.remove('open');
+      });
+      document.getElementById('cart-drawer').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('cart-drawer')) {
+          document.getElementById('cart-drawer').classList.remove('open');
+        }
+      });
+
+      // Product panel close
+      document.getElementById('panel-close-btn').addEventListener('click', closeProductPanel);
+      document.getElementById('product-panel').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('product-panel')) closeProductPanel();
+      });
+
+      // Mode toggle
+      document.getElementById('mode-3d-btn').addEventListener('click', () => toggleMode('3d'));
+      document.getElementById('mode-2d-btn').addEventListener('click', () => toggleMode('2d'));
+
+      // Help
+      document.getElementById('help-btn').addEventListener('click', () => {
+        showToast('Use arrow keys or drag to look around. Click products to view details.');
+      });
+
+      // Checkout
+      document.getElementById('checkout-btn').addEventListener('click', () => {
+        if (cart.length === 0) { showToast('Your cart is empty. Add products first!'); return; }
+        showToast('Demo checkout — order saved. Connect payment gateway for live orders.');
+      });
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (document.activeElement.tagName === 'INPUT') return;
+        if (!is3DMode) return;
+        switch (e.key) {
+          case 'ArrowUp':
+            if (camera) { camera.position.z = Math.max(-20, camera.position.z - 0.5); }
+            e.preventDefault();
+            break;
+          case 'ArrowDown':
+            if (camera) { camera.position.z = Math.min(12, camera.position.z + 0.5); }
+            e.preventDefault();
+            break;
+          case 'ArrowLeft':
+            cameraTargetAngle -= 0.05;
+            e.preventDefault();
+            break;
+          case 'ArrowRight':
+            cameraTargetAngle += 0.05;
+            e.preventDefault();
+            break;
+        }
+      });
+
+      // Mouse drag look
+      const container = document.getElementById('scene-container');
+      container.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging || !is3DMode) return;
+        const deltaX = e.clientX - previousMousePosition.x;
+        cameraTargetAngle += deltaX * 0.005;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      // Touch drag look
+      container.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+      }, { passive: true });
+      container.addEventListener('touchmove', (e) => {
+        if (!isDragging || !is3DMode || e.touches.length !== 1) return;
+        const deltaX = e.touches[0].clientX - previousMousePosition.x;
+        cameraTargetAngle += deltaX * 0.005;
+        previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }, { passive: true });
+      container.addEventListener('touchend', () => { isDragging = false; });
+
+      // Click product meshes
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      container.addEventListener('click', (e) => {
+        if (!is3DMode || !renderer || !camera) return;
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(productMeshes);
+        if (intersects.length > 0) {
+          const mesh = intersects[0].object;
+          const deptId = mesh.userData.deptId;
+          if (deptId) {
+            const deptProducts = PRODUCTS.filter(p => p.dept === deptId);
+            if (deptProducts.length > 0) {
+              const randomProduct = deptProducts[Math.floor(Math.random() * deptProducts.length)];
+              openProductPanel(randomProduct.id);
+            }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
