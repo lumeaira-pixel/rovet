@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rovet AI — Design Future Homes with AI</title>
+  <!-- Google Fonts + Tailwind CDN + Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.css">
+  <!-- GSAP + ScrollTrigger for scroll animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Custom CSS -->
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0a0a0f;
+      --ink-soft: #1a1a24;
+      --surface: #111118;
+      --surface-soft: #191922;
+      --white: #ffffff;
+      --white-soft: #f0f0f5;
+      --accent-green: #b6ff3c;
+      --accent-blue: #00e0ff;
+      --accent-glow-green: rgba(182, 255, 60, 0.35);
+      --accent-glow-blue: rgba(0, 224, 255, 0.25);
+      --border-light: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(182, 255, 60, 0.3);
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-display: 'Space Grotesk', 'Inter', sans-serif;
+      --radius-card: 1.5rem;
+      --radius-btn: 9999px;
+      --shadow-card: 0 20px 40px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.03);
+      --shadow-glow: 0 0 30px var(--accent-glow-green), 0 0 60px var(--accent-glow-blue);
+    }
+    /* === Base === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ink);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* === Typography === */
+    h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.03em; line-height: 1.1; }
+    .text-gradient {
+      background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    /* === Scroll reveal base === */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    /* === Sticky Header === */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1rem 2rem;
+      transition: background 0.3s, backdrop-filter 0.3s, padding 0.3s;
+      background: rgba(10, 10, 15, 0.6);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .header.scrolled { padding: 0.6rem 2rem; background: rgba(10, 10, 15, 0.9); }
+    /* === WhatsApp Float === */
+    .whatsapp-float {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 90;
+      background: #25D366; border-radius: 50%; width: 3.5rem; height: 3.5rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .whatsapp-float:hover { transform: scale(1.08); box-shadow: 0 12px 40px rgba(37, 211, 102, 0.6); }
+    /* === Language Toggle === */
+    .lang-toggle {
+      background: var(--surface-soft); border: 1px solid var(--border-light);
+      border-radius: var(--radius-btn); padding: 0.25rem;
+      display: flex; gap: 0.25rem;
+    }
+    .lang-toggle button {
+      padding: 0.3rem 0.8rem; border-radius: var(--radius-btn);
+      font-size: 0.75rem; font-weight: 600; transition: all 0.2s;
+      background: transparent; color: var(--white-soft); border: none; cursor: pointer;
+    }
+    .lang-toggle button.active {
+      background: var(--accent-green); color: var(--ink);
+    }
+    /* === Buttons === */
+    .btn-primary {
+      background: var(--accent-green); color: var(--ink);
+      padding: 0.75rem 2rem; border-radius: var(--radius-btn);
+      font-weight: 700; font-size: 0.9rem; border: none; cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+      box-shadow: 0 0 0 rgba(182, 255, 60, 0);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px var(--accent-glow-green);
+    }
+    .btn-secondary {
+      background: transparent; color: var(--white);
+      padding: 0.75rem 2rem; border-radius: var(--radius-btn);
+      font-weight: 600; font-size: 0.9rem;
+      border: 1px solid var(--border-light); cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn-secondary:hover { border-color: var(--accent-green); background: rgba(182,255,60,0.05); }
+    /* === Cards === */
+    .card-dark {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-card);
+      padding: 2rem;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .card-dark:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px -12px rgba(0,0,0,0.8), 0 0 30px var(--accent-glow-green);
+    }
+    /* === Before/After slider === */
+    .ba-container {
+      position: relative; width: 100%; max-width: 900px; margin: 0 auto;
+      border-radius: var(--radius-card); overflow: hidden;
+      border: 1px solid var(--border-light);
+    }
+    .ba-container img { display: block; width: 100%; height: auto; }
+    .ba-after {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+      transition: clip-path 0.1s;
+    }
+    .ba-slider {
+      position: absolute; top: 0; bottom: 0; left: 50%;
+      width: 4px; background: var(--accent-green);
+      cursor: ew-resize; z-index: 10;
+      transform: translateX(-50%);
+      box-shadow: 0 0 20px var(--accent-glow-green);
+    }
+    .ba-slider::after {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 2.5rem; height: 2.5rem; border-radius: 50%;
+      background: var(--accent-green); border: 3px solid var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 30px var(--accent-glow-green);
+    }
+    /* === Testimonial === */
+    .testimonial-card {
+      background: var(--surface); border: 1px solid var(--border-light);
+      border-radius: var(--radius-card); overflow: hidden;
+      transition: all 0.3s;
+    }
+    .testimonial-card:hover { border-color: var(--accent-blue); transform: translateY(-3px); }
+    /* === FAQ Accordion === */
+    .faq-item { border-bottom: 1px solid var(--border-light); }
+    .faq-question {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.25rem 0; cursor: pointer; font-weight: 600;
+      transition: color 0.2s;
+    }
+    .faq-question:hover { color: var(--accent-green); }
+    .faq-answer {
+      max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s;
+      color: var(--white-soft); opacity: 0.8; font-size: 0.95rem;
+    }
+    .faq-answer.open { max-height: 300px; padding-bottom: 1.25rem; }
+    /* === Modal === */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center; z-index: 200; padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: var(--surface); border: 1px solid var(--border-light);
+      border-radius: var(--radius-card); padding: 2.5rem; max-width: 480px; width: 100%;
+      animation: modalIn 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    /* === Mobile menu === */
+    .mobile-menu {
+      position: fixed; inset: 0; background: rgba(10,10,15,0.98); z-index: 150;
+      display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+    }
+    .mobile-menu.active { display: flex; }
+    /* === Form fields === */
+    .input-field {
+      width: 100%; padding: 0.85rem 1rem; background: var(--ink-soft);
+      border: 1px solid var(--border-light); border-radius: 0.75rem;
+      color: var(--white); font-size: 0.95rem; transition: border-color 0.2s;
+    }
+    .input-field:focus { outline: none; border-color: var(--accent-green); box-shadow: 0 0 0 3px rgba(182,255,60,0.1); }
+    .input-field::placeholder { color: rgba(255,255,255,0.3); }
+    /* === Utility === */
+    .section-padding { padding: 6rem 1.5rem; }
+    @media (min-width: 768px) { .section-padding { padding: 8rem 3rem; } }
+    /* === Custom scrollbar === */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--ink); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-green); border-radius: 4px; }
+    /* === Responsive header === */
+    @media (max-width: 768px) {
+      .header { padding: 0.75rem 1rem; }
+      .header .nav-links { display: none; }
+      .header .btn-primary { padding: 0.5rem 1rem; font-size: 0.8rem; }
+      .lang-toggle { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========== STICKY HEADER ========== -->
+<header class="header" id="header">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="text-xl font-bold tracking-tight" style="font-family: var(--font-display); color: var(--accent-green);">Rovet</span>
+      <span class="text-xl font-light tracking-tight" style="font-family: var(--font-display); color: var(--white);">AI</span>
+    </div>
+    <nav class="nav-links hidden md:flex items-center gap-8 text-sm font-medium" style="color: var(--white-soft);">
+      <a href="#courses" class="hover:text-white transition">Courses</a>
+      <a href="#gallery" class="hover:text-white transition">Gallery</a>
+      <a href="#learn" class="hover:text-white transition">What You Learn</a>
+      <a href="#instructor" class="hover:text-white transition">Instructor</a>
+      <a href="#faq" class="hover:text-white transition">FAQ</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <div class="lang-toggle hidden md:flex">
+        <button class="active" data-lang="en">EN</button>
+        <button data-lang="ml">ML</button>
+      </div>
+      <button class="btn-primary hidden md:inline-block" id="enrollBtnHeader">Enroll Now</button>
+      <button class="md:hidden text-white p-2" id="mobileMenuBtn" aria-label="Open menu">
+        <i class="lucide-icon" data-lucide="menu" style="width: 1.5rem; height: 1.5rem;"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="absolute top-6 right-6 text-white p-2" id="closeMenuBtn" aria-label="Close menu">
+    <i class="lucide-icon" data-lucide="x" style="width: 2rem; height: 2rem;"></i>
+  </button>
+  <a href="#courses" class="text-2xl font-semibold hover:text-green-400 transition" onclick="closeMobileMenu()">Courses</a>
+  <a href="#gallery" class="text-2xl font-semibold hover:text-green-400 transition" onclick="closeMobileMenu()">Gallery</a>
+  <a href="#learn" class="text-2xl font-semibold hover:text-green-400 transition" onclick="closeMobileMenu()">What You Learn</a>
+  <a href="#instructor" class="text-2xl font-semibold hover:text-green-400 transition" onclick="closeMobileMenu()">Instructor</a>
+  <a href="#faq" class="text-2xl font-semibold hover:text-green-400 transition" onclick="closeMobileMenu()">FAQ</a>
+  <button class="btn-primary mt-4" onclick="openModal(); closeMobileMenu();">Enroll Now</button>
+</div>
+
+<!-- ========== HERO SECTION ========== -->
+<section class="relative min-h-screen flex items-center section-padding pt-32 overflow-hidden">
+  <!-- Background glow -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full" style="background: radial-gradient(circle, var(--accent-glow-green) 0%, transparent 70%); filter: blur(80px);"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full" style="background: radial-gradient(circle, var(--accent-glow-blue) 0%, transparent 70%); filter: blur(80px);"></div>
+  </div>
+  <div class="max-w-7xl mx-auto w-full relative z-10 grid md:grid-cols-2 gap-12 items-center">
+    <div class="reveal">
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+        Design Future Homes<br>
+        <span class="text-gradient">in Minutes, Not Days</span> with AI
+      </h1>
+      <p class="text-lg md:text-xl mb-8" style="color: var(--white-soft); opacity: 0.8; max-width: 32rem;">
+        Learn AI Home Rendering, SketchUp + AI Render, and Photorealistic Visualization from Industry Experts.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a href="#courses" class="btn-primary text-base px-8 py-3">Explore Courses</a>
+        <button class="btn-secondary text-base px-8 py-3 flex items-center gap-2" onclick="openDemoModal()">
+          <i class="lucide-icon" data-lucide="play-circle" style="width: 1.25rem; height: 1.25rem;"></i>
+          Watch Free Demo
+        </button>
+      </div>
+      <!-- Trust Badge -->
+      <div class="mt-10 flex items-center gap-4 text-sm" style="color: var(--white-soft); opacity: 0.7;">
+        <div class="flex items-center gap-1">
+          <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+          <span class="font-semibold text-white">4.9</span>
+          <span>(3000+ Architects)</span>
+        </div>
+        <div class="w-px h-4" style="background: var(--border-light);"></div>
+        <span>Trusted by 3000+ Designers</span>
+      </div>
+    </div>
+    <div class="reveal relative">
+      <!-- Before/After Slider Hero Visual -->
+      <div class="ba-container" id="heroBA">
+        <div class="relative">
+          <!-- Sketch (before) -->
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80&auto=format&fit=crop&sat=-100" alt="Sketch interior" loading="eager">
+          <!-- AI Render (after) -->
+          <div class="ba-after" id="baAfter">
+            <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=900&q=80&auto=format&fit=crop" alt="AI rendered interior" loading="eager">
+          </div>
+          <div class="ba-slider" id="baSlider"></div>
+        </div>
+        <div class="absolute bottom-4 left-4 text-xs font-semibold px-3 py-1 rounded-full" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);">Sketch</div>
+        <div class="absolute bottom-4 right-4 text-xs font-semibold px-3 py-1 rounded-full" style="background: var(--accent-green); color: var(--ink);">AI Render</div>
+      </div>
+      <!-- Floating glow -->
+      <div class="absolute -inset-4 rounded-3xl pointer-events-none" style="background: radial-gradient(circle at 50% 50%, var(--accent-glow-green), transparent 70%); filter: blur(60px); z-index: -1;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TRUST BADGE BAR ========== -->
+<section class="py-8 border-y" style="border-color: var(--border-light); background: var(--surface-soft);">
+  <div class="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-center gap-8 md:gap-16 text-sm font-medium" style="color: var(--white-soft); opacity: 0.7;">
+    <span class="flex items-center gap-2"><i class="lucide-icon" data-lucide="award" style="width: 1.2rem; height: 1.2rem; color: var(--accent-green);"></i> 3000+ Architects & Designers</span>
+    <span class="flex items-center gap-2"><i class="lucide-icon" data-lucide="star" style="width: 1.2rem; height: 1.2rem; color: var(--accent-green);"></i> 4.9★ Rating</span>
+    <span class="flex items-center gap-2"><i class="lucide-icon" data-lucide="zap" style="width: 1.2rem; height: 1.2rem; color: var(--accent-blue);"></i> 10-Min Client Renders</span>
+  </div>
+</section>
+
+<!-- ========== COURSES SECTION ========== -->
+<section id="courses" class="section-padding">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold mb-4">Our <span class="text-gradient">Masterclasses</span></h2>
+      <p class="text-lg max-w-2xl mx-auto" style="color: var(--white-soft); opacity: 0.7;">Industry-leading AI rendering courses built for architects and interior designers.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Course 1 -->
+      <div class="card-dark reveal flex flex-col">
+        <div class="rounded-xl overflow-hidden mb-5 aspect-video" style="background: var(--ink-soft);">
+          <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&q=80&auto=format&fit=crop" alt="AI Home Rendering Masterclass" class="w-full h-full object-cover" loading="lazy">
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="font-family: var(--font-display);">AI Home Rendering Masterclass</h3>
+        <p class="text-sm mb-4 flex-grow" style="color: var(--white-soft); opacity: 0.7;">Master Midjourney, Stable Diffusion & D5 Render AI for stunning interiors and exteriors.</p>
+        <div class="flex items-center gap-4 text-xs mb-5" style="color: var(--white-soft); opacity: 0.6;">
+          <span class="flex items-center gap-1"><i class="lucide-icon" data-lucide="clock" style="width: 0.9rem; height: 0.9rem;"></i> 8 weeks</span>
+          <span class="flex items-center gap-1"><i class="lucide-icon" data-lucide="bar-chart-2" style="width: 0.9rem; height: 0.9rem;"></i> Beginner</span>
+        </div>
+        <div class="flex items-center justify-between mt-auto pt-4 border-t" style="border-color: var(--border-light);">
+          <span class="text-2xl font-bold" style="color: var(--accent-green);">₹9,999</span>
+          <button class="btn-primary text-sm px-6 py-2" onclick="openModal('AI Home Rendering Masterclass')">Enroll</button>
+        </div>
+      </div>
+      <!-- Course 2 -->
+      <div class="card-dark reveal flex flex-col" style="border-color: var(--accent-green);">
+        <div class="rounded-xl overflow-hidden mb-5 aspect-video" style="background: var(--ink-soft);">
+          <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80&auto=format&fit=crop" alt="SketchUp + AI Render Pro" class="w-full h-full object-cover" loading="lazy">
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="font-family: var(--font-display);">SketchUp + AI Render Pro</h3>
+        <p class="text-sm mb-4 flex-grow" style="color: var(--white-soft); opacity: 0.7;">Complete SketchUp to AI photorealistic workflow. From massing to final render.</p>
+        <div class="flex items-center gap-4 text-xs mb-5" style="color: var(--white-soft); opacity: 0.6;">
+          <span class="flex items-center gap-1"><i class="lucide-icon" data-lucide="clock" style="width: 0.9rem; height: 0.9rem;"></i> 6 weeks</span>
+          <span class="flex items-center gap-1"><i class="lucide-icon" data-lucide="bar-chart-2" style="width: 0.9rem; height: 0.9rem;"></i> Intermediate</span>
+        </div>
+        <div class="flex items-center justify-between mt-auto pt-4 border-t" style="border-color: var(--border-light);">
+          <span class="text-2xl font-bold" style="color: var(--accent-green);">₹12,999</span>
+          <button class="btn-primary text-sm px-6 py-2" onclick="openModal('SketchUp + AI Render Pro')">Enroll</button>
+        </div>
+      </div>
+      <!-- Course 3 -->
+      <div class="card-dark reveal flex flex-col">
+        <div class="rounded-xl overflow-hidden mb-5 aspect-video" style="background: var(--ink-soft);">
+          <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=600&q=80&auto=format&fit=crop" alt="AI Interior Design Business" class="w-full h-full object-cover" loading="lazy">
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="font-family: var(--font-display);">AI Interior Design Business</h3>
+        <p class="text-sm mb-4 flex-grow" style="color: var(--white-soft); opacity: 0.7;">How to get clients and earn with AI rendering. Build a profitable freelance career.</p>
+        <div class="flex items-center gap-4 text-xs mb-5" style="color: var(--white-soft); opacity: 0.6;">
+          <span class="flex items-center gap-1"><i class="lucide-icon" data-lucide="clock" style="width: 0.9rem; height: 0.9rem;"></i> 4 weeks</span>
+          <span class="flex items-center gap-1"><i class="lucide-icon" data-lucide="bar-chart-2" style="width: 0.9rem; height: 0.9rem;"></i> All Levels</span>
+        </div>
+        <div class="flex items-center justify-between mt-auto pt-4 border-t" style="border-color: var(--border-light);">
+          <span class="text-2xl font-bold" style="color: var(--accent-green);">₹7,999</span>
+          <button class="btn-primary text-sm px-6 py-2" onclick="openModal('AI Interior Design Business')">Enroll</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== BEFORE / AFTER GALLERY ========== -->
+<section id="gallery" class="section-padding" style="background: var(--surface-soft);">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center mb-12">
+      <h2 class="text-4xl md:text-5xl font-bold mb-4">Sketch to <span class="text-gradient">AI Render</span></h2>
+      <p class="text-lg" style="color: var(--white-soft); opacity: 0.7;">Drag the slider to see the transformation.</p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Gallery 1 -->
+      <div class="ba-container reveal" id="galleryBA1">
+        <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=900&q=80&auto=format&fit=crop&sat=-100" alt="Sketch living room" loading="lazy">
+        <div class="ba-after" id="galleryAfter1">
+          <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=900&q=80&auto=format&fit=crop" alt="AI rendered living room" loading="lazy">
+        </div>
+        <div class="ba-slider" id="gallerySlider1"></div>
+      </div>
+      <!-- Gallery 2 -->
+      <div class="ba-container reveal" id="galleryBA2">
+        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=900&q=80&auto=format&fit=crop&sat=-100" alt="Sketch kitchen" loading="lazy">
+        <div class="ba-after" id="galleryAfter2">
+          <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=900&q=80&auto=format&fit=crop" alt="AI rendered kitchen" loading="lazy">
+        </div>
+        <div class="ba-slider" id="gallerySlider2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== WHAT YOU WILL LEARN ========== -->
+<section id="learn" class="section-padding">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold mb-4">What You Will <span class="text-gradient">Learn</span></h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="card-dark reveal text-center">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(182,255,60,0.1);">
+          <i class="lucide-icon" data-lucide="monitor" style="width: 1.5rem; height: 1.5rem; color: var(--accent-green);"></i>
+        </div>
+        <h3 class="font-semibold mb-2">No Expensive PC Needed</h3>
+        <p class="text-sm" style="color: var(--white-soft); opacity: 0.7;">Run everything on cloud GPUs or a mid-range laptop.</p>
+      </div>
+      <div class="card-dark reveal text-center">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(0,224,255,0.1);">
+          <i class="lucide-icon" data-lucide="cloud" style="width: 1.5rem; height: 1.5rem; color: var(--accent-blue);"></i>
+        </div>
+        <h3 class="font-semibold mb-2">No V-Ray Needed</h3>
+        <p class="text-sm" style="color: var(--white-soft); opacity: 0.7;">Skip heavy render engines. AI handles the photorealism.</p>
+      </div>
+      <div class="card-dark reveal text-center">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(182,255,60,0.1);">
+          <i class="lucide-icon" data-lucide="zap" style="width: 1.5rem; height: 1.5rem; color: var(--accent-green);"></i>
+        </div>
+        <h3 class="font-semibold mb-2">Client-Ready Renders in 10 Mins</h3>
+        <p class="text-sm" style="color: var(--white-soft); opacity: 0.7;">Deliver stunning visuals at unprecedented speed.</p>
+      </div>
+      <div class="card-dark reveal text-center">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(0,224,255,0.1);">
+          <i class="lucide-icon" data-lucide="briefcase" style="width: 1.5rem; height: 1.5rem; color: var(--accent-blue);"></i>
+        </div>
+        <h3 class="font-semibold mb-2">Earn from Freelancing</h3>
+        <p class="text-sm" style="color: var(--white-soft); opacity: 0.7;">Start charging for AI rendering services immediately.</p>
+      </div>
+      <div class="card-dark reveal text-center">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(182,255,60,0.1);">
+          <i class="lucide-icon" data-lucide="layers" style="width: 1.5rem; height: 1.5rem; color: var(--accent-green);"></i>
+        </div>
+        <h3 class="font-semibold mb-2">Master Midjourney & SD</h3>
+        <p class="text-sm" style="color: var(--white-soft); opacity: 0.7;">Control style, lighting, and composition with prompts.</p>
+      </div>
+      <div class="card-dark reveal text-center">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(0,224,255,0.1);">
+          <i class="lucide-icon" data-lucide="pen-tool" style="width: 1.5rem; height: 1.5rem; color: var(--accent-blue);"></i>
+        </div>
+        <h3 class="font-semibold mb-2">SketchUp to AI Workflow</h3>
+        <p class="text-sm" style="color: var(--white-soft); opacity: 0.7;">Seamless pipeline from 3D model to final image.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== INSTRUCTOR SECTION ========== -->
+<section id="instructor" class="section-padding" style="background: var(--surface-soft);">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div class="reveal">
+        <div class="rounded-2xl overflow-hidden" style="border: 1px solid var(--border-light); max-width: 400px;">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80&auto=format&fit=crop" alt="Instructor portrait" class="w-full h-auto" loading="lazy">
+        </div>
+      </div>
+      <div class="reveal">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">Learn from <span class="text-gradient">Experts</span> at Rovet AI</h2>
+        <p class="text-lg mb-6" style="color: var(--white-soft); opacity: 0.8;">
+          Our instructors are practicing architects and 3D artists who have shipped AI rendering workflows for top design studios. You'll learn the exact systems used on real client projects — not theory.
+        </p>
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: var(--accent-green); color: var(--ink);">
+            <i class="lucide-icon" data-lucide="user" style="width: 1.5rem; height: 1.5rem;"></i>
+          </div>
+          <div>
+            <p class="font-semibold">Arjun Mehta</p>
+            <p class="text-sm" style="color: var(--white-soft); opacity: 0.6;">Lead Instructor, 10+ years in architectural visualization</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== STUDENT TESTIMONIALS ========== -->
+<section class="section-padding">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold mb-4">Student <span class="text-gradient">Stories</span></h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="testimonial-card reveal">
+        <div class="p-6">
+          <div class="aspect-video rounded-lg mb-4 flex items-center justify-center" style="background: var(--ink-soft);">
+            <i class="lucide-icon" data-lucide="play-circle" style="width: 3rem; height: 3rem; color: var(--accent-green);"></i>
+          </div>
+          <div class="flex items-center gap-1 mb-2">
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+          </div>
+          <p class="text-sm mb-4" style="color: var(--white-soft); opacity: 0.8;">"I landed my first AI rendering client within 2 weeks of finishing the course. The workflow is a game-changer."</p>
+          <p class="font-semibold text-sm">— Priya S., Architect</p>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="p-6">
+          <div class="aspect-video rounded-lg mb-4 flex items-center justify-center" style="background: var(--ink-soft);">
+            <i class="lucide-icon" data-lucide="play-circle" style="width: 3rem; height: 3rem; color: var(--accent-blue);"></i>
+          </div>
+          <div class="flex items-center gap-1 mb-2">
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+          </div>
+          <p class="text-sm mb-4" style="color: var(--white-soft); opacity: 0.8;">"The SketchUp + AI module alone was worth the price. I'm producing renders in minutes now."</p>
+          <p class="font-semibold text-sm">— Rahul K., 3D Artist</p>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="p-6">
+          <div class="aspect-video rounded-lg mb-4 flex items-center justify-center" style="background: var(--ink-soft);">
+            <i class="lucide-icon" data-lucide="play-circle" style="width: 3rem; height: 3rem; color: var(--accent-green);"></i>
+          </div>
+          <div class="flex items-center gap-1 mb-2">
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+            <i class="lucide-icon" data-lucide="star" style="width: 1rem; height: 1rem; color: var(--accent-green);"></i>
+          </div>
+          <p class="text-sm mb-4" style="color: var(--white-soft); opacity: 0.8;">"Finally a course that focuses on the business side too. I've raised my rates by 40%."</p>
+          <p class="font-semibold text-sm">— Ananya R., Interior Designer</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FAQ SECTION ========== -->
+<section id="faq" class="section-padding" style="background: var(--surface-soft);">
+  <div class="max-w-3xl mx-auto">
+    <div class="reveal text-center mb-12">
+      <h2 class="text-4xl md:text-5xl font-bold mb-4">Frequently Asked <span class="text-gradient">Questions</span></h2>
+    </div>
+    <div class="space-y-4">
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Do I need a powerful PC to take this course?</span>
+          <i class="lucide-icon" data-lucide="chevron-down" style="width: 1.25rem; height: 1.25rem; transition: transform 0.3s;"></i>
+        </div>
+        <div class="faq-answer">
+          Not at all. All AI rendering workflows are cloud-based. A mid-range laptop and a stable internet connection are sufficient. We'll guide you through setting up free cloud GPU resources.
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Will I receive a certificate after completion?</span>
+          <i class="lucide-icon" data-lucide="chevron-down" style="width: 1.25rem; height: 1.25rem; transition: transform 0.3s;"></i>
+        </div>
+        <div class="faq-answer">
+          Yes. Every student who completes the course and submits a final project receives a verified Rovet AI Certificate of Completion, shareable on LinkedIn.
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Do I get lifetime access to the course materials?</span>
+          <i class="lucide-icon" data-lucide="chevron-down" style="width: 1.25rem; height: 1.25rem; transition: transform 0.3s;"></i>
+        </div>
+        <div class="faq-answer">
+          Absolutely. You get lifetime access to all video lessons, project files, prompt libraries, and future updates to the course.
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What software will I need?</span>
+          <i class="lucide-icon" data-lucide="chevron-down" style="width: 1.25rem; height: 1.25rem; transition: transform 0.3s;"></i>
+        </div>
+        <div class="faq-answer">
+          We primarily use Midjourney, Stable Diffusion (via web UI), D5 Render AI, and SketchUp. We provide setup guides for all of them, including free alternatives.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FINAL CTA ========== -->
+<section class="section-padding">
+  <div class="max-w-4xl mx-auto text-center reveal">
+    <h2 class="text-4xl md:text-6xl font-bold mb-6">Ready to Become an <span class="text-gradient">AI Rendering Expert?</span></h2>
+    <p class="text-lg mb-10" style="color: var(--white-soft); opacity: 0.8; max-width: 36rem; margin-left: auto; margin-right: auto;">
+      Join 3000+ architects and designers who are already delivering stunning AI renders in minutes.
+    </p>
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <a href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer" class="btn-secondary text-base px-8 py-3 flex items-center gap-2">
+        <i class="lucide-icon" data-lucide="message-circle" style="width: 1.25rem; height: 1.25rem;"></i>
+        WhatsApp Enquiry
+      </a>
+      <button class="btn-primary text-base px-10 py-3" onclick="openModal()">Enroll Now</button>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="py-16 px-6 border-t" style="border-color: var(--border-light); background: var(--ink);">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-xl font-bold" style="font-family: var(--font-display); color: var(--accent-green);">Rovet</span>
+        <span class="text-xl font-light" style="font-family: var(--font-display); color: var(--white);">AI</span>
+      </div>
+      <p class="text-sm" style="color: var(--white-soft); opacity: 0.6;">AI Academy for Architects, Interior Designers & 3D Artists.</p>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-4 text-sm uppercase tracking-wider" style="color: var(--white-soft); opacity: 0.5;">Quick Links</h4>
+      <ul class="space-y-2 text-sm" style="color: var(--white-soft); opacity: 0.7;">
+        <li><a href="#courses" class="hover:text-white transition">Courses</a></li>
+        <li><a href="#gallery" class="hover:text-white transition">Gallery</a></li>
+        <li><a href="#instructor" class="hover:text-white transition">Instructor</a></li>
+        <li><a href="#faq" class="hover:text-white transition">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-4 text-sm uppercase tracking-wider" style="color: var(--white-soft); opacity: 0.5;">Contact</h4>
+      <ul class="space-y-2 text-sm" style="color: var(--white-soft); opacity: 0.7;">
+        <li class="flex items-center gap-2"><i class="lucide-icon" data-lucide="mail" style="width: 1rem; height: 1rem;"></i> hello@rovet.ai</li>
+        <li class="flex items-center gap-2"><i class="lucide-icon" data-lucide="phone" style="width: 1rem; height: 1rem;"></i> +91 99999 99999</li>
+        <li class="flex items-center gap-2"><i class="lucide-icon" data-lucide="map-pin" style="width: 1rem; height: 1rem;"></i> Bangalore, India</li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-4 text-sm uppercase tracking-wider" style="color: var(--white-soft); opacity: 0.5;">Follow</h4>
+      <div class="flex gap-4">
+        <a href="#" aria-label="Instagram" class="p-2 rounded-full transition hover:bg-white/10"><i class="lucide-icon" data-lucide="instagram" style="width: 1.25rem; height: 1.25rem;"></i></a>
+        <a href="https://wa.me/919999999999" aria-label="WhatsApp" class="p-2 rounded-full transition hover:bg-white/10"><i class="lucide-icon" data-lucide="message-circle" style="width: 1.25rem; height: 1.25rem;"></i></a>
+        <a href="#" aria-label="Email" class="p-2 rounded-full transition hover:bg-white/10"><i class="lucide-icon" data-lucide="mail" style="width: 1.25rem; height: 1.25rem;"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto mt-12 pt-8 border-t text-xs flex flex-wrap justify-between" style="border-color: var(--border-light); color: var(--white-soft); opacity: 0.4;">
+    <span>© 2025 Rovet AI. All rights reserved.</span>
+    <span>Made for the next generation of designers.</span>
+  </div>
+</footer>
+
+<!-- ========== WHATSAPP FLOAT ========== -->
+<a href="https://wa.me/919999999999" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+  <i class="lucide-icon" data-lucide="message-circle" style="width: 1.75rem; height: 1.75rem; color: white;"></i>
+</a>
+
+<!-- ========== ENROLLMENT MODAL ========== -->
+<div class="modal-overlay" id="enrollModal">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-2xl font-bold" id="modalTitle" style="font-family: var(--font-display);">Enroll Now</h3>
+      <button onclick="closeModal()" aria-label="Close modal" class="p-1 rounded-full hover:bg-white/10 transition">
+        <i class="lucide-icon" data-lucide="x" style="width: 1.5rem; height: 1.5rem;"></i>
+      </button>
+    </div>
+    <p class="text-sm mb-6" style="color: var(--white-soft); opacity: 0.7;">Fill in your details and we'll reach out to complete your enrollment.</p>
+    <form id="enrollForm" class="space-y-4">
+      <div>
+        <label for="enrollName" class="sr-only">Full Name</label>
+        <input type="text" id="enrollName" class="input-field" placeholder="Full Name" required>
+      </div>
+      <div>
+        <label for="enrollEmail" class="sr-only">Email</label>
+        <input type="email" id="enrollEmail" class="input-field" placeholder="Email Address" required>
+      </div>
+      <div>
+        <label for="enrollPhone" class="sr-only">Phone</label>
+        <input type="tel" id="enrollPhone" class="input-field" placeholder="Phone Number" required>
+      </div>
+      <div>
+        <label for="enrollCourse" class="sr-only">Select Course</label>
+        <select id="enrollCourse" class="input-field" required>
+          <option value="" disabled selected>Select a Course</option>
+          <option value="AI Home Rendering Masterclass">AI Home Rendering Masterclass — ₹9,999</option>
+          <option value="SketchUp + AI Render Pro">SketchUp + AI Render Pro — ₹12,999</option>
+          <option value="AI Interior Design Business">AI Interior Design Business — ₹7,999</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-primary w-full py-3 text-base">Submit Enquiry</button>
+    </form>
+  </div>
+</div>
+
+<!-- ========== DEMO MODAL ========== -->
+<div class="modal-overlay" id="demoModal">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="demoTitle">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-2xl font-bold" id="demoTitle" style="font-family: var(--font-display);">Free Demo</h3>
+      <button onclick="closeDemoModal()" aria-label="Close demo modal" class="p-1 rounded-full hover:bg-white/10 transition">
+        <i class="lucide-icon" data-lucide="x" style="width: 1.5rem; height: 1.5rem;"></i>
+      </button>
+    </div>
+    <div class="aspect-video rounded-xl flex items-center justify-center mb-4" style="background: var(--ink-soft);">
+      <div class="text-center">
+        <i class="lucide-icon" data-lucide="play-circle" style="width: 4rem; height: 4rem; color: var(--accent-green); margin-bottom: 1rem;"></i>
+        <p class="text-sm" style="color: var(--white-soft); opacity: 0.7;">Demo video coming soon.<br>Enter your email to get notified.</p>
+      </div>
+    </div>
+    <form id="demoForm" class="space-y-4">
+      <input type="email" class="input-field" placeholder="Your Email" required>
+      <button type="submit" class="btn-primary w-full py-3">Notify Me</button>
+    </form>
+  </div>
+</div>
+
+<!-- ========== SCRIPTS ========== -->
+<script>
+  // === Lucide icons init ===
+  lucide.createIcons();
+
+  // === Language toggle (visual only for now) ===
+  document.querySelectorAll('.lang-toggle button').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      // In a real implementation, you would switch content via i18n here
+    });
+  });
+
+  // === Mobile menu ===
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const closeMenuBtn = document.getElementById('closeMenuBtn');
+
+  mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
+  closeMenuBtn.addEventListener('click', closeMobileMenu);
+
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('active');
+  }
+
+  // === Header scroll effect ===
+  window.addEventListener('scroll', () => {
+    const header = document.getElementById('header');
+    if (window.scrollY > 50) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+
+  // === Before/After slider (hero + gallery) ===
+  function initBASlider(containerId, afterId, sliderId) {
+    const container = document.getElementById(containerId);
+    const after = document.getElementById(afterId);
+    const slider = document.getElementById(sliderId);
+    if (!container || !after || !slider) return;
+
+    let isDragging = false;
+
+    function updateSlider(x) {
+      const rect = container.getBoundingClientRect();
+      let pos = (x - rect.left) / rect.width;
+      pos = Math.max(0.05, Math.min(0.95, pos));
+      const percent = pos * 100;
+      after.style.clipPath = `polygon(0 0, ${percent}% 0, ${percent}% 100%, 0 100%)`;
+      slider.style.left = `${percent}%`;
+    }
+
+    slider.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      isDragging = true;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      updateSlider(e.clientX);
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    // Touch support
+    slider.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      isDragging = true;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      updateSlider(e.touches[0].clientX);
+    });
+
+    window.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    // Click to set position
+    container.addEventListener('click', (e) => {
+      if (e.target === slider || slider.contains(e.target)) return;
+      updateSlider(e.clientX);
+    });
+  }
+
+  // Initialize both sliders
+  initBASlider('heroBA', 'baAfter', 'baSlider');
+  initBASlider('galleryBA1', 'galleryAfter1', 'gallerySlider1');
+  initBASlider('galleryBA2', 'galleryAfter2', 'gallerySlider2');
+
+  // === FAQ Accordion ===
+  function toggleFAQ(element) {
+    const answer = element.nextElementSibling;
+    const icon = element.querySelector('i');
+    const isOpen = answer.classList.contains('open');
+
+    // Close all others
+    document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+    document.querySelectorAll('.faq-question i').forEach(i => i.style.transform = 'rotate(0deg)');
+
+    if (!isOpen) {
+      answer.classList.add('open');
+      icon.style.transform = 'rotate(180deg)';
+    }
+  }
+
+  // === Enrollment Modal ===
+  const enrollModal = document.getElementById('enrollModal');
+  const enrollBtnHeader = document.getElementById('enrollBtnHeader');
+
+  function openModal(courseName) {
+    enrollModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    if (courseName) {
+      const select = document.getElementById('enrollCourse');
+      for (let option of select.options) {
+        if (option.value === courseName) {
+          select.value = courseName;
+          break;
+        }
+      }
+    }
+  }
+
+  function closeModal() {
+    enrollModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  enrollBtnHeader.addEventListener('click', () => openModal());
+  enrollModal.addEventListener('click', (e) => {
+    if (e.target === enrollModal) closeModal();
+  });
+
+  // === Demo Modal ===
+  const demoModal = document.getElementById('demoModal');
+
+  function openDemoModal() {
+    demoModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDemoModal() {
+    demoModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  demoModal.addEventListener('click', (e) => {
+    if (e.target === demoModal) closeDemoModal();
+  });
+
+  // === Form Submissions ===
+  document.getElementById('enrollForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.textContent = 'Submitting...';
+    btn.disabled = true;
+
+    const formData = {
+      name: document.getElementById('enrollName').value,
+      email: document.getElementById('enrollEmail').value,
+      phone: document.getElementById('enrollPhone').value,
+      course: document.getElementById('enrollCourse').value
+    };
+
+    try {
+      // TODO: connect form action to backend endpoint
+      const response = await fetch('submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({
+          url: window.location.host,
+          table: 'enrollments',
+          data: formData
+        })
+      });
+
+      // Simulate success for demo
+      btn.textContent = 'Enquiry Submitted!';
+      btn.style.background = '#00e0ff';
+      setTimeout(() => {
+        closeModal();
+        btn.textContent = originalText;
+        btn.style.background = '';
+        btn.disabled = false;
+        this.reset();
+      }, 2000);
+    } catch (error) {
+      btn.textContent = 'Error — Try Again';
+      btn.style.background = '#ff4444';
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = '';
+        btn.disabled = false;
+      }, 2000);
+    }
+  });
+
+  document.getElementById('demoForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button');
+    btn.textContent = 'You\'re on the list!';
+    btn.style.background = '#00e0ff';
+    setTimeout(() => {
+      closeDemoModal();
+      btn.textContent = 'Notify Me';
+      btn.style.background = '';
+      this.reset();
+    }, 2000);
+  });
+
+  // === Scroll Reveal with GSAP ===
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.querySelectorAll('.reveal').forEach((el, index) => {
+    gsap.to(el, {
+      opacity: 1,
+      y: 0,
+      duration: 0.9,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%',
+        toggleActions: 'play none none none',
+        once: true
+      },
+      delay: index * 0.08
+    });
+  });
+
+  // === Escape key closes modals ===
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      closeDemoModal();
+      closeMobileMenu();
+    }
+  });
+</script>
+
+</body>
+</html>
