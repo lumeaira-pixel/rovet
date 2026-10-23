@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lunaris Studio — Award-Winning Digital Agency</title>
+  <!-- Fonts: Bricolage Grotesque (display) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            ink: '#0B0B0F',
+            cream: '#FCFCFD',
+            pearl: '#F4F4F6',
+            brass: '#C4A27A',
+            mist: '#ECECF1',
+          },
+          borderRadius: {
+            '4xl': '2rem',
+            '5xl': '2.5rem',
+          },
+        },
+      },
+    };
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0B0B0F;
+      --cream: #FCFCFD;
+      --pearl: #F4F4F6;
+      --brass: #C4A27A;
+      --mist: #ECECF1;
+      --slate: #5A5A66;
+      --focus-ring: #C4A27A;
+    }
+
+    /* === Base === */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--brass); color: var(--ink); }
+
+    /* === Custom Scrollbar === */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--pearl); }
+    ::-webkit-scrollbar-thumb { background: #C9C9D1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--brass); }
+
+    /* === Focus Styles === */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* === Typography === */
+    .font-display { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; }
+    h1, h2, h3 { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; }
+
+    /* === Custom Utilities === */
+    .text-balance { text-wrap: balance; }
+
+    /* === Grain Overlay === */
+    .grain::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* === Soft Shadows === */
+    .shadow-soft {
+      box-shadow: 0 1px 2px rgba(11, 11, 15, 0.04),
+                  0 8px 24px -8px rgba(11, 11, 15, 0.06),
+                  0 24px 48px -16px rgba(11, 11, 15, 0.08);
+    }
+    .shadow-lift {
+      box-shadow: 0 2px 4px rgba(11, 11, 15, 0.04),
+                  0 12px 32px -8px rgba(11, 11, 15, 0.10),
+                  0 32px 64px -16px rgba(11, 11, 15, 0.12);
+    }
+    .shadow-brass {
+      box-shadow: 0 8px 32px -8px rgba(196, 162, 122, 0.35);
+    }
+
+    /* === Gradients === */
+    .gradient-brass {
+      background: linear-gradient(135deg, #D8BE9C 0%, #C4A27A 50%, #A8855C 100%);
+    }
+    .gradient-radial-glow {
+      background: radial-gradient(ellipse at 30% 20%, rgba(196, 162, 122, 0.10) 0%, transparent 55%),
+                  radial-gradient(ellipse at 80% 80%, rgba(196, 162, 122, 0.06) 0%, transparent 50%);
+    }
+    .gradient-mesh-hero {
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(196, 162, 122, 0.12), transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 30%, rgba(180, 180, 220, 0.08), transparent 60%),
+        radial-gradient(ellipse 70% 60% at 50% 90%, rgba(196, 162, 122, 0.06), transparent 60%);
+    }
+
+    /* === Glass === */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    /* === Card Tilt === */
+    .tilt-card {
+      transform-style: preserve-3d;
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      will-change: transform;
+    }
+    .tilt-card:hover { transform: translateY(-6px); }
+
+    /* === Split Text Animation === */
+    .split-line { overflow: hidden; display: block; }
+    .split-line > span {
+      display: block;
+      transform: translateY(110%);
+      transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .split-line.revealed > span { transform: translateY(0); }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 35s linear infinite;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Service Card Hover === */
+    .service-card {
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(196, 162, 122, 0.03), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .service-card:hover::after { opacity: 1; }
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 2px 4px rgba(11, 11, 15, 0.04),
+                  0 16px 48px -12px rgba(11, 11, 15, 0.10);
+    }
+
+    /* === Project Card === */
+    .project-card { overflow: hidden; }
+    .project-card img {
+      transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .project-card:hover img { transform: scale(1.05); }
+    .project-overlay {
+      background: linear-gradient(to top, rgba(11, 11, 15, 0.65) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .project-card:hover .project-overlay { opacity: 1; }
+
+    /* === Testimonial === */
+    .testimonial-card {
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 2px 4px rgba(11, 11, 15, 0.04),
+                  0 16px 48px -12px rgba(11, 11, 15, 0.10);
+    }
+
+    /* === Button Base === */
+    .btn-primary {
+      background: var(--ink);
+      color: var(--cream);
+      transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary:hover {
+      background: #1A1A22;
+      box-shadow: 0 8px 24px -6px rgba(11, 11, 15, 0.35);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--mist);
+      transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .btn-secondary:hover {
+      border-color: var(--brass);
+      background: rgba(196, 162, 122, 0.06);
+      transform: translateY(-1px);
+    }
+    .btn-secondary:active { transform: translateY(0) scale(0.98); }
+
+    /* === Nav === */
+    .nav-scrolled {
+      background: rgba(252, 252, 253, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      box-shadow: 0 1px 0 rgba(11, 11, 15, 0.05);
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .mobile-menu.open { transform: translateX(0); }
+
+    /* === Input Styles === */
+    .input-field {
+      background: var(--pearl);
+      border: 1.5px solid transparent;
+      transition: all 0.3s ease;
+      color: var(--ink);
+    }
+    .input-field:focus {
+      background: #fff;
+      border-color: var(--brass);
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(196, 162, 122, 0.12);
+    }
+    .input-field.error {
+      border-color: #DC2626;
+      background: #FEF2F2;
+    }
+    .input-field::placeholder { color: #9CA3AF; }
+
+    /* === Float Label === */
+    .float-label { transition: all 0.2s ease; }
+
+    /* === Stat Divider === */
+    .stat-divider {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, var(--mist), transparent);
+    }
+
+    /* === Scroll Reveal === */
+    .reveal-up { opacity: 0; transform: translateY(40px); }
+    .reveal-scale { opacity: 0; transform: scale(0.96); }
+
+    /* === Reduced Motion === */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+      .split-line > span { transform: none; }
+      .reveal-up, .reveal-scale { opacity: 1; transform: none; }
+    }
+
+    /* === Responsive Type === */
+    .hero-title { font-size: clamp(2.8rem, 7vw, 6rem); line-height: 1.02; }
+    .section-title { font-size: clamp(2rem, 4.5vw, 3.5rem); line-height: 1.08; }
+    .body-lg { font-size: clamp(1rem, 1.3vw, 1.15rem); line-height: 1.65; }
+
+    /* === Mobile Header Fix === */
+    @media (max-width: 767px) {
+      .nav-cta { padding: 0.6rem 1.1rem !important; font-size: 0.8rem !important; }
+      .mobile-menu-btn { width: 40px; height: 40px; }
+    }
+  </style>
+</head>
+<body class="grain bg-cream font-body text-ink antialiased">
+
+  <!-- ============ HEADER ============ -->
+  <header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <nav class="flex items-center justify-between py-4 lg:py-5" aria-label="Main navigation">
+        <!-- Logo -->
+        <a href="#hero" class="flex items-center gap-2.5 group" aria-label="Lunaris Studio home">
+          <span class="w-8 h-8 rounded-full gradient-brass flex items-center justify-center shadow-brass transition-transform duration-300 group-hover:scale-105" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B0B0F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </span>
+          <span class="font-display text-lg font-700 tracking-tight" style="font-weight:700;">Lunaris</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#services" class="text-sm font-medium text-slate hover:text-ink transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[1.5px] after:bg-brass after:transition-all after:duration-300 hover:after:w-full">Services</a>
+          <a href="#work" class="text-sm font-medium text-slate hover:text-ink transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[1.5px] after:bg-brass after:transition-all after:duration-300 hover:after:w-full">Work</a>
+          <a href="#testimonials" class="text-sm font-medium text-slate hover:text-ink transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[1.5px] after:bg-brass after:transition-all after:duration-300 hover:after:w-full">Testimonials</a>
+          <a href="#contact" class="text-sm font-medium text-slate hover:text-ink transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[1.5px] after:bg-brass after:transition-all after:duration-300 hover:after:w-full">Contact</a>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="#contact" class="btn-primary hidden sm:inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold nav-cta">
+            Start a project
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <!-- Mobile Menu Toggle -->
+          <button id="menu-toggle" class="mobile-menu-btn md:hidden w-10 h-10 flex items-center justify-center rounded-full border border-mist hover:border-brass transition-colors duration-300" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+            <svg id="menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-menu" class="mobile-menu fixed inset-0 z-40 bg-cream md:hidden flex flex-col pt-24 px-8" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button id="menu-close" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full border border-mist" aria-label="Close menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <nav class="flex flex-col gap-6 mt-8" aria-label="Mobile navigation links">
+      <a href="#services" class="mobile-link font-display text-3xl font-600 text-ink hover:text-brass transition-colors duration-300">Services</a>
+      <a href="#work" class="mobile-link font-display text-3xl font-600 text-ink hover:text-brass transition-colors duration-300">Work</a>
+      <a href="#testimonials" class="mobile-link font-display text-3xl font-600 text-ink hover:text-brass transition-colors duration-300">Testimonials</a>
+      <a href="#contact" class="mobile-link font-display text-3xl font-600 text-ink hover:text-brass transition-colors duration-300">Contact</a>
+    </nav>
+    <a href="#contact" class="mobile-link btn-primary mt-10 inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 text-base font-semibold">
+      Start a project
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <div class="mt-auto mb-10 flex items-center gap-4 text-sm text-slate">
+      <span>hello@lunaris.studio</span>
+      <span class="w-1 h-1 rounded-full bg-brass" aria-hidden="true"></span>
+      <span>+1 (212) 555-0147</span>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section id="hero" class="relative min-h-screen flex items-center pt-28 pb-16 overflow-hidden gradient-mesh-hero">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <!-- Left copy -->
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 mb-6 reveal-up" style="animation-delay:0.1s;">
+            <span class="w-1.5 h-1.5 rounded-full bg-brass animate-pulse" aria-hidden="true"></span>
+            <span class="text-xs font-medium tracking-wide text-slate uppercase">Digital design studio — NYC &amp; Remote</span>
+          </div>
+
+          <h1 class="hero-title font-display font-800 text-balance mb-6">
+            <span class="split-line"><span>We craft digital</span></span>
+            <span class="split-line"><span class="text-brass">experiences</span></span>
+            <span class="split-line"><span>that move people.</span></span>
+          </h1>
+
+          <p class="body-lg text-slate max-w-xl mb-8 reveal-up" style="animation-delay:0.3s;">
+            Lunaris is a design-led studio building brands, websites, and products for ambitious companies. We merge editorial craft with engineering precision to create work that earns attention—and keeps it.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 mb-10 reveal-up" style="animation-delay:0.4s;">
+            <a href="#contact" class="btn-primary inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold">
+              Start a project
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#work" class="btn-secondary inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold">
+              View our work
+            </a>
+          </div>
+
+          <!-- Stats -->
+          <div class="flex flex-wrap items-center gap-6 sm:gap-10 reveal-up" style="animation-delay:0.5s;">
+            <div class="flex items-center gap-6 sm:gap-10">
+              <div>
+                <div class="font-display text-3xl font-700" style="font-weight:700;">48<span class="text-brass">+</span></div>
+                <div class="text-xs text-slate mt-1 tracking-wide uppercase">Projects shipped</div>
+              </div>
+              <div class="stat-divider hidden sm:block" aria-hidden="true"></div>
+              <div>
+                <div class="font-display text-3xl font-700" style="font-weight:700;">12</div>
+                <div class="text-xs text-slate mt-1 tracking-wide uppercase">Industry awards</div>
+              </div>
+              <div class="stat-divider hidden sm:block" aria-hidden="true"></div>
+              <div>
+                <div class="font-display text-3xl font-700" style="font-weight:700;">100<span class="text-brass">%</span></div>
+                <div class="text-xs text-slate mt-1 tracking-wide uppercase">Client retention</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right visual: layered card stack with 3D tilt -->
+        <div class="lg:col-span-5 relative reveal-scale" style="animation-delay:0.3s;">
+          <div class="relative w-full max-w-md mx-auto lg:mx-0 lg:ml-auto" style="perspective: 1200px;">
+            <!-- Floating badge -->
+            <div class="absolute -top-5 -left-5 z-20 glass rounded-2xl px-4 py-3 shadow-soft flex items-center gap-3">
+              <span class="w-9 h-9 rounded-xl gradient-brass flex items-center justify-center" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B0B0F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </span>
+              <div>
+                <div class="text-xs font-semibold">Awwwards</div>
+                <div class="text-[10px] text-slate">Site of the Day</div>
+              </div>
+            </div>
+
+            <!-- Main card -->
+            <div class="tilt-card relative rounded-4xl overflow-hidden shadow-lift bg-white border border-white/60" style="transform: rotateY(-6deg) rotateX(3deg);">
+              <div class="aspect-[4/5] w-full bg-gradient-to-br from-pearl via-mist to-white relative overflow-hidden">
+                <!-- Abstract composition -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-3/4 h-3/4 rounded-full gradient-brass opacity-20 blur-2xl" aria-hidden="true"></div>
+                </div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+                  <div class="w-20 h-20 rounded-3xl gradient-brass shadow-brass flex items-center justify-center mb-6" aria-hidden="true">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0B0B0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  </div>
+                  <div class="font-display text-2xl font-700 mb-2" style="font-weight:700;">Studio Reel</div>
+                  <div class="text-sm text-slate mb-6">2024 — Selected work</div>
+                  <div class="flex items-center gap-2 text-xs font-medium text-slate bg-white/80 backdrop-blur rounded-full px-4 py-2 shadow-soft">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                    Play showreel — 2:14
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Secondary card behind -->
+            <div class="absolute -bottom-6 -right-6 w-3/4 h-3/4 rounded-4xl bg-pearl border border-mist -z-10" aria-hidden="true"></div>
+            <div class="absolute -bottom-12 -right-12 w-1/2 h-1/2 rounded-4xl bg-mist/50 -z-20" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2 text-slate/60" aria-hidden="true">
+      <span class="text-[10px] tracking-[0.2em] uppercase">Scroll</span>
+      <div class="w-[1px] h-8 bg-gradient-to-b from-slate/40 to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- ============ LOGO MARQUEE ============ -->
+  <section class="py-10 border-y border-mist/60 overflow-hidden" aria-label="Trusted by leading brands">
+    <div class="marquee-track gap-16 items-center opacity-50">
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">VOGUE</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Aesop</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Stripe</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Kinfolk</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Sonos</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Monocle</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Hermès</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Arc'teryx</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">VOGUE</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Aesop</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Stripe</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Kinfolk</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Sonos</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Monocle</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Hermès</span>
+      <span class="font-display text-xl font-600 whitespace-nowrap" style="font-weight:600;">Arc'teryx</span>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="services" class="py-24 lg:py-32 gradient-radial-glow">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="grid lg:grid-cols-12 gap-10 mb-16">
+        <div class="lg:col-span-5">
+          <div class="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 mb-6 reveal-up">
+            <span class="w-1.5 h-1.5 rounded-full bg-brass" aria-hidden="true"></span>
+            <span class="text-xs font-medium tracking-wide text-slate uppercase">What we do</span>
+          </div>
+          <h2 class="section-title font-display font-800 text-balance reveal-up">Services built for the modern brand.</h2>
+        </div>
+        <div class="lg:col-span-6 lg:col-start-7 flex items-end">
+          <p class="body-lg text-slate reveal-up">
+            From first sketch to final deploy, we operate as an extension of your team. Every engagement is tailored, senior-led, and obsessively crafted.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Service 1 -->
+        <article class="service-card bg-white rounded-3xl p-8 border border-mist/70 shadow-soft">
+          <div class="w-12 h-12 rounded-2xl bg-pearl flex items-center justify-center mb-6 text-ink" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3 class="font-display text-xl font-700 mb-3" style="font-weight:700;">Web Design &amp; Development</h3>
+          <p class="text-sm text-slate leading-relaxed">Custom-coded marketing sites and digital flagships. Fast, accessible, and built to convert without compromising craft.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs font-medium text-brass">
+            <span>Explore</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </article>
+
+        <!-- Service 2 -->
+        <article class="service-card bg-white rounded-3xl p-8 border border-mist/70 shadow-soft">
+          <div class="w-12 h-12 rounded-2xl bg-pearl flex items-center justify-center mb-6 text-ink" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 class="font-display text-xl font-700 mb-3" style="font-weight:700;">Brand Identity</h3>
+          <p class="text-sm text-slate leading-relaxed">Strategy, naming, visual systems, and guidelines that give your brand a distinct, ownable point of view.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs font-medium text-brass">
+            <span>Explore</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </article>
+
+        <!-- Service 3 -->
+        <article class="service-card bg-white rounded-3xl p-8 border border-mist/70 shadow-soft">
+          <div class="w-12 h-12 rounded-2xl bg-pearl flex items-center justify-center mb-6 text-ink" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <h3 class="font-display text-xl font-700 mb-3" style="font-weight:700;">Product Design</h3>
+          <p class="text-sm text-slate leading-relaxed">End-to-end UX and UI for digital products—from discovery and prototyping to polished design systems.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs font-medium text-brass">
+            <span>Explore</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </article>
+
+        <!-- Service 4 -->
+        <article class="service-card bg-white rounded-3xl p-8 border border-mist/70 shadow-soft">
+          <div class="w-12 h-12 rounded-2xl bg-pearl flex items-center justify-center mb-6 text-ink" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          </div>
+          <h3 class="font-display text-xl font-700 mb-3" style="font-weight:700;">Motion &amp; 3D</h3>
+          <p class="text-sm text-slate leading-relaxed">Scroll-driven storytelling, product visualizations, and micro-interactions that bring interfaces to life.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs font-medium text-brass">
+            <span>Explore</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </article>
+
+        <!-- Service 5 -->
+        <article class="service-card bg-white rounded-3xl p-8 border border-mist/70 shadow-soft">
+          <div class="w-12 h-12 rounded-2xl bg-pearl flex items-center justify-center mb-6 text-ink" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <h3 class="font-display text-xl font-700 mb-3" style="font-weight:700;">Content &amp; Art Direction</h3>
+          <p class="text-sm text-slate leading-relaxed">Photography, illustration, and copy direction that gives your digital presence a cohesive editorial voice.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs font-medium text-brass">
+            <span>Explore</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </article>
+
+        <!-- Service 6 -->
+        <article class="service-card bg-ink rounded-3xl p-8 border border-ink/80 shadow-soft relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-40 h-40 rounded-full gradient-brass opacity-15 blur-3xl" aria-hidden="true"></div>
+          <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center mb-6 text-cream" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+          <h3 class="font-display text-xl font-700 mb-3 text-cream" style="font-weight:700;">Digital Strategy</h3>
+          <p class="text-sm text-cream/60 leading-relaxed">Research, positioning, and growth roadmaps that align design decisions with business outcomes.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs font-medium text-brass">
+            <span>Explore</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WORK / PROJECTS ============ -->
+  <section id="work" class="py-24 lg:py-32 bg-pearl/50">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 mb-6 reveal-up">
+            <span class="w-1.5 h-1.5 rounded-full bg-brass" aria-hidden="true"></span>
+            <span class="text-xs font-medium tracking-wide text-slate uppercase">Selected work</span>
+          </div>
+          <h2 class="section-title font-display font-800 text-balance reveal-up">Projects we're proud of.</h2>
+        </div>
+        <a href="#contact" class="btn-secondary inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold self-start md:self-auto reveal-up">
+          Start your project
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Project 1 -->
+        <a href="#" class="project-card rounded-4xl overflow-hidden bg-white border border-mist/60 shadow-soft group block" aria-label="View project: Aesop — Digital Flagship">
+          <div class="aspect-[16/11] relative bg-gradient-to-br from-[#E8E4DC] to-[#D4CFC4]">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="font-display text-6xl sm:text-7xl font-700 text-white/40 select-none" style="font-weight:700;" aria-hidden="true">Aesop</span>
+            </div>
+            <div class="project-overlay absolute inset-0 flex items-end p-6">
+              <div>
+                <span class="text-[10px] tracking-[0.2em] uppercase text-white/60">E-commerce · 2024</span>
+                <h3 class="font-display text-xl font-700 text-white mt-1" style="font-weight:700;">Aesop — Digital Flagship</h3>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Project 2 -->
+        <a href="#" class="project-card rounded-4xl overflow-hidden bg-white border border-mist/60 shadow-soft group block" aria-label="View project: Monocle — Editorial Platform">
+          <div class="aspect-[16/11] relative bg-gradient-to-br from-[#E0E4E8] to-[#C8CCD4]">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="font-display text-6xl sm:text-7xl font-700 text-white/40 select-none" style="font-weight:700;" aria-hidden="true">Monocle</span>
+            </div>
+            <div class="project-overlay absolute inset-0 flex items-end p-6">
+              <div>
+                <span class="text-[10px] tracking-[0.2em] uppercase text-white/60">Editorial · 2024</span>
+                <h3 class="font-display text-xl font-700 text-white mt-1" style="font-weight:700;">Monocle — Editorial Platform</h3>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Project 3 -->
+        <a href="#" class="project-card rounded-4xl overflow-hidden bg-white border border-mist/60 shadow-soft group block" aria-label="View project: Sonos — Product Launch">
+          <div class="aspect-[16/11] relative bg-gradient-to-br from-[#1A1A1F] to-[#2D2D35]">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="font-display text-6xl sm:text-7xl font-700 text-white/10 select-none" style="font-weight:700;" aria-hidden="true">Sonos</span>
+            </div>
+            <div class="project-overlay absolute inset-0 flex items-end p-6">
+              <div>
+                <span class="text-[10px] tracking-[0.2em] uppercase text-white/60">Campaign · 2023</span>
+                <h3 class="font-display text-xl font-700 text-white mt-1" style="font-weight:700;">Sonos — Product Launch</h3>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Project 4 -->
+        <a href="#" class="project-card rounded-4xl overflow-hidden bg-white border border-mist/60 shadow-soft group block" aria-label="View project: Arc'teryx — Brand System">
+          <div class="aspect-[16/11] relative bg-gradient-to-br from-[#E8E0D8] to-[#D8CCBC]">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="font-display text-5xl sm:text-6xl font-700 text-white/40 select-none" style="font-weight:700;" aria-hidden="true">Arc'teryx</span>
+            </div>
+            <div class="project-overlay absolute inset-0 flex items-end p-6">
+              <div>
+                <span class="text-[10px] tracking-[0.2em] uppercase text-white/60">Brand Identity · 2023</span>
+                <h3 class="font-display text-xl font-700 text-white mt-1" style="font-weight:700;">Arc'teryx — Brand System</h3>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section id="testimonials" class="py-24 lg:py-32 gradient-radial-glow">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 mb-6 reveal-up">
+          <span class="w-1.5 h-1.5 rounded-full bg-brass" aria-hidden="true"></span>
+          <span class="text-xs font-medium tracking-wide text-slate uppercase">Testimonials</span>
+        </div>
+        <h2 class="section-title font-display font-800 text-balance reveal-up">Words from the people we've worked with.</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Testimonial 1 -->
+        <article class="testimonial-card bg-white rounded-3xl p-8 border border-mist/70 shadow-soft flex flex-col">
+          <div class="flex gap-1 mb-5" aria-label="5 out of 5 stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <blockquote class="text-sm text-slate leading-relaxed flex-1 mb-6">
+            "Lunaris elevated our digital presence beyond what we thought possible. The site is not only beautiful—it's the highest-converting asset we've ever had. A true partner."
+          </blockquote>
+          <div class="flex items-center gap-3 pt-5 border-t border-mist/60">
+            <div class="w-10 h-10 rounded-full gradient-brass flex items-center justify-center text-ink font-display font-700 text-sm" aria-hidden="true" style="font-weight:700;">S</div>
+            <div>
+              <div class="text-sm font-semibold">Sarah Chen</div>
+              <div class="text-xs text-slate">VP Marketing, Sonos</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Testimonial 2 -->
+        <article class="testimonial-card bg-white rounded-3xl p-8 border border-mist/70 shadow-soft flex flex-col">
+          <div class="flex gap-1 mb-5" aria-label="5 out of 5 stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <blockquote class="text-sm text-slate leading-relaxed flex-1 mb-6">
+            "Working with Lunaris felt like having a world-class design team in-house. They understood our brand instantly and delivered work that exceeded every expectation."
+          </blockquote>
+          <div class="flex items-center gap-3 pt-5 border-t border-mist/60">
+            <div class="w-10 h-10 rounded-full gradient-brass flex items-center justify-center text-ink font-display font-700 text-sm" aria-hidden="true" style="font-weight:700;">M</div>
+            <div>
+              <div class="text-sm font-semibold">Marcus Rivera</div>
+              <div class="text-xs text-slate">Founder, Aesop Digital</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Testimonial 3 -->
+        <article class="testimonial-card bg-white rounded-3xl p-8 border border-mist/70 shadow-soft flex flex-col">
+          <div class="flex gap-1 mb-5" aria-label="5 out of 5 stars">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A27A" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <blockquote class="text-sm text-slate leading-relaxed flex-1 mb-6">
+            "The attention to detail is unmatched. Every interaction, every transition—nothing was left to chance. Our new site has become a benchmark in our industry."
+          </blockquote>
+          <div class="flex items-center gap-3 pt-5 border-t border-mist/60">
+            <div class="w-10 h-10 rounded-full gradient-brass flex items-center justify-center text-ink font-display font-700 text-sm" aria-hidden="true" style="font-weight:700;">E</div>
+            <div>
+              <div class="text-sm font-semibold">Elena Kowalski</div>
+              <div class="text-xs text-slate">Creative Director, Monocle</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="py-20 lg:py-28 relative overflow-hidden">
+    <div class="absolute inset-0 gradient-brass opacity-[0.06]" aria-hidden="true"></div>
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="relative rounded-5xl bg-ink overflow-hidden p-10 sm:p-16 lg:p-20 text-center shadow-lift">
+        <div class="absolute top-0 right-0 w-96 h-96 rounded-full gradient-brass opacity-10 blur-3xl -translate-y-1/2 translate-x-1/2" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 rounded-full gradient-brass opacity-[0.07] blur-3xl translate-y-1/2 -translate-x-1/2" aria-hidden="true"></div>
+        <div class="relative">
+          <h2 class="font-display font-800 text-cream text-balance mb-5 reveal-up" style="font-size:clamp(1.9rem,4vw,3.2rem);line-height:1.08;">Let's build something<br class="hidden sm:block" /> extraordinary together.</h2>
+          <p class="text-cream/50 max-w-lg mx-auto mb-9 text-sm sm:text-base leading-relaxed reveal-up">
+            We take on a limited number of engagements each quarter. If you're building something ambitious, we'd love to hear about it.
+          </p>
+          <a href="#contact" class="inline-flex items-center gap-2 rounded-full gradient-brass text-ink px-8 py-4 text-sm font-semibold shadow-brass hover:shadow-[0_12px_40px_-8px_rgba(196,162,122,0.5)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 reveal-up">
+            Start a conversation
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER + CONTACT ============ -->
+  <footer id="contact" class="bg-ink text-cream pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
+        <!-- Brand + Contact Form -->
+        <div class="lg:col-span-6">
+          <div class="flex items-center gap-2.5 mb-6">
+            <span class="w-8 h-8 rounded-full gradient-brass flex items-center justify-center" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B0B0F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </span>
+            <span class="font-display text-lg font-700" style="font-weight:700;">Lunaris</span>
+          </div>
+          <p class="text-cream/50 text-sm leading-relaxed max-w-sm mb-8">
+            A design-led digital studio crafting brands, websites, and products for ambitious companies worldwide.
+          </p>
+
+          <h3 class="font-display text-2xl font-700 mb-6" style="font-weight:700;">Start a project</h3>
+          <!-- Contact Form -->
+          <form id="contact-form" class="space-y-4 max-w-md" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="name" class="sr-only">Full name</label>
+                <input type="text" id="name" name="name" placeholder="Full name" required
+                  class="input-field w-full rounded-xl px-4 py-3.5 text-sm placeholder:text-slate/50 bg-white/5 border border-white/10 text-cream focus:border-brass focus:bg-white/10 focus:ring-0 transition-all duration-300" style="color:#FCFCFD;" />
+              </div>
+              <div>
+                <label for="email" class="sr-only">Email address</label>
+                <input type="email" id="email" name="email" placeholder="Email address" required
+                  class="input-field w-full rounded-xl px-4 py-3.5 text-sm placeholder:text-slate/50 bg-white/5 border border-white/10 text-cream focus:border-brass focus:bg-white/10 focus:ring-0 transition-all duration-300" style="color:#FCFCFD;" />
+              </div>
+            </div>
+            <div>
+              <label for="phone" class="sr-only">Phone number</label>
+              <input type="tel" id="phone" name="phone" placeholder="Phone number (optional)"
+                class="input-field w-full rounded-xl px-4 py-3.5 text-sm placeholder:text-slate/50 bg-white/5 border border-white/10 text-cream focus:border-brass focus:bg-white/10 focus:ring-0 transition-all duration-300" style="color:#FCFCFD;" />
+            </div>
+            <div>
+              <label for="budget" class="sr-only">Budget range</label>
+              <select id="budget" name="budget" class="input-field w-full rounded-xl px-4 py-3.5 text-sm bg-white/5 border border-white/10 text-cream/60 focus:border-brass focus:bg-white/10 focus:ring-0 transition-all duration-300 appearance-none cursor-pointer" style="color:#FCFCFD;">
+                <option value="" disabled selected>Budget range</option>
+                <option value="10-25k">$10,000 — $25,000</option>
+                <option value="25-50k">$25,000 — $50,000</option>
+                <option value="50-100k">$50,000 — $100,000</option>
+                <option value="100k+">$100,000+</option>
+              </select>
+            </div>
+            <div>
+              <label for="message" class="sr-only">Project details</label>
+              <textarea id="message" name="message" placeholder="Tell us about your project" required rows="3"
+                class="input-field w-full rounded-xl px-4 py-3.5 text-sm placeholder:text-slate/50 bg-white/5 border border-white/10 text-cream focus:border-brass focus:bg-white/10 focus:ring-0 transition-all duration-300 resize-none" style="color:#FCFCFD;"></textarea>
+            </div>
+            <button type="submit" class="btn-primary w-full rounded-xl px-6 py-4 text-sm font-semibold !bg-brass !text-ink hover:!bg-[#d4b48e] shadow-brass">
+              Send enquiry
+            </button>
+            <p id="form-status" class="text-xs text-center hidden" role="status"></p>
+            <!-- TODO: connect form action to backend endpoint (Formspree, Netlify, etc.) -->
+          </form>
+        </div>
+
+        <!-- Sitemap columns -->
+        <div class="lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-8 lg:pl-12">
+          <div>
+            <h4 class="text-[11px] tracking-[0.15em] uppercase text-cream/30 font-semibold mb-4">Studio</h4>
+            <ul class="space-y-2.5">
+              <li><a href="#services" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">Services</a></li>
+              <li><a href="#work" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">Work</a></li>
+              <li><a href="#testimonials" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">Testimonials</a></li>
+              <li><a href="#contact" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-[11px] tracking-[0.15em] uppercase text-cream/30 font-semibold mb-4">Social</h4>
+            <ul class="space-y-2.5">
+              <li><a href="#" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">Instagram</a></li>
+              <li><a href="#" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">Dribbble</a></li>
+              <li><a href="#" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">LinkedIn</a></li>
+              <li><a href="#" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">X / Twitter</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-[11px] tracking-[0.15em] uppercase text-cream/30 font-semibold mb-4">Contact</h4>
+            <ul class="space-y-2.5">
+              <li><a href="mailto:hello@lunaris.studio" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">hello@lunaris.studio</a></li>
+              <li><a href="tel:+12125550147" class="text-sm text-cream/60 hover:text-brass transition-colors duration-200">+1 (212) 555-0147</a></li>
+              <li class="text-sm text-cream/40 leading-relaxed">Brooklyn, NY<br />&amp; Remote</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer bottom -->
+      <div class="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-cream/30">&copy; 2024 Lunaris Studio. All rights reserved.</p>
+        <div class="flex items-center gap-5">
+          <a href="#" class="text-xs text-cream/30 hover:text-brass transition-colors duration-200">Privacy Policy</a>
+          <a href="#" class="text-xs text-cream/30 hover:text-brass transition-colors duration-200">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    // === Lucide Icons Init ===
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+
+    // === Register GSAP Plugins ===
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+    }
+
+    // === Hero Split Text Animation ===
+    (function initHeroText() {
+      const lines = document.querySelectorAll('.split-line');
+      if (!lines.length) return;
+      // Small delay to allow fonts to load
+      setTimeout(() => {
+        lines.forEach((line, i) => {
+          setTimeout(() => line.classList.add('revealed'), 150 + i * 140);
+        });
+      }, 300);
+    })();
+
+    // === Scroll Reveal with GSAP ===
+    (function initScrollReveal() {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) {
+        document.querySelectorAll('.reveal-up, .reveal-scale').forEach(el => {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        });
+        return;
+      }
+
+      // Reveal up elements
+      document.querySelectorAll('.reveal-up').forEach((el) => {
+        gsap.fromTo(el,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1, y: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 88%',
+              once: true,
+            },
+            delay: 0.05,
+          }
+        );
+      });
+
+      // Reveal scale elements
+      document.querySelectorAll('.reveal-scale').forEach((el) => {
+        gsap.fromTo(el,
+          { opacity: 0, scale: 0.94 },
+          {
+            opacity: 1, scale: 1,
+            duration: 1.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        );
+      });
+
+      // Parallax on hero floating badge
+      const badge = document.querySelector('.absolute.-top-5.-left-5');
+      if (badge) {
+        gsap.to(badge, {
+          y: -20,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        });
+      }
+    })();
+
+    // === Header Scroll Effect ===
+    (function initHeaderScroll() {
+      const header = document.getElementById('site-header');
+      if (!header) return;
+      let ticking = false;
+
+      function updateHeader() {
+        if (window.scrollY > 30) {
+          header.classList.add('nav-scrolled');
+        } else {
+          header.classList.remove('nav-scrolled');
+        }
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(updateHeader);
+          ticking = true;
+        }
+      }, { passive: true });
+    })();
+
+    // === Mobile Menu ===
+    (function initMobileMenu() {
+      const toggle = document.getElementById('menu-toggle');
+      const close = document.getElementById('menu-close');
+      const menu = document.getElementById('mobile-menu');
+      const links = document.querySelectorAll('.mobile-link');
+      if (!toggle || !menu) return;
+
+      function openMenu() {
+        menu.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+        // Focus first link
+        const firstLink = menu.querySelector('a');
+        if (firstLink) setTimeout(() => firstLink.focus(), 400);
+      }
+
+      function closeMenu() {
+        menu.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+        toggle.focus();
+      }
+
+      toggle.addEventListener('click', openMenu);
+      if (close) close.addEventListener('click', closeMenu);
+
+      links.forEach((link) => {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu.classList.contains('open')) {
+          closeMenu();
+        }
+      });
+    })();
+
+    // === 3D Tilt on Hero Card ===
+    (function initTilt() {
+      const card = document.querySelector('.tilt-card');
+      if (!card) return;
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) return;
+
+      const container = card.parentElement;
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `rotateY(${x * 12 - 6}deg) rotateX(${y * -12 + 3}deg) translateY(-4px)`;
+      });
+
+      container.addEventListener('mouseleave', () => {
+        card.style.transform = 'rotateY(-6deg) rotateX(3deg)';
+      });
+    })();
+
+    // === Form Validation & Submission ===
+    (function initContactForm() {
+      const form = document.getElementById('contact-form');
+      if (!form) return;
+
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
+      const messageInput = document.getElementById('message');
+      const statusEl = document.getElementById('form-status');
+      const submitBtn = form.querySelector('button[type="submit"]');
+
+      function showError(input, message) {
+        input.classList.add('error');
+        input.setAttribute('aria-invalid', 'true');
+        // Remove existing error message
+        const existing = input.parentElement.querySelector('.error-msg');
+        if (existing) existing.remove();
+        const err = document.createElement('p');
+        err.className = 'error-msg text-[11px] text-red-400 mt-1.5';
+        err.textContent = message;
+        input.parentElement.appendChild(err);
+      }
+
+      function clearError(input) {
+        input.classList.remove('error');
+        input.removeAttribute('aria-invalid');
+        const existing = input.parentElement.querySelector('.error-msg');
+        if (existing) existing.remove();
+      }
+
+      // Clear on input
+      [nameInput, emailInput, messageInput].forEach(inp => {
+        if (inp) {
+          inp.addEventListener('input', () => clearError(inp));
+        }
+      });
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        let valid = true;
+
+        // Validate name
+        if (!nameInput.value.trim() || nameInput.value.trim().length < 2) {
+          showError(nameInput, 'Please enter your full name.');
+          valid = false;
+        } else {
+          clearError(nameInput);
+        }
+
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailInput.value.trim() || !emailRegex.test(emailInput.value.trim())) {
+          showError(emailInput, 'Please enter a valid email address.');
+          valid = false;
+        } else {
+          clearError(emailInput);
+        }
+
+        // Validate message
+        if (!messageInput.value.trim() || messageInput.value.trim().length < 10) {
+          showError(messageInput, 'Please tell us a bit about your project (min. 10 characters).');
+          valid = false;
+        } else {
+          clearError(messageInput);
+        }
+
+        if (!valid) return;
+
+        // Simulate submission
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        submitBtn.classList.add('opacity-70');
+
+        const formData = {
+          name: nameInput.value.trim(),
+          email: emailInput.value.trim(),
+          phone: document.getElementById('phone')?.value.trim() || '',
+          budget: document.getElementById('budget')?.value || '',
+          message: messageInput.value.trim(),
+        };
+
+        try {
+          // TODO: connect to real backend endpoint
+          // Example: const response = await fetch('https://formspree.io/f/YOUR_ID', {
+          //   method: 'POST',
+          //   headers: { 'Content-Type': 'application/json' },
+          //   body: JSON.stringify(formData)
+          // });
+          await new Promise(resolve => setTimeout(resolve, 1200));
+
+          // Show success
+          statusEl.textContent = 'Thank you. Your message has been received — we\'ll be in touch within 24 hours.';
+          statusEl.className = 'text-xs text-center text-green-400 mt-2';
+          statusEl.classList.remove('hidden');
+          form.reset();
+
+          setTimeout(() => {
+            statusEl.classList.add('hidden');
+          }, 6000);
+        } catch (err) {
+          statusEl.textContent = 'Something went wrong. Please try again or email us directly.';
+          statusEl.className = 'text-xs text-center text-red-400 mt-2';
+          statusEl.classList.remove('hidden');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          submitBtn.classList.remove('opacity-70');
+        }
+      });
+    })();
+
+    // === Smooth Anchor Scroll (account for fixed header) ===
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const headerOffset = 80;
+          const elementPosition = target.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
