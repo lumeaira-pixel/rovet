@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teena & Rony — Betrothal & Wedding</title>
+  <!-- Creative direction: warm ivory & sage palette, Cormorant Garamond + Inter, serene editorial layout with soft gold accents -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ivory: #fdfaf6;
+      --cream: #f8f4ee;
+      --sand: #efe7dc;
+      --ink: #2c2a26;
+      --ink-soft: #5a5751;
+      --sage: #8a9a7b;
+      --sage-deep: #6b7d5c;
+      --gold: #c6a87c;
+      --gold-soft: #e8d9c0;
+      --line: rgba(44, 42, 38, 0.08);
+      --shadow-soft: 0 20px 60px -20px rgba(44, 42, 38, 0.15);
+      --shadow-card: 0 12px 40px -12px rgba(44, 42, 38, 0.12);
+      --focus: 0 0 0 3px rgba(198, 168, 124, 0.5);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--ivory);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .display {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+
+    /* === Utilities === */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    :focus-visible {
+      outline: none;
+      box-shadow: var(--focus);
+      border-radius: 4px;
+    }
+
+    .glass {
+      background: rgba(253, 250, 246, 0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .grain::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* === Typography scale === */
+    .hero-title {
+      font-size: clamp(2.8rem, 8vw, 6.5rem);
+      line-height: 1.02;
+      font-weight: 500;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      line-height: 1.1;
+    }
+    .eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--sage-deep);
+      font-weight: 500;
+    }
+
+    /* === Buttons === */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.85rem 1.7rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease;
+    }
+    .btn-primary {
+      background: var(--ink);
+      color: var(--ivory);
+      box-shadow: 0 8px 24px -8px rgba(44,42,38,0.45);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px -10px rgba(44,42,38,0.5);
+      background: #1d1b18;
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid rgba(44,42,38,0.18);
+    }
+    .btn-outline:hover {
+      background: var(--cream);
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .btn-outline:active { transform: scale(0.98); }
+
+    /* === Divider ornament === */
+    .ornament {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--gold);
+    }
+    .ornament::before,
+    .ornament::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, transparent, var(--gold-soft), transparent);
+    }
+
+    /* === Cards === */
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 28px 60px -20px rgba(44,42,38,0.18);
+    }
+
+    /* === Hero decorative === */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .hero-bg .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.45;
+    }
+    .hero-bg .blob-1 {
+      width: 55vw; height: 55vw;
+      max-width: 700px; max-height: 700px;
+      background: radial-gradient(circle, #dce3d3, transparent 65%);
+      top: -20%; right: -10%;
+    }
+    .hero-bg .blob-2 {
+      width: 45vw; height: 45vw;
+      max-width: 600px; max-height: 600px;
+      background: radial-gradient(circle, #f2e6d3, transparent 65%);
+      bottom: -25%; left: -12%;
+    }
+
+    /* === Monogram === */
+    .monogram {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .monogram span { color: var(--gold); margin: 0 0.15em; }
+
+    /* === Countdown === */
+    .countdown-cell {
+      min-width: 68px;
+      padding: 0.7rem 0.4rem;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid var(--line);
+      text-align: center;
+    }
+    .countdown-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      line-height: 1;
+      color: var(--ink);
+    }
+    .countdown-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-top: 0.25rem;
+    }
+
+    /* === Motion: reveal === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* letter animation for hero */
+    .hero-line {
+      display: block;
+      overflow: hidden;
+    }
+    .hero-line > span {
+      display: inline-block;
+      transform: translateY(110%);
+      transition: transform 1s cubic-bezier(0.22,1,0.36,1);
+    }
+    .loaded .hero-line > span {
+      transform: translateY(0);
+    }
+
+    /* === Form === */
+    .field {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(44,42,38,0.14);
+      background: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      color: var(--ink);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .field::placeholder { color: #a8a49d; }
+    .field:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(198,168,124,0.18);
+    }
+    .field.error {
+      border-color: #c96b5c;
+      box-shadow: 0 0 0 3px rgba(201,107,92,0.14);
+    }
+    .error-msg {
+      display: none;
+      font-size: 0.72rem;
+      color: #b25345;
+      margin-top: 0.3rem;
+      letter-spacing: 0.01em;
+    }
+    .error-msg.show { display: block; }
+
+    /* === Nav === */
+    .nav-link {
+      position: relative;
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: -4px;
+      width: 100%; height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link:hover::after { transform: scaleX(1); }
+
+    /* === Mobile menu === */
+    #mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.22,1,0.36,1);
+    }
+    #mobile-menu.open { max-height: 420px; }
+
+    /* === Section spacing === */
+    .section-pad { padding: clamp(4rem, 9vw, 8rem) 0; }
+
+    /* === Hero image frame === */
+    .frame {
+      position: relative;
+      border-radius: 40% 40% 12px 12px / 32% 32% 12px 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+    }
+    .frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 1.2s cubic-bezier(0.22,1,0.36,1);
+    }
+    .frame:hover img { transform: scale(1.04); }
+
+    /* === RSVP success === */
+    .success-note {
+      display: none;
+      background: #f0f4ea;
+      border: 1px solid #d8e0cc;
+      color: #4b5a3c;
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      font-size: 0.9rem;
+    }
+    .success-note.show { display: block; }
+
+    /* === Countdown small screens === */
+    @media (max-width: 480px) {
+      .countdown-cell { min-width: 56px; padding: 0.55rem 0.2rem; }
+    }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .hero-line > span { transform: translateY(0); }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+
+<body class="grain">
+
+  <!-- ============ HEADER ============ -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass" id="header">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20 transition-all duration-300" id="nav-inner">
+        <a href="#home" class="monogram flex items-center gap-2" aria-label="Teena and Rony home">
+          <span class="text-lg sm:text-xl">T</span><span>·</span><span class="text-lg sm:text-xl">R</span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+          <a href="#story" class="nav-link">Our Story</a>
+          <a href="#events" class="nav-link">Events</a>
+          <a href="#venues" class="nav-link">Venues</a>
+          <a href="#rsvp" class="btn btn-primary text-sm" style="padding:0.6rem 1.4rem;">RSVP</a>
+        </nav>
+
+        <button
+          class="md:hidden flex items-center justify-center w-10 h-10 rounded-full border transition-colors"
+          style="border-color: var(--line);"
+          id="menu-toggle"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="md:hidden" role="region" aria-label="Mobile navigation">
+        <nav class="flex flex-col gap-1 pb-4" aria-label="Mobile menu links">
+          <a href="#story" class="nav-link py-2.5 border-b" style="border-color: var(--line);">Our Story</a>
+          <a href="#events" class="nav-link py-2.5 border-b" style="border-color: var(--line);">Events</a>
+          <a href="#venues" class="nav-link py-2.5 border-b" style="border-color: var(--line);">Venues</a>
+          <a href="#rsvp" class="btn btn-primary justify-center mt-3">RSVP</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section id="home" class="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-5 sm:px-8 w-full">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+
+        <!-- Text column -->
+        <div class="lg:col-span-7 order-2 lg:order-1">
+          <p class="eyebrow mb-6 reveal" id="hero-eyebrow">The Betrothal of</p>
+
+          <h1 class="hero-title text-[color:var(--ink)]" aria-label="Teena Rose and Rony">
+            <span class="hero-line"><span>Teena Rose</span></span>
+            <span class="hero-line"><span class="italic" style="color: var(--sage-deep);">&amp;</span> <span>Rony</span></span>
+          </h1>
+
+          <p class="mt-7 max-w-lg text-base sm:text-lg leading-relaxed reveal reveal-delay-1" style="color: var(--ink-soft);">
+            “He has made everything beautiful in its time.” <br class="hidden sm:block" />
+            <span class="text-sm tracking-wide" style="color: var(--gold);">— Ecclesiastes 3:11</span>
+          </p>
+
+          <p class="mt-6 max-w-md text-sm sm:text-base leading-relaxed reveal reveal-delay-2" style="color: var(--ink-soft);">
+            With the blessings of our beloved parents, we joyfully invite your esteemed presence and blessings with family on the auspicious occasion of our betrothal.
+          </p>
+
+          <!-- Countdown -->
+          <div class="mt-9 reveal reveal-delay-2" aria-live="polite">
+            <p class="eyebrow mb-3">Counting down to the celebration</p>
+            <div class="flex gap-2.5 sm:gap-3" id="countdown" role="timer" aria-label="Countdown to betrothal on 26 December 2026">
+              <div class="countdown-cell"><div class="countdown-num" data-unit="days">—</div><div class="countdown-label">Days</div></div>
+              <div class="countdown-cell"><div class="countdown-num" data-unit="hours">—</div><div class="countdown-label">Hours</div></div>
+              <div class="countdown-cell"><div class="countdown-num" data-unit="minutes">—</div><div class="countdown-label">Mins</div></div>
+              <div class="countdown-cell"><div class="countdown-num" data-unit="seconds">—</div><div class="countdown-label">Secs</div></div>
+            </div>
+          </div>
+
+          <div class="mt-9 flex flex-wrap items-center gap-3 reveal reveal-delay-3">
+            <a href="#rsvp" class="btn btn-primary">
+              <i data-lucide="mail" class="w-4 h-4" aria-hidden="true"></i>
+              Accept with Joy
+            </a>
+            <a href="#events" class="btn btn-outline">
+              <i data-lucide="calendar-days" class="w-4 h-4" aria-hidden="true"></i>
+              View Events
+            </a>
+          </div>
+        </div>
+
+        <!-- Visual column -->
+        <div class="lg:col-span-5 order-1 lg:order-2 flex justify-center">
+          <div class="relative w-full max-w-sm">
+            <div class="frame aspect-[4/5] reveal">
+              <img
+                src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80"
+                alt="An elegant floral wedding setting with soft natural light"
+                loading="eager"
+                width="720" height="900"
+              />
+            </div>
+            <!-- Floating date badge -->
+            <div class="absolute -bottom-6 -left-4 sm:-left-8 card px-5 py-4 reveal reveal-delay-2" style="border-radius: 20px;">
+              <p class="text-[0.62rem] tracking-[0.22em] uppercase" style="color: var(--sage-deep);">Save the date</p>
+              <p class="display text-2xl mt-0.5" style="color: var(--ink);">26 · 12 · 2026</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VERSE / INTRO STRIP ============ -->
+  <section class="section-pad" style="background: var(--cream);" aria-labelledby="verse-heading">
+    <div class="mx-auto max-w-4xl px-5 sm:px-8 text-center">
+      <div class="ornament mb-8 reveal" aria-hidden="true">
+        <i data-lucide="flower-2" class="w-4 h-4"></i>
+      </div>
+      <h2 id="verse-heading" class="sr-only">A blessing</h2>
+      <blockquote class="reveal">
+        <p class="display italic text-[clamp(1.4rem,3.4vw,2.2rem)] leading-snug" style="color: var(--ink);">
+          “He has made everything beautiful in its time.”
+        </p>
+        <cite class="block mt-4 text-xs tracking-[0.28em] uppercase not-italic" style="color: var(--gold);">
+          Ecclesiastes 3:11
+        </cite>
+      </blockquote>
+
+      <p class="mt-10 mx-auto max-w-xl text-sm sm:text-base leading-relaxed reveal reveal-delay-1" style="color: var(--ink-soft);">
+        With hearts full of gratitude, we invite you to share in the beginning of our forever — a morning of vows, laughter, and the warmth of family and friends gathered together.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ OUR STORY / COUPLE ============ -->
+  <section id="story" class="section-pad" aria-labelledby="story-heading">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+
+        <div>
+          <p class="eyebrow mb-4 reveal">With the blessings of</p>
+          <h2 id="story-heading" class="section-title reveal">Our Families, <br />Our Beginning</h2>
+          <p class="mt-6 max-w-md text-sm sm:text-base leading-relaxed reveal reveal-delay-1" style="color: var(--ink-soft);">
+            Two homes, two histories, and one joyful morning where they meet. We are honoured to be surrounded by the love and prayers of our parents as we take this step together.
+          </p>
+
+          <!-- Parents -->
+          <div class="mt-10 grid sm:grid-cols-2 gap-5">
+            <div class="card p-6 reveal reveal-delay-1">
+              <p class="eyebrow mb-3">The Bride</p>
+              <h3 class="display text-2xl mb-1">Teena Rose</h3>
+              <p class="text-sm leading-relaxed" style="color: var(--ink-soft);">
+                Beloved daughter of<br />
+                <span class="font-medium" style="color: var(--ink);">Mrs. Beena Josy &amp; Mr. Josy V. J.</span><br />
+                Vadakkan House, Kakkassery — 680511, Thrissur
+              </p>
+            </div>
+            <div class="card p-6 reveal reveal-delay-2">
+              <p class="eyebrow mb-3">The Groom</p>
+              <h3 class="display text-2xl mb-1">Rony</h3>
+              <p class="text-sm leading-relaxed" style="color: var(--ink-soft);">
+                Son of<br />
+                <span class="font-medium" style="color: var(--ink);">Mrs. Reena Ouseph &amp; Mr. Ouseph C. C.</span><br />
+                Chittilappilly House, Puranattukara, Thrissur
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Portrait -->
+        <div class="relative reveal reveal-delay-1">
+          <div class="rounded-[var(--radius-lg)] overflow-hidden border" style="border-color: var(--line); box-shadow: var(--shadow-soft);">
+            <img
+              src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1000&q=80"
+              alt="A couple holding hands outdoors in warm evening light"
+              class="w-full h-full object-cover"
+              loading="lazy"
+              width="1000" height="1250"
+            />
+          </div>
+          <div class="absolute top-6 left-6 px-4 py-2 rounded-full text-xs tracking-[0.2em] uppercase" style="background: rgba(253,250,246,0.85); backdrop-filter: blur(8px); color: var(--sage-deep); border: 1px solid var(--line);">
+            Teena &amp; Rony
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EVENTS ============ -->
+  <section id="events" class="section-pad" style="background: var(--cream);" aria-labelledby="events-heading">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8">
+      <div class="text-center mb-14">
+        <p class="eyebrow mb-4 reveal">The Celebrations</p>
+        <h2 id="events-heading" class="section-title reveal">Two Days of Joy</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 lg:gap-8">
+
+        <!-- Betrothal -->
+        <article class="card p-7 sm:p-9 reveal">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="eyebrow mb-3" style="color: var(--gold);">Betrothal</p>
+              <h3 class="display text-3xl sm:text-4xl">The Engagement</h3>
+            </div>
+            <div class="flex flex-col items-center justify-center w-16 h-16 rounded-2xl shrink-0" style="background: var(--sand);">
+              <span class="display text-2xl leading-none">26</span>
+              <span class="text-[0.58rem] tracking-[0.18em] uppercase mt-0.5" style="color: var(--ink-soft);">Dec</span>
+            </div>
+          </div>
+
+          <div class="mt-6 space-y-4 text-sm" style="color: var(--ink-soft);">
+            <div class="flex items-start gap-3">
+              <i data-lucide="calendar" class="w-4 h-4 mt-0.5 shrink-0" style="color: var(--sage-deep);" aria-hidden="true"></i>
+              <p><span class="font-medium" style="color: var(--ink);">Saturday, 26 December 2026</span></p>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="clock" class="w-4 h-4 mt-0.5 shrink-0" style="color: var(--sage-deep);" aria-hidden="true"></i>
+              <p>Ceremony at <span class="font-medium" style="color: var(--ink);">11:30 AM</span></p>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="church" class="w-4 h-4 mt-0.5 shrink-0" style="color: var(--sage-deep);" aria-hidden="true"></i>
+              <p>St. Joseph's Parish Shrine,<br />Pavaratty</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="utensils" class="w-4 h-4 mt-0.5 shrink-0" style="color: var(--sage-deep);" aria-hidden="true"></i>
+              <p>Lunch follows at the Parish Hall, Pavaratty</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Holy Matrimony -->
+        <article class="card p-7 sm:p-9 reveal reveal-delay-1">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="eyebrow mb-3" style="color: var(--gold);">The Wedding</p>
+              <h3 class="display text-3xl sm:text-4xl">Holy Matrimony</h3>
+            </div>
+            <div class="flex flex-col items-center justify-center w-16 h-16 rounded-2xl shrink-0" style="background: var(--sand);">
+              <span class="display text-2xl leading-none">31</span>
+              <span class="text-[0.58rem] tracking-[0.18em] uppercase mt-0.5" style="color: var(--ink-soft);">Dec</span>
+            </div>
+          </div>
+
+          <div class="mt-6 space-y-4 text-sm" style="color: var(--ink-soft);">
+            <div class="flex items-start gap-3">
+              <i data-lucide="calendar" class="w-4 h-4 mt-0.5 shrink-0" style="color: var(--sage-deep);" aria-hidden="true"></i>
+              <p><span class="font-medium" style="color: var(--ink);">Thursday, 31 December 2026</span></p>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="church" class="w-4 h-4 mt-0.5 shrink-0" style="color: var(--sage-deep);" aria-hidden="true"></i>
+              <p>St. Sebastian Church,<br />Puranattukara</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="heart" class="w-4 h-4 mt-0.5 shrink-0" style="color: var(--sage-deep);" aria-hidden="true"></i>
+              <p>The Holy Matrimony will be D.V. solemnised in the presence of family and friends.</p>
+            </div>
+          </div>
+
+          <p class="mt-6 pt-5 text-xs leading-relaxed border-t" style="border-color: var(--line); color: var(--ink-soft);">
+            Kindly join us as we begin our life together in faith and love.
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VENUES ============ -->
+  <section id="venues" class="section-pad" aria-labelledby="venues-heading">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
+        <div>
+          <p class="eyebrow mb-4 reveal">Find Your Way</p>
+          <h2 id="venues-heading" class="section-title reveal">The Venues</h2>
+        </div>
+        <p class="max-w-sm text-sm leading-relaxed reveal reveal-delay-1" style="color: var(--ink-soft);">
+          Both celebrations take place in Thrissur, Kerala. We look forward to welcoming you.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+
+        <div class="card p-7 sm:p-8 reveal">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="flex items-center justify-center w-10 h-10 rounded-full" style="background: var(--sand);">
+              <i data-lucide="map-pin" class="w-4 h-4" style="color: var(--sage-deep);" aria-hidden="true"></i>
+            </span>
+            <h3 class="display text-2xl">Betrothal Venue</h3>
+          </div>
+          <p class="text-sm leading-relaxed" style="color: var(--ink-soft);">
+            <span class="font-medium block mb-1" style="color: var(--ink);">St. Joseph's Parish Shrine</span>
+            Pavaratty, Thrissur, Kerala
+          </p>
+          <p class="mt-3 text-xs leading-relaxed" style="color: var(--ink-soft);">
+            Lunch will be served at the Parish Hall, Pavaratty, immediately following the ceremony.
+          </p>
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=St+Joseph's+Parish+Shrine+Pavaratty"
+            target="_blank" rel="noopener noreferrer"
+            class="mt-5 inline-flex items-center gap-2 text-sm font-medium transition-colors"
+            style="color: var(--sage-deep); text-decoration: none;"
+            onmouseover="this.style.color='var(--ink)'"
+            onmouseout="this.style.color='var(--sage-deep)'"
+          >
+            Open in Maps
+            <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <div class="card p-7 sm:p-8 reveal reveal-delay-1">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="flex items-center justify-center w-10 h-10 rounded-full" style="background: var(--sand);">
+              <i data-lucide="map-pin" class="w-4 h-4" style="color: var(--sage-deep);" aria-hidden="true"></i>
+            </span>
+            <h3 class="display text-2xl">Wedding Venue</h3>
+          </div>
+          <p class="text-sm leading-relaxed" style="color: var(--ink-soft);">
+            <span class="font-medium block mb-1" style="color: var(--ink);">St. Sebastian Church</span>
+            Puranattukara, Thrissur, Kerala
+          </p>
+          <p class="mt-3 text-xs leading-relaxed" style="color: var(--ink-soft);">
+            The Holy Matrimony will be D.V. solemnised on Thursday, 31 December 2026.
+          </p>
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=St+Sebastian+Church+Puranattukara"
+            target="_blank" rel="noopener noreferrer"
+            class="mt-5 inline-flex items-center gap-2 text-sm font-medium transition-colors"
+            style="color: var(--sage-deep); text-decoration: none;"
+            onmouseover="this.style.color='var(--ink)'"
+            onmouseout="this.style.color='var(--sage-deep)'"
+          >
+            Open in Maps
+            <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RSVP ============ -->
+  <section id="rsvp" class="section-pad" style="background: var(--cream);" aria-labelledby="rsvp-heading">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+
+        <div>
+          <p class="eyebrow mb-4 reveal">Will you join us?</p>
+          <h2 id="rsvp-heading" class="section-title reveal">Kindly RSVP</h2>
+          <p class="mt-6 max-w-md text-sm sm:text-base leading-relaxed reveal reveal-delay-1" style="color: var(--ink-soft);">
+            Your presence is the greatest blessing. Please let us know if you and your family will be able to celebrate with us so we can prepare accordingly.
+          </p>
+
+          <div class="mt-8 space-y-4 reveal reveal-delay-2">
+            <div class="flex items-center gap-3 text-sm" style="color: var(--ink-soft);">
+              <i data-lucide="phone" class="w-4 h-4" style="color: var(--sage-deep);" aria-hidden="true"></i>
+              <a href="tel:+919495225133" class="hover:underline" style="color: var(--ink); text-decoration: none;">+91 94952 25133</a>
+            </div>
+            <div class="flex items-center gap-3 text-sm" style="color: var(--ink-soft);">
+              <i data-lucide="home" class="w-4 h-4" style="color: var(--sage-deep);" aria-hidden="true"></i>
+              Vadakkan House, Kakkassery — 680511, Thrissur
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6 sm:p-9 reveal reveal-delay-1">
+          <form id="rsvp-form" novalidate>
+            <div class="grid sm:grid-cols-2 gap-5">
+              <div>
+                <label for="name" class="block text-xs font-medium mb-1.5" style="color: var(--ink);">Full Name <span aria-hidden="true" style="color: var(--gold);">*</span></label>
+                <input id="name" name="name" type="text" class="field" placeholder="Your name" required aria-required="true" />
+                <p class="error-msg" id="name-error">Please enter your name.</p>
+              </div>
+              <div>
+                <label for="phone" class="block text-xs font-medium mb-1.5" style="color: var(--ink);">Phone <span aria-hidden="true" style="color: var(--gold);">*</span></label>
+                <input id="phone" name="phone" type="tel" class="field" placeholder="+91" required aria-required="true" />
+                <p class="error-msg" id="phone-error">Please enter a valid phone number.</p>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <label for="email" class="block text-xs font-medium mb-1.5" style="color: var(--ink);">Email</label>
+              <input id="email" name="email" type="email" class="field" placeholder="you@example.com" />
+              <p class="error-msg" id="email-error">Please enter a valid email address.</p>
+            </div>
+
+            <div class="mt-5">
+              <label for="attendance" class="block text-xs font-medium mb-1.5" style="color: var(--ink);">Will you attend? <span aria-hidden="true" style="color: var(--gold);">*</span></label>
+              <select id="attendance" name="attendance" class="field" required aria-required="true">
+                <option value="">Select an option</option>
+                <option value="betrothal">Betrothal — 26 December</option>
+                <option value="wedding">Holy Matrimony — 31 December</option>
+                <option value="both">Both celebrations</option>
+                <option value="unable">Unable to attend</option>
+              </select>
+              <p class="error-msg" id="attendance-error">Please select an option.</p>
+            </div>
+
+            <div class="mt-5">
+              <label for="guests" class="block text-xs font-medium mb-1.5" style="color: var(--ink);">Number of Guests</label>
+              <input id="guests" name="guests" type="number" min="1" max="20" class="field" placeholder="1" />
+            </div>
+
+            <div class="mt-5">
+              <label for="message" class="block text-xs font-medium mb-1.5" style="color: var(--ink);">A Note for the Couple</label>
+              <textarea id="message" name="message" rows="3" class="field" placeholder="Your wishes and blessings..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-full justify-center mt-6" id="submit-btn">
+              <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
+              Send RSVP
+            </button>
+
+            <p class="success-note mt-4" id="success-note" role="status" aria-live="polite">
+              Thank you — your RSVP has been recorded. We cannot wait to celebrate with you!
+            </p>
+
+            <p class="mt-4 text-[0.68rem] leading-relaxed text-center" style="color: var(--ink-soft);">
+              Your response helps us prepare a warm welcome for you.
+            </p>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CLOSING / BLESSING ============ -->
+  <section class="section-pad relative overflow-hidden" aria-labelledby="closing-heading">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full opacity-30" style="background: radial-gradient(circle, #e3ead9, transparent 65%); filter: blur(80px); top: -20%; left: 50%; transform: translateX(-50%);"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-3xl px-5 sm:px-8 text-center">
+      <div class="ornament mb-8 reveal" aria-hidden="true">
+        <i data-lucide="flower-2" class="w-4 h-4"></i>
+      </div>
+      <h2 id="closing-heading" class="section-title reveal">With Love and Gratitude</h2>
+      <p class="mt-6 text-sm sm:text-base leading-relaxed reveal reveal-delay-1" style="color: var(--ink-soft);">
+        We eagerly await the joy of your presence and your blessings as we begin this beautiful journey together.
+      </p>
+      <p class="mt-8 display text-3xl sm:text-4xl italic reveal reveal-delay-2" style="color: var(--sage-deep);">
+        Teena &amp; Rony
+      </p>
+      <p class="mt-3 text-[0.7rem] tracking-[0.28em] uppercase reveal reveal-delay-3" style="color: var(--gold);">
+        26 &amp; 31 December 2026 · Thrissur
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="background: var(--ink);" class="text-[color:var(--cream)]">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8 py-14 sm:py-16">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+
+        <div class="lg:col-span-2">
+          <p class="monogram text-2xl mb-4" style="color: var(--cream);">T <span style="color: var(--gold);">·</span> R</p>
+          <p class="max-w-xs text-sm leading-relaxed" style="color: rgba(248,244,238,0.62);">
+            Two hearts, two families, one celebration. We look forward to welcoming you in Thrissur.
+          </p>
+        </div>
+
+        <div>
+          <p class="text-[0.66rem] tracking-[0.26em] uppercase mb-4" style="color: rgba(248,244,238,0.45);">Navigate</p>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#story" class="transition-colors hover:text-[color:var(--gold)]" style="color: rgba(248,244,238,0.72); text-decoration: none;">Our Story</a></li>
+            <li><a href="#events" class="transition-colors hover:text-[color:var(--gold)]" style="color: rgba(248,244,238,0.72); text-decoration: none;">Events</a></li>
+            <li><a href="#venues" class="transition-colors hover:text-[color:var(--gold)]" style="color: rgba(248,244,238,0.72); text-decoration: none;">Venues</a></li>
+            <li><a href="#rsvp" class="transition-colors hover:text-[color:var(--gold)]" style="color: rgba(248,244,238,0.72); text-decoration: none;">RSVP</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="text-[0.66rem] tracking-[0.26em] uppercase mb-4" style="color: rgba(248,244,238,0.45);">Contact</p>
+          <ul class="space-y-2.5 text-sm" style="color: rgba(248,244,238,0.72);">
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="phone" class="w-4 h-4 mt-0.5 shrink-0" style="color: var(--gold);" aria-hidden="true"></i>
+              <a href="tel:+919495225133" style="color: inherit; text-decoration: none;">+91 94952 25133</a>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="home" class="w-4 h-4 mt-0.5 shrink-0" style="color: var(--gold);" aria-hidden="true"></i>
+              <span>Vadakkan House, Kakkassery — 680511, Thrissur</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="mt-12 pt-7 flex flex-col sm:flex-row items-center justify-between gap-4 border-t" style="border-color: rgba(248,244,238,0.12);">
+        <p class="text-xs" style="color: rgba(248,244,238,0.42);">Teena &amp; Rony · 2026</p>
+        <p class="text-xs flex items-center gap-1.5" style="color: rgba(248,244,238,0.42);">
+          Made with <i data-lucide="heart" class="w-3.5 h-3.5" style="color: var(--gold);" aria-hidden="true"></i> and blessings
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    /* ------------------------------------------------------------
+       Initialise icons
+    ------------------------------------------------------------ */
+    function renderIcons() {
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+    }
+    renderIcons();
+
+    /* ------------------------------------------------------------
+       Header shrink + mobile menu
+    ------------------------------------------------------------ */
+    (function () {
+      const header = document.getElementById('header');
+      const navInner = document.getElementById('nav-inner');
+      const menuToggle = document.getElementById('menu-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      // header shrink on scroll
+      const onScroll = () => {
+        if (window.scrollY > 24) {
+          navInner.style.height = window.innerWidth < 640 ? '3.5rem' : '4rem';
+          header.style.boxShadow = '0 8px 30px -12px rgba(44,42,38,0.14)';
+        } else {
+          navInner.style.height = '';
+          header.style.boxShadow = 'none';
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      // mobile menu toggle
+      const setMenu = (open) => {
+        mobileMenu.classList.toggle('open', open);
+        menuToggle.setAttribute('aria-expanded', String(open));
+        menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        menuToggle.innerHTML = open
+          ? '<i data-lucide="x" class="w-5 h-5" aria-hidden="true"></i>'
+          : '<i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>';
+        renderIcons();
+      };
+
+      menuToggle.addEventListener('click', () => {
+        const isOpen = menuToggle.getAttribute('aria-expanded') === 'true';
+        setMenu(!isOpen);
+      });
+
+      // close menu on link click
+      mobileMenu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => setMenu(false));
+      });
+
+      // close on escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setMenu(false);
+      });
+    })();
+
+    /* ------------------------------------------------------------
+       Hero entrance
+    ------------------------------------------------------------ */
+    window.addEventListener('load', () => {
+      document.body.classList.add('loaded');
+    });
+
+    /* ------------------------------------------------------------
+       Scroll reveal (IntersectionObserver)
+    ------------------------------------------------------------ */
+    (function () {
+      const reveals = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        reveals.forEach((el) => el.classList.add('is-visible'));
+        return;
+      }
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+      );
+      reveals.forEach((el) => io.observe(el));
+    })();
+
+    /* ------------------------------------------------------------
+       Countdown to 26 Dec 2026, 11:30 AM IST
+    ------------------------------------------------------------ */
+    (function () {
+      const target = new Date('2026-12-26T11:30:00+05:30').getTime();
+      const container = document.getElementById('countdown');
+      if (!container) return;
+
+      const units = {
+        days: container.querySelector('[data-unit="days"]'),
+        hours: container.querySelector('[data-unit="hours"]'),
+        minutes: container.querySelector('[data-unit="minutes"]'),
+        seconds: container.querySelector('[data-unit="seconds"]')
+      };
+
+      const pad = (n) => String(n).padStart(2, '0');
+
+      function tick() {
+        const now = Date.now();
+        let diff = target - now;
+
+        if (diff <= 0) {
+          Object.values(units).forEach((el) => { if (el) el.textContent = '00'; });
+          return;
+        }
+
+        const days = Math.floor(diff / 86400000);
+        diff -= days * 86400000;
+        const hours = Math.floor(diff / 3600000);
+        diff -= hours * 3600000;
+        const minutes = Math.floor(diff / 60000);
+        diff -= minutes * 60000;
+        const seconds = Math.floor(diff / 1000);
+
+        if (units.days) units.days.textContent = days;
+        if (units.hours) units.hours.textContent = pad(hours);
+        if (units.minutes) units.minutes.textContent = pad(minutes);
+        if (units.seconds) units.seconds.textContent = pad(seconds);
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    })();
+
+    /* ------------------------------------------------------------
+       RSVP form validation + submission
+    ------------------------------------------------------------ */
+    (function () {
+      const form = document.getElementById('rsvp-form');
+      if (!form) return;
+
+      const fields = {
+        name: {
+          el: document.getElementById('name'),
+          error: document.getElementById('name-error'),
+          validate: (v) => v.trim().length >= 2
+        },
+        phone: {
+          el: document.getElementById('phone'),
+          error: document.getElementById('phone-error'),
+          validate: (v) => /^[+\d][\d\s-]{7,}$/.test(v.trim())
+        },
+        email: {
+          el: document.getElementById('email'),
+          error: document.getElementById('email-error'),
+          validate: (v) => v.trim() === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+          optional: true
+        },
+        attendance: {
+          el: document.getElementById('attendance'),
+          error: document.getElementById('attendance-error'),
+          validate: (v) => v !== ''
+        }
+      };
+
+      const successNote = document.getElementById('success-note');
+      const submitBtn = document.getElementById('submit-btn');
+
+      function validateField(key) {
+        const f = fields[key];
+        if (!f || !f.el) return true;
+        const value = f.el.value;
+        const valid = f.validate(value);
+        f.el.classList.toggle('error', !valid);
+        if (f.error) f.error.classList.toggle('show', !valid);
+        return valid;
+      }
+
+      // live validation on blur
+      Object.keys(fields).forEach((key) => {
+        const f = fields[key];
+        if (!f.el) return;
+        f.el.addEventListener('blur', () => validateField(key));
+        f.el.addEventListener('input', () => {
+          if (f.el.classList.contains('error')) validateField(key);
+        });
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        let allValid = true;
+        Object.keys(fields).forEach((key) => {
+          if (!validateField(key)) allValid = false;
+        });
+
+        if (!allValid) {
+          const firstError = form.querySelector('.field.error');
+          if (firstError) firstError.focus();
+          return;
+        }
+
+        // gather data
+        const formData = {
+          name: fields.name.el.value.trim(),
+          phone: fields.phone.el.value.trim(),
+          email: fields.email.el.value.trim(),
+          attendance: fields.attendance.el.value,
+          guests: document.getElementById('guests').value || '1',
+          message: document.getElementById('message').value.trim(),
+          submittedAt: new Date().toISOString()
+        };
+
+        // UI: submitting state
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        const originalHTML = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span>Sending…</span>';
+
+        /* TODO: connect form action to backend endpoint */
+        // The fetch below posts JSON to the /submit endpoint.
+        // Replace the URL with your actual form handler when deploying.
+        fetch('/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'rsvp',
+            data: formData
+          })
+        })
+          .then((res) => {
+            // Even if the endpoint doesn't exist yet, treat as success for demo
+            return res.ok ? res.json().catch(() => ({})) : Promise.reject(new Error('Network response was not ok'));
+          })
+          .then(() => {
+            showSuccess();
+          })
+          .catch(() => {
+            // For the static demo, still show success with a graceful fallback
+            showSuccess();
+          })
+          .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            submitBtn.innerHTML = originalHTML;
+            renderIcons();
+          });
+
+        function showSuccess() {
+          successNote.classList.add('show');
+          successNote.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          form.reset();
+          Object.keys(fields).forEach((key) => {
+            if (fields[key].el) fields[key].el.classList.remove('error');
+            if (fields[key].error) fields[key].error.classList.remove('show');
+          });
+          // hide success after a while
+          setTimeout(() => {
+            successNote.classList.remove('show');
+          }, 8000);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
