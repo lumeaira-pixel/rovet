@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Deny & Nayla · Save the Date</title>
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Tailwind CDN + config (for utility classes, kept minimal) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FAF7F2',
+            gold: '#C5A059',
+            charcoal: '#2C2A29',
+            'gold-light': '#DBC08A',
+          },
+          fontFamily: {
+            playfair: ['"Playfair Display"', 'serif'],
+            montserrat: ['Montserrat', 'sans-serif'],
+          },
+          boxShadow: {
+            'lux': '0 25px 40px -15px rgba(0,0,0,0.08), 0 10px 20px -10px rgba(197,160,89,0.15)',
+            'glass': '0 8px 32px rgba(0,0,0,0.04)',
+          }
+        }
+      }
+    }
+  </script>
+  <!-- GSAP for scroll animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --cream: #FAF7F2;
+      --gold: #C5A059;
+      --gold-light: #DBC08A;
+      --charcoal: #2C2A29;
+      --glass-bg: rgba(255, 255, 255, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.6);
+      --shadow-ambient: 0 20px 35px -10px rgba(0, 0, 0, 0.05);
+      --shadow-gold: 0 8px 20px -8px rgba(197, 160, 89, 0.3);
+      --font-serif: 'Playfair Display', serif;
+      --font-sans: 'Montserrat', sans-serif;
+    }
+
+    /* === Base & Reset === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--cream);
+      color: var(--charcoal);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: overflow 0.3s ease;
+    }
+
+    body.locked {
+      overflow: hidden;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    /* === Utility / Tailwind overrides === */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-ambient);
+    }
+
+    .gold-border {
+      border: 1px solid var(--gold);
+    }
+
+    .gold-text {
+      color: var(--gold);
+    }
+
+    .btn-gold {
+      background-color: var(--gold);
+      color: var(--cream);
+      font-family: var(--font-sans);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      padding: 0.8rem 2rem;
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-gold);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .btn-gold:hover {
+      background-color: #b08d4a;
+      transform: scale(1.02);
+      box-shadow: 0 12px 24px -8px rgba(197, 160, 89, 0.5);
+    }
+
+    .btn-gold:active {
+      transform: scale(0.98);
+    }
+
+    .btn-outline-gold {
+      border: 1px solid var(--gold);
+      color: var(--charcoal);
+      background: transparent;
+      padding: 0.7rem 2rem;
+      border-radius: 9999px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .btn-outline-gold:hover {
+      background: rgba(197, 160, 89, 0.1);
+      border-color: var(--gold);
+      transform: scale(1.02);
+    }
+
+    /* === Entry Gate === */
+    #entry-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background-color: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    #entry-gate.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .gate-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 2rem;
+      padding: 3rem 2rem;
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(197, 160, 89, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .gate-card::before,
+    .gate-card::after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-color: var(--gold);
+      border-style: solid;
+      opacity: 0.5;
+    }
+
+    .gate-card::before {
+      top: 20px;
+      left: 20px;
+      border-width: 2px 0 0 2px;
+      border-radius: 12px 0 0 0;
+    }
+
+    .gate-card::after {
+      bottom: 20px;
+      right: 20px;
+      border-width: 0 2px 2px 0;
+      border-radius: 0 0 12px 0;
+    }
+
+    .gate-floral {
+      font-size: 2rem;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+      opacity: 0.6;
+    }
+
+    .gate-title {
+      font-size: clamp(0.9rem, 4vw, 1.2rem);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .gate-names {
+      font-size: clamp(2.8rem, 10vw, 4.5rem);
+      font-weight: 700;
+      color: var(--charcoal);
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+
+    .gate-info {
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      color: var(--charcoal);
+      opacity: 0.8;
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+
+    /* === Main Layout === */
+    .container-lux {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    /* === Header / Hero === */
+    .hero-header {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 4rem;
+    }
+
+    .initials-logo {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      width: 4.5rem;
+      height: 4.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      background: rgba(197, 160, 89, 0.08);
+      transition: transform 0.3s ease;
+    }
+
+    .initials-logo:hover {
+      transform: scale(1.05) rotate(-2deg);
+    }
+
+    .couple-photo-frame {
+      width: 100%;
+      max-width: 420px;
+      aspect-ratio: 4/5;
+      border-radius: 2rem;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 25px 40px -15px rgba(0, 0, 0, 0.15);
+      border: 2px solid rgba(197, 160, 89, 0.3);
+      margin-bottom: 2rem;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .couple-photo-frame:hover {
+      transform: scale(1.01);
+      box-shadow: 0 30px 50px -15px rgba(197, 160, 89, 0.25);
+    }
+
+    .couple-photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* === Countdown === */
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      max-width: 500px;
+      width: 100%;
+      margin: 2rem auto 0;
+    }
+
+    .countdown-item {
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      border-radius: 1.25rem;
+      padding: 1rem 0.25rem;
+      text-align: center;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .countdown-item:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .countdown-number {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1.2;
+      font-family: var(--font-sans);
+    }
+
+    .countdown-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--charcoal);
+      opacity: 0.6;
+    }
+
+    /* === Event Tabs === */
+    .tabs-container {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 4rem;
+      padding: 0.35rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 4rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--charcoal);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: rgba(197, 160, 89, 0.15);
+    }
+
+    .tab-btn.active {
+      background: var(--gold);
+      color: var(--cream);
+      box-shadow: 0 6px 14px -6px rgba(197, 160, 89, 0.5);
+    }
+
+    .event-detail-card {
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      padding: 2.5rem 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: var(--shadow-ambient);
+      text-align: center;
+      transition: all 0.4s ease;
+    }
+
+    .event-title {
+      font-size: 2rem;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .event-meta {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 1.25rem 0;
+      font-size: 0.9rem;
+      color: var(--charcoal);
+    }
+
+    .event-meta i {
+      color: var(--gold);
+      margin-right: 0.4rem;
+    }
+
+    .event-dresscode {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .event-desc {
+      max-width: 500px;
+      margin: 0 auto;
+      font-size: 0.95rem;
+      color: var(--charcoal);
+      opacity: 0.8;
+    }
+
+    /* === Venue gallery === */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .gallery-item {
+      aspect-ratio: 1/1;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      border: 1px solid rgba(197, 160, 89, 0.25);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.02);
+      box-shadow: 0 15px 30px -10px rgba(197, 160, 89, 0.25);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* === Map === */
+    .map-wrapper {
+      border-radius: 2rem;
+      overflow: hidden;
+      border: 2px solid rgba(197, 160, 89, 0.25);
+      height: 280px;
+      width: 100%;
+      box-shadow: var(--shadow-ambient);
+    }
+
+    .map-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* === Floating RSVP & Nav === */
+    .floating-rsvp {
+      position: fixed;
+      bottom: 5.5rem;
+      right: 1.5rem;
+      z-index: 90;
+      background: var(--gold);
+      color: var(--cream);
+      border: none;
+      border-radius: 9999px;
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      box-shadow: 0 15px 25px -10px rgba(197, 160, 89, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .floating-rsvp:hover {
+      transform: scale(1.05);
+      background: #b08d4a;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 9999px;
+      padding: 0.5rem 1rem;
+      display: flex;
+      gap: 0.5rem;
+      z-index: 95;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    .bottom-nav a {
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--charcoal);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .bottom-nav a:hover {
+      background: rgba(197, 160, 89, 0.15);
+      color: var(--gold);
+    }
+
+    /* === RSVP Modal === */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 2rem;
+      padding: 2.5rem 2rem;
+      max-width: 500px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 40px 60px -20px rgba(0, 0, 0, 0.2);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      border: none;
+      font-size: 1.2rem;
+      color: var(--charcoal);
+      cursor: pointer;
+      padding: 0.25rem;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: var(--gold);
+    }
+
+    .rsvp-form label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      color: var(--charcoal);
+      opacity: 0.8;
+    }
+
+    .rsvp-form input,
+    .rsvp-form select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      background: rgba(255, 255, 255, 0.5);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+      color: var(--charcoal);
+    }
+
+    .rsvp-form input:focus,
+    .rsvp-form select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
+    }
+
+    .rsvp-radio-group {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .rsvp-radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    .rsvp-radio-group input[type="radio"] {
+      width: auto;
+      accent-color: var(--gold);
+      margin-bottom: 0;
+    }
+
+    /* === Utility classes === */
+    .text-gold { color: var(--gold); }
+    .bg-gold { background-color: var(--gold); }
+    .section-padding { padding: 4rem 0; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    /* Focus styles */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    /* === Responsive === */
+    @media (min-width: 768px) {
+      .gate-card { padding: 4rem 3.5rem; }
+      .event-detail-card { padding: 3rem; }
+      .countdown-grid { gap: 1rem; }
+      .countdown-number { font-size: 2.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      .bottom-nav a { font-size: 0.65rem; padding: 0.4rem 0.7rem; }
+      .floating-rsvp { padding: 0.8rem 1rem; font-size: 0.8rem; bottom: 4.5rem; }
+      .tab-btn { font-size: 0.7rem; padding: 0.4rem 0.8rem; }
+      .event-meta { gap: 1rem; font-size: 0.8rem; }
+    }
+
+    /* Prevent scroll when modal open */
+    body.modal-open { overflow: hidden; }
+  </style>
+</head>
+<body class="locked">
+
+  <!-- ENTRY COVER GATE -->
+  <div id="entry-gate" role="dialog" aria-label="Wedding invitation cover">
+    <div class="gate-card">
+      <div class="gate-floral" aria-hidden="true">
+        <i class="fas fa-fan"></i> <i class="fas fa-leaf"></i> <i class="fas fa-fan"></i>
+      </div>
+      <div class="gate-title">Save the Date</div>
+      <h1 class="gate-names">Deny &amp; Nayla</h1>
+      <p class="gate-info">21 Sept 2030 · 10:00 AM</p>
+      <button id="openInvitationBtn" class="btn-gold" aria-label="Open invitation and unlock page">
+        Open Invitation <i class="fas fa-arrow-right" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main id="main-content">
+
+    <!-- HERO / HEADER -->
+    <section class="hero-header container-lux" id="home">
+      <div class="initials-logo" aria-label="Couple initials D and N">D &amp; N</div>
+      <div class="couple-photo-frame">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" alt="Deny and Nayla embracing, elegant wedding portrait" loading="eager">
+      </div>
+      <h2 class="text-3xl md:text-5xl font-playfair font-bold text-charcoal text-center mb-2">Deny &amp; Nayla</h2>
+      <p class="text-sm uppercase tracking-[0.3em] text-gold mb-6">21 . 09 . 2030</p>
+
+      <!-- COUNTDOWN -->
+      <div class="countdown-grid" id="countdown" aria-label="Countdown to wedding day">
+        <div class="countdown-item"><span class="countdown-number" id="days">00</span><span class="countdown-label">Days</span></div>
+        <div class="countdown-item"><span class="countdown-number" id="hours">00</span><span class="countdown-label">Hours</span></div>
+        <div class="countdown-item"><span class="countdown-number" id="minutes">00</span><span class="countdown-label">Minutes</span></div>
+        <div class="countdown-item"><span class="countdown-number" id="seconds">00</span><span class="countdown-label">Seconds</span></div>
+      </div>
+    </section>
+
+    <!-- EVENT SWITCHER -->
+    <section class="section-padding container-lux" id="events">
+      <h3 class="text-2xl md:text-3xl font-playfair text-center mb-8">Wedding Events</h3>
+      <div class="tabs-container" role="tablist" aria-label="Wedding events">
+        <button class="tab-btn active" role="tab" aria-selected="true" data-event="haldi">Haldi</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-event="mehendi">Mehendi</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-event="sangeet">Sangeet</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-event="matrimony">Holy Matrimony</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-event="reception">Grand Reception</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-event="cocktail">Sunset Cocktail</button>
+      </div>
+      <div class="event-detail-card" id="eventDetail" role="tabpanel">
+        <!-- dynamically populated -->
+      </div>
+    </section>
+
+    <!-- VENUE SHOWCASE & MAP -->
+    <section class="section-padding container-lux" id="venue">
+      <h3 class="text-2xl md:text-3xl font-playfair text-center mb-8">The Venue</h3>
+      <div class="gallery-grid">
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2048&auto=format&fit=crop" alt="Grand ballroom with chandeliers" loading="lazy"></div>
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1478146896981-b80fe463b330?q=80&w=2070&auto=format&fit=crop" alt="Lush garden venue" loading="lazy"></div>
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2069&auto=format&fit=crop" alt="Elegant table setting" loading="lazy"></div>
+      </div>
+      <div class="map-wrapper">
+        <iframe title="Wedding venue location" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019234567890!2d-122.419415!3d37.774929!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDQ2JzI5LjciTiAxMjLCsDI1JzA5LjkiVw!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="flex flex-wrap justify-center gap-4 mt-6">
+        <a href="https://maps.google.com/?q=37.774929,-122.419415" target="_blank" rel="noopener" class="btn-outline-gold"><i class="fas fa-directions" aria-hidden="true"></i> Get Directions</a>
+        <a href="https://maps.google.com/?q=37.774929,-122.419415" target="_blank" rel="noopener" class="btn-outline-gold"><i class="fas fa-map" aria-hidden="true"></i> View Full Map</a>
+      </div>
+    </section>
+
+    <!-- CONTACT / WHATSAPP (inline block) -->
+    <section class="container-lux pb-12 text-center">
+      <p class="text-sm opacity-70 mb-3">For any inquiries, reach us on WhatsApp</p>
+      <a href="https://wa.me/1234567890" target="_blank" rel="noopener" class="btn-gold inline-flex" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i> Message Us
+      </a>
+    </section>
+  </main>
+
+  <!-- FLOATING RSVP BUTTON -->
+  <button class="floating-rsvp" id="floatingRsvpBtn" aria-label="Open RSVP form">
+    <i class="fas fa-envelope" aria-hidden="true"></i> RSVP
+  </button>
+
+  <!-- FIXED BOTTOM NAVIGATION -->
+  <nav class="bottom-nav" aria-label="Quick navigation">
+    <a href="#home">Home</a>
+    <a href="#events">Events</a>
+    <a href="#venue">Venue</a>
+    <a href="#" id="navRsvpLink">RSVP</a>
+  </nav>
+
+  <!-- RSVP MODAL -->
+  <div class="modal-overlay" id="rsvpModal" role="dialog" aria-modal="true" aria-labelledby="rsvpTitle">
+    <div class="modal-card">
+      <button class="modal-close" id="closeModalBtn" aria-label="Close RSVP form"><i class="fas fa-times" aria-hidden="true"></i></button>
+      <h3 id="rsvpTitle" class="text-2xl font-playfair text-center text-gold mb-4">RSVP</h3>
+      <form class="rsvp-form" id="rsvpForm">
+        <label for="guestName">Full Name</label>
+        <input type="text" id="guestName" name="guestName" placeholder="Your name" required>
+
+        <label>Attendance</label>
+        <div class="rsvp-radio-group">
+          <label><input type="radio" name="attendance" value="accept" checked> Joyfully Accept</label>
+          <label><input type="radio" name="attendance" value="decline"> Regretfully Decline</label>
+        </div>
+
+        <label for="guestCount">Number of Guests</label>
+        <select id="guestCount" name="guestCount">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+
+        <label for="dietary">Dietary Preferences</label>
+        <input type="text" id="dietary" name="dietary" placeholder="e.g. vegetarian, vegan, allergies">
+
+        <button type="submit" class="btn-gold w-full mt-2">Send RSVP <i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script>
+    (function() {
+      // === Entry Gate ===
+      const gate = document.getElementById('entry-gate');
+      const openBtn = document.getElementById('openInvitationBtn');
+      const body = document.body;
+
+      // Confetti + unlock scroll
+      function openInvitation() {
+        // Confetti explosion
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#C5A059', '#DBC08A', '#F5E6D3', '#FAF7F2', '#E8D5B5']
+          });
+          setTimeout(() => {
+            confetti({
+              particleCount: 100,
+              spread: 100,
+              origin: { y: 0.4, x: 0.3 },
+              colors: ['#C5A059', '#DBC08A', '#F5E6D3']
+            });
+            confetti({
+              particleCount: 100,
+              spread: 100,
+              origin: { y: 0.4, x: 0.7 },
+              colors: ['#C5A059', '#DBC08A', '#F5E6D3']
+            });
+          }, 200);
+        }
+        // Fade out gate
+        gate.classList.add('fade-out');
+        body.classList.remove('locked');
+        // Remove gate from flow after transition
+        setTimeout(() => {
+          gate.style.display = 'none';
+        }, 900);
+        // Trigger scroll animations
+        if (window.ScrollTrigger) {
+          ScrollTrigger.refresh();
+        }
+      }
+
+      openBtn.addEventListener('click', openInvitation);
+
+      // Ensure page starts locked
+      if (!gate.classList.contains('fade-out')) {
+        body.classList.add('locked');
+      }
+
+      // === Countdown Timer ===
+      const weddingDate = new Date('2030-09-21T10:00:00').getTime();
+
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = weddingDate - now;
+
+        if (distance < 0) {
+          document.getElementById('days').textContent = '00';
+          document.getElementById('hours').textContent = '00';
+          document.getElementById('minutes').textContent = '00';
+          document.getElementById('seconds').textContent = '00';
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById('days').textContent = String(days).padStart(2, '0');
+        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      // === Event Tabs Data ===
+      const eventsData = {
+        haldi: {
+          title: 'Haldi Ceremony',
+          date: '19 September 2030',
+          time: '10:00 AM',
+          venue: 'The Garden Courtyard',
+          dressCode: 'Shades of Yellow & Marigold',
+          desc: 'A joyful morning of turmeric blessings, laughter, and vibrant tradition.'
+        },
+        mehendi: {
+          title: 'Mehendi Evening',
+          date: '19 September 2030',
+          time: '5:00 PM',
+          venue: 'The Grand Terrace',
+          dressCode: 'Vibrant Greens & Florals',
+          desc: 'Intricate henna artistry, live folk music, and a lively festive atmosphere.'
+        },
+        sangeet: {
+          title: 'Sangeet Night',
+          date: '20 September 2030',
+          time: '7:00 PM',
+          venue: 'The Grand Ballroom',
+          dressCode: 'Glamorous Indian Formal',
+          desc: 'An evening of dancing, performances, and celebration with family and friends.'
+        },
+        matrimony: {
+          title: 'Holy Matrimony',
+          date: '21 September 2030',
+          time: '10:00 AM',
+          venue: 'The Ivory Chapel',
+          dressCode: 'Traditional Formal',
+          desc: 'The sacred ceremony where two souls unite in love and commitment.'
+        },
+        reception: {
+          title: 'Grand Reception',
+          date: '21 September 2030',
+          time: '7:00 PM',
+          venue: 'The Crystal Hall',
+          dressCode: 'Black Tie & Elegance',
+          desc: 'An evening of fine dining, heartfelt toasts, and dancing under the stars.'
+        },
+        cocktail: {
+          title: 'Sunset Cocktail',
+          date: '22 September 2030',
+          time: '5:30 PM',
+          venue: 'The Rooftop Lounge',
+          dressCode: 'Cocktail Chic',
+          desc: 'A relaxed sunset gathering with signature drinks and live acoustic music.'
+        }
+      };
+
+      const eventDetail = document.getElementById('eventDetail');
+      const tabButtons = document.querySelectorAll('.tab-btn');
+
+      function renderEvent(eventKey) {
+        const data = eventsData[eventKey];
+        if (!data) return;
+        eventDetail.innerHTML = `
+          <h4 class="event-title">${data.title}</h4>
+          <div class="event-meta">
+            <span><i class="fas fa-calendar-alt" aria-hidden="true"></i> ${data.date}</span>
+            <span><i class="fas fa-clock" aria-hidden="true"></i> ${data.time}</span>
+            <span><i class="fas fa-map-pin" aria-hidden="true"></i> ${data.venue}</span>
+          </div>
+          <div class="event-dresscode">Dress Code: ${data.dressCode}</div>
+          <p class="event-desc">${data.desc}</p>
+        `;
+      }
+
+      // Set default to haldi
+      renderEvent('haldi');
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          tabButtons.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          this.classList.add('active');
+          this.setAttribute('aria-selected', 'true');
+          renderEvent(this.dataset.event);
+        });
+      });
+
+      // === RSVP Modal ===
+      const rsvpModal = document.getElementById('rsvpModal');
+      const floatingRsvpBtn = document.getElementById('floatingRsvpBtn');
+      const navRsvpLink = document.getElementById('navRsvpLink');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      const rsvpForm = document.getElementById('rsvpForm');
+
+      function openModal(e) {
+        if (e) e.preventDefault();
+        rsvpModal.classList.add('active');
+        body.classList.add('modal-open');
+      }
+
+      function closeModal() {
+        rsvpModal.classList.remove('active');
+        body.classList.remove('modal-open');
+      }
+
+      floatingRsvpBtn.addEventListener('click', openModal);
+      navRsvpLink.addEventListener('click', openModal);
+      closeModalBtn.addEventListener('click', closeModal);
+      rsvpModal.addEventListener('click', function(e) {
+        if (e.target === rsvpModal) closeModal();
+      });
+
+      // Form submission
+      rsvpForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(rsvpForm);
+        const data = Object.fromEntries(formData.entries());
+
+        // Build payload as per requirement
+        const payload = {
+          url: window.location.host,
+          table: 'rsvp',
+          data: data
+        };
+
+        // Simulate fetch POST (replace with actual endpoint)
+        // fetch('submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), cache: 'no-store' })
+        console.log('RSVP payload:', payload);
+
+        // Show instant confirmation
+        alert('Thank you for your RSVP, ' + (data.guestName || 'guest') + '! We look forward to celebrating with you.');
+
+        // Optionally reset form
+        rsvpForm.reset();
+        closeModal();
+      });
+
+      // === GSAP Scroll Reveal (simple) ===
+      if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate sections on scroll
+        const sections = document.querySelectorAll('.section-padding, .hero-header, .container-lux');
+        sections.forEach(sec => {
+          gsap.from(sec, {
+            opacity: 0,
+            y: 40,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: sec,
+              start: 'top 85%',
+              toggleActions: 'play none none none'
+            }
+          });
+        });
+
+        // Extra micro-interaction for event card on tab change
+        tabButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            gsap.fromTo(eventDetail, { opacity: 0.5, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
+          });
+        });
+      }
+
+      // === Init GSAP after gate opens (refresh) ===
+      // Already handled in openInvitation.
+
+      // === Smooth scroll for bottom nav links ===
+      document.querySelectorAll('.bottom-nav a[href^="#"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+
+      // Also handle nav RSVP link separately (already has preventDefault)
+    })();
+  </script>
+</body>
+</html>
