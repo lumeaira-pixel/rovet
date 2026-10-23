@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abhilash Textiles · Anakkarra · Woven Luxury</title>
+  <!-- Creative direction: Warm ivory & brass, high-contrast serif, quiet luxury, hand-crafted textile feel -->
+  <meta name="description" content="Abhilash Textiles in Anakkarra — premium handloom sarees, silks & bespoke fabrics. Woven heritage, modern grace." />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP for scroll reveals -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1e1a17;
+      --cream: #fdfaf6;
+      --sand: #f3efe8;
+      --brass: #b8926b;
+      --brass-light: #d9c3a8;
+      --muted: #7a6e64;
+      --hairline: rgba(30, 26, 23, 0.08);
+      --shadow-soft: 0 30px 50px -20px rgba(30, 26, 23, 0.12);
+      --radius-lg: 2rem;
+    }
+
+    /* === Base & Typography === */
+    body {
+      background-color: var(--cream);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .font-display {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .text-balance {
+      text-wrap: balance;
+    }
+
+    /* === Custom Utilities === */
+    .hairline-border {
+      border: 1px solid var(--hairline);
+    }
+
+    .brass-accent {
+      color: var(--brass);
+    }
+
+    .bg-sand {
+      background-color: var(--sand);
+    }
+
+    .shadow-luxe {
+      box-shadow: var(--shadow-soft);
+    }
+
+    /* === Animations & Reveals === */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .reveal-fade {
+      opacity: 0;
+    }
+
+    .img-reveal {
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .img-reveal.revealed {
+      clip-path: inset(0 0 0 0);
+    }
+
+    /* === Buttons & Interactive === */
+    .btn-primary {
+      background-color: var(--ink);
+      color: var(--cream);
+      border-radius: 999px;
+      padding: 0.9rem 2.2rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary:hover {
+      background-color: #2b241f;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px -10px rgba(30, 26, 23, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      padding: 0.9rem 2.2rem;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(30, 26, 23, 0.03);
+      border-color: rgba(30, 26, 23, 0.15);
+    }
+
+    /* === Navigation === */
+    .nav-sticky {
+      backdrop-filter: blur(16px);
+      background: rgba(253, 250, 246, 0.82);
+      border-bottom: 1px solid var(--hairline);
+      transition: all 0.3s ease;
+    }
+
+    .nav-sticky.scrolled {
+      background: rgba(253, 250, 246, 0.95);
+      box-shadow: 0 8px 30px -15px rgba(30, 26, 23, 0.08);
+    }
+
+    /* === Product Cards === */
+    .product-card {
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 30px 50px -20px rgba(30, 26, 23, 0.15);
+    }
+
+    .product-card .img-wrap {
+      overflow: hidden;
+      border-radius: 1.25rem;
+    }
+
+    .product-card img {
+      transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .product-card:hover img {
+      transform: scale(1.04);
+    }
+
+    /* === Focus States (Accessibility) === */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 2px solid var(--brass);
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+
+    /* === Form === */
+    .form-input {
+      background: white;
+      border: 1px solid var(--hairline);
+      border-radius: 0.75rem;
+      padding: 0.9rem 1.2rem;
+      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .form-input:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184, 146, 107, 0.15);
+      outline: none;
+    }
+
+    .form-input.error {
+      border-color: #c0392b;
+    }
+
+    .error-msg {
+      color: #c0392b;
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .error-msg.visible {
+      display: block;
+    }
+
+    /* === Grain texture overlay === */
+    .grain::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
+      z-index: 1000;
+    }
+
+    /* === Mobile menu === */
+    .mobile-menu {
+      transform: translateY(-100%);
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      pointer-events: none;
+    }
+
+    .mobile-menu.open {
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* === Custom scrollbar === */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--sand);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--brass-light);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body class="grain">
+
+  <!-- ===== HEADER ===== -->
+  <header class="fixed top-0 left-0 w-full z-50 nav-sticky" id="site-header">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
+      <a href="#" class="font-display text-2xl md:text-3xl tracking-tight text-ink" aria-label="Abhilash Textiles home">
+        Abhilash<span class="brass-accent">.</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-muted" aria-label="Main navigation">
+        <a href="#collections" class="hover:text-ink transition-colors">Collections</a>
+        <a href="#story" class="hover:text-ink transition-colors">Our Story</a>
+        <a href="#craft" class="hover:text-ink transition-colors">Craft</a>
+        <a href="#testimonials" class="hover:text-ink transition-colors">Voices</a>
+      </nav>
+
+      <!-- Desktop CTA + Mobile toggle -->
+      <div class="flex items-center gap-3">
+        <a href="#enquire" class="btn-primary text-sm hidden md:inline-flex">Visit Store</a>
+        <!-- Mobile toggle -->
+        <button id="menu-toggle" class="md:hidden w-10 h-10 flex items-center justify-center rounded-full hairline-border" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="mobile-menu fixed inset-0 top-16 bg-cream z-40 flex flex-col items-center justify-start pt-16 gap-8 md:hidden" role="dialog" aria-label="Mobile navigation">
+      <a href="#collections" class="text-2xl font-display tracking-tight hover:text-brass transition-colors">Collections</a>
+      <a href="#story" class="text-2xl font-display tracking-tight hover:text-brass transition-colors">Our Story</a>
+      <a href="#craft" class="text-2xl font-display tracking-tight hover:text-brass transition-colors">Craft</a>
+      <a href="#testimonials" class="text-2xl font-display tracking-tight hover:text-brass transition-colors">Voices</a>
+      <a href="#enquire" class="btn-primary text-base mt-4">Visit Store</a>
+    </div>
+  </header>
+
+  <main class="pt-16 md:pt-20">
+
+    <!-- ===== HERO ===== -->
+    <section class="max-w-7xl mx-auto px-5 sm:px-8 py-16 md:py-24" aria-labelledby="hero-heading">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <!-- Left copy -->
+        <div class="space-y-8">
+          <p class="text-sm tracking-[0.15em] uppercase text-brass font-medium reveal-fade">Anakkarra · Kerala · Est. 1987</p>
+          <h1 id="hero-heading" class="font-display text-5xl sm:text-6xl lg:text-7xl leading-[1.05] text-balance reveal-up">
+            Woven with<br />
+            <span class="brass-accent italic">quiet luxury.</span>
+          </h1>
+          <p class="text-lg text-muted max-w-md leading-relaxed reveal-up" style="transition-delay: 0.1s;">
+            Handloom sarees, pure silks & bespoke fabrics from the heart of Anakkarra — where heritage meets the modern drape.
+          </p>
+          <div class="flex flex-wrap gap-4 reveal-up" style="transition-delay: 0.2s;">
+            <a href="#collections" class="btn-primary text-base">
+              Explore Collections
+              <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+            </a>
+            <a href="#enquire" class="btn-secondary text-base">Book a Visit</a>
+          </div>
+          <!-- Small trust line -->
+          <div class="flex items-center gap-4 pt-4 text-sm text-muted reveal-up" style="transition-delay: 0.3s;">
+            <div class="flex items-center gap-1">
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <span>4.9 · 2,300+ happy patrons</span>
+            </div>
+            <span class="w-px h-4 bg-hairline"></span>
+            <span>Since 1987</span>
+          </div>
+        </div>
+
+        <!-- Right hero visual -->
+        <div class="relative reveal-fade" style="transition-delay: 0.15s;">
+          <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-luxe img-reveal" id="hero-img-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop"
+              alt="Handwoven silk saree with golden zari border, elegantly draped"
+              class="w-full h-full object-cover"
+              loading="eager"
+            />
+          </div>
+          <!-- Floating badge -->
+          <div class="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-lg px-5 py-4 flex items-center gap-3 hairline-border">
+            <i data-lucide="award" class="w-6 h-6 brass-accent"></i>
+            <div class="text-xs leading-tight">
+              <p class="font-semibold text-ink">GI-Certified</p>
+              <p class="text-muted">Kanchipuram Silks</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SOCIAL PROOF / MARQUEE ===== -->
+    <section class="bg-sand py-8 border-y hairline-border" aria-label="Trust badges">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6 text-sm tracking-wide text-muted">
+        <span class="flex items-center gap-2"><i data-lucide="badge-check" class="w-4 h-4 brass-accent"></i> Handloom Certified</span>
+        <span class="flex items-center gap-2"><i data-lucide="leaf" class="w-4 h-4 brass-accent"></i> Natural Dyes</span>
+        <span class="flex items-center gap-2"><i data-lucide="truck" class="w-4 h-4 brass-accent"></i> Pan-India Shipping</span>
+        <span class="flex items-center gap-2"><i data-lucide="scissors" class="w-4 h-4 brass-accent"></i> Custom Tailoring</span>
+        <span class="flex items-center gap-2"><i data-lucide="gem" class="w-4 h-4 brass-accent"></i> Pure Zari</span>
+      </div>
+    </section>
+
+    <!-- ===== COLLECTIONS ===== -->
+    <section id="collections" class="max-w-7xl mx-auto px-5 sm:px-8 py-20 md:py-28" aria-labelledby="collections-heading">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
+        <div>
+          <p class="text-sm tracking-[0.15em] uppercase text-brass font-medium mb-3 reveal-fade">Curated for you</p>
+          <h2 id="collections-heading" class="font-display text-4xl sm:text-5xl lg:text-6xl leading-tight reveal-up">Our Signature<br />Collections</h2>
+        </div>
+        <p class="text-muted max-w-xs text-sm leading-relaxed reveal-fade">Each piece is a dialogue between the loom and the wearer — limited, intentional, and forever.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Card 1 -->
+        <article class="product-card group reveal-up">
+          <div class="img-wrap aspect-[3/4] bg-sand">
+            <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=700&auto=format&fit=crop" alt="Kanchipuram silk saree in deep maroon with gold border" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="mt-5 space-y-1">
+            <p class="text-xs tracking-[0.12em] uppercase text-brass font-medium">Pure Silk</p>
+            <h3 class="font-display text-2xl">Kanchipuram Heritage</h3>
+            <p class="text-sm text-muted">Woven with 24k gold zari · 6 yards</p>
+          </div>
+        </article>
+        <!-- Card 2 -->
+        <article class="product-card group reveal-up" style="transition-delay: 0.1s;">
+          <div class="img-wrap aspect-[3/4] bg-sand">
+            <img src="https://images.unsplash.com/photo-1615887023544-3a4b8b6e5e1b?q=80&w=700&auto=format&fit=crop" alt="Handloom cotton saree in earthy tones with natural dye" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="mt-5 space-y-1">
+            <p class="text-xs tracking-[0.12em] uppercase text-brass font-medium">Handloom</p>
+            <h3 class="font-display text-2xl">Anakkarra Earth</h3>
+            <p class="text-sm text-muted">Natural dyes · Breathable cotton</p>
+          </div>
+        </article>
+        <!-- Card 3 -->
+        <article class="product-card group reveal-up" style="transition-delay: 0.2s;">
+          <div class="img-wrap aspect-[3/4] bg-sand">
+            <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=700&auto=format&fit=crop" alt="Bridal silk saree with intricate zari work in ivory and gold" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="mt-5 space-y-1">
+            <p class="text-xs tracking-[0.12em] uppercase text-brass font-medium">Bridal</p>
+            <h3 class="font-display text-2xl">Ivory & Gold</h3>
+            <p class="text-sm text-muted">Bespoke bridal · Private consultation</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== STORY (Asymmetric) ===== -->
+    <section id="story" class="bg-sand py-20 md:py-28" aria-labelledby="story-heading">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="order-2 md:order-1">
+          <p class="text-sm tracking-[0.15em] uppercase text-brass font-medium mb-3 reveal-fade">Since 1987</p>
+          <h2 id="story-heading" class="font-display text-4xl sm:text-5xl lg:text-6xl leading-tight mb-6 reveal-up">Three generations<br />of weaving trust.</h2>
+          <div class="space-y-5 text-muted leading-relaxed max-w-lg reveal-up" style="transition-delay: 0.1s;">
+            <p>What began as a small family loom in Anakkarra has grown into a beloved destination for those who seek the extraordinary — sarees that carry the weight of tradition and the lightness of modern elegance.</p>
+            <p>We work directly with master weavers across Tamil Nadu and Kerala. No middlemen, no mass production. Just pure, patient craft.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-6 mt-10 reveal-up" style="transition-delay: 0.2s;">
+            <div>
+              <p class="font-display text-4xl brass-accent">37+</p>
+              <p class="text-sm text-muted mt-1">Years of legacy</p>
+            </div>
+            <div>
+              <p class="font-display text-4xl brass-accent">120+</p>
+              <p class="text-sm text-muted mt-1">Master weavers</p>
+            </div>
+          </div>
+        </div>
+        <div class="order-1 md:order-2 img-reveal" id="story-img-wrap">
+          <div class="rounded-3xl overflow-hidden shadow-luxe">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=800&auto=format&fit=crop" alt="Traditional wooden handloom with silk threads" class="w-full h-auto object-cover" loading="lazy" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CRAFT ===== -->
+    <section id="craft" class="max-w-7xl mx-auto px-5 sm:px-8 py-20 md:py-28" aria-labelledby="craft-heading">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <p class="text-sm tracking-[0.15em] uppercase text-brass font-medium mb-3 reveal-fade">The Abhilash way</p>
+        <h2 id="craft-heading" class="font-display text-4xl sm:text-5xl lg:text-6xl leading-tight reveal-up">Craft you can<br />feel.</h2>
+      </div>
+      <div class="grid sm:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="text-center px-6 py-10 rounded-3xl bg-white hairline-border shadow-luxe reveal-up">
+          <div class="w-12 h-12 rounded-full bg-sand flex items-center justify-center mx-auto mb-5">
+            <i data-lucide="hand" class="w-6 h-6 brass-accent"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-2">Handwoven</h3>
+          <p class="text-sm text-muted leading-relaxed">Every thread placed by hand. No power looms. Ever.</p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="text-center px-6 py-10 rounded-3xl bg-white hairline-border shadow-luxe reveal-up" style="transition-delay: 0.1s;">
+          <div class="w-12 h-12 rounded-full bg-sand flex items-center justify-center mx-auto mb-5">
+            <i data-lucide="gem" class="w-6 h-6 brass-accent"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-2">Pure Zari</h3>
+          <p class="text-sm text-muted leading-relaxed">Real silver & gold zari, tested for purity and sheen.</p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="text-center px-6 py-10 rounded-3xl bg-white hairline-border shadow-luxe reveal-up" style="transition-delay: 0.2s;">
+          <div class="w-12 h-12 rounded-full bg-sand flex items-center justify-center mx-auto mb-5">
+            <i data-lucide="leaf" class="w-6 h-6 brass-accent"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-2">Natural Dyes</h3>
+          <p class="text-sm text-muted leading-relaxed">Plant-based colors that age beautifully with you.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS ===== -->
+    <section id="testimonials" class="bg-sand py-20 md:py-28" aria-labelledby="testimonials-heading">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="text-center mb-16">
+          <p class="text-sm tracking-[0.15em] uppercase text-brass font-medium mb-3 reveal-fade">Kind words</p>
+          <h2 id="testimonials-heading" class="font-display text-4xl sm:text-5xl lg:text-6xl leading-tight reveal-up">Loved by many.</h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- Testimonial 1 -->
+          <blockquote class="bg-white p-8 rounded-3xl shadow-luxe hairline-border reveal-up">
+            <div class="flex gap-1 mb-4" aria-label="5 star rating">
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            </div>
+            <p class="text-muted leading-relaxed mb-6">"The Kanchipuram I bought here is the most beautiful thing I own. The weight, the sheen, the zari — it's museum quality. And the family treated me like their own."</p>
+            <footer class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-sand flex items-center justify-center text-sm font-semibold text-ink">LM</div>
+              <div>
+                <p class="font-medium text-sm">Lakshmi Menon</p>
+                <p class="text-xs text-muted">Thrissur</p>
+              </div>
+            </footer>
+          </blockquote>
+          <!-- Testimonial 2 -->
+          <blockquote class="bg-white p-8 rounded-3xl shadow-luxe hairline-border reveal-up" style="transition-delay: 0.1s;">
+            <div class="flex gap-1 mb-4" aria-label="5 star rating">
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            </div>
+            <p class="text-muted leading-relaxed mb-6">"I've been coming to Abhilash Textiles for over a decade. Every wedding in my family has a saree from here. Their consistency and honesty are unmatched."</p>
+            <footer class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-sand flex items-center justify-center text-sm font-semibold text-ink">PR</div>
+              <div>
+                <p class="font-medium text-sm">Priya Rajan</p>
+                <p class="text-xs text-muted">Kochi</p>
+              </div>
+            </footer>
+          </blockquote>
+          <!-- Testimonial 3 -->
+          <blockquote class="bg-white p-8 rounded-3xl shadow-luxe hairline-border reveal-up" style="transition-delay: 0.2s;">
+            <div class="flex gap-1 mb-4" aria-label="5 star rating">
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            </div>
+            <p class="text-muted leading-relaxed mb-6">"Ordered a custom bridal saree from the US. They video-called me through every step. The final piece arrived perfectly packed. Pure magic."</p>
+            <footer class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-sand flex items-center justify-center text-sm font-semibold text-ink">AK</div>
+              <div>
+                <p class="font-medium text-sm">Anjali Krishnan</p>
+                <p class="text-xs text-muted">San Francisco</p>
+              </div>
+            </footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA BANNER ===== -->
+    <section class="max-w-7xl mx-auto px-5 sm:px-8 py-20 md:py-28" aria-labelledby="cta-heading">
+      <div class="bg-ink rounded-[2.5rem] px-8 sm:px-16 py-16 md:py-20 text-center shadow-luxe">
+        <h2 id="cta-heading" class="font-display text-4xl sm:text-5xl lg:text-6xl text-cream leading-tight mb-6 reveal-up">Find your forever drape.</h2>
+        <p class="text-brass-light max-w-lg mx-auto mb-10 leading-relaxed reveal-fade">Visit our Anakkarra showroom for a private consultation, or book a video appointment from anywhere in the world.</p>
+        <a href="#enquire" class="inline-flex items-center justify-center bg-cream text-ink rounded-full px-8 py-4 font-medium text-base hover:bg-brass-light transition-all duration-300 hover:shadow-lg reveal-up" style="transition-delay: 0.1s;">
+          Book Your Appointment
+          <i data-lucide="calendar" class="w-4 h-4 ml-2"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== ENQUIRE / CONTACT FORM ===== -->
+    <section id="enquire" class="max-w-7xl mx-auto px-5 sm:px-8 pb-20 md:pb-28" aria-labelledby="enquire-heading">
+      <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-start">
+        <!-- Left info -->
+        <div>
+          <p class="text-sm tracking-[0.15em] uppercase text-brass font-medium mb-3 reveal-fade">Get in touch</p>
+          <h2 id="enquire-heading" class="font-display text-4xl sm:text-5xl leading-tight mb-6 reveal-up">Let's talk<br />textiles.</h2>
+          <p class="text-muted leading-relaxed mb-8 max-w-md reveal-fade">Whether you're planning a wedding, refreshing your wardrobe, or looking for that one-of-a-kind weave — we'd love to hear from you.</p>
+          <div class="space-y-5 text-sm reveal-fade">
+            <div class="flex items-start gap-3">
+              <i data-lucide="map-pin" class="w-5 h-5 brass-accent mt-0.5 shrink-0"></i>
+              <div>
+                <p class="font-medium">Abhilash Textiles</p>
+                <p class="text-muted">Main Road, Anakkarra, Kerala 680001</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="phone" class="w-5 h-5 brass-accent mt-0.5 shrink-0"></i>
+              <div>
+                <p class="font-medium">Call us</p>
+                <p class="text-muted">+91 98765 43210</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="clock" class="w-5 h-5 brass-accent mt-0.5 shrink-0"></i>
+              <div>
+                <p class="font-medium">Store hours</p>
+                <p class="text-muted">Mon–Sat · 10:00 AM – 8:00 PM</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right form -->
+        <form id="enquiry-form" class="space-y-5 bg-white p-6 sm:p-8 rounded-3xl shadow-luxe hairline-border reveal-up" novalidate>
+          <div>
+            <label for="name" class="block text-sm font-medium mb-1.5">Full name</label>
+            <input type="text" id="name" name="name" class="form-input" placeholder="Ananya Nair" required />
+            <p class="error-msg" id="name-error">Please enter your name.</p>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label for="email" class="block text-sm font-medium mb-1.5">Email</label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required />
+              <p class="error-msg" id="email-error">Please enter a valid email.</p>
+            </div>
+            <div>
+              <label for="phone" class="block text-sm font-medium mb-1.5">Phone</label>
+              <input type="tel" id="phone" name="phone" class="form-input" placeholder="+91 98765 43210" />
+              <p class="error-msg" id="phone-error">Please enter a valid phone number.</p>
+            </div>
+          </div>
+          <div>
+            <label for="message" class="block text-sm font-medium mb-1.5">Your message</label>
+            <textarea id="message" name="message" rows="4" class="form-input" placeholder="I'm looking for a bridal Kanchipuram silk…" required></textarea>
+            <p class="error-msg" id="message-error">Please tell us a little about what you're looking for.</p>
+          </div>
+          <button type="submit" class="btn-primary w-full text-base mt-2">
+            Send Enquiry
+            <i data-lucide="send" class="w-4 h-4 ml-2"></i>
+          </button>
+          <p id="form-success" class="text-green-700 text-sm text-center hidden">Thank you — we'll be in touch within 24 hours.</p>
+          <p id="form-error" class="text-red-600 text-sm text-center hidden">Something went wrong. Please try again.</p>
+          <!-- TODO: connect form action to backend endpoint -->
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-ink text-cream pt-16 pb-10">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+        <div>
+          <p class="font-display text-2xl mb-4">Abhilash<span class="brass-accent">.</span></p>
+          <p class="text-sm text-white/60 leading-relaxed max-w-xs">Woven in Anakkarra, worn with love everywhere. Heritage handloom and pure silks since 1987.</p>
+        </div>
+        <div>
+          <p class="text-sm font-medium tracking-wider uppercase text-brass mb-4">Explore</p>
+          <ul class="space-y-2.5 text-sm text-white/60">
+            <li><a href="#collections" class="hover:text-white transition-colors">Collections</a></li>
+            <li><a href="#story" class="hover:text-white transition-colors">Our Story</a></li>
+            <li><a href="#craft" class="hover:text-white transition-colors">Craft</a></li>
+            <li><a href="#testimonials" class="hover:text-white transition-colors">Voices</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-sm font-medium tracking-wider uppercase text-brass mb-4">Visit</p>
+          <ul class="space-y-2.5 text-sm text-white/60">
+            <li>Main Road, Anakkarra</li>
+            <li>Kerala 680001</li>
+            <li>Mon–Sat · 10am–8pm</li>
+            <li>+91 98765 43210</li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-sm font-medium tracking-wider uppercase text-brass mb-4">Connect</p>
+          <div class="flex gap-4">
+            <a href="#" class="text-white/60 hover:text-brass transition-colors" aria-label="Instagram"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+            <a href="#" class="text-white/60 hover:text-brass transition-colors" aria-label="Facebook"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+            <a href="#" class="text-white/60 hover:text-brass transition-colors" aria-label="WhatsApp"><i data-lucide="message-circle" class="w-5 h-5"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-white/40 gap-4">
+        <p>© 2025 Abhilash Textiles, Anakkarra. All rights reserved.</p>
+        <p>Handwoven with intention.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // === Sticky header scroll effect ===
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // === Mobile menu toggle ===
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuToggle.addEventListener('click', () => {
+      const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+      menuToggle.setAttribute('aria-expanded', !expanded);
+      mobileMenu.classList.toggle('open');
+      // Switch icon
+      menuToggle.innerHTML = expanded
+        ? '<i data-lucide="menu" class="w-5 h-5"></i>'
+        : '<i data-lucide="x" class="w-5 h-5"></i>';
+      lucide.createIcons();
+    });
+
+    // Close mobile menu on link click
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.innerHTML = '<i data-lucide="menu" class="w-5 h-5"></i>';
+        lucide.createIcons();
+      });
+    });
+
+    // === GSAP Scroll Reveal ===
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Reveal up elements
+    gsap.utils.toArray('.reveal-up').forEach(el => {
+      gsap.to(el, {
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          toggleActions: 'play none none none',
+        },
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power3.out',
+      });
+    });
+
+    // Reveal fade elements
+    gsap.utils.toArray('.reveal-fade').forEach(el => {
+      gsap.to(el, {
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          toggleActions: 'play none none none',
+        },
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power2.out',
+      });
+    });
+
+    // Image clip reveals
+    gsap.utils.toArray('.img-reveal').forEach(el => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 85%',
+        onEnter: () => el.classList.add('revealed'),
+        once: true,
+      });
+    });
+
+    // Hero image reveal on load
+    window.addEventListener('load', () => {
+      const heroWrap = document.getElementById('hero-img-wrap');
+      if (heroWrap) heroWrap.classList.add('revealed');
+    });
+
+    // === Form validation & submission ===
+    const form = document.getElementById('enquiry-form');
+    const successMsg = document.getElementById('form-success');
+    const errorMsg = document.getElementById('form-error');
+
+    function showError(id, show) {
+      const err = document.getElementById(id + '-error');
+      const input = document.getElementById(id);
+      if (show) {
+        err.classList.add('visible');
+        input.classList.add('error');
+        input.setAttribute('aria-invalid', 'true');
+      } else {
+        err.classList.remove('visible');
+        input.classList.remove('error');
+        input.removeAttribute('aria-invalid');
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      successMsg.classList.add('hidden');
+      errorMsg.classList.add('hidden');
+
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const phone = document.getElementById('phone');
+      const message = document.getElementById('message');
+
+      let valid = true;
+
+      // Name
+      if (!name.value.trim()) {
+        showError('name', true);
+        valid = false;
+      } else {
+        showError('name', false);
+      }
+
+      // Email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.value.trim())) {
+        showError('email', true);
+        valid = false;
+      } else {
+        showError('email', false);
+      }
+
+      // Phone (optional, but if present validate)
+      if (phone.value.trim() && !/^[\d\s\+\-()]{7,}$/.test(phone.value.trim())) {
+        showError('phone', true);
+        valid = false;
+      } else {
+        showError('phone', false);
+      }
+
+      // Message
+      if (!message.value.trim()) {
+        showError('message', true);
+        valid = false;
+      } else {
+        showError('message', false);
+      }
+
+      if (!valid) return;
+
+      // Simulate submission
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+
+      try {
+        // TODO: Replace with actual backend endpoint
+        await new Promise(resolve => setTimeout(resolve, 1200));
+        successMsg.classList.remove('hidden');
+        form.reset();
+      } catch (err) {
+        errorMsg.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send Enquiry <i data-lucide="send" class="w-4 h-4 ml-2"></i>';
+        lucide.createIcons();
+      }
+    });
+
+    // Clear error on input
+    ['name', 'email', 'phone', 'message'].forEach(id => {
+      const input = document.getElementById(id);
+      input.addEventListener('input', () => showError(id, false));
+    });
+
+    // Smooth scroll for anchors
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
