@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aether — AI Workflow Intelligence</title>
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.js"></script>
+
+  <!-- Google Fonts: Instrument Serif + Inter + Geist Mono for display/body/mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0D0F14;
+      --ink-soft: #3A3F4B;
+      --cream: #FEFCF8;
+      --paper: #F8F9FC;
+      --surface: #FFFFFF;
+      --hairline: rgba(13, 15, 20, 0.06);
+      --hairline-strong: rgba(13, 15, 20, 0.12);
+      --accent: #3E5AF0;
+      --accent-soft: #EEF1FE;
+      --accent-glow: rgba(62, 90, 240, 0.18);
+      --brass: #C9A96E;
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+      --radius-xl: 36px;
+      --shadow-soft: 0 2px 8px rgba(13, 15, 20, 0.02), 0 12px 32px rgba(13, 15, 20, 0.04);
+      --shadow-lift: 0 8px 28px rgba(13, 15, 20, 0.06), 0 24px 64px rgba(13, 15, 20, 0.06);
+      --shadow-glow: 0 0 0 1px rgba(62, 90, 240, 0.08), 0 8px 28px rgba(62, 90, 240, 0.14);
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-mono: 'Geist Mono', 'SF Mono', monospace;
+    }
+
+    /* === Base Reset === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* === Focus Ring === */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+
+    /* === Custom Cursor (subtle) === */
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease-out, opacity 0.3s;
+      mix-blend-mode: multiply;
+    }
+
+    .cursor-ring {
+      width: 32px;
+      height: 32px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.2s ease-out, opacity 0.3s;
+      opacity: 0.3;
+      mix-blend-mode: multiply;
+    }
+
+    /* === Typography Helpers === */
+    .font-display {
+      font-family: var(--font-display);
+      letter-spacing: -0.03em;
+    }
+
+    .font-mono {
+      font-family: var(--font-mono);
+      letter-spacing: 0.02em;
+    }
+
+    .text-balance {
+      text-wrap: balance;
+    }
+
+    /* === Scroll Reveal Base === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      will-change: opacity, transform;
+    }
+
+    /* === Noise Texture Overlay === */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* === Glass Panel === */
+    .glass {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px) saturate(1.6);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: var(--shadow-soft);
+    }
+
+    /* === Gradient Text === */
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent) 0%, #7B6EF0 50%, var(--brass) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* === Button Styles === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+      transition: all 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: var(--shadow-glow);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--ink);
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+      border: 1px solid var(--hairline-strong);
+      transition: all 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-secondary:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.97);
+    }
+
+    /* === Card 3D Tilt === */
+    .tilt-card {
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+
+    .tilt-inner {
+      transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      gap: 48px;
+      animation: marquee 32s linear infinite;
+      width: max-content;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    /* === Hero Radial Glow === */
+    .hero-glow {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, rgba(62, 90, 240, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(60px);
+    }
+
+    /* === Number Counter === */
+    .stat-number {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    /* === Feature Icon Container === */
+    .icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      background: var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* === Pricing Card Highlight === */
+    .pricing-highlight {
+      border: 1.5px solid var(--accent);
+      box-shadow: var(--shadow-glow);
+      position: relative;
+    }
+
+    .pricing-highlight::before {
+      content: 'Most Popular';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      padding: 6px 20px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    /* === Form Styles === */
+    .form-input {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--hairline-strong);
+      background: var(--surface);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: all 0.2s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+    }
+
+    .form-input.error {
+      border-color: #E53E3E;
+      box-shadow: 0 0 0 4px rgba(229, 62, 62, 0.1);
+    }
+
+    .form-error {
+      color: #E53E3E;
+      font-size: 0.8rem;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* === Header Scroll State === */
+    .header-scrolled {
+      background: rgba(254, 252, 248, 0.88);
+      backdrop-filter: blur(20px) saturate(1.8);
+      -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    /* === Reduce Motion === */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* === Responsive Adjustments === */
+    @media (max-width: 768px) {
+      .hero-glow {
+        width: 400px;
+        height: 400px;
+      }
+      .btn-primary,
+      .btn-secondary {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* === Loading Screen === */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    #loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-bar {
+      width: 120px;
+      height: 2px;
+      background: var(--hairline-strong);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .loader-bar-inner {
+      height: 100%;
+      width: 40%;
+      background: var(--accent);
+      border-radius: 2px;
+      animation: loaderPulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes loaderPulse {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(350%); }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Loading Screen -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-bar">
+      <div class="loader-bar-inner"></div>
+    </div>
+  </div>
+
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <!-- Noise Texture -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4" role="banner">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5 group" aria-label="Aether Home">
+        <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center transition-transform duration-300 group-hover:rotate-12">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M8 0L9.8 6.2L16 8L9.8 9.8L8 16L6.2 9.8L0 8L6.2 6.2L8 0Z" fill="#FEFCF8"/>
+          </svg>
+        </div>
+        <span class="font-display text-xl tracking-tight font-semibold text-ink">Aether</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#features" class="text-sm text-ink-soft hover:text-ink transition-colors duration-200 font-medium">Features</a>
+        <a href="#how-it-works" class="text-sm text-ink-soft hover:text-ink transition-colors duration-200 font-medium">How it Works</a>
+        <a href="#pricing" class="text-sm text-ink-soft hover:text-ink transition-colors duration-200 font-medium">Pricing</a>
+        <a href="#testimonials" class="text-sm text-ink-soft hover:text-ink transition-colors duration-200 font-medium">Testimonials</a>
+      </nav>
+
+      <!-- Desktop CTA -->
+      <div class="hidden lg:flex items-center gap-3">
+        <a href="#contact" class="btn-secondary text-sm">Sign in</a>
+        <a href="#contact" class="btn-primary text-sm">Get Started</a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobileMenuBtn" class="lg:hidden flex items-center justify-center w-10 h-10 rounded-full border border-hairline-strong bg-surface transition-all duration-200 hover:bg-accent-soft" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobileMenu" class="mobile-menu fixed inset-0 z-40 bg-cream lg:hidden flex flex-col pt-24 px-6" role="dialog" aria-modal="true" aria-label="Mobile menu">
+    <button id="mobileMenuClose" class="absolute top-5 right-5 w-10 h-10 rounded-full border border-hairline-strong flex items-center justify-center bg-surface" aria-label="Close menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <nav class="flex flex-col gap-6" aria-label="Mobile navigation">
+      <a href="#features" class="text-2xl font-display text-ink hover:text-accent transition-colors">Features</a>
+      <a href="#how-it-works" class="text-2xl font-display text-ink hover:text-accent transition-colors">How it Works</a>
+      <a href="#pricing" class="text-2xl font-display text-ink hover:text-accent transition-colors">Pricing</a>
+      <a href="#testimonials" class="text-2xl font-display text-ink hover:text-accent transition-colors">Testimonials</a>
+    </nav>
+    <div class="mt-10 flex flex-col gap-3">
+      <a href="#contact" class="btn-primary w-full justify-center">Get Started</a>
+      <a href="#contact" class="btn-secondary w-full justify-center">Sign in</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="relative pt-32 pb-20 md:pt-44 md:pb-28 overflow-hidden" aria-label="Hero">
+      <div class="hero-glow" style="top: -200px; right: -200px;" aria-hidden="true"></div>
+      <div class="hero-glow" style="bottom: -300px; left: -200px; background: radial-gradient(circle at center, rgba(201, 169, 110, 0.06) 0%, transparent 70%);" aria-hidden="true"></div>
+
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
+        <div class="max-w-4xl">
+          <!-- Badge -->
+          <div class="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-hairline-strong bg-surface/80 backdrop-blur-sm mb-8">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" aria-hidden="true"></span>
+            <span class="text-xs font-medium text-ink-soft tracking-wide uppercase font-mono">Now in public beta</span>
+          </div>
+
+          <!-- Headline -->
+          <h1 class="reveal font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-ink mb-6" style="animation-delay: 0.1s;">
+            Intelligence that<br/>
+            <span class="italic gradient-text">moves</span> your work<br/>
+            forward.
+          </h1>
+
+          <!-- Subheadline -->
+          <p class="reveal text-lg md:text-xl text-ink-soft max-w-xl leading-relaxed mb-10" style="animation-delay: 0.2s;">
+            Aether is the AI workflow layer that connects your tools, automates the busywork, and surfaces what matters — so your team can focus on the work that actually moves the needle.
+          </p>
+
+          <!-- CTAs -->
+          <div class="reveal flex flex-col sm:flex-row gap-3 mb-16" style="animation-delay: 0.3s;">
+            <a href="#contact" class="btn-primary text-base">
+              Start free trial
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+            <a href="#how-it-works" class="btn-secondary text-base">See how it works</a>
+          </div>
+        </div>
+
+        <!-- Hero Visual / Dashboard Mockup -->
+        <div class="reveal relative mt-4 md:mt-8" style="animation-delay: 0.4s;">
+          <div class="tilt-card">
+            <div class="tilt-inner glass rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lift border border-white/60">
+              <!-- Fake dashboard header -->
+              <div class="flex items-center justify-between mb-4 md:mb-6">
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 rounded-full bg-red-400/70" aria-hidden="true"></div>
+                  <div class="w-3 h-3 rounded-full bg-yellow-400/70" aria-hidden="true"></div>
+                  <div class="w-3 h-3 rounded-full bg-green-400/70" aria-hidden="true"></div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-24 h-6 rounded-md bg-accent-soft" aria-hidden="true"></div>
+                  <div class="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true">
+                      <circle cx="12" cy="8" r="4"/>
+                      <path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <!-- Dashboard content grid -->
+              <div class="grid grid-cols-12 gap-3 md:gap-4">
+                <!-- Sidebar -->
+                <div class="col-span-3 hidden md:block space-y-2" aria-hidden="true">
+                  <div class="h-8 rounded-lg bg-accent/10 flex items-center px-3 gap-2">
+                    <div class="w-3 h-3 rounded-sm bg-accent/30"></div>
+                    <div class="w-16 h-2 rounded bg-accent/30"></div>
+                  </div>
+                  <div class="h-8 rounded-lg bg-transparent flex items-center px-3 gap-2">
+                    <div class="w-3 h-3 rounded-sm bg-ink/10"></div>
+                    <div class="w-12 h-2 rounded bg-ink/10"></div>
+                  </div>
+                  <div class="h-8 rounded-lg bg-transparent flex items-center px-3 gap-2">
+                    <div class="w-3 h-3 rounded-sm bg-ink/10"></div>
+                    <div class="w-20 h-2 rounded bg-ink/10"></div>
+                  </div>
+                  <div class="h-8 rounded-lg bg-transparent flex items-center px-3 gap-2">
+                    <div class="w-3 h-3 rounded-sm bg-ink/10"></div>
+                    <div class="w-14 h-2 rounded bg-ink/10"></div>
+                  </div>
+                </div>
+                <!-- Main area -->
+                <div class="col-span-12 md:col-span-9 space-y-3 md:space-y-4">
+                  <!-- Stat cards row -->
+                  <div class="grid grid-cols-3 gap-2 md:gap-3">
+                    <div class="rounded-xl bg-white p-3 md:p-4 shadow-sm border border-hairline">
+                      <div class="text-[10px] md:text-xs text-ink-soft/60 font-mono mb-1">Automations</div>
+                      <div class="text-lg md:text-2xl font-semibold stat-number">2,847</div>
+                      <div class="text-[10px] text-green-600 flex items-center gap-1 mt-1">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+                        12.4%
+                      </div>
+                    </div>
+                    <div class="rounded-xl bg-white p-3 md:p-4 shadow-sm border border-hairline">
+                      <div class="text-[10px] md:text-xs text-ink-soft/60 font-mono mb-1">Hours saved</div>
+                      <div class="text-lg md:text-2xl font-semibold stat-number">1,204</div>
+                      <div class="text-[10px] text-green-600 flex items-center gap-1 mt-1">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+                        8.1%
+                      </div>
+                    </div>
+                    <div class="rounded-xl bg-white p-3 md:p-4 shadow-sm border border-hairline">
+                      <div class="text-[10px] md:text-xs text-ink-soft/60 font-mono mb-1">Active flows</div>
+                      <div class="text-lg md:text-2xl font-semibold stat-number">36</div>
+                      <div class="text-[10px] text-accent flex items-center gap-1 mt-1">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>
+                        Live
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Chart placeholder -->
+                  <div class="rounded-xl bg-white p-3 md:p-4 shadow-sm border border-hairline">
+                    <div class="flex items-center justify-between mb-3">
+                      <div class="text-xs font-medium text-ink-soft">Weekly Activity</div>
+                      <div class="w-16 h-5 rounded-md bg-accent-soft text-[10px] text-accent flex items-center justify-center font-medium">Export</div>
+                    </div>
+                    <div class="flex items-end gap-1.5 md:gap-2 h-16 md:h-20" aria-hidden="true">
+                      <div class="flex-1 rounded-t-sm bg-accent/20" style="height: 40%;"></div>
+                      <div class="flex-1 rounded-t-sm bg-accent/30" style="height: 65%;"></div>
+                      <div class="flex-1 rounded-t-sm bg-accent/25" style="height: 45%;"></div>
+                      <div class="flex-1 rounded-t-sm bg-accent/50" style="height: 80%;"></div>
+                      <div class="flex-1 rounded-t-sm bg-accent/35" style="height: 55%;"></div>
+                      <div class="flex-1 rounded-t-sm bg-accent/60" style="height: 90%;"></div>
+                      <div class="flex-1 rounded-t-sm bg-accent/40" style="height: 70%;"></div>
+                      <div class="flex-1 rounded-t-sm bg-accent/25" style="height: 40%;"></div>
+                      <div class="flex-1 rounded-t-sm bg-accent/45" style="height: 75%;"></div>
+                      <div class="flex-1 rounded-t-sm bg-accent/30" style="height: 50%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SOCIAL PROOF / LOGOS ============ -->
+    <section class="py-12 md:py-16 border-y border-hairline" aria-label="Trusted by">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <p class="reveal text-center text-xs font-mono uppercase tracking-widest text-ink-soft/50 mb-8">Trusted by teams at</p>
+        <div class="reveal flex flex-wrap items-center justify-center gap-x-12 gap-y-6 opacity-40 grayscale hover:opacity-60 hover:grayscale-0 transition-all duration-500">
+          <!-- Logo placeholders as text-based wordmarks -->
+          <span class="font-display text-xl md:text-2xl tracking-tight text-ink">Linear</span>
+          <span class="font-display text-xl md:text-2xl tracking-tight text-ink">Vercel</span>
+          <span class="font-display text-xl md:text-2xl tracking-tight text-ink">Stripe</span>
+          <span class="font-display text-xl md:text-2xl tracking-tight text-ink">Notion</span>
+          <span class="font-display text-xl md:text-2xl tracking-tight text-ink">Framer</span>
+          <span class="font-display text-xl md:text-2xl tracking-tight text-ink">Raycast</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STATS BAR ============ -->
+    <section class="py-16 md:py-20" aria-label="Key metrics">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          <div class="reveal text-center md:text-left">
+            <div class="text-4xl md:text-5xl font-display tracking-tight text-ink stat-number">98%</div>
+            <div class="text-sm text-ink-soft mt-1">Time saved on routine tasks</div>
+          </div>
+          <div class="reveal text-center md:text-left" style="animation-delay: 0.1s;">
+            <div class="text-4xl md:text-5xl font-display tracking-tight text-ink stat-number">12k+</div>
+            <div class="text-sm text-ink-soft mt-1">Active teams worldwide</div>
+          </div>
+          <div class="reveal text-center md:text-left" style="animation-delay: 0.2s;">
+            <div class="text-4xl md:text-5xl font-display tracking-tight text-ink stat-number">4.9</div>
+            <div class="text-sm text-ink-soft mt-1">Average rating on G2</div>
+          </div>
+          <div class="reveal text-center md:text-left" style="animation-delay: 0.3s;">
+            <div class="text-4xl md:text-5xl font-display tracking-tight text-ink stat-number">3s</div>
+            <div class="text-sm text-ink-soft mt-1">Average setup time</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section id="features" class="py-20 md:py-32 relative" aria-label="Features">
+      <div class="hero-glow" style="top: 50%; left: -300px; width: 600px; height: 600px;" aria-hidden="true"></div>
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
+        <div class="max-w-2xl mb-16 md:mb-20">
+          <p class="reveal text-xs font-mono uppercase tracking-widest text-accent mb-4">Features</p>
+          <h2 class="reveal font-display text-4xl md:text-5xl lg:text-6xl tracking-tight text-ink mb-5">
+            Everything you need.<br/>
+            <span class="italic text-ink-soft">Nothing you don't.</span>
+          </h2>
+          <p class="reveal text-lg text-ink-soft leading-relaxed">
+            Aether strips away the noise and gives your team one intelligent surface to plan, automate, and execute.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+          <!-- Feature 1 -->
+          <div class="reveal tilt-card group">
+            <div class="tilt-inner bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft hover:shadow-lift transition-shadow duration-300 h-full flex flex-col">
+              <div class="icon-box mb-5" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                  <path d="M2 17l10 5 10-5"/>
+                  <path d="M2 12l10 5 10-5"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-ink mb-2 tracking-tight">Unified workspace</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">
+                Connect Slack, Notion, GitHub, and 40+ tools into a single intelligent layer. No more tab-switching or lost context.
+              </p>
+              <div class="mt-5 pt-4 border-t border-hairline flex items-center gap-2 text-accent text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Learn more
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="reveal tilt-card group" style="animation-delay: 0.1s;">
+            <div class="tilt-inner bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft hover:shadow-lift transition-shadow duration-300 h-full flex flex-col">
+              <div class="icon-box mb-5" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-ink mb-2 tracking-tight">Smart automations</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">
+                Describe what you need in plain English. Aether builds the workflow, runs it, and learns from the results.
+              </p>
+              <div class="mt-5 pt-4 border-t border-hairline flex items-center gap-2 text-accent text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Learn more
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="reveal tilt-card group" style="animation-delay: 0.2s;">
+            <div class="tilt-inner bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft hover:shadow-lift transition-shadow duration-300 h-full flex flex-col">
+              <div class="icon-box mb-5" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-ink mb-2 tracking-tight">Real-time intelligence</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">
+                See bottlenecks before they happen. Get proactive suggestions on where to focus your team's energy.
+              </p>
+              <div class="mt-5 pt-4 border-t border-hairline flex items-center gap-2 text-accent text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Learn more
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="reveal tilt-card group" style="animation-delay: 0.15s;">
+            <div class="tilt-inner bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft hover:shadow-lift transition-shadow duration-300 h-full flex flex-col">
+              <div class="icon-box mb-5" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-ink mb-2 tracking-tight">Enterprise security</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">
+                SOC 2 Type II, GDPR compliant, and end-to-end encrypted. Your data stays yours — always.
+              </p>
+              <div class="mt-5 pt-4 border-t border-hairline flex items-center gap-2 text-accent text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Learn more
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature 5 -->
+          <div class="reveal tilt-card group" style="animation-delay: 0.25s;">
+            <div class="tilt-inner bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft hover:shadow-lift transition-shadow duration-300 h-full flex flex-col">
+              <div class="icon-box mb-5" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-ink mb-2 tracking-tight">Team collaboration</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">
+                Shared context, threaded discussions, and smart notifications that respect your focus time.
+              </p>
+              <div class="mt-5 pt-4 border-t border-hairline flex items-center gap-2 text-accent text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Learn more
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature 6 -->
+          <div class="reveal tilt-card group" style="animation-delay: 0.3s;">
+            <div class="tilt-inner bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft hover:shadow-lift transition-shadow duration-300 h-full flex flex-col">
+              <div class="icon-box mb-5" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-ink mb-2 tracking-tight">Analytics that matter</h3>
+              <p class="text-sm text-ink-soft leading-relaxed flex-1">
+                Stop drowning in dashboards. Aether surfaces the three metrics that actually predict your team's success.
+              </p>
+              <div class="mt-5 pt-4 border-t border-hairline flex items-center gap-2 text-accent text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Learn more
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section id="how-it-works" class="py-20 md:py-32 bg-paper relative overflow-hidden" aria-label="How it works">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="max-w-2xl mb-16 md:mb-20">
+          <p class="reveal text-xs font-mono uppercase tracking-widest text-accent mb-4">How it works</p>
+          <h2 class="reveal font-display text-4xl md:text-5xl lg:text-6xl tracking-tight text-ink mb-5">
+            Three steps.<br/>
+            <span class="italic text-ink-soft">Zero friction.</span>
+          </h2>
+          <p class="reveal text-lg text-ink-soft leading-relaxed">
+            From sign-up to your first automated workflow in under five minutes.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 md:gap-12">
+          <!-- Step 1 -->
+          <div class="reveal relative">
+            <div class="text-7xl md:text-8xl font-display text-accent/10 absolute -top-4 -left-2 leading-none select-none" aria-hidden="true">01</div>
+            <div class="relative pt-12">
+              <h3 class="text-xl font-semibold text-ink mb-3 tracking-tight">Connect your tools</h3>
+              <p class="text-sm text-ink-soft leading-relaxed">
+                Link Slack, Notion, GitHub, Linear, and 40+ other tools in one click. Aether maps your workflow automatically.
+              </p>
+            </div>
+          </div>
+          <!-- Step 2 -->
+          <div class="reveal relative" style="animation-delay: 0.15s;">
+            <div class="text-7xl md:text-8xl font-display text-accent/10 absolute -top-4 -left-2 leading-none select-none" aria-hidden="true">02</div>
+            <div class="relative pt-12">
+              <h3 class="text-xl font-semibold text-ink mb-3 tracking-tight">Describe your workflow</h3>
+              <p class="text-sm text-ink-soft leading-relaxed">
+                Tell Aether what you want to automate in plain English. No code, no complex configuration — just outcomes.
+              </p>
+            </div>
+          </div>
+          <!-- Step 3 -->
+          <div class="reveal relative" style="animation-delay: 0.3s;">
+            <div class="text-7xl md:text-8xl font-display text-accent/10 absolute -top-4 -left-2 leading-none select-none" aria-hidden="true">03</div>
+            <div class="relative pt-12">
+              <h3 class="text-xl font-semibold text-ink mb-3 tracking-tight">Ship and iterate</h3>
+              <p class="text-sm text-ink-soft leading-relaxed">
+                Aether runs your workflow, reports back on results, and suggests optimizations. Your team just reviews and approves.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRICING ============ -->
+    <section id="pricing" class="py-20 md:py-32" aria-label="Pricing">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="max-w-2xl mb-16 md:mb-20">
+          <p class="reveal text-xs font-mono uppercase tracking-widest text-accent mb-4">Pricing</p>
+          <h2 class="reveal font-display text-4xl md:text-5xl lg:text-6xl tracking-tight text-ink mb-5">
+            Simple pricing.<br/>
+            <span class="italic text-ink-soft">Serious value.</span>
+          </h2>
+          <p class="reveal text-lg text-ink-soft leading-relaxed">
+            Start free. Upgrade when you're ready. No hidden fees, no surprises.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8 items-start">
+          <!-- Starter -->
+          <div class="reveal bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft hover:shadow-lift transition-all duration-300">
+            <div class="text-sm font-medium text-ink-soft mb-2">Starter</div>
+            <div class="flex items-baseline gap-1 mb-6">
+              <span class="text-4xl md:text-5xl font-display tracking-tight text-ink">$0</span>
+              <span class="text-sm text-ink-soft">/month</span>
+            </div>
+            <p class="text-sm text-ink-soft mb-8 leading-relaxed">For individuals exploring what AI workflows can do.</p>
+            <ul class="space-y-3 mb-8" role="list">
+              <li class="flex items-start gap-2.5 text-sm text-ink-soft">
+                <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Up to 3 active workflows
+              </li>
+              <li class="flex items-start gap-2.5 text-sm text-ink-soft">
+                <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                5 tool integrations
+              </li>
+              <li class="flex items-start gap-2.5 text-sm text-ink-soft">
+                <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Community support
+              </li>
+            </ul>
+            <a href="#contact" class="btn-secondary w-full justify-center text-sm">Get started free</a>
+          </div>
+
+          <!-- Pro (highlighted) -->
+          <div class="reveal bg-surface rounded-2xl p-6 md:p-8 pricing-highlight shadow-lift relative" style="animation-delay: 0.1s;">
+            <div class="text-sm font-medium text-accent mb-2">Pro</div>
+            <div class="flex items-baseline gap-1 mb-6">
+              <span class="text-4xl md:text-5xl font-display tracking-tight text-ink">$29</span>
+              <span class="text-sm text-ink-soft">/month</span>
+            </div>
+            <p class="text-sm text-ink-soft mb-8 leading-relaxed">For teams ready to automate the busywork and move faster.</p>
+            <ul class="space-y-3 mb-8" role="list">
+              <li class="flex items-start gap-2.5 text-sm text-ink-soft">
+                <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Unlimited workflows
+              </li>
+              <li class="flex items-start gap-2.5 text-sm text-ink-soft">
+                <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                All 40+ integrations
+              </li>
+              <li class="flex items-start gap-2.5 text-sm text-ink-soft">
+                <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Advanced analytics
+              </li>
+              <li class="flex items-start gap-2.5 text-sm text-ink-soft">
+                <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Priority support
+              </li>
+            </ul>
+            <a href="#contact" class="btn-primary w-full justify-center text-sm">Start free trial</a>
+          </div>
+
+          <!-- Enterprise -->
+          <div class="reveal bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft hover:shadow-lift transition-all duration-300" style="animation-delay: 0.2s;">
+            <div class="text-sm font-medium text-ink-soft mb-2">Enterprise</div>
+            <div class="flex items-baseline gap-1 mb-6">
+              <span class="text-4xl md:text-5xl font-display tracking-tight text-ink">Custom</span>
+            </div>
+            <p class="text-sm text-ink-soft mb-8 leading-relaxed">For organizations that need scale, security, and dedicated support.</p>
+            <ul class="space-y-3 mb-8" role="list">
+              <li class="flex items-start gap-2.5 text-sm text-ink-soft">
+                <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Everything in Pro
+              </li>
+              <li class="flex items-start gap-2.5 text-sm text-ink-soft">
+                <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                SSO & SAML
+              </li>
+              <li class="flex items-start gap-2.5 text-sm text-ink-soft">
+                <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Dedicated success manager
+              </li>
+              <li class="flex items-start gap-2.5 text-sm text-ink-soft">
+                <svg class="mt-0.5 shrink-0 text-accent" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Custom SLA
+              </li>
+            </ul>
+            <a href="#contact" class="btn-secondary w-full justify-center text-sm">Contact sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONIALS ============ -->
+    <section id="testimonials" class="py-20 md:py-32 bg-paper" aria-label="Testimonials">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="max-w-2xl mb-16 md:mb-20">
+          <p class="reveal text-xs font-mono uppercase tracking-widest text-accent mb-4">Testimonials</p>
+          <h2 class="reveal font-display text-4xl md:text-5xl lg:text-6xl tracking-tight text-ink mb-5">
+            Loved by teams<br/>
+            <span class="italic text-ink-soft">who ship.</span>
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+          <!-- Testimonial 1 -->
+          <div class="reveal bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft">
+            <div class="flex items-center gap-1 mb-4 text-accent" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote class="text-sm text-ink-soft leading-relaxed mb-6">
+              "Aether cut our weekly reporting time from four hours to twenty minutes. The workflow suggestions alone paid for the Pro plan in the first week."
+            </blockquote>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-accent-soft flex items-center justify-center text-accent font-semibold text-sm" aria-hidden="true">MC</div>
+              <div>
+                <div class="text-sm font-semibold text-ink">Maya Chen</div>
+                <div class="text-xs text-ink-soft">Head of Ops, Linear</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="reveal bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft" style="animation-delay: 0.1s;">
+            <div class="flex items-center gap-1 mb-4 text-accent" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote class="text-sm text-ink-soft leading-relaxed mb-6">
+              "We've tried every workflow tool under the sun. Aether is the first one that actually understands context — it connects the dots across our stack without us having to lift a finger."
+            </blockquote>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-accent-soft flex items-center justify-center text-accent font-semibold text-sm" aria-hidden="true">JR</div>
+              <div>
+                <div class="text-sm font-semibold text-ink">James Rodriguez</div>
+                <div class="text-xs text-ink-soft">Engineering Lead, Vercel</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 3 -->
+          <div class="reveal bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft" style="animation-delay: 0.2s;">
+            <div class="flex items-center gap-1 mb-4 text-accent" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote class="text-sm text-ink-soft leading-relaxed mb-6">
+              "The onboarding was so smooth our whole team was running custom workflows by lunch. Aether feels less like software and more like a superpower."
+            </blockquote>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-accent-soft flex items-center justify-center text-accent font-semibold text-sm" aria-hidden="true">SP</div>
+              <div>
+                <div class="text-sm font-semibold text-ink">Sofia Patel</div>
+                <div class="text-xs text-ink-soft">Product Manager, Framer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA BANNER ============ -->
+    <section class="py-20 md:py-32 relative overflow-hidden" aria-label="Call to action">
+      <div class="hero-glow" style="top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; height: 800px; background: radial-gradient(circle at center, rgba(62, 90, 240, 0.07) 0%, transparent 70%);" aria-hidden="true"></div>
+      <div class="max-w-4xl mx-auto px-5 sm:px-8 relative z-10 text-center">
+        <h2 class="reveal font-display text-4xl md:text-5xl lg:text-6xl tracking-tight text-ink mb-6 text-balance">
+          Ready to move<br/>
+          <span class="italic gradient-text">forward?</span>
+        </h2>
+        <p class="reveal text-lg text-ink-soft max-w-xl mx-auto mb-10 leading-relaxed">
+          Join 12,000+ teams already using Aether to automate the busywork and focus on what matters.
+        </p>
+        <div class="reveal flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="#contact" class="btn-primary text-base">Start your free trial</a>
+          <a href="#contact" class="btn-secondary text-base">Talk to sales</a>
+        </div>
+        <p class="reveal text-xs text-ink-soft/50 mt-6">No credit card required · Free 14-day trial · Cancel anytime</p>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT / FORM ============ -->
+    <section id="contact" class="py-20 md:py-32 bg-paper" aria-label="Contact">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20">
+          <!-- Left: Copy -->
+          <div>
+            <p class="reveal text-xs font-mono uppercase tracking-widest text-accent mb-4">Get in touch</p>
+            <h2 class="reveal font-display text-4xl md:text-5xl tracking-tight text-ink mb-5">
+              Let's build<br/>
+              <span class="italic text-ink-soft">something great.</span>
+            </h2>
+            <p class="reveal text-lg text-ink-soft leading-relaxed mb-10">
+              Whether you have a question about features, pricing, or need a custom demo — our team is ready to help.
+            </p>
+            <div class="reveal space-y-4">
+              <div class="flex items-center gap-3 text-sm text-ink-soft">
+                <div class="w-10 h-10 rounded-full bg-accent-soft flex items-center justify-center text-accent" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </div>
+                hello@aether.io
+              </div>
+              <div class="flex items-center gap-3 text-sm text-ink-soft">
+                <div class="w-10 h-10 rounded-full bg-accent-soft flex items-center justify-center text-accent" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </div>
+                San Francisco, CA
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Form -->
+          <div class="reveal">
+            <form id="contactForm" class="bg-surface rounded-2xl p-6 md:p-8 border border-hairline shadow-soft" novalidate>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label for="name" class="sr-only">Name</label>
+                  <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required autocomplete="name" />
+                  <p class="form-error" id="nameError" role="alert">Please enter your name.</p>
+                </div>
+                <div>
+                  <label for="email" class="sr-only">Email</label>
+                  <input type="email" id="email" name="email" class="form-input" placeholder="you@company.com" required autocomplete="email" />
+                  <p class="form-error" id="emailError" role="alert">Please enter a valid email.</p>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label for="company" class="sr-only">Company</label>
+                <input type="text" id="company" name="company" class="form-input" placeholder="Company name (optional)" autocomplete="organization" />
+              </div>
+              <div class="mb-4">
+                <label for="message" class="sr-only">Message</label>
+                <textarea id="message" name="message" rows="4" class="form-input resize-none" placeholder="Tell us about your workflow needs..." required></textarea>
+                <p class="form-error" id="messageError" role="alert">Please tell us a bit about what you need.</p>
+              </div>
+              <!-- TODO: connect form action to backend endpoint -->
+              <button type="submit" id="submitBtn" class="btn-primary w-full justify-center text-sm">
+                Send message
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+              <p id="formSuccess" class="hidden mt-4 text-center text-sm text-green-600 font-medium" role="status">
+                Message sent successfully. We'll be in touch soon.
+              </p>
+              <p id="formError" class="hidden mt-4 text-center text-sm text-red-600 font-medium" role="status">
+                Something went wrong. Please try again.
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="pt-16 md:pt-24 pb-8 border-t border-hairline" role="contentinfo">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12 mb-16">
+        <!-- Brand -->
+        <div class="col-span-2 md:col-span-1">
+          <a href="#" class="flex items-center gap-2.5 mb-4" aria-label="Aether Home">
+            <div class="w-8 h-8 rounded-lg bg-ink flex items-center justify-center" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 0L9.8 6.2L16 8L9.8 9.8L8 16L6.2 9.8L0 8L6.2 6.2L8 0Z" fill="#FEFCF8"/>
+              </svg>
+            </div>
+            <span class="font-display text-xl tracking-tight font-semibold text-ink">Aether</span>
+          </a>
+          <p class="text-sm text-ink-soft leading-relaxed mb-6 max-w-xs">
+            The AI workflow layer for modern teams. Automate the busywork, focus on what matters.
+          </p>
+          <div class="flex items-center gap-3">
+            <a href="#" class="w-9 h-9 rounded-full bg-accent-soft flex items-center justify-center text-accent hover:bg-accent hover:text-white transition-all duration-200" aria-label="Twitter">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full bg-accent-soft flex items-center justify-center text-accent hover:bg-accent hover:text-white transition-all duration-200" aria-label="GitHub">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full bg-accent-soft flex items-center justify-center text-accent hover:bg-accent hover:text-white transition-all duration-200" aria-label="LinkedIn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Product -->
+        <div>
+          <h3 class="text-xs font-mono uppercase tracking-widest text-ink-soft/50 mb-4">Product</h3>
+          <ul class="space-y-2.5" role="list">
+            <li><a href="#features" class="text-sm text-ink-soft hover:text-ink transition-colors">Features</a></li>
+            <li><a href="#pricing" class="text-sm text-ink-soft hover:text-ink transition-colors">Pricing</a></li>
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">Integrations</a></li>
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">Changelog</a></li>
+          </ul>
+        </div>
+
+        <!-- Company -->
+        <div>
+          <h3 class="text-xs font-mono uppercase tracking-widest text-ink-soft/50 mb-4">Company</h3>
+          <ul class="space-y-2.5" role="list">
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">About</a></li>
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">Blog</a></li>
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">Careers</a></li>
+            <li><a href="#contact" class="text-sm text-ink-soft hover:text-ink transition-colors">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Resources -->
+        <div>
+          <h3 class="text-xs font-mono uppercase tracking-widest text-ink-soft/50 mb-4">Resources</h3>
+          <ul class="space-y-2.5" role="list">
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">Documentation</a></li>
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">API Reference</a></li>
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">Community</a></li>
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">Status</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal -->
+        <div>
+          <h3 class="text-xs font-mono uppercase tracking-widest text-ink-soft/50 mb-4">Legal</h3>
+          <ul class="space-y-2.5" role="list">
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">Privacy</a></li>
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">Terms</a></li>
+            <li><a href="#" class="text-sm text-ink-soft hover:text-ink transition-colors">Security</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="pt-8 border-t border-hairline flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-ink-soft/50">© 2025 Aether Inc. All rights reserved.</p>
+        <p class="text-xs text-ink-soft/50 font-mono">Built for teams that move.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    (function() {
+      'use strict';
+
+      /* === Loader === */
+      window.addEventListener('load', function() {
+        var loader = document.getElementById('loader');
+        setTimeout(function() {
+          loader.classList.add('hidden');
+        }, 400);
+      });
+
+      /* === Custom Cursor === */
+      var cursorDot = document.getElementById('cursorDot');
+      var cursorRing = document.getElementById('cursorRing');
+      var mouseX = 0, mouseY = 0;
+      var ringX = 0, ringY = 0;
+
+      if (window.matchMedia('(pointer: fine)').matches) {
+        document.addEventListener('mousemove', function(e) {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          cursorDot.style.left = mouseX + 'px';
+          cursorDot.style.top = mouseY + 'px';
+        });
+
+        function animateCursor() {
+          ringX += (mouseX - ringX) * 0.12;
+          ringY += (mouseY - ringY) * 0.12;
+          cursorRing.style.left = ringX + 'px';
+          cursorRing.style.top = ringY + 'px';
+          requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        document.querySelectorAll('a, button, input, textarea, .tilt-card').forEach(function(el) {
+          el.addEventListener('mouseenter', function() {
+            cursorRing.style.transform = 'translate(-50%, -50%) scale(1.6)';
+            cursorRing.style.opacity = '0.5';
+          });
+          el.addEventListener('mouseleave', function() {
+            cursorRing.style.transform = 'translate(-50%, -50%) scale(1)';
+            cursorRing.style.opacity = '0.3';
+          });
+        });
+      } else {
+        cursorDot.style.display = 'none';
+        cursorRing.style.display = 'none';
+      }
+
+      /* === Header Scroll === */
+      var header = document.getElementById('header');
+      var lastScrollY = 0;
+
+      window.addEventListener('scroll', function() {
+        var scrollY = window.scrollY;
+        if (scrollY > 50) {
+          header.classList.add('header-scrolled');
+          header.style.paddingTop = '10px';
+          header.style.paddingBottom = '10px';
+        } else {
+          header.classList.remove('header-scrolled');
+          header.style.paddingTop = '';
+          header.style.paddingBottom = '';
+        }
+        lastScrollY = scrollY;
+      }, { passive: true });
+
+      /* === Mobile Menu === */
+      var mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      var mobileMenu = document.getElementById('mobileMenu');
+      var mobileMenuClose = document.getElementById('mobileMenuClose');
+
+      function openMenu() {
+        mobileMenu.classList.add('open');
+        mobileMenuBtn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMenu() {
+        mobileMenu.classList.remove('open');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      mobileMenuBtn.addEventListener('click', openMenu);
+      mobileMenuClose.addEventListener('click', closeMenu);
+
+      mobileMenu.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', closeMenu);
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+          closeMenu();
+        }
+      });
+
+      /* === GSAP Scroll Animations === */
+      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Reveal animations
+        document.querySelectorAll('.reveal').forEach(function(el) {
+          gsap.to(el, {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 88%',
+              toggleActions: 'play none none none'
+            }
+          });
+        });
+
+        // Hero text stagger
+        var heroH1 = document.querySelector('h1');
+        if (heroH1) {
+          gsap.from(heroH1, {
+            opacity: 0,
+            y: 40,
+            duration: 1.2,
+            ease: 'power3.out',
+            delay: 0.2
+          });
+        }
+
+        // Parallax on hero glow
+        gsap.to('.hero-glow', {
+          y: 120,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: 'body',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1
+          }
+        });
+
+        // 3D Tilt on cards
+        document.querySelectorAll('.tilt-card').forEach(function(card) {
+          var inner = card.querySelector('.tilt-inner');
+          if (!inner) return;
+
+          card.addEventListener('mousemove', function(e) {
+            var rect = card.getBoundingClientRect();
+            var x = (e.clientX - rect.left) / rect.width - 0.5;
+            var y = (e.clientY - rect.top) / rect.height - 0.5;
+            inner.style.transform = 'rotateY(' + (x * 8) + 'deg) rotateX(' + (-y * 8) + 'deg) translateZ(8px)';
+          });
+
+          card.addEventListener('mouseleave', function() {
+            inner.style.transform = 'rotateY(0deg) rotateX(0deg) translateZ(0)';
+          });
+        });
+      }
+
+      /* === Form Validation === */
+      var form = document.getElementById('contactForm');
+      var nameInput = document.getElementById('name');
+      var emailInput = document.getElementById('email');
+      var messageInput = document.getElementById('message');
+      var nameError = document.getElementById('nameError');
+      var emailError = document.getElementById('emailError');
+      var messageError = document.getElementById('messageError');
+      var successMsg = document.getElementById('formSuccess');
+      var errorMsg = document.getElementById('formError');
+      var submitBtn = document.getElementById('submitBtn');
+
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      function clearErrors() {
+        [nameInput, emailInput, messageInput].forEach(function(el) {
+          el.classList.remove('error');
+        });
+        [nameError, emailError, messageError].forEach(function(el) {
+          el.classList.remove('visible');
+        });
+        successMsg.classList.add('hidden');
+        errorMsg.classList.add('hidden');
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        clearErrors();
+        var valid = true;
+
+        if (!nameInput.value.trim()) {
+          nameInput.classList.add('error');
+          nameError.classList.add('visible');
+          valid = false;
+        }
+
+        if (!emailInput.value.trim() || !validateEmail(emailInput.value.trim())) {
+          emailInput.classList.add('error');
+          emailError.classList.add('visible');
+          valid = false;
+        }
+
+        if (!messageInput.value.trim()) {
+          messageInput.classList.add('error');
+          messageError.classList.add('visible');
+          valid = false;
+        }
+
+        if (!valid) return;
+
+        // Simulate submission with success animation
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        submitBtn.style.opacity = '0.7';
+
+        var formData = {
+          name: nameInput.value.trim(),
+          email: emailInput.value.trim(),
+          company: document.getElementById('company').value.trim(),
+          message: messageInput.value.trim()
+        };
+
+        // Simulate network request
+        setTimeout(function() {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send message';
+          submitBtn.style.opacity = '1';
+          successMsg.classList.remove('hidden');
+          form.reset();
+        }, 1200);
+
+        // TODO: Replace the setTimeout above with a real fetch to your backend endpoint:
+        // fetch('/submit', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   cache: 'no-store',
+        //   body: JSON.stringify({
+        //     url: window.location.host,
+        //     table: 'contact_enquiries',
+        //     data: formData
+        //   })
+        // })
+        // .then(function(res) {
+        //   if (!res.ok) throw new Error('Network error');
+        //   successMsg.classList.remove('hidden');
+        //   form.reset();
+        // })
+        // .catch(function() {
+        //   errorMsg.classList.remove('hidden');
+        // })
+        // .finally(function() {
+        //   submitBtn.disabled = false;
+        //   submitBtn.textContent = 'Send message';
+        //   submitBtn.style.opacity = '1';
+        // });
+      });
+
+      // Clear error on input
+      [nameInput, emailInput, messageInput].forEach(function(el) {
+        el.addEventListener('input', function() {
+          el.classList.remove('error');
+          var errorId = el.id + 'Error';
+          var errorEl = document.getElementById(errorId);
+          if (errorEl) errorEl.classList.remove('visible');
+        });
+      });
+
+      /* === Lucide Icons Init === */
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+
+    })();
+  </script>
+</body>
+</html>
