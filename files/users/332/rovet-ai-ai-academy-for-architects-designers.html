@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rovet AI — AI Academy for Architects & Designers</title>
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Tailwind CDN (jsDelivr) + custom CSS below -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === DESIGN TOKENS === */
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface-2: #181818;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f5f5f7;
+      --text-muted: #a1a1aa;
+      --accent: #00e676; /* neon green */
+      --accent-2: #00b0ff; /* electric blue */
+      --accent-glow: rgba(0, 230, 118, 0.25);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --font-display: 'Sora', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    /* === BASE === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; }
+    a { color: inherit; text-decoration: none; }
+    button, .btn { cursor: pointer; font-family: var(--font-body); }
+    img, .placeholder-img { display: block; max-width: 100%; }
+
+    /* === SCROLLBAR === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+    /* === UTILITY === */
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+    .section-pad { padding: 96px 0; }
+    @media (max-width: 768px) { .section-pad { padding: 64px 0; } }
+
+    /* === TYPOGRAPHY === */
+    .hero-title {
+      font-size: clamp(2.6rem, 7vw, 5.2rem);
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4.5vw, 3.4rem);
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+    .muted { color: var(--text-muted); }
+
+    /* === BUTTONS === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #0a0a0a;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 100px;
+      border: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 20px var(--accent-glow);
+      font-size: 1rem;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px var(--accent-glow); background: #00ff88; }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text);
+      font-weight: 500;
+      padding: 14px 32px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      transition: all 0.25s ease;
+      font-size: 1rem;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+    .btn-secondary:active { transform: scale(0.97); }
+
+    .btn-outline-accent {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      color: var(--accent);
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 100px;
+      border: 1px solid rgba(0, 230, 118, 0.3);
+      transition: all 0.25s ease;
+      font-size: 0.9rem;
+    }
+    .btn-outline-accent:hover { background: rgba(0, 230, 118, 0.1); border-color: var(--accent); }
+
+    /* === PLACEHOLDER IMAGE (16:9) === */
+    .placeholder-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(145deg, #1a1a1a 0%, #252525 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .placeholder-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 40%, rgba(0, 230, 118, 0.04), transparent 60%);
+    }
+    .placeholder-img i { margin-right: 8px; font-size: 1.1rem; }
+
+    /* === HEADER === */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: all 0.35s ease;
+      padding: 16px 0;
+      backdrop-filter: blur(0px);
+      background: transparent;
+      border-bottom: 1px solid transparent;
+    }
+    .header.scrolled {
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+      position: relative;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { display: flex; align-items: center; gap: 16px; }
+    .lang-switch {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 4px 10px;
+      background: rgba(255,255,255,0.02);
+    }
+    .lang-switch button {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 100px;
+      transition: all 0.2s;
+    }
+    .lang-switch button.active { background: var(--accent); color: #0a0a0a; }
+    .mobile-toggle { display: none; background: none; border: none; color: var(--text); padding: 8px; }
+    @media (max-width: 900px) {
+      .nav-links, .nav-cta .btn-secondary { display: none; }
+      .mobile-toggle { display: block; }
+      .nav-cta .btn-primary { padding: 10px 18px; font-size: 0.85rem; }
+      .lang-switch { display: none; }
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,10,10,0.98);
+      backdrop-filter: blur(24px);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: all; }
+    .mobile-menu a { font-size: 1.4rem; font-weight: 600; color: var(--text); }
+    .mobile-menu .close-btn { position: absolute; top: 24px; right: 24px; background: none; border: none; color: var(--text); font-size: 2rem; }
+
+    /* === HERO === */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 120px;
+      padding-bottom: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0, 230, 118, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0, 176, 255, 0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+      .hero { padding-top: 100px; min-height: auto; }
+    }
+    .hero-content { max-width: 620px; }
+    .hero-sub {
+      font-size: clamp(1rem, 1.4vw, 1.2rem);
+      color: var(--text-muted);
+      margin-top: 24px;
+      line-height: 1.7;
+      max-width: 520px;
+    }
+    .hero-cta { display: flex; gap: 16px; margin-top: 36px; flex-wrap: wrap; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 230, 118, 0.08);
+      border: 1px solid rgba(0, 230, 118, 0.2);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    /* === BEFORE/AFTER SLIDER === */
+    .ba-slider {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: #1a1a1a;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      border: 1px solid var(--border);
+      cursor: col-resize;
+      user-select: none;
+      touch-action: none;
+    }
+    .ba-slider .placeholder-img {
+      position: absolute;
+      inset: 0;
+      border-radius: 0;
+      border: none;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      z-index: 1;
+    }
+    .ba-slider .after-img {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      clip-path: inset(0 0 0 50%);
+      background: linear-gradient(145deg, #1a1a1a 0%, #2a2a2a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #777;
+      font-weight: 500;
+      font-size: 1rem;
+      border-radius: 0;
+    }
+    .ba-slider .after-img i { margin-right: 8px; }
+    .ba-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent);
+      z-index: 10;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 20px rgba(0,230,118,0.5);
+    }
+    .ba-divider::after {
+      content: '◂ ▸';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--accent);
+      color: #0a0a0a;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      box-shadow: 0 0 30px rgba(0,230,118,0.4);
+      border: 2px solid #0a0a0a;
+    }
+    .ba-label {
+      position: absolute;
+      bottom: 16px;
+      z-index: 20;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+    }
+    .ba-label.left { left: 16px; color: #aaa; }
+    .ba-label.right { right: 16px; color: var(--accent); }
+
+    /* === TRUST BADGE === */
+    .trust-badge {
+      text-align: center;
+      padding: 28px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-top: 48px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px 32px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+    .trust-badge .stat { display: flex; align-items: center; gap: 8px; }
+    .trust-badge .stat i { color: var(--accent); }
+
+    /* === COURSES === */
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-top: 48px;
+    }
+    @media (max-width: 900px) { .course-grid { grid-template-columns: 1fr; } }
+    .course-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .course-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(0, 230, 118, 0.2);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .course-card .placeholder-img { border-radius: 0; border: none; border-bottom: 1px solid var(--border); }
+    .course-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .course-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .course-tags span {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .course-tags span.level { color: var(--accent); border-color: rgba(0,230,118,0.2); background: rgba(0,230,118,0.06); }
+    .course-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
+    .course-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; flex: 1; }
+    .course-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .course-price { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+    .course-price small { font-size: 0.75rem; font-weight: 400; color: var(--text-muted); }
+
+    /* === GALLERY === */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 48px;
+    }
+    @media (max-width: 700px) { .gallery-grid { grid-template-columns: 1fr; } }
+    .gallery-item {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: border-color 0.3s;
+    }
+    .gallery-item:hover { border-color: rgba(0,230,118,0.3); }
+    .gallery-item .placeholder-img { border-radius: 0; border: none; }
+
+    /* === LEARN === */
+    .learn-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 48px;
+    }
+    @media (max-width: 900px) { .learn-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .learn-grid { grid-template-columns: 1fr; } }
+    .learn-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px 24px;
+      transition: all 0.3s ease;
+    }
+    .learn-item:hover { border-color: rgba(0,230,118,0.2); background: var(--surface-2); }
+    .learn-item i { color: var(--accent); width: 28px; height: 28px; margin-bottom: 16px; }
+    .learn-item h4 { font-size: 1.05rem; margin-bottom: 8px; font-weight: 600; }
+    .learn-item p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* === INSTRUCTOR === */
+    .instructor-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 48px;
+      align-items: center;
+      margin-top: 48px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+    }
+    @media (max-width: 700px) { .instructor-wrap { grid-template-columns: 1fr; padding: 24px; } }
+    .instructor-photo {
+      width: 100%;
+      aspect-ratio: 1/1;
+      border-radius: var(--radius-md);
+      background: linear-gradient(145deg, #1a1a1a, #252525);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      font-size: 0.9rem;
+      border: 1px dashed rgba(255,255,255,0.1);
+    }
+    .instructor-photo i { margin-right: 8px; }
+
+    /* === TESTIMONIALS === */
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 48px;
+    }
+    @media (max-width: 900px) { .testimonial-grid { grid-template-columns: 1fr; } }
+    .testimonial-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      transition: border-color 0.3s;
+    }
+    .testimonial-card:hover { border-color: rgba(0,230,118,0.2); }
+    .testimonial-card .placeholder-img { margin-bottom: 16px; }
+    .testimonial-card .stars { color: var(--accent); letter-spacing: 2px; margin-bottom: 12px; font-size: 0.9rem; }
+    .testimonial-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; font-style: italic; }
+    .testimonial-card .name { margin-top: 16px; font-weight: 600; font-size: 0.9rem; }
+    .testimonial-card .role { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* === FAQ === */
+    .faq-list { margin-top: 48px; display: flex; flex-direction: column; gap: 12px; max-width: 800px; margin-left: auto; margin-right: auto; }
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .faq-item:hover { border-color: rgba(255,255,255,0.15); }
+    .faq-q {
+      width: 100%;
+      padding: 20px 24px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+    }
+    .faq-q:hover { background: rgba(255,255,255,0.02); }
+    .faq-q i { transition: transform 0.3s; color: var(--text-muted); }
+    .faq-q.open i { transform: rotate(180deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+      padding: 0 24px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+    .faq-a.open { max-height: 300px; padding: 0 24px 20px; }
+
+    /* === FINAL CTA === */
+    .final-cta {
+      text-align: center;
+      padding: 80px 24px;
+      background: linear-gradient(145deg, var(--surface), #0f0f0f);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      margin: 48px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0,230,118,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* === FOOTER === */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 64px 0 32px;
+      margin-top: 64px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+    }
+    @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
+    .footer h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 16px; font-weight: 600; }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 0.9rem; color: var(--text-muted); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-bottom {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .social-icons { display: flex; gap: 16px; }
+    .social-icons a { color: var(--text-muted); transition: color 0.2s; }
+    .social-icons a:hover { color: var(--accent); }
+
+    /* === FLOATING WHATSAPP === */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 900;
+      background: #25D366;
+      color: #fff;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 30px rgba(37, 211, 102, 0.35);
+      transition: all 0.3s ease;
+    }
+    .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 12px 40px rgba(37, 211, 102, 0.5); }
+    .whatsapp-float i { width: 28px; height: 28px; }
+
+    /* === ENROLLMENT MODAL === */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 24px;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      max-width: 480px;
+      width: 100%;
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal h3 { font-size: 1.5rem; margin-bottom: 8px; }
+    .modal p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 500; margin-bottom: 6px; color: var(--text-muted); }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: var(--font-body);
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,230,118,0.1);
+    }
+    .form-group input.error, .form-group select.error { border-color: #ff5252; }
+    .form-error { font-size: 0.75rem; color: #ff5252; margin-top: 4px; display: none; }
+    .form-error.visible { display: block; }
+    .form-success { text-align: center; padding: 24px 0; display: none; }
+    .form-success.visible { display: block; }
+    .form-success i { color: var(--accent); width: 48px; height: 48px; margin-bottom: 12px; }
+
+    /* === SCROLL REVEAL === */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* === ACCESSIBILITY === */
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+    /* === MISC === */
+    .grain { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="#" class="logo" aria-label="Rovet AI Home">Rovet<span>AI</span></a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#courses">Courses</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#learn">Why Rovet</a>
+        <a href="#instructor">Instructor</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav-cta">
+        <div class="lang-switch" aria-label="Language selector">
+          <button class="active" data-lang="en" aria-label="English">EN</button>
+          <button data-lang="ml" aria-label="Malayalam">ML</button>
+        </div>
+        <a href="#courses" class="btn-secondary" style="padding:10px 20px;font-size:0.85rem;">Watch Demo</a>
+        <button class="btn-primary" style="padding:10px 22px;font-size:0.85rem;" onclick="openModal()">Enroll Now</button>
+      </div>
+      <button class="mobile-toggle" aria-label="Open menu" onclick="document.querySelector('.mobile-menu').classList.add('open')">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile menu">
+    <button class="close-btn" onclick="document.querySelector('.mobile-menu').classList.remove('open')" aria-label="Close menu">
+      <i data-lucide="x"></i>
+    </button>
+    <a href="#courses" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Courses</a>
+    <a href="#gallery" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Gallery</a>
+    <a href="#learn" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Why Rovet</a>
+    <a href="#instructor" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Instructor</a>
+    <a href="#faq" onclick="document.querySelector('.mobile-menu').classList.remove('open')">FAQ</a>
+    <button class="btn-primary" style="margin-top:16px;" onclick="document.querySelector('.mobile-menu').classList.remove('open');openModal()">Enroll Now</button>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-badge"><i data-lucide="sparkles" style="width:14px;height:14px;"></i> New Batch Starts Soon</div>
+        <h1 class="hero-title">Design Future Homes in <span style="color:var(--accent);">Minutes</span>, Not Days with AI</h1>
+        <p class="hero-sub">Learn AI Home Rendering, SketchUp + AI Render, and Photorealistic Visualization from Industry Experts. No expensive PC. No V-Ray. Just AI.</p>
+        <div class="hero-cta">
+          <a href="#courses" class="btn-primary">Explore Courses <i data-lucide="arrow-right" style="width:18px;height:18px;"></i></a>
+          <a href="#" class="btn-secondary" onclick="event.preventDefault();alert('Demo video coming soon.');">Watch Free Demo</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="ba-slider" id="heroSlider" aria-label="Before and after AI render comparison">
+          <div class="placeholder-img"><i data-lucide="pencil-ruler" style="width:20px;height:20px;"></i> Upload Your Render Here (Sketch)</div>
+          <div class="after-img" id="afterImg" style="clip-path: inset(0 0 0 50%);"><i data-lucide="sparkles" style="width:20px;height:20px;"></i> Upload Your Render Here (AI)</div>
+          <div class="ba-divider" id="baDivider"></div>
+          <span class="ba-label left">Sketch</span>
+          <span class="ba-label right">AI Render</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="trust-badge reveal">
+        <div class="stat"><i data-lucide="users" style="width:18px;height:18px;"></i> Trusted by 3000+ Architects & Designers</div>
+        <div class="stat"><i data-lucide="star" style="width:18px;height:18px;"></i> 4.9★ Rating</div>
+        <div class="stat"><i data-lucide="award" style="width:18px;height:18px;"></i> Industry-Recognized Certification</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COURSES ===== -->
+  <section id="courses" class="section-pad">
+    <div class="container">
+      <div class="reveal" style="text-align:center;max-width:700px;margin:0 auto;">
+        <h2 class="section-title">Our Masterclasses</h2>
+        <p class="muted" style="margin-top:12px;font-size:1.05rem;">Three focused tracks. One goal: make you the AI rendering expert your clients need.</p>
+      </div>
+      <div class="course-grid">
+        <article class="course-card reveal">
+          <div class="placeholder-img"><i data-lucide="image" style="width:20px;height:20px;"></i> Upload Your Render Here</div>
+          <div class="course-body">
+            <div class="course-tags"><span class="level">Intermediate</span><span>8 Weeks</span></div>
+            <h3 class="course-title">AI Home Rendering Masterclass</h3>
+            <p class="course-desc">Master Midjourney, Stable Diffusion, and D5 Render AI for breathtaking interior and exterior renders.</p>
+            <div class="course-footer">
+              <div class="course-price">₹14,999 <small>one-time</small></div>
+              <button class="btn-outline-accent" onclick="openModal()">Enroll <i data-lucide="arrow-up-right" style="width:14px;height:14px;"></i></button>
+            </div>
+          </div>
+        </article>
+        <article class="course-card reveal">
+          <div class="placeholder-img"><i data-lucide="layers" style="width:20px;height:20px;"></i> Upload Your Render Here</div>
+          <div class="course-body">
+            <div class="course-tags"><span class="level">Beginner</span><span>6 Weeks</span></div>
+            <h3 class="course-title">SketchUp + AI Render Pro</h3>
+            <p class="course-desc">The complete SketchUp to AI photorealistic workflow. Turn simple models into client-ready visuals.</p>
+            <div class="course-footer">
+              <div class="course-price">₹9,999 <small>one-time</small></div>
+              <button class="btn-outline-accent" onclick="openModal()">Enroll <i data-lucide="arrow-up-right" style="width:14px;height:14px;"></i></button>
+            </div>
+          </div>
+        </article>
+        <article class="course-card reveal">
+          <div class="placeholder-img"><i data-lucide="briefcase" style="width:20px;height:20px;"></i> Upload Your Render Here</div>
+          <div class="course-body">
+            <div class="course-tags"><span class="level">Advanced</span><span>4 Weeks</span></div>
+            <h3 class="course-title">AI Interior Design Business</h3>
+            <p class="course-desc">How to get clients, price your work, and earn consistently with AI rendering — even if you're starting out.</p>
+            <div class="course-footer">
+              <div class="course-price">₹19,999 <small>one-time</small></div>
+              <button class="btn-outline-accent" onclick="openModal()">Enroll <i data-lucide="arrow-up-right" style="width:14px;height:14px;"></i></button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GALLERY ===== -->
+  <section id="gallery" class="section-pad" style="background:var(--surface);">
+    <div class="container">
+      <div class="reveal" style="text-align:center;max-width:700px;margin:0 auto;">
+        <h2 class="section-title">Sketch to Render, Instantly</h2>
+        <p class="muted" style="margin-top:12px;font-size:1.05rem;">Real transformations from our students. Simple sketch in, photorealistic out.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item reveal"><div class="placeholder-img"><i data-lucide="image" style="width:20px;height:20px;"></i> Upload Your Render Here</div></div>
+        <div class="gallery-item reveal"><div class="placeholder-img"><i data-lucide="image" style="width:20px;height:20px;"></i> Upload Your Render Here</div></div>
+        <div class="gallery-item reveal"><div class="placeholder-img"><i data-lucide="image" style="width:20px;height:20px;"></i> Upload Your Render Here</div></div>
+        <div class="gallery-item reveal"><div class="placeholder-img"><i data-lucide="image" style="width:20px;height:20px;"></i> Upload Your Render Here</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHAT YOU WILL LEARN ===== -->
+  <section id="learn" class="section-pad">
+    <div class="container">
+      <div class="reveal" style="text-align:center;max-width:700px;margin:0 auto;">
+        <h2 class="section-title">What You Will Learn</h2>
+        <p class="muted" style="margin-top:12px;font-size:1.05rem;">Practical skills that clients pay for — no fluff, no expensive hardware.</p>
+      </div>
+      <div class="learn-grid">
+        <div class="learn-item reveal"><i data-lucide="laptop" style="width:28px;height:28px;"></i><h4>No Expensive PC Needed</h4><p>Run everything on a basic laptop or even a Chromebook using cloud AI tools.</p></div>
+        <div class="learn-item reveal"><i data-lucide="zap" style="width:28px;height:28px;"></i><h4>No V-Ray Needed</h4><p>Skip the $500+ software licenses. AI replaces the entire traditional render pipeline.</p></div>
+        <div class="learn-item reveal"><i data-lucide="clock" style="width:28px;height:28px;"></i><h4>Client-Ready Renders in 10 Mins</h4><p>Turn around stunning visuals while your competitor is still setting up lighting.</p></div>
+        <div class="learn-item reveal"><i data-lucide="banknote" style="width:28px;height:28px;"></i><h4>Earn from Freelancing</h4><p>Learn how to find clients, pitch your services, and charge premium rates.</p></div>
+        <div class="learn-item reveal"><i data-lucide="layers" style="width:28px;height:28px;"></i><h4>SketchUp + AI Workflow</h4><p>Master the bridge between traditional modeling and AI-powered rendering.</p></div>
+        <div class="learn-item reveal"><i data-lucide="award" style="width:28px;height:28px;"></i><h4>Industry Certificate</h4><p>Graduate with a certificate that signals real, demonstrable expertise.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== INSTRUCTOR ===== -->
+  <section id="instructor" class="section-pad" style="background:var(--surface);">
+    <div class="container">
+      <div class="reveal" style="text-align:center;max-width:700px;margin:0 auto;">
+        <h2 class="section-title">Learn from Experts at Rovet AI</h2>
+        <p class="muted" style="margin-top:12px;font-size:1.05rem;">Industry professionals who've shipped real projects and built successful studios.</p>
+      </div>
+      <div class="instructor-wrap reveal">
+        <div class="instructor-photo"><i data-lucide="user" style="width:24px;height:24px;"></i> Upload Your Photo Here</div>
+        <div>
+          <h3 style="font-size:1.8rem;font-weight:700;margin-bottom:12px;">Your Instructor</h3>
+          <p class="muted" style="font-size:0.95rem;line-height:1.8;margin-bottom:16px;">With over a decade of experience in architecture and interior design, your instructor has worked with leading firms and built a successful freelance practice using AI workflows. They've trained thousands of designers to adopt AI without losing their creative edge.</p>
+          <p class="muted" style="font-size:0.95rem;line-height:1.8;">"I built this course because I wish someone had taught me AI rendering when I was starting out. It's the single biggest leverage point for your career right now."</p>
+          <div style="display:flex;gap:16px;margin-top:24px;">
+            <span style="display:flex;align-items:center;gap:6px;font-size:0.85rem;color:var(--text-muted);"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--accent);"></i> 10+ Years Experience</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:0.85rem;color:var(--text-muted);"><i data-lucide="check-circle" style="width:16px;height:16px;color:var(--accent);"></i> 3000+ Students</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="section-pad">
+    <div class="container">
+      <div class="reveal" style="text-align:center;max-width:700px;margin:0 auto;">
+        <h2 class="section-title">What Our Students Say</h2>
+        <p class="muted" style="margin-top:12px;font-size:1.05rem;">Real results from designers who took the leap.</p>
+      </div>
+      <div class="testimonial-grid">
+        <div class="testimonial-card reveal">
+          <div class="placeholder-img"><i data-lucide="play-circle" style="width:20px;height:20px;"></i> Upload Video Thumbnail</div>
+          <div class="stars">★★★★★</div>
+          <p>"I went from spending 3 days on a render to 20 minutes. My clients can't tell the difference — and I've doubled my rates."</p>
+          <div class="name">Ananya R.</div>
+          <div class="role">Freelance Interior Designer</div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="placeholder-img"><i data-lucide="play-circle" style="width:20px;height:20px;"></i> Upload Video Thumbnail</div>
+          <div class="stars">★★★★★</div>
+          <p>"The SketchUp + AI workflow alone was worth the price. I'm now taking on 3x more projects without hiring anyone."</p>
+          <div class="name">Rahul M.</div>
+          <div class="role">Architect & Studio Owner</div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="placeholder-img"><i data-lucide="play-circle" style="width:20px;height:20px;"></i> Upload Video Thumbnail</div>
+          <div class="stars">★★★★★</div>
+          <p>"I was skeptical about AI replacing real skills. This course proved me wrong — it's a superpower, not a shortcut."</p>
+          <div class="name">Priya S.</div>
+          <div class="role">3D Artist</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq" class="section-pad" style="background:var(--surface);">
+    <div class="container">
+      <div class="reveal" style="text-align:center;max-width:700px;margin:0 auto;">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="muted" style="margin-top:12px;font-size:1.05rem;">Everything you need to know before enrolling.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item reveal">
+          <button class="faq-q" aria-expanded="false">Do I need a powerful PC to take this course? <i data-lucide="chevron-down" style="width:18px;height:18px;"></i></button>
+          <div class="faq-a"><p>Not at all. We teach cloud-based AI tools that run entirely in your browser. A basic laptop, reliable internet, and a willingness to learn are all you need.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q" aria-expanded="false">Will I get a certificate after completion? <i data-lucide="chevron-down" style="width:18px;height:18px;"></i></button>
+          <div class="faq-a"><p>Yes. Every graduate receives a verifiable Rovet AI certificate that you can share on LinkedIn and with clients.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q" aria-expanded="false">Do I get lifetime access to the course material? <i data-lucide="chevron-down" style="width:18px;height:18px;"></i></button>
+          <div class="faq-a"><p>Absolutely. Once you enroll, you get lifetime access to all current and future updates of the course, including new AI tools as they emerge.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q" aria-expanded="false">Is this course suitable for beginners? <i data-lucide="chevron-down" style="width:18px;height:18px;"></i></button>
+          <div class="faq-a"><p>Yes. We start from the absolute basics of AI image generation and work up to advanced workflows. If you can use a browser, you can take this course.</p></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q" aria-expanded="false">What language is the course taught in? <i data-lucide="chevron-down" style="width:18px;height:18px;"></i></button>
+          <div class="faq-a"><p>The course is taught in English with full Malayalam subtitles and support materials, so you can learn in the language you're most comfortable with.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL CTA ===== -->
+  <div class="container">
+    <div class="final-cta reveal">
+      <h2 class="section-title" style="margin-bottom:16px;">Ready to Become an AI Rendering Expert?</h2>
+      <p class="muted" style="font-size:1.1rem;max-width:600px;margin:0 auto 32px;">Join 3000+ architects and designers who've transformed their careers with AI. Your first client is waiting.</p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="openModal()">Enroll Now <i data-lucide="arrow-right" style="width:18px;height:18px;"></i></button>
+        <a href="https://wa.me/919876543210" target="_blank" rel="noopener" class="btn-secondary"><i data-lucide="message-circle" style="width:18px;height:18px;"></i> WhatsApp Enquiry</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="logo" style="margin-bottom:16px;">Rovet<span>AI</span></div>
+          <p class="muted" style="font-size:0.9rem;max-width:300px;">The AI academy for architects, interior designers, and 3D artists who want to build the future — faster.</p>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <div class="footer-links">
+            <a href="#courses">Courses</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#instructor">Instructor</a>
+            <a href="#faq">FAQ</a>
+          </div>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <div class="footer-links">
+            <a href="mailto:hello@rovet.ai">hello@rovet.ai</a>
+            <a href="https://wa.me/919876543210" target="_blank" rel="noopener">+91 98765 43210</a>
+            <a href="#" target="_blank" rel="noopener">Instagram</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 Rovet AI. All rights reserved.</span>
+        <div class="social-icons">
+          <a href="#" aria-label="Instagram"><i data-lucide="instagram" style="width:20px;height:20px;"></i></a>
+          <a href="https://wa.me/919876543210" aria-label="WhatsApp"><i data-lucide="message-circle" style="width:20px;height:20px;"></i></a>
+          <a href="mailto:hello@rovet.ai" aria-label="Email"><i data-lucide="mail" style="width:20px;height:20px;"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== FLOATING WHATSAPP ===== -->
+  <a href="https://wa.me/919876543210" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <i data-lucide="message-circle" style="width:28px;height:28px;"></i>
+  </a>
+
+  <!-- ===== ENROLLMENT MODAL ===== -->
+  <div class="modal-overlay" id="enrollModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close dialog"><i data-lucide="x"></i></button>
+      <h3 id="modalTitle">Enroll in a Masterclass</h3>
+      <p>Fill in your details and we'll reach out within 24 hours.</p>
+      <form id="enrollForm" novalidate>
+        <div class="form-group">
+          <label for="enrollName">Full Name</label>
+          <input type="text" id="enrollName" name="name" placeholder="Your full name" required />
+          <div class="form-error" id="nameError">Please enter your name.</div>
+        </div>
+        <div class="form-group">
+          <label for="enrollEmail">Email Address</label>
+          <input type="email" id="enrollEmail" name="email" placeholder="you@example.com" required />
+          <div class="form-error" id="emailError">Please enter a valid email.</div>
+        </div>
+        <div class="form-group">
+          <label for="enrollCourse">Select Course</label>
+          <select id="enrollCourse" name="course" required>
+            <option value="">Choose a course</option>
+            <option value="AI Home Rendering Masterclass">AI Home Rendering Masterclass</option>
+            <option value="SketchUp + AI Render Pro">SketchUp + AI Render Pro</option>
+            <option value="AI Interior Design Business">AI Interior Design Business</option>
+          </select>
+          <div class="form-error" id="courseError">Please select a course.</div>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;margin-top:8px;">Submit Enquiry <i data-lucide="send" style="width:16px;height:16px;"></i></button>
+        <!-- TODO: connect form action to backend endpoint -->
+      </form>
+      <div class="form-success" id="formSuccess">
+        <i data-lucide="check-circle" style="width:48px;height:48px;"></i>
+        <h3 style="margin-bottom:8px;">You're in!</h3>
+        <p class="muted" style="font-size:0.9rem;">We'll be in touch shortly. Check your inbox.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // ===== Header scroll effect =====
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    });
+
+    // ===== Before/After Slider (hero) =====
+    (function initSlider() {
+      const slider = document.getElementById('heroSlider');
+      if (!slider) return;
+      const afterImg = document.getElementById('afterImg');
+      const divider = document.getElementById('baDivider');
+      let isDragging = false;
+
+      function updateSlider(x) {
+        const rect = slider.getBoundingClientRect();
+        let pct = ((x - rect.left) / rect.width) * 100;
+        pct = Math.max(5, Math.min(95, pct));
+        afterImg.style.clipPath = `inset(0 0 0 ${pct}%)`;
+        divider.style.left = pct + '%';
+      }
+
+      slider.addEventListener('mousedown', (e) => { isDragging = true; updateSlider(e.clientX); e.preventDefault(); });
+      window.addEventListener('mousemove', (e) => { if (isDragging) updateSlider(e.clientX); });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      slider.addEventListener('touchstart', (e) => { isDragging = true; updateSlider(e.touches[0].clientX); }, { passive: true });
+      window.addEventListener('touchmove', (e) => { if (isDragging) updateSlider(e.touches[0].clientX); }, { passive: true });
+      window.addEventListener('touchend', () => { isDragging = false; });
+    })();
+
+    // ===== Scroll Reveal (GSAP ScrollTrigger) =====
+    gsap.registerPlugin(ScrollTrigger);
+    document.querySelectorAll('.reveal').forEach((el) => {
+      gsap.fromTo(el, { opacity: 0, y: 30 }, {
+        opacity: 1, y: 0, duration: 0.8, ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+      });
+    });
+
+    // ===== FAQ Accordion =====
+    document.querySelectorAll('.faq-q').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const answer = item.querySelector('.faq-a');
+        const isOpen = btn.classList.contains('open');
+        // close all
+        document.querySelectorAll('.faq-q').forEach(b => { b.classList.remove('open'); b.setAttribute('aria-expanded', 'false'); b.parentElement.querySelector('.faq-a').classList.remove('open'); });
+        if (!isOpen) { btn.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); answer.classList.add('open'); }
+      });
+    });
+
+    // ===== Modal =====
+    function openModal() {
+      document.getElementById('enrollModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      document.getElementById('enrollModal').classList.remove('open');
+      document.body.style.overflow = '';
+      // reset form
+      document.getElementById('enrollForm').style.display = 'block';
+      document.getElementById('formSuccess').classList.remove('visible');
+      document.getElementById('enrollForm').reset();
+      document.querySelectorAll('.form-error').forEach(e => e.classList.remove('visible'));
+      document.querySelectorAll('.form-group input, .form-group select').forEach(e => e.classList.remove('error'));
+    }
+    document.getElementById('enrollModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    // ===== Enrollment Form =====
+    document.getElementById('enrollForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      // reset errors
+      document.querySelectorAll('.form-error').forEach(el => el.classList.remove('visible'));
+      document.querySelectorAll('.form-group input, .form-group select').forEach(el => el.classList.remove('error'));
+
+      const name = document.getElementById('enrollName').value.trim();
+      const email = document.getElementById('enrollEmail').value.trim();
+      const course = document.getElementById('enrollCourse').value;
+      let valid = true;
+
+      if (!name) { document.getElementById('nameError').classList.add('visible'); document.getElementById('enrollName').classList.add('error'); valid = false; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('emailError').classList.add('visible'); document.getElementById('enrollEmail').classList.add('error'); valid = false; }
+      if (!course) { document.getElementById('courseError').classList.add('visible'); document.getElementById('enrollCourse').classList.add('error'); valid = false; }
+
+      if (!valid) return;
+
+      // Simulate submission
+      const submitBtn = this.querySelector('button[type="submit"]');
+      submitBtn.innerHTML = 'Sending... <i data-lucide="loader" style="width:16px;height:16px;animation:spin 1s linear infinite;"></i>';
+      lucide.createIcons();
+
+      setTimeout(() => {
+        this.style.display = 'none';
+        document.getElementById('formSuccess').classList.add('visible');
+        lucide.createIcons();
+      }, 1200);
+    });
+
+    // ===== Language Switch (simple toggle demo) =====
+    document.querySelectorAll('.lang-switch button').forEach(btn => {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        // In a real implementation, this would swap text content.
+        // For this demo, just toggle a small notification.
+      });
+    });
+
+    // ===== Spin keyframe =====
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
