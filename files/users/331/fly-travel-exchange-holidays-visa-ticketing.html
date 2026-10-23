@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fly Travel Exchange · Holidays, Visa & Ticketing</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN (structure + custom config) -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/lib/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/lib/index.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0b1a2b;
+      --ink-soft: #2c3e50;
+      --cream: #fafbfc;
+      --paper: #ffffff;
+      --gold: #b98b4b;
+      --gold-light: #d4af7a;
+      --gold-glow: rgba(185, 139, 75, 0.15);
+      --sky: #f0f4f8;
+      --border-hair: rgba(11, 26, 43, 0.08);
+      --shadow-soft: 0 20px 40px -12px rgba(11, 26, 43, 0.08);
+      --shadow-card: 0 8px 28px -8px rgba(11, 26, 43, 0.06);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --focus-ring: 0 0 0 3px rgba(185, 139, 75, 0.45);
+      --font-display: 'Bricolage Grotesque', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    /* === Base & Reset === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: var(--font-display);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      font-weight: 700;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img, svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    /* === Utility & Helpers === */
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .section-pad {
+      padding: 5rem 0;
+    }
+
+    @media (min-width: 768px) {
+      .section-pad {
+        padding: 7rem 0;
+      }
+    }
+
+    .hairline {
+      border: 1px solid var(--border-hair);
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(11, 26, 43, 0.05);
+    }
+
+    /* === Typography === */
+    .display-xl {
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .display-lg {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+    }
+
+    .display-md {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .body-lg {
+      font-size: clamp(1rem, 1.2vw, 1.15rem);
+      color: var(--ink-soft);
+      line-height: 1.7;
+    }
+
+    .text-gold {
+      color: var(--gold);
+    }
+
+    .bg-gold-soft {
+      background: var(--gold-glow);
+    }
+
+    /* === Buttons === */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      min-height: 3rem;
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+      box-shadow: 0 8px 20px -8px rgba(11, 26, 43, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: #142c44;
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px -10px rgba(11, 26, 43, 0.35);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
+    .btn-outline:hover {
+      background: var(--ink);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #fff;
+      border-color: var(--gold);
+      box-shadow: 0 8px 20px -8px rgba(185, 139, 75, 0.35);
+    }
+
+    .btn-gold:hover {
+      background: #a67a3f;
+      border-color: #a67a3f;
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px -10px rgba(185, 139, 75, 0.45);
+    }
+
+    .btn:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    /* === Header / Nav === */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+      padding: 0.9rem 0;
+      background: rgba(250, 251, 252, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+    }
+
+    .site-header.scrolled {
+      padding: 0.65rem 0;
+      border-bottom: 1px solid var(--border-hair);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      line-height: 1;
+    }
+
+    .logo svg {
+      width: 28px;
+      height: 28px;
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 2rem;
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+    }
+
+    .nav-links a {
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: none;
+    }
+
+    .mobile-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-hair);
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .mobile-toggle:hover {
+      background: var(--sky);
+    }
+
+    .mobile-toggle:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(24px);
+      z-index: 99;
+      padding: 6rem 1.5rem 2rem;
+      flex-direction: column;
+      gap: 1.5rem;
+      overflow-y: auto;
+    }
+
+    .mobile-menu.open {
+      display: flex;
+    }
+
+    .mobile-menu a {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--ink);
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border-hair);
+    }
+
+    .mobile-menu a:hover {
+      color: var(--gold);
+    }
+
+    @media (min-width: 1024px) {
+      .nav-links {
+        display: flex;
+      }
+      .nav-cta {
+        display: inline-flex;
+      }
+      .mobile-toggle {
+        display: none;
+      }
+      .mobile-menu {
+        display: none !important;
+      }
+    }
+
+    /* === Hero === */
+    .hero {
+      padding-top: 8rem;
+      padding-bottom: 4rem;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(165deg, #fafbfc 0%, #f2f6fa 100%);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 60%;
+      height: 80%;
+      background: radial-gradient(circle, rgba(185, 139, 75, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      left: -5%;
+      width: 40%;
+      height: 60%;
+      background: radial-gradient(circle, rgba(11, 26, 43, 0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      gap: 3rem;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    @media (min-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 4rem;
+      }
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #fff;
+      border: 1px solid var(--border-hair);
+      padding: 0.4rem 1rem 0.4rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      box-shadow: var(--shadow-card);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-tag svg {
+      width: 16px;
+      height: 16px;
+      color: var(--gold);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 2.8rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-hair);
+    }
+
+    .hero-stat h4 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .hero-stat p {
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      margin-top: 0.1rem;
+    }
+
+    /* Hero visual — card mock */
+    .hero-visual {
+      position: relative;
+      perspective: 1200px;
+    }
+
+    .hero-card {
+      background: #fff;
+      border-radius: var(--radius-xl);
+      padding: 2rem 1.8rem;
+      box-shadow: 0 30px 60px -20px rgba(11, 26, 43, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      transform-style: preserve-3d;
+    }
+
+    .hero-card:hover {
+      transform: translateY(-6px) rotateX(2deg) rotateY(-2deg);
+      box-shadow: 0 40px 80px -24px rgba(11, 26, 43, 0.2);
+    }
+
+    .hero-card .card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border-hair);
+    }
+
+    .hero-card .card-row:last-child {
+      border-bottom: none;
+    }
+
+    .card-label {
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-label svg {
+      width: 18px;
+      height: 18px;
+      color: var(--gold);
+    }
+
+    .card-value {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .badge-available {
+      background: #e6f4ea;
+      color: #1e7e34;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    /* === Services === */
+    .services-grid {
+      display: grid;
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    @media (min-width: 640px) {
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .services-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .service-card {
+      background: #fff;
+      border: 1px solid var(--border-hair);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.8rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 48px -16px rgba(11, 26, 43, 0.12);
+      border-color: rgba(185, 139, 75, 0.25);
+    }
+
+    .service-card:hover::before {
+      opacity: 1;
+    }
+
+    .service-icon {
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: var(--radius-md);
+      background: var(--gold-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.4rem;
+      color: var(--gold);
+    }
+
+    .service-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .service-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .service-card p {
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    /* === Why / About === */
+    .about-grid {
+      display: grid;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media (min-width: 1024px) {
+      .about-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+      }
+    }
+
+    .about-feature {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .about-feature-icon {
+      flex-shrink: 0;
+      width: 2.6rem;
+      height: 2.6rem;
+      border-radius: 50%;
+      background: var(--gold-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+    }
+
+    .about-feature-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .about-feature h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .about-feature p {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    .about-visual {
+      background: linear-gradient(135deg, #fdfcfb 0%, #f5f0e8 100%);
+      border-radius: var(--radius-xl);
+      padding: 3rem 2.5rem;
+      border: 1px solid var(--border-hair);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-visual::after {
+      content: '';
+      position: absolute;
+      bottom: -30px;
+      right: -30px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(185, 139, 75, 0.08), transparent);
+    }
+
+    .about-visual .quote-icon {
+      width: 40px;
+      height: 40px;
+      color: var(--gold);
+      opacity: 0.3;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-visual blockquote {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      position: relative;
+      z-index: 1;
+    }
+
+    .about-visual .author {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      font-weight: 500;
+    }
+
+    /* === Testimonials === */
+    .testimonial-grid {
+      display: grid;
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .testimonial-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .testimonial-card {
+      background: #fff;
+      border: 1px solid var(--border-hair);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.8rem;
+      box-shadow: var(--shadow-card);
+      transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -12px rgba(11, 26, 43, 0.1);
+    }
+
+    .stars {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 1rem;
+      color: var(--gold);
+    }
+
+    .stars svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--gold);
+      stroke: var(--gold);
+    }
+
+    .testimonial-card p {
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      font-style: italic;
+      margin-bottom: 1.4rem;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .author-avatar {
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 50%;
+      background: var(--gold-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--gold);
+      font-size: 0.85rem;
+    }
+
+    .author-info h5 {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .author-info span {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+
+    /* === CTA Banner === */
+    .cta-banner {
+      background: var(--ink);
+      border-radius: var(--radius-xl);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin: 4rem 0;
+    }
+
+    @media (min-width: 768px) {
+      .cta-banner {
+        padding: 4.5rem 4rem;
+      }
+    }
+
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -15%;
+      width: 50%;
+      height: 120%;
+      background: radial-gradient(circle, rgba(185, 139, 75, 0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-banner h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      position: relative;
+      z-index: 1;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .cta-banner p {
+      color: rgba(255, 255, 255, 0.65);
+      max-width: 500px;
+      margin: 1rem auto 2rem;
+      font-size: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-banner .btn-gold {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* === Footer === */
+    .site-footer {
+      background: #f4f6f9;
+      border-top: 1px solid var(--border-hair);
+      padding: 4rem 0 2rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      gap: 2.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 2fr 1fr 1fr 1.5fr;
+        gap: 3rem;
+      }
+    }
+
+    .footer-brand p {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      margin-top: 1rem;
+      max-width: 280px;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .footer-social a {
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 50%;
+      border: 1px solid var(--border-hair);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-soft);
+      transition: all 0.2s;
+      background: #fff;
+    }
+
+    .footer-social a:hover {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+      transform: translateY(-2px);
+    }
+
+    .footer-social a:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    .footer-col h4 {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink);
+      margin-bottom: 1.2rem;
+    }
+
+    .footer-col a {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      margin-bottom: 0.7rem;
+      transition: color 0.2s;
+    }
+
+    .footer-col a:hover {
+      color: var(--gold);
+    }
+
+    /* === Form === */
+    .enquiry-form {
+      background: #fff;
+      border: 1px solid var(--border-hair);
+      border-radius: var(--radius-lg);
+      padding: 1.8rem 1.5rem;
+      box-shadow: var(--shadow-card);
+    }
+
+    .enquiry-form h4 {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-hair);
+      background: var(--cream);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ink);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-glow);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-error {
+      font-size: 0.75rem;
+      color: #c0392b;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .form-group.has-error input,
+    .form-group.has-error textarea {
+      border-color: #c0392b;
+    }
+
+    .form-group.has-error .form-error {
+      display: block;
+    }
+
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 1.5rem 0;
+    }
+
+    .form-success.show {
+      display: block;
+    }
+
+    .form-success svg {
+      width: 40px;
+      height: 40px;
+      color: #1e7e34;
+      margin: 0 auto 0.75rem;
+    }
+
+    .form-success p {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* === Animations === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* === Footer bottom === */
+    .footer-bottom {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-hair);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+    }
+
+    .footer-bottom a {
+      color: var(--ink-soft);
+      transition: color 0.2s;
+    }
+
+    .footer-bottom a:hover {
+      color: var(--gold);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header" id="siteHeader">
+    <div class="container nav-inner">
+      <a href="#" class="logo" aria-label="Fly Travel Exchange home">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+        Fly Travel
+      </a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#services">Services</a>
+        <a href="#about">Why Us</a>
+        <a href="#testimonials">Reviews</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <a href="#contact" class="btn btn-primary nav-cta">Plan Your Trip</a>
+
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+    <a href="#services" data-mobile-link>Services</a>
+    <a href="#about" data-mobile-link>Why Us</a>
+    <a href="#testimonials" data-mobile-link>Reviews</a>
+    <a href="#contact" data-mobile-link>Contact</a>
+    <a href="#contact" class="btn btn-gold" style="margin-top: 1rem; text-align: center;" data-mobile-link>Plan Your Trip</a>
+  </div>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+          Trusted by 12,000+ travellers
+        </div>
+        <h1 class="display-xl">
+          Travel further,<br />
+          <span class="text-gold">worry less.</span>
+        </h1>
+        <p class="body-lg" style="margin-top: 1.2rem; max-width: 480px;">
+          From holiday packages and Umrah visas to ticketing and travel insurance — Fly Travel Exchange handles every detail so you can focus on the journey.
+        </p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">Start Planning</a>
+          <a href="#services" class="btn btn-outline">Explore Services</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <h4>12k+</h4>
+            <p>Happy travellers</p>
+          </div>
+          <div class="hero-stat">
+            <h4>98%</h4>
+            <p>Visa success rate</p>
+          </div>
+          <div class="hero-stat">
+            <h4>24/7</h4>
+            <p>Support</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-card">
+          <div class="card-row">
+            <span class="card-label">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+              Flight Tickets
+            </span>
+            <span class="badge-available">Available</span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+              Umrah Visa
+            </span>
+            <span class="card-value">3–5 days</span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Travel Insurance
+            </span>
+            <span class="card-value">From $19</span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              Holiday Packages
+            </span>
+            <span class="card-value">Custom</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SERVICES ========== -->
+  <section id="services" class="section-pad" style="background: var(--paper);">
+    <div class="container">
+      <div class="reveal">
+        <p style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem;">What we do</p>
+        <h2 class="display-lg" style="max-width: 600px;">Everything for your journey,<br />under one roof.</h2>
+      </div>
+
+      <div class="services-grid">
+        <!-- Card 1 -->
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+          </div>
+          <h3>Ticketing</h3>
+          <p>Domestic and international flight bookings with access to exclusive fares, flexible dates, and instant confirmation.</p>
+        </div>
+        <!-- Card 2 -->
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M16 2v4"/></svg>
+          </div>
+          <h3>Visa Services</h3>
+          <p>Tourist, business, student, and Umrah visas — handled end-to-end with document checks and application tracking.</p>
+        </div>
+        <!-- Card 3 -->
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <h3>Holiday Packages</h3>
+          <p>Curated getaways for families, couples, and solo explorers — flights, hotels, transfers, and experiences bundled.</p>
+        </div>
+        <!-- Card 4 -->
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Travel Insurance</h3>
+          <p>Comprehensive coverage for medical emergencies, trip cancellations, lost baggage, and more — instant quotes.</p>
+        </div>
+        <!-- Card 5 -->
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+          </div>
+          <h3>Umrah Visa</h3>
+          <p>Fast-tracked Umrah visa processing with dedicated support, accommodation guidance, and group coordination.</p>
+        </div>
+        <!-- Card 6 -->
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h3>24/7 Support</h3>
+          <p>Real humans, not bots. Reach our travel desk any hour for changes, emergencies, or last-minute bookings.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT / WHY US ========== -->
+  <section id="about" class="section-pad" style="background: var(--cream);">
+    <div class="container about-grid">
+      <div class="reveal">
+        <p style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem;">Why Fly Travel</p>
+        <h2 class="display-lg" style="margin-bottom: 1.5rem;">Decades of expertise,<br />one dedicated team.</h2>
+        <p class="body-lg" style="margin-bottom: 2rem;">
+          We are a full-service travel exchange built on transparency, speed, and genuine care for every traveller. Whether it's your first flight or your fiftieth Umrah, we treat it with the same precision.
+        </p>
+
+        <div class="about-feature">
+          <div class="about-feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <div>
+            <h4>Verified & accredited</h4>
+            <p>IATA, ATOL, and Umrah Ministry registered — your bookings are always protected.</p>
+          </div>
+        </div>
+
+        <div class="about-feature">
+          <div class="about-feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div>
+            <h4>Fast turnarounds</h4>
+            <p>Most visa applications processed within 3–5 working days with real-time updates.</p>
+          </div>
+        </div>
+
+        <div class="about-feature">
+          <div class="about-feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <h4>No hidden fees</h4>
+            <p>Transparent pricing from quote to confirmation. What you see is what you pay.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-visual reveal">
+        <svg class="quote-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg>
+        <blockquote>
+          "Fly Travel Exchange turned what felt like an impossible multi-country visa run into a seamless two-week trip. I didn't have to chase a single document."
+        </blockquote>
+        <p class="author">— Sarah Al-Mansouri, Business Traveller</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS ========== -->
+  <section id="testimonials" class="section-pad" style="background: var(--paper);">
+    <div class="container">
+      <div class="reveal" style="text-align: center; max-width: 600px; margin: 0 auto;">
+        <p style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem;">Testimonials</p>
+        <h2 class="display-lg">Real journeys, real people.</h2>
+      </div>
+
+      <div class="testimonial-grid">
+        <div class="testimonial-card reveal">
+          <div class="stars" aria-label="5 out of 5 stars">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p>"Our Umrah visa came through in three days. The team even arranged airport meet-and-greet. Faultless."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">AH</div>
+            <div class="author-info">
+              <h5>Ahmed Hassan</h5>
+              <span>Umrah traveller</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal">
+          <div class="stars" aria-label="5 out of 5 stars">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p>"Booked a family holiday to Turkey — flights, hotel, and insurance all sorted in one call. Saved me hours."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">PR</div>
+            <div class="author-info">
+              <h5>Priya Raman</h5>
+              <span>Family holiday</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal">
+          <div class="stars" aria-label="5 out of 5 stars">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p>"Their travel insurance claim process was painless. Got reimbursed for a cancelled trip within a week."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">MO</div>
+            <div class="author-info">
+              <h5>Michael Okafor</h5>
+              <span>Business traveller</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA BANNER ========== -->
+  <div class="container">
+    <div class="cta-banner reveal">
+      <h2>Ready to take off?</h2>
+      <p>Tell us where you dream of going. We'll handle the rest — visas, tickets, stays, and peace of mind.</p>
+      <a href="#contact" class="btn btn-gold">Get a Free Quote</a>
+    </div>
+  </div>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="site-footer" id="contact">
+    <div class="container">
+      <div class="footer-grid">
+        <!-- Brand -->
+        <div class="footer-brand">
+          <a href="#" class="logo" aria-label="Fly Travel Exchange home">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+            Fly Travel
+          </a>
+          <p>Your trusted partner for holidays, visas, ticketing, Umrah, and travel insurance. Travel further, worry less.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a href="#" aria-label="Facebook">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" aria-label="Twitter / X">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+            </a>
+            <a href="#" aria-label="LinkedIn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Links 1 -->
+        <div class="footer-col">
+          <h4>Services</h4>
+          <a href="#services">Ticketing</a>
+          <a href="#services">Visa Services</a>
+          <a href="#services">Holiday Packages</a>
+          <a href="#services">Umrah Visa</a>
+          <a href="#services">Travel Insurance</a>
+        </div>
+
+        <!-- Links 2 -->
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#about">Why Us</a>
+          <a href="#testimonials">Reviews</a>
+          <a href="#contact">Contact</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+
+        <!-- Enquiry Form -->
+        <div>
+          <div class="enquiry-form" id="enquiryFormWrap">
+            <h4>Quick Enquiry</h4>
+            <form id="contactForm" novalidate>
+              <div class="form-group" id="fg-name">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Jane Doe" autocomplete="name" />
+                <span class="form-error" id="err-name">Please enter your name.</span>
+              </div>
+              <div class="form-group" id="fg-email">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="jane@example.com" autocomplete="email" />
+                <span class="form-error" id="err-email">Please enter a valid email.</span>
+              </div>
+              <div class="form-group" id="fg-phone">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="+1 234 567 890" autocomplete="tel" />
+                <span class="form-error" id="err-phone">Please enter your phone number.</span>
+              </div>
+              <div class="form-group" id="fg-service">
+                <label for="service">Service Needed</label>
+                <select id="service" name="service">
+                  <option value="">Select a service</option>
+                  <option value="ticketing">Ticketing</option>
+                  <option value="visa">Visa Services</option>
+                  <option value="holiday">Holiday Packages</option>
+                  <option value="umrah">Umrah Visa</option>
+                  <option value="insurance">Travel Insurance</option>
+                  <option value="other">Other</option>
+                </select>
+                <span class="form-error" id="err-service">Please select a service.</span>
+              </div>
+              <div class="form-group" id="fg-message">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Tell us about your trip..."></textarea>
+                <span class="form-error" id="err-message">Please enter a message.</span>
+              </div>
+              <button type="submit" class="btn btn-gold" style="width: 100%;">Send Enquiry</button>
+            </form>
+            <div class="form-success" id="formSuccess">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <p>Thanks! We'll be in touch within 24 hours.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2025 Fly Travel Exchange Holidays. All rights reserved.</span>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Sitemap</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // === Header scroll effect ===
+    const header = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // === Mobile menu toggle ===
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileToggle.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      mobileToggle.setAttribute('aria-expanded', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    document.querySelectorAll('[data-mobile-link]').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // === Intersection Observer for reveal animations ===
+    const reveals = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          // Stagger based on index within parent
+          const parent = entry.target.parentElement;
+          const siblings = parent ? Array.from(parent.querySelectorAll('.reveal')) : [];
+          const idx = siblings.indexOf(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, Math.max(0, idx * 100));
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => revealObserver.observe(el));
+
+    // === Form validation ===
+    const form = document.getElementById('contactForm');
+    const formSuccess = document.getElementById('formSuccess');
+    const formWrap = document.getElementById('enquiryFormWrap');
+
+    function validateField(id, condition) {
+      const group = document.getElementById('fg-' + id);
+      if (condition) {
+        group.classList.remove('has-error');
+        return true;
+      } else {
+        group.classList.add('has-error');
+        return false;
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const service = document.getElementById('service').value;
+      const message = document.getElementById('message').value.trim();
+
+      const nameOk = validateField('name', name.length >= 2);
+      const emailOk = validateField('email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+      const phoneOk = validateField('phone', phone.length >= 7);
+      const serviceOk = validateField('service', service !== '');
+      const messageOk = validateField('message', message.length >= 5);
+
+      if (!nameOk || !emailOk || !phoneOk || !serviceOk || !messageOk) {
+        // Focus first error field
+        const firstError = document.querySelector('.form-group.has-error input, .form-group.has-error select, .form-group.has-error textarea');
+        if (firstError) firstError.focus();
+        return;
+      }
+
+      // Simulate submission (replace with real endpoint as needed)
+      // TODO: connect form action to backend endpoint
+      const payload = {
+        url: window.location.host,
+        table: "enquiries",
+        data: { name, email, phone, service, message }
+      };
+
+      try {
+        // Simulated async submission
+        await new Promise(resolve => setTimeout(resolve, 900));
+
+        // Show success state
+        form.style.display = 'none';
+        formSuccess.classList.add('show');
+
+        // Reset form after a delay (optional)
+        setTimeout(() => {
+          form.reset();
+          form.style.display = 'block';
+          formSuccess.classList.remove('show');
+        }, 4000);
+      } catch (err) {
+        // Handle error gracefully
+        alert('Something went wrong. Please try again or call us directly.');
+      }
+    });
+
+    // Clear error on input
+    form.querySelectorAll('input, select, textarea').forEach(field => {
+      field.addEventListener('input', () => {
+        const group = field.closest('.form-group');
+        if (group) group.classList.remove('has-error');
+      });
+    });
+  </script>
+</body>
+</html>
