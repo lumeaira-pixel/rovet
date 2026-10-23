@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deny & Nayla · Wedding Invitation</title>
+  <!-- Google Fonts: Playfair Display + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === DESIGN TOKENS === */
+    :root {
+      --cream: #FAF7F2;
+      --gold: #C5A059;
+      --gold-light: #DBC08A;
+      --gold-soft: rgba(197, 160, 89, 0.15);
+      --ink: #2A241C;
+      --ink-light: #5E5548;
+      --white: #FFFFFF;
+      --shadow-soft: 0 20px 40px -12px rgba(0, 0, 0, 0.08);
+      --shadow-card: 0 30px 60px -20px rgba(0, 0, 0, 0.12);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --font-display: 'Playfair Display', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    /* === GLOBAL RESET & BASE === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    button {
+      cursor: pointer;
+      font-family: var(--font-body);
+      border: none;
+      background: none;
+    }
+    img {
+      max-width: 100%;
+      display: block;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* === SCROLL LOCK (Landing Gate) === */
+    body.locked {
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* === LANDING GATE === */
+    #landingGate {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--cream);
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    #landingGate.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .invitation-card {
+      position: relative;
+      width: min(90vw, 520px);
+      padding: 3rem 2rem 2.5rem;
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card);
+      text-align: center;
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      outline: 2px solid var(--gold);
+      outline-offset: -8px;
+      animation: cardFloat 6s ease-in-out infinite;
+    }
+    @keyframes cardFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .invitation-card .floral-decor {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    .floral-decor.top-left { top: 12px; left: 12px; transform: rotate(0deg); }
+    .floral-decor.bottom-right { bottom: 12px; right: 12px; transform: rotate(180deg); }
+    .invitation-card .save-date {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+    .invitation-card h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 4rem);
+      font-weight: 500;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+    .invitation-card .amp {
+      color: var(--gold);
+      font-style: italic;
+    }
+    .invitation-card .date-time {
+      font-size: 1rem;
+      color: var(--ink-light);
+      margin-bottom: 2rem;
+      letter-spacing: 0.04em;
+    }
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2.4rem;
+      background: var(--gold);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      border-radius: 60px;
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 24px rgba(197, 160, 89, 0.35);
+    }
+    .btn-gold:hover {
+      background: #b38f4a;
+      box-shadow: 0 12px 32px rgba(197, 160, 89, 0.5);
+      transform: translateY(-2px);
+    }
+    .btn-gold:active {
+      transform: scale(0.97);
+    }
+    .btn-outline-gold {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.8rem 2rem;
+      border: 1.5px solid var(--gold);
+      color: var(--gold);
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 60px;
+      transition: all 0.25s ease;
+      background: transparent;
+    }
+    .btn-outline-gold:hover {
+      background: var(--gold-soft);
+      transform: translateY(-2px);
+    }
+
+    /* === MAIN CONTENT === */
+    #mainContent {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    #mainContent.visible {
+      opacity: 1;
+    }
+
+    /* === HERO SECTION === */
+    .hero-section {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 1.5rem;
+      background: linear-gradient(180deg, var(--cream) 0%, #F5F0E8 100%);
+      overflow: hidden;
+    }
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 30%, rgba(197, 160, 89, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 10vw, 7rem);
+      font-weight: 500;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+    .hero-name .amp {
+      color: var(--gold);
+      font-style: italic;
+      font-weight: 400;
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--ink-light);
+      letter-spacing: 0.06em;
+      margin-bottom: 2.5rem;
+      max-width: 500px;
+    }
+    .countdown-wrap {
+      display: flex;
+      gap: clamp(0.6rem, 2vw, 1.8rem);
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .countdown-item {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1rem, 2.5vw, 1.6rem);
+      min-width: 75px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(197, 160, 89, 0.2);
+    }
+    .countdown-item .num {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 500;
+      color: var(--gold);
+      line-height: 1.1;
+    }
+    .countdown-item .label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-top: 0.2rem;
+    }
+
+    /* === EVENT TABS === */
+    .event-section {
+      padding: 5rem 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 2rem;
+    }
+    .tab-bar {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+    .tab-btn {
+      padding: 0.6rem 1.3rem;
+      border-radius: 60px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink-light);
+      background: transparent;
+      border: 1px solid rgba(197, 160, 89, 0.25);
+      transition: all 0.25s ease;
+      letter-spacing: 0.02em;
+    }
+    .tab-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .tab-btn.active {
+      background: var(--gold);
+      color: var(--white);
+      border-color: var(--gold);
+      box-shadow: 0 6px 20px rgba(197, 160, 89, 0.3);
+    }
+    .event-detail-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      padding: clamp(1.8rem, 4vw, 2.8rem);
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(197, 160, 89, 0.15);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .event-detail-card.changing {
+      opacity: 0.4;
+      transform: translateY(4px);
+    }
+    @media (max-width: 700px) {
+      .event-detail-card {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+      }
+    }
+    .event-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .meta-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+    .meta-row .icon-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--gold-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--gold);
+    }
+    .meta-row .meta-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      font-weight: 600;
+    }
+    .meta-row .meta-value {
+      font-weight: 500;
+      color: var(--ink);
+      font-size: 0.98rem;
+      line-height: 1.4;
+    }
+    .event-desc {
+      font-size: 0.95rem;
+      color: var(--ink-light);
+      line-height: 1.7;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(197, 160, 89, 0.15);
+    }
+
+    /* === VENUE GALLERY & MAP === */
+    .venue-section {
+      padding: 5rem 1.5rem;
+      background: #F5F0E8;
+    }
+    .venue-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 700px) {
+      .gallery-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .gallery-grid .gallery-item {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .gallery-grid .gallery-item:hover {
+      transform: scale(1.02);
+    }
+    .gallery-grid .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .map-container {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(197, 160, 89, 0.2);
+    }
+    .map-container iframe {
+      width: 100%;
+      height: 300px;
+      border: 0;
+      display: block;
+    }
+    .map-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1rem;
+    }
+
+    /* === FLOATING RSVP BUTTON === */
+    .floating-rsvp {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      z-index: 900;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 1.8rem;
+      background: var(--gold);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 60px;
+      box-shadow: 0 12px 32px rgba(197, 160, 89, 0.45);
+      transition: all 0.25s ease;
+    }
+    .floating-rsvp:hover {
+      background: #b38f4a;
+      transform: translateY(-3px) scale(1.02);
+    }
+    .floating-rsvp:active {
+      transform: scale(0.97);
+    }
+    @media (max-width: 600px) {
+      .floating-rsvp {
+        bottom: 80px;
+        right: 16px;
+        padding: 0.8rem 1.4rem;
+        font-size: 0.82rem;
+      }
+    }
+
+    /* === RSVP MODAL === */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(42, 36, 28, 0.5);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+      padding: 1.5rem;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-box {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      padding: clamp(1.8rem, 4vw, 2.8rem);
+      width: min(95vw, 520px);
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(197, 160, 89, 0.2);
+      transform: scale(0.92) translateY(12px);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .modal-overlay.open .modal-box {
+      transform: scale(1) translateY(0);
+    }
+    .modal-box h2 {
+      font-family: var(--font-display);
+      font-size: 1.9rem;
+      margin-bottom: 0.25rem;
+      color: var(--ink);
+    }
+    .modal-box p {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      margin-bottom: 1.6rem;
+    }
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--ink);
+      margin-bottom: 0.35rem;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      background: var(--cream);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.2);
+    }
+    .radio-group {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 400;
+      cursor: pointer;
+    }
+    .radio-group input[type="radio"] {
+      width: auto;
+      accent-color: var(--gold);
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--gold-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      transition: background 0.2s ease;
+    }
+    .modal-close:hover {
+      background: var(--gold);
+      color: var(--white);
+    }
+    .modal-box {
+      position: relative;
+    }
+
+    /* === FLOATING BOTTOM NAV === */
+    .bottom-nav {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 800;
+      display: flex;
+      gap: 0.25rem;
+      padding: 0.5rem 0.6rem;
+      background: rgba(250, 247, 242, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 60px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(197, 160, 89, 0.2);
+    }
+    .bottom-nav a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      color: var(--ink-light);
+      transition: all 0.2s ease;
+    }
+    .bottom-nav a:hover,
+    .bottom-nav a:focus-visible {
+      background: var(--gold-soft);
+      color: var(--gold);
+    }
+    .bottom-nav a:active {
+      transform: scale(0.9);
+    }
+    @media (max-width: 600px) {
+      .bottom-nav { gap: 0.1rem; padding: 0.4rem 0.5rem; }
+      .bottom-nav a { width: 40px; height: 40px; }
+    }
+
+    /* === CONTACT CTA === */
+    .contact-section {
+      padding: 5rem 1.5rem;
+      text-align: center;
+      background: var(--cream);
+    }
+    .contact-section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
+    .contact-section p {
+      color: var(--ink-light);
+      margin-bottom: 2rem;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .whatsapp-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      background: #25D366;
+      color: white;
+      font-weight: 600;
+      border-radius: 60px;
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 24px rgba(37, 211, 102, 0.3);
+    }
+    .whatsapp-btn:hover {
+      background: #1ebe5b;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(37, 211, 102, 0.45);
+    }
+
+    /* === CONFETTI CANVAS === */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: 1500;
+      pointer-events: none;
+    }
+
+    /* === ANIMATIONS === */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .fade-up.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === FOCUS VISIBLE === */
+    :focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    /* === FOOTER === */
+    .site-footer {
+      padding: 2.5rem 1.5rem 5rem;
+      text-align: center;
+      border-top: 1px solid rgba(197, 160, 89, 0.15);
+      font-size: 0.8rem;
+      color: var(--ink-light);
+      letter-spacing: 0.04em;
+    }
+
+    /* === RESPONSIVE TYPOGRAPHY === */
+    @media (max-width: 480px) {
+      .invitation-card { padding: 2.2rem 1.4rem 2rem; }
+    }
+  </style>
+</head>
+<body class="locked">
+
+  <!-- ========== LANDING GATE ========== -->
+  <div id="landingGate" role="dialog" aria-label="Wedding invitation cover">
+    <div class="invitation-card">
+      <!-- Floral SVG decorations -->
+      <svg class="floral-decor top-left" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <path d="M20 60 Q30 20 60 20 Q40 50 20 60Z" fill="#C5A059" opacity="0.25"/>
+        <circle cx="40" cy="35" r="4" fill="#C5A059" opacity="0.4"/>
+        <path d="M35 65 Q50 40 70 45" stroke="#C5A059" stroke-width="0.8" opacity="0.3"/>
+      </svg>
+      <svg class="floral-decor bottom-right" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <path d="M20 60 Q30 20 60 20 Q40 50 20 60Z" fill="#C5A059" opacity="0.25"/>
+        <circle cx="40" cy="35" r="4" fill="#C5A059" opacity="0.4"/>
+        <path d="M35 65 Q50 40 70 45" stroke="#C5A059" stroke-width="0.8" opacity="0.3"/>
+      </svg>
+
+      <p class="save-date">Save the Date</p>
+      <h1>Deny <span class="amp">&amp;</span> Nayla</h1>
+      <p class="date-time">21 September 2030 &middot; 10:00 AM</p>
+      <button id="openInvitationBtn" class="btn-gold" aria-label="Open invitation and unlock page">
+        Open Invitation
+        <i data-lucide="arrow-down" style="width:18px;height:18px;"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========== CONFETTI CANVAS ========== -->
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main id="mainContent">
+
+    <!-- HERO / COUNTDOWN -->
+    <section class="hero-section" id="hero" aria-label="Hero with countdown">
+      <h1 class="hero-name fade-up">Deny <span class="amp">&amp;</span> Nayla</h1>
+      <p class="hero-sub fade-up">Together with their families, request the honour of your presence</p>
+
+      <div class="countdown-wrap fade-up" id="countdown" aria-live="polite">
+        <div class="countdown-item">
+          <div class="num" id="days">00</div>
+          <div class="label">Days</div>
+        </div>
+        <div class="countdown-item">
+          <div class="num" id="hours">00</div>
+          <div class="label">Hours</div>
+        </div>
+        <div class="countdown-item">
+          <div class="num" id="minutes">00</div>
+          <div class="label">Minutes</div>
+        </div>
+        <div class="countdown-item">
+          <div class="num" id="seconds">00</div>
+          <div class="label">Seconds</div>
+        </div>
+      </div>
+
+      <p class="fade-up" style="font-size:0.85rem;color:var(--ink-light);letter-spacing:0.08em;">
+        21 September 2030 &middot; The Grand Mahal, Jaipur
+      </p>
+    </section>
+
+    <!-- EVENT TABS -->
+    <section class="event-section" id="events" aria-label="Wedding events">
+      <p class="section-label fade-up">The Celebrations</p>
+      <h2 class="section-heading fade-up">Wedding Events</h2>
+
+      <div class="tab-bar fade-up" role="tablist" aria-label="Wedding event tabs">
+        <button class="tab-btn active" role="tab" aria-selected="true" data-event="haldi">Haldi</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-event="mehendi">Mehendi</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-event="sangeet">Sangeet</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-event="wedding">Holy Matrimony</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-event="reception">Grand Reception</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-event="cocktail">Sunset Cocktail</button>
+      </div>
+
+      <div class="event-detail-card fade-up" id="eventCard" role="tabpanel" aria-live="polite">
+        <div class="event-meta">
+          <div class="meta-row">
+            <span class="icon-wrap" aria-hidden="true"><i data-lucide="map-pin" style="width:18px;height:18px;"></i></span>
+            <div>
+              <div class="meta-label">Venue</div>
+              <div class="meta-value" id="evtVenue">The Grand Mahal, Jaipur</div>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="icon-wrap" aria-hidden="true"><i data-lucide="clock" style="width:18px;height:18px;"></i></span>
+            <div>
+              <div class="meta-label">Timing</div>
+              <div class="meta-value" id="evtTime">10:00 AM – 1:00 PM</div>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="icon-wrap" aria-hidden="true"><i data-lucide="shirt" style="width:18px;height:18px;"></i></span>
+            <div>
+              <div class="meta-label">Dress Code</div>
+              <div class="meta-value" id="evtDress">Sunshine Yellows &amp; Whites</div>
+            </div>
+          </div>
+        </div>
+        <div class="event-desc" id="evtDesc">
+          A morning of turmeric, laughter, and golden blessings. Join us as we celebrate the first ritual of our union with vibrant colours and heartfelt traditions.
+        </div>
+      </div>
+    </section>
+
+    <!-- VENUE GALLERY & MAP -->
+    <section class="venue-section" id="venue" aria-label="Venue gallery and map">
+      <div class="venue-inner">
+        <p class="section-label fade-up">The Setting</p>
+        <h2 class="section-heading fade-up">The Grand Mahal</h2>
+
+        <div class="gallery-grid fade-up">
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop" alt="Luxury palace courtyard with fountains" loading="lazy" />
+          </div>
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=800&auto=format&fit=crop" alt="Elegant wedding mandap with floral arrangements" loading="lazy" />
+          </div>
+          <div class="gallery-item">
+            <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=800&auto=format&fit=crop" alt="Grand ballroom with chandeliers" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="map-container fade-up">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3557.22591678524!2d75.8247853!3d26.9124336!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db5c1e1e1e1e1%3A0x1e1e1e1e1e1e1e1e!2sThe%20Grand%20Mahal%20Jaipur!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Map showing The Grand Mahal venue"
+          ></iframe>
+        </div>
+        <div class="map-actions fade-up">
+          <a
+            href="https://maps.google.com/?q=The+Grand+Mahal+Jaipur"
+            target="_blank"
+            rel="noopener"
+            class="btn-outline-gold"
+            aria-label="Get directions to The Grand Mahal"
+          >
+            <i data-lucide="navigation" style="width:16px;height:16px;"></i>
+            Get Directions
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT CTA -->
+    <section class="contact-section" id="contact" aria-label="Contact for queries">
+      <h2 class="fade-up">Any Questions?</h2>
+      <p class="fade-up">Reach out to our wedding coordinator for assistance with travel, accommodation, or anything else.</p>
+      <a
+        href="https://wa.me/919999999999?text=Hello%2C%20I%20have%20a%20query%20about%20Deny%20%26%20Nayla's%20wedding"
+        target="_blank"
+        rel="noopener"
+        class="whatsapp-btn fade-up"
+        aria-label="Contact us on WhatsApp"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        Chat on WhatsApp
+      </a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <p>Deny &amp; Nayla &middot; 21 September 2030</p>
+      <p style="margin-top:0.3rem;opacity:0.7;">With love and gratitude</p>
+    </footer>
+  </main>
+
+  <!-- ========== FLOATING RSVP BUTTON ========== -->
+  <button class="floating-rsvp" id="rsvpBtn" aria-label="Open RSVP form">
+    <i data-lucide="mail" style="width:18px;height:18px;"></i>
+    RSVP
+  </button>
+
+  <!-- ========== FLOATING BOTTOM NAV ========== -->
+  <nav class="bottom-nav" aria-label="Quick navigation">
+    <a href="#hero" aria-label="Go to top"><i data-lucide="home" style="width:20px;height:20px;"></i></a>
+    <a href="#events" aria-label="Go to events"><i data-lucide="calendar" style="width:20px;height:20px;"></i></a>
+    <a href="#venue" aria-label="Go to venue"><i data-lucide="map" style="width:20px;height:20px;"></i></a>
+    <a href="#contact" aria-label="Go to contact"><i data-lucide="message-circle" style="width:20px;height:20px;"></i></a>
+  </nav>
+
+  <!-- ========== RSVP MODAL ========== -->
+  <div class="modal-overlay" id="rsvpModal" role="dialog" aria-modal="true" aria-labelledby="rsvpTitle">
+    <div class="modal-box">
+      <button class="modal-close" id="closeModal" aria-label="Close RSVP form">
+        <i data-lucide="x" style="width:18px;height:18px;"></i>
+      </button>
+      <h2 id="rsvpTitle">RSVP</h2>
+      <p>Kindly respond by 1 August 2030.</p>
+      <form id="rsvpForm" novalidate>
+        <div class="form-group">
+          <label for="guestName">Full Name</label>
+          <input type="text" id="guestName" name="guestName" placeholder="Your full name" required />
+        </div>
+        <div class="form-group">
+          <label for="guestCount">Number of Guests</label>
+          <select id="guestCount" name="guestCount">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Will you attend?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="attendance" value="Attending" checked /> Attending</label>
+            <label><input type="radio" name="attendance" value="Declining" /> Declining</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="dietPref">Diet Preference</label>
+          <select id="dietPref" name="dietPref">
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Non-Vegetarian">Non-Vegetarian</option>
+            <option value="Vegan">Vegan</option>
+            <option value="Jain">Jain</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-gold" style="width:100%;margin-top:0.5rem;justify-content:center;">
+          Send RSVP
+          <i data-lucide="send" style="width:16px;height:16px;"></i>
+        </button>
+        <!-- TODO: connect form action to backend endpoint -->
+        <p id="formMessage" style="text-align:center;margin-top:0.8rem;font-size:0.85rem;color:var(--gold);display:none;"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    // ----- Lucide icons -----
+    lucide.createIcons();
+
+    // ----- LANDING GATE + CONFETTI -----
+    const landingGate = document.getElementById('landingGate');
+    const mainContent = document.getElementById('mainContent');
+    const openBtn = document.getElementById('openInvitationBtn');
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    let confettiParticles = [];
+    let confettiActive = false;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function createConfetti(x, y) {
+      const colors = ['#C5A059', '#DBC08A', '#E8D5B0', '#F0E6D3', '#B38F4A', '#FFFFFF'];
+      for (let i = 0; i < 120; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 4 + Math.random() * 12;
+        confettiParticles.push({
+          x, y,
+          vx: Math.cos(angle) * speed * (0.5 + Math.random()),
+          vy: Math.sin(angle) * speed * (0.5 + Math.random()) - 4,
+          size: 4 + Math.random() * 8,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 12,
+          opacity: 1,
+          decay: 0.008 + Math.random() * 0.015,
+          gravity: 0.18,
+          shape: Math.random() > 0.5 ? 'rect' : 'circle'
+        });
+      }
+      if (!confettiActive) {
+        confettiActive = true;
+        animateConfetti();
+      }
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+      confettiParticles.forEach(p => {
+        if (p.opacity <= 0) return;
+        alive = true;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.vx *= 0.99;
+        p.rotation += p.rotSpeed;
+        p.opacity -= p.decay;
+        if (p.opacity < 0) p.opacity = 0;
+
+        ctx.save();
+        ctx.globalAlpha = p.opacity;
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        if (p.shape === 'rect') {
+          ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size / 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+      confettiParticles = confettiParticles.filter(p => p.opacity > 0);
+      if (alive) {
+        requestAnimationFrame(animateConfetti);
+      } else {
+        confettiActive = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    openBtn.addEventListener('click', function () {
+      const rect = openBtn.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      createConfetti(cx, cy);
+
+      setTimeout(() => {
+        landingGate.classList.add('hidden');
+        document.body.classList.remove('locked');
+        mainContent.classList.add('visible');
+        // trigger scroll reveal
+        setTimeout(checkFadeUp, 400);
+      }, 250);
+    });
+
+    // ----- COUNTDOWN TIMER -----
+    const targetDate = new Date('2030-09-21T10:00:00').getTime();
+    function updateCountdown() {
+      const now = Date.now();
+      const diff = targetDate - now;
+      if (diff <= 0) {
+        document.getElementById('days').textContent = '00';
+        document.getElementById('hours').textContent = '00';
+        document.getElementById('minutes').textContent = '00';
+        document.getElementById('seconds').textContent = '00';
+        return;
+      }
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((diff % (1000 * 60)) / 1000);
+      document.getElementById('days').textContent = String(d).padStart(2, '0');
+      document.getElementById('hours').textContent = String(h).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(m).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(s).padStart(2, '0');
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ----- EVENT TABS -----
+    const eventsData = {
+      haldi: {
+        venue: 'The Grand Mahal, Jaipur',
+        time: '10:00 AM – 1:00 PM',
+        dress: 'Sunshine Yellows & Whites',
+        desc: 'A morning of turmeric, laughter, and golden blessings. Join us as we celebrate the first ritual of our union with vibrant colours and heartfelt traditions.'
+      },
+      mehendi: {
+        venue: 'The Grand Mahal, Jaipur',
+        time: '3:00 PM – 7:00 PM',
+        dress: 'Green & Floral Prints',
+        desc: 'Intricate henna designs, soulful music, and the sweet scent of jasmine. An afternoon dedicated to art, love, and the beauty of togetherness.'
+      },
+      sangeet: {
+        venue: 'The Grand Mahal, Jaipur',
+        time: '7:30 PM – Midnight',
+        dress: 'Sparkle & Shine (Indo-Western)',
+        desc: 'A night of music, dance, and celebration. Our families come together for an unforgettable evening of performances and joy.'
+      },
+      wedding: {
+        venue: 'The Grand Mahal, Jaipur',
+        time: '10:00 AM – 2:00 PM',
+        dress: 'Traditional Indian Formal',
+        desc: 'The sacred vows, the holy fire, and the eternal bond. Join us for the most auspicious moment as we become one in the presence of our loved ones.'
+      },
+      reception: {
+        venue: 'The Grand Mahal, Jaipur',
+        time: '7:00 PM – 11:00 PM',
+        dress: 'Black Tie & Evening Gowns',
+        desc: 'An elegant evening of fine dining, heartfelt toasts, and the first dance. Celebrate with us as husband and wife under the starlit sky.'
+      },
+      cocktail: {
+        venue: 'The Grand Mahal, Jaipur',
+        time: '5:30 PM – 7:00 PM',
+        dress: 'Smart Casual (Pastels)',
+        desc: 'Sip crafted cocktails and watch the sun dip below the horizon. A relaxed gathering to mingle and toast to the weekend ahead.'
+      }
+    };
+
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const eventCard = document.getElementById('eventCard');
+    const evtVenue = document.getElementById('evtVenue');
+    const evtTime = document.getElementById('evtTime');
+    const evtDress = document.getElementById('evtDress');
+    const evtDesc = document.getElementById('evtDesc');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', function () {
+        tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+        this.classList.add('active');
+        this.setAttribute('aria-selected', 'true');
+        const key = this.dataset.event;
+        const data = eventsData[key];
+
+        eventCard.classList.add('changing');
+        setTimeout(() => {
+          evtVenue.textContent = data.venue;
+          evtTime.textContent = data.time;
+          evtDress.textContent = data.dress;
+          evtDesc.textContent = data.desc;
+          eventCard.classList.remove('changing');
+        }, 200);
+      });
+    });
+
+    // ----- RSVP MODAL -----
+    const rsvpBtn = document.getElementById('rsvpBtn');
+    const rsvpModal = document.getElementById('rsvpModal');
+    const closeModal = document.getElementById('closeModal');
+    const rsvpForm = document.getElementById('rsvpForm');
+    const formMessage = document.getElementById('formMessage');
+
+    function openModal() {
+      rsvpModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('guestName').focus();
+    }
+    function closeModalFn() {
+      rsvpModal.classList.remove('open');
+      document.body.style.overflow = '';
+      formMessage.style.display = 'none';
+    }
+
+    rsvpBtn.addEventListener('click', openModal);
+    closeModal.addEventListener('click', closeModalFn);
+    rsvpModal.addEventListener('click', function (e) {
+      if (e.target === rsvpModal) closeModalFn();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && rsvpModal.classList.contains('open')) closeModalFn();
+    });
+
+    rsvpForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('guestName').value.trim();
+      if (!name) {
+        document.getElementById('guestName').style.borderColor = '#e53e3e';
+        return;
+      }
+      document.getElementById('guestName').style.borderColor = '';
+      const formData = {
+        name: name,
+        guests: document.getElementById('guestCount').value,
+        attendance: document.querySelector('input[name="attendance"]:checked').value,
+        diet: document.getElementById('dietPref').value
+      };
+      // Simulate submission
+      formMessage.style.display = 'block';
+      formMessage.textContent = 'Thank you, ' + name + '! Your RSVP has been received.';
+      rsvpForm.reset();
+      setTimeout(() => {
+        closeModalFn();
+      }, 2200);
+    });
+
+    // ----- SCROLL REVEAL (fade-up) -----
+    function checkFadeUp() {
+      document.querySelectorAll('.fade-up').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 60) {
+          el.classList.add('in-view');
+        }
+      });
+    }
+    window.addEventListener('scroll', checkFadeUp, { passive: true });
+    // Initial check after content unlocks
+    window.addEventListener('load', () => {
+      if (!document.body.classList.contains('locked')) {
+        checkFadeUp();
+      }
+    });
+
+    // Also trigger after open invitation
+    openBtn.addEventListener('click', () => {
+      setTimeout(checkFadeUp, 800);
+    });
+
+    // Ensure all fade-up elements start hidden but become visible if already in view
+    if (!document.body.classList.contains('locked')) {
+      checkFadeUp();
+    }
+
+    // ----- SMOOTH ANCHOR SCROLLING (with offset for bottom nav) -----
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const offset = 20;
+          const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Re-init Lucide icons after dynamic content (safety)
+    setTimeout(() => lucide.createIcons(), 500);
+  </script>
+</body>
+</html>
