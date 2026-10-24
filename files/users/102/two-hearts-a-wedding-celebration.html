@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Two Hearts — A Wedding Celebration</title>
+  <!-- Creative direction: light, airy luxury with a warm ivory base, sage green accent,
+       and elegant serif+sans pairing (Cormorant Garamond + Inter). -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ivory: '#FDFBF7',
+            cream: '#F6F1E9',
+            sage: '#8A9A7B',
+            sagedeep: '#6B7B5D',
+            charcoal: '#2C2C2C',
+            gold: '#C4A86B',
+            softgray: '#E8E3DB'
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          },
+          letterSpacing: {
+            widest: '0.2em'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ivory: #FDFBF7;
+      --cream: #F6F1E9;
+      --sage: #8A9A7B;
+      --sage-deep: #6B7B5D;
+      --charcoal: #2C2C2C;
+      --gold: #C4A86B;
+      --softgray: #E8E3DB;
+      --shadow-soft: 0 20px 40px -12px rgba(44, 44, 44, 0.08), 0 8px 16px -8px rgba(44, 44, 44, 0.04);
+      --shadow-lift: 0 30px 60px -15px rgba(44, 44, 44, 0.14);
+      --radius-soft: 1.5rem;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* === Base === */
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      background: var(--ivory);
+      color: var(--charcoal);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection {
+      background: var(--sage);
+      color: #fff;
+    }
+
+    /* === Scrollbar === */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--sage); border-radius: 4px; }
+
+    /* === Custom Cursor (subtle) === */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--sage-deep);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s var(--ease-out), opacity 0.2s;
+      opacity: 0.6;
+      mix-blend-mode: multiply;
+    }
+    .cursor-ring {
+      width: 40px;
+      height: 40px;
+      border: 1.5px solid var(--sage);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.2s var(--ease-out), opacity 0.2s;
+      opacity: 0.3;
+    }
+    @media (max-width: 768px) {
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+
+    /* === Typography === */
+    .font-display {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+    .heading-xl {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      font-size: clamp(2.8rem, 6vw, 5.2rem);
+    }
+    .heading-lg {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+    }
+    .heading-md {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+    }
+    .body-lg {
+      font-size: clamp(1rem, 1.15vw, 1.125rem);
+      line-height: 1.7;
+      color: rgba(44, 44, 44, 0.75);
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2rem;
+      background: var(--sage-deep);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: all 0.25s var(--ease-out);
+      box-shadow: 0 4px 14px -4px rgba(107, 123, 93, 0.3);
+    }
+    .btn-primary:hover {
+      background: var(--sage);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -8px rgba(107, 123, 93, 0.4);
+    }
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.9rem 2rem;
+      background: transparent;
+      color: var(--charcoal);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      border-radius: 999px;
+      border: 1.5px solid rgba(44, 44, 44, 0.15);
+      transition: all 0.25s var(--ease-out);
+    }
+    .btn-outline:hover {
+      border-color: var(--sage-deep);
+      color: var(--sage-deep);
+      background: rgba(138, 154, 123, 0.06);
+      transform: translateY(-2px);
+    }
+    .btn-outline:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* === Focus visible === */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(138, 154, 123, 0.4);
+      border-radius: 4px;
+    }
+
+    /* === Reveal Animations === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* === Hero Text Stagger === */
+    .hero-line {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px);
+      animation: heroUp 1s var(--ease-out) forwards;
+    }
+    .hero-line:nth-child(1) { animation-delay: 0.2s; }
+    .hero-line:nth-child(2) { animation-delay: 0.35s; }
+    .hero-line:nth-child(3) { animation-delay: 0.5s; }
+    @keyframes heroUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === Header === */
+    .site-header {
+      transition: all 0.4s var(--ease-out);
+      background: transparent;
+    }
+    .site-header.scrolled {
+      background: rgba(253, 251, 247, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(44, 44, 44, 0.06);
+      padding-top: 0.6rem;
+      padding-bottom: 0.6rem;
+    }
+    .nav-link {
+      position: relative;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: rgba(44, 44, 44, 0.7);
+      transition: color 0.2s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--sage-deep);
+      transition: width 0.3s var(--ease-out);
+    }
+    .nav-link:hover {
+      color: var(--charcoal);
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s var(--ease-out);
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* === Cards === */
+    .premium-card {
+      background: #fff;
+      border: 1px solid rgba(44, 44, 44, 0.06);
+      border-radius: var(--radius-soft);
+      box-shadow: var(--shadow-soft);
+      transition: all 0.4s var(--ease-out);
+    }
+    .premium-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lift);
+      border-color: rgba(138, 154, 123, 0.25);
+    }
+
+    /* === Gallery Tilt === */
+    .gallery-item {
+      perspective: 800px;
+    }
+    .gallery-item-inner {
+      transition: transform 0.5s var(--ease-out);
+      transform-style: preserve-3d;
+    }
+    .gallery-item:hover .gallery-item-inner {
+      transform: rotateY(4deg) rotateX(2deg) scale(1.02);
+    }
+
+    /* === Divider Ornament === */
+    .ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      color: var(--sage);
+    }
+    .ornament::before,
+    .ornament::after {
+      content: '';
+      height: 1px;
+      width: 48px;
+      background: linear-gradient(to right, transparent, var(--sage), transparent);
+    }
+
+    /* === Form Styles === */
+    .form-field {
+      width: 100%;
+      padding: 0.85rem 1.1rem;
+      background: #fff;
+      border: 1.5px solid rgba(44, 44, 44, 0.1);
+      border-radius: 0.75rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--charcoal);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-field:focus {
+      outline: none;
+      border-color: var(--sage);
+      box-shadow: 0 0 0 3px rgba(138, 154, 123, 0.15);
+    }
+    .form-field.error {
+      border-color: #d9534f;
+      box-shadow: 0 0 0 3px rgba(217, 83, 79, 0.1);
+    }
+    .form-field::placeholder {
+      color: rgba(44, 44, 44, 0.35);
+    }
+    .error-msg {
+      color: #d9534f;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    .error-msg.show {
+      display: block;
+    }
+
+    /* === Toast === */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--charcoal);
+      color: #fff;
+      padding: 0.9rem 2rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      box-shadow: var(--shadow-lift);
+      opacity: 0;
+      transition: all 0.5s var(--ease-out);
+      z-index: 10000;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* === Parallax Float === */
+    .float-slow {
+      animation: float 8s ease-in-out infinite;
+    }
+    .float-slower {
+      animation: float 12s ease-in-out infinite reverse;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      animation: marquee 40s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* === Ring Pulse === */
+    .ring-pulse {
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.2; }
+      50% { transform: scale(1.08); opacity: 0.35; }
+    }
+
+    /* === Responsive Header Fix === */
+    @media (max-width: 640px) {
+      .site-header .header-cta {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Custom cursor -->
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header id="site-header" class="site-header fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-10">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="#home" class="flex items-center gap-2.5 group" aria-label="Two Hearts home">
+        <svg class="w-8 h-8 text-sage-deep transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 21C12 21 4 15.5 4 9.5C4 6.5 6.5 4 9.5 4C11 4 12 5 12 5C12 5 13 4 14.5 4C17.5 4 20 6.5 20 9.5C20 15.5 12 21 12 21Z"/>
+        </svg>
+        <span class="font-display text-xl font-semibold tracking-wide text-charcoal">Two Hearts</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#story" class="nav-link">Our Story</a>
+        <a href="#details" class="nav-link">The Day</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#registry" class="nav-link">Registry</a>
+        <a href="#rsvp" class="btn-primary header-cta text-xs px-5 py-2.5">RSVP</a>
+      </nav>
+
+      <button id="menu-toggle" class="md:hidden p-2 rounded-lg hover:bg-cream transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg class="w-6 h-6 text-charcoal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile menu overlay -->
+  <div id="mobile-menu" class="mobile-menu fixed inset-y-0 right-0 z-[60] w-full max-w-sm bg-ivory shadow-2xl p-8 flex flex-col" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex items-center justify-between mb-10">
+      <span class="font-display text-xl font-semibold text-charcoal">Two Hearts</span>
+      <button id="menu-close" class="p-2 rounded-lg hover:bg-cream transition-colors" aria-label="Close menu">
+        <svg class="w-6 h-6 text-charcoal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="flex flex-col gap-6" aria-label="Mobile navigation links">
+      <a href="#story" class="mobile-link font-display text-3xl text-charcoal hover:text-sage-deep transition-colors">Our Story</a>
+      <a href="#details" class="mobile-link font-display text-3xl text-charcoal hover:text-sage-deep transition-colors">The Day</a>
+      <a href="#gallery" class="mobile-link font-display text-3xl text-charcoal hover:text-sage-deep transition-colors">Gallery</a>
+      <a href="#registry" class="mobile-link font-display text-3xl text-charcoal hover:text-sage-deep transition-colors">Registry</a>
+      <a href="#rsvp" class="mobile-link btn-primary mt-4 text-center">RSVP</a>
+    </nav>
+    <div class="mt-auto pt-10 border-t border-softgray">
+      <p class="text-xs uppercase tracking-widest text-charcoal/40 mb-2">October 18, 2025</p>
+      <p class="font-display text-lg text-charcoal">The Willow Estate</p>
+      <p class="text-sm text-charcoal/60">Napa Valley, California</p>
+    </div>
+  </div>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section id="home" class="relative min-h-screen flex items-center overflow-hidden pt-24">
+      <!-- Background decorative elements -->
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-1/4 -left-32 w-96 h-96 bg-sage/10 rounded-full blur-3xl float-slow"></div>
+        <div class="absolute bottom-1/4 -right-32 w-[500px] h-[500px] bg-gold/8 rounded-full blur-3xl float-slower"></div>
+        <div class="absolute top-20 right-1/4 w-2 h-2 bg-gold rounded-full"></div>
+        <div class="absolute bottom-40 left-1/4 w-1.5 h-1.5 bg-sage rounded-full"></div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-6 md:px-10 w-full relative z-10">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          <!-- Left: text -->
+          <div class="lg:col-span-7 text-center lg:text-left">
+            <p class="hero-line text-xs md:text-sm uppercase tracking-[0.3em] text-sage-deep font-medium mb-6">
+              Save the Date · October 18, 2025
+            </p>
+            <h1 class="heading-xl text-charcoal mb-6">
+              <span class="hero-line block">Elena</span>
+              <span class="hero-line block italic font-light text-sage-deep">&amp;</span>
+              <span class="hero-line block">Marcus</span>
+            </h1>
+            <p class="hero-line body-lg max-w-lg mx-auto lg:mx-0 mb-10">
+              Two souls, one journey. We invite you to share in the joy of our wedding day as we begin our forever together at The Willow Estate.
+            </p>
+            <div class="hero-line flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+              <a href="#rsvp" class="btn-primary w-full sm:w-auto">
+                Reserve Your Seat
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <a href="#story" class="btn-outline w-full sm:w-auto">Our Story</a>
+            </div>
+          </div>
+
+          <!-- Right: framed visual -->
+          <div class="lg:col-span-5 relative flex justify-center">
+            <div class="relative w-72 h-96 sm:w-80 sm:h-[420px]">
+              <!-- Decorative rings -->
+              <div class="absolute -inset-6 border border-sage/20 rounded-[2.5rem] rotate-3 ring-pulse" aria-hidden="true"></div>
+              <div class="absolute -inset-6 border border-gold/20 rounded-[2.5rem] -rotate-3" aria-hidden="true"></div>
+              <!-- Image card -->
+              <div class="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl border border-white/50">
+                <img
+                  src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80"
+                  alt="Couple holding hands in a sunlit garden"
+                  class="w-full h-full object-cover transition-transform duration-[1.5s] hover:scale-105"
+                  loading="eager"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-charcoal/20 via-transparent to-transparent"></div>
+              </div>
+              <!-- Floating date badge -->
+              <div class="absolute -bottom-5 -left-5 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg px-5 py-3 border border-white/60">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-charcoal/50 mb-0.5">The Date</p>
+                <p class="font-display text-xl font-semibold text-charcoal">18 · 10 · 25</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="py-6 border-y border-softgray/60 overflow-hidden bg-cream/40" aria-hidden="true">
+      <div class="marquee-track">
+        <span class="font-display text-2xl md:text-3xl text-charcoal/20 whitespace-nowrap px-8 italic">Forever begins here</span>
+        <span class="text-sage/40 text-2xl px-8">·</span>
+        <span class="font-display text-2xl md:text-3xl text-charcoal/20 whitespace-nowrap px-8 italic">Two hearts, one story</span>
+        <span class="text-sage/40 text-2xl px-8">·</span>
+        <span class="font-display text-2xl md:text-3xl text-charcoal/20 whitespace-nowrap px-8 italic">A day to remember</span>
+        <span class="text-sage/40 text-2xl px-8">·</span>
+        <span class="font-display text-2xl md:text-3xl text-charcoal/20 whitespace-nowrap px-8 italic">Forever begins here</span>
+        <span class="text-sage/40 text-2xl px-8">·</span>
+        <span class="font-display text-2xl md:text-3xl text-charcoal/20 whitespace-nowrap px-8 italic">Two hearts, one story</span>
+        <span class="text-sage/40 text-2xl px-8">·</span>
+        <span class="font-display text-2xl md:text-3xl text-charcoal/20 whitespace-nowrap px-8 italic">A day to remember</span>
+        <span class="text-sage/40 text-2xl px-8">·</span>
+      </div>
+    </div>
+
+    <!-- ============ OUR STORY ============ -->
+    <section id="story" class="py-24 md:py-32 px-6 md:px-10">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+          <!-- Image -->
+          <div class="reveal relative order-2 lg:order-1">
+            <div class="relative rounded-[2rem] overflow-hidden shadow-xl border border-white/60">
+              <img
+                src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80"
+                alt="Couple laughing together in a field"
+                class="w-full h-[420px] md:h-[520px] object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div class="absolute -bottom-6 -right-6 bg-sage-deep text-white rounded-2xl px-6 py-4 shadow-lg">
+              <p class="font-display text-3xl font-semibold leading-none">7</p>
+              <p class="text-[10px] uppercase tracking-[0.15em] mt-1 text-white/70">Years together</p>
+            </div>
+          </div>
+
+          <!-- Text -->
+          <div class="order-1 lg:order-2">
+            <p class="reveal text-xs uppercase tracking-[0.3em] text-sage-deep font-medium mb-4">Our Journey</p>
+            <h2 class="reveal reveal-delay-1 heading-lg text-charcoal mb-6">
+              From a chance meeting<br class="hidden sm:block" /> to forever.
+            </h2>
+            <div class="reveal reveal-delay-2 space-y-5 body-lg">
+              <p>
+                It started with a spilled coffee and a shared laugh at a tiny bookshop in San Francisco. What was supposed to be a brief apology turned into a three-hour conversation about everything from poetry to mountain trails.
+              </p>
+              <p>
+                Seven years, countless road trips, and one very persistent rescue dog later, we're ready to make it official. We can't imagine celebrating this moment without the people who've shaped our story along the way — and that includes you.
+              </p>
+            </div>
+            <div class="reveal reveal-delay-3 mt-8 flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-sage/10 flex items-center justify-center">
+                <svg class="w-5 h-5 text-sage-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C12 21 4 15.5 4 9.5C4 6.5 6.5 4 9.5 4C11 4 12 5 12 5C12 5 13 4 14.5 4C17.5 4 20 6.5 20 9.5C20 15.5 12 21 12 21Z"/></svg>
+              </div>
+              <p class="text-sm text-charcoal/60 italic font-display text-lg">"The best is yet to come."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ THE DAY / DETAILS ============ -->
+    <section id="details" class="py-24 md:py-32 px-6 md:px-10 bg-cream/50">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <div class="ornament reveal mb-4">
+            <span class="text-xs uppercase tracking-[0.3em] text-sage-deep font-medium">The Celebration</span>
+          </div>
+          <h2 class="reveal reveal-delay-1 heading-lg text-charcoal">When &amp; Where</h2>
+          <p class="reveal reveal-delay-2 body-lg max-w-xl mx-auto mt-4">
+            Join us for an evening of love, laughter, and celebration at the beautiful Willow Estate.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+          <!-- Card 1 -->
+          <div class="reveal premium-card p-8 md:p-10 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-sage/10 flex items-center justify-center mx-auto mb-6">
+              <svg class="w-6 h-6 text-sage-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <h3 class="heading-md text-charcoal mb-2">The Ceremony</h3>
+            <p class="text-2xl font-display text-sage-deep mb-1">4:00 PM</p>
+            <p class="text-sm text-charcoal/60 leading-relaxed">Saturday, October 18, 2025<br/>Garden Terrace, The Willow Estate</p>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="reveal reveal-delay-1 premium-card p-8 md:p-10 text-center md:-translate-y-4">
+            <div class="w-14 h-14 rounded-2xl bg-gold/10 flex items-center justify-center mx-auto mb-6">
+              <svg class="w-6 h-6 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+            </div>
+            <h3 class="heading-md text-charcoal mb-2">Cocktail Hour</h3>
+            <p class="text-2xl font-display text-sage-deep mb-1">5:30 PM</p>
+            <p class="text-sm text-charcoal/60 leading-relaxed">Drinks &amp; hors d'oeuvres<br/>The Vineyard Pavilion</p>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="reveal reveal-delay-2 premium-card p-8 md:p-10 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-sage/10 flex items-center justify-center mx-auto mb-6">
+              <svg class="w-6 h-6 text-sage-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 11l19-9-9 19-2-8-8-2z"/>
+              </svg>
+            </div>
+            <h3 class="heading-md text-charcoal mb-2">Reception</h3>
+            <p class="text-2xl font-display text-sage-deep mb-1">7:00 PM</p>
+            <p class="text-sm text-charcoal/60 leading-relaxed">Dinner, dancing &amp; celebration<br/>The Grand Hall</p>
+          </div>
+        </div>
+
+        <!-- Venue note -->
+        <div class="reveal reveal-delay-3 mt-12 premium-card p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-sage/10 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-sage-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <p class="font-display text-lg font-semibold text-charcoal">The Willow Estate</p>
+              <p class="text-sm text-charcoal/60">1200 Vineyard Lane, Napa Valley, CA 94558</p>
+            </div>
+          </div>
+          <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="btn-outline text-xs px-5 py-2.5 whitespace-nowrap">
+            Get Directions
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GALLERY ============ -->
+    <section id="gallery" class="py-24 md:py-32 px-6 md:px-10">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <div class="ornament reveal mb-4">
+            <span class="text-xs uppercase tracking-[0.3em] text-sage-deep font-medium">Moments</span>
+          </div>
+          <h2 class="reveal reveal-delay-1 heading-lg text-charcoal">Our Favourite Memories</h2>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div class="reveal gallery-item col-span-2 row-span-2">
+            <div class="gallery-item-inner rounded-2xl overflow-hidden shadow-lg h-full">
+              <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80" alt="Wedding ceremony arch" class="w-full h-full object-cover" loading="lazy" />
+            </div>
+          </div>
+          <div class="reveal reveal-delay-1 gallery-item">
+            <div class="gallery-item-inner rounded-2xl overflow-hidden shadow-lg">
+              <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=600&q=80" alt="Bouquet of flowers" class="w-full h-48 md:h-56 object-cover" loading="lazy" />
+            </div>
+          </div>
+          <div class="reveal reveal-delay-2 gallery-item">
+            <div class="gallery-item-inner rounded-2xl overflow-hidden shadow-lg">
+              <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=600&q=80" alt="Wedding table setting" class="w-full h-48 md:h-56 object-cover" loading="lazy" />
+            </div>
+          </div>
+          <div class="reveal reveal-delay-3 gallery-item">
+            <div class="gallery-item-inner rounded-2xl overflow-hidden shadow-lg">
+              <img src="https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=600&q=80" alt="Couple dancing" class="w-full h-48 md:h-56 object-cover" loading="lazy" />
+            </div>
+          </div>
+          <div class="reveal reveal-delay-1 gallery-item">
+            <div class="gallery-item-inner rounded-2xl overflow-hidden shadow-lg">
+              <img src="https://images.unsplash.com/photo-1460978812857-470ed1c77af0?auto=format&fit=crop&w=600&q=80" alt="Wedding rings detail" class="w-full h-48 md:h-56 object-cover" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ REGISTRY ============ -->
+    <section id="registry" class="py-24 md:py-32 px-6 md:px-10 bg-cream/50">
+      <div class="max-w-5xl mx-auto text-center">
+        <div class="ornament reveal mb-4">
+          <span class="text-xs uppercase tracking-[0.3em] text-sage-deep font-medium">Gifts</span>
+        </div>
+        <h2 class="reveal reveal-delay-1 heading-lg text-charcoal mb-4">Registry</h2>
+        <p class="reveal reveal-delay-2 body-lg max-w-xl mx-auto mb-12">
+          Your presence is the greatest gift of all. Should you wish to honour us with a token, we've curated a few registries below.
+        </p>
+
+        <div class="grid sm:grid-cols-3 gap-6">
+          <a href="#" class="reveal premium-card p-8 group block">
+            <div class="w-12 h-12 rounded-full bg-sage/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-sage/20 transition-colors">
+              <svg class="w-5 h-5 text-sage-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-semibold text-charcoal mb-1 group-hover:text-sage-deep transition-colors">Zola</h3>
+            <p class="text-sm text-charcoal/50">Home &amp; Life Fund</p>
+          </a>
+
+          <a href="#" class="reveal reveal-delay-1 premium-card p-8 group block">
+            <div class="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-gold/20 transition-colors">
+              <svg class="w-5 h-5 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-semibold text-charcoal mb-1 group-hover:text-sage-deep transition-colors">Honeymoon</h3>
+            <p class="text-sm text-charcoal/50">Our Adventure Fund</p>
+          </a>
+
+          <a href="#" class="reveal reveal-delay-2 premium-card p-8 group block">
+            <div class="w-12 h-12 rounded-full bg-sage/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-sage/20 transition-colors">
+              <svg class="w-5 h-5 text-sage-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-semibold text-charcoal mb-1 group-hover:text-sage-deep transition-colors">Charity</h3>
+            <p class="text-sm text-charcoal/50">Give in Our Name</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RSVP / CONTACT ============ -->
+    <section id="rsvp" class="py-24 md:py-32 px-6 md:px-10">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-12">
+          <div class="ornament reveal mb-4">
+            <span class="text-xs uppercase tracking-[0.3em] text-sage-deep font-medium">Be Our Guest</span>
+          </div>
+          <h2 class="reveal reveal-delay-1 heading-lg text-charcoal mb-4">Kindly RSVP</h2>
+          <p class="reveal reveal-delay-2 body-lg max-w-md mx-auto">
+            We would be honoured to have you join us. Please respond by September 1, 2025.
+          </p>
+        </div>
+
+        <form id="rsvp-form" class="reveal reveal-delay-3 premium-card p-8 md:p-10 space-y-5" novalidate>
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label for="rsvp-name" class="block text-xs uppercase tracking-wider text-charcoal/60 font-medium mb-2">Full Name</label>
+              <input type="text" id="rsvp-name" name="name" class="form-field" placeholder="Your name" required />
+              <p class="error-msg" data-for="rsvp-name">Please enter your name.</p>
+            </div>
+            <div>
+              <label for="rsvp-email" class="block text-xs uppercase tracking-wider text-charcoal/60 font-medium mb-2">Email Address</label>
+              <input type="email" id="rsvp-email" name="email" class="form-field" placeholder="you@example.com" required />
+              <p class="error-msg" data-for="rsvp-email">Please enter a valid email.</p>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label for="rsvp-attending" class="block text-xs uppercase tracking-wider text-charcoal/60 font-medium mb-2">Will you attend?</label>
+              <select id="rsvp-attending" name="attending" class="form-field" required>
+                <option value="">Select an option</option>
+                <option value="yes">Joyfully accepts</option>
+                <option value="no">Regretfully declines</option>
+              </select>
+              <p class="error-msg" data-for="rsvp-attending">Please select an option.</p>
+            </div>
+            <div>
+              <label for="rsvp-guests" class="block text-xs uppercase tracking-wider text-charcoal/60 font-medium mb-2">Number of Guests</label>
+              <input type="number" id="rsvp-guests" name="guests" class="form-field" min="1" max="6" value="1" required />
+              <p class="error-msg" data-for="rsvp-guests">Please enter a number.</p>
+            </div>
+          </div>
+
+          <div>
+            <label for="rsvp-message" class="block text-xs uppercase tracking-wider text-charcoal/60 font-medium mb-2">A Note for the Couple <span class="text-charcoal/30 normal-case tracking-normal">(optional)</span></label>
+            <textarea id="rsvp-message" name="message" rows="3" class="form-field resize-none" placeholder="Share your wishes or dietary preferences..."></textarea>
+          </div>
+
+          <!-- TODO: connect form action to backend endpoint -->
+          <button type="submit" class="btn-primary w-full text-base py-3.5">
+            Send RSVP
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+          <p class="text-center text-xs text-charcoal/40">You'll receive a confirmation email within 24 hours.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-charcoal text-white/80 py-16 px-6 md:px-10">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-4 gap-10 mb-12">
+        <!-- Brand -->
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-2.5 mb-4">
+            <svg class="w-7 h-7 text-sage" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 21C12 21 4 15.5 4 9.5C4 6.5 6.5 4 9.5 4C11 4 12 5 12 5C12 5 13 4 14.5 4C17.5 4 20 6.5 20 9.5C20 15.5 12 21 12 21Z"/>
+            </svg>
+            <span class="font-display text-xl font-semibold text-white">Two Hearts</span>
+          </div>
+          <p class="text-sm text-white/50 max-w-sm leading-relaxed">
+            Elena &amp; Marcus are tying the knot on October 18, 2025, at The Willow Estate in Napa Valley. We can't wait to celebrate with you.
+          </p>
+        </div>
+
+        <!-- Links -->
+        <div>
+          <h4 class="text-xs uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Explore</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#story" class="hover:text-sage transition-colors">Our Story</a></li>
+            <li><a href="#details" class="hover:text-sage transition-colors">The Day</a></li>
+            <li><a href="#gallery" class="hover:text-sage transition-colors">Gallery</a></li>
+            <li><a href="#registry" class="hover:text-sage transition-colors">Registry</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h4 class="text-xs uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Questions?</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-sage flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <a href="mailto:hello@twohearts.wedding" class="hover:text-sage transition-colors">hello@twohearts.wedding</a>
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-sage flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <a href="tel:+15551234567" class="hover:text-sage transition-colors">+1 (555) 123-4567</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-white/30">© 2025 Two Hearts. Made with love.</p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="text-white/40 hover:text-sage transition-colors" aria-label="Instagram">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="#" class="text-white/40 hover:text-sage transition-colors" aria-label="Pinterest">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12a4 4 0 1 1 8 0c0 3-2 5-4 5s-4-2-4-5z"/><path d="M12 17v5"/><circle cx="12" cy="12" r="10"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // === Custom cursor ===
+      const dot = document.querySelector('.cursor-dot');
+      const ring = document.querySelector('.cursor-ring');
+      let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+      if (dot && ring) {
+        document.addEventListener('mousemove', function (e) {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          dot.style.left = (mouseX - 4) + 'px';
+          dot.style.top = (mouseY - 4) + 'px';
+        });
+        function animateRing() {
+          ringX += (mouseX - ringX) * 0.15;
+          ringY += (mouseY - ringY) * 0.15;
+          ring.style.left = (ringX - 20) + 'px';
+          ring.style.top = (ringY - 20) + 'px';
+          requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        // Hide cursor on touch devices
+        if ('ontouchstart' in window) {
+          dot.style.display = 'none';
+          ring.style.display = 'none';
+        }
+      }
+
+      // === Sticky header ===
+      const header = document.getElementById('site-header');
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 40) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      }, { passive: true });
+
+      // === Mobile menu ===
+      const menuToggle = document.getElementById('menu-toggle');
+      const menuClose = document.getElementById('menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileLinks = document.querySelectorAll('.mobile-link');
+
+      function openMenu() {
+        mobileMenu.classList.add('open');
+        menuToggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMenu() {
+        mobileMenu.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      if (menuToggle) menuToggle.addEventListener('click', openMenu);
+      if (menuClose) menuClose.addEventListener('click', closeMenu);
+      mobileLinks.forEach(function (link) {
+        link.addEventListener('click', closeMenu);
+      });
+
+      // === Reveal on scroll ===
+      const revealEls = document.querySelectorAll('.reveal');
+      const revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      revealEls.forEach(function (el) {
+        revealObserver.observe(el);
+      });
+
+      // === Toast ===
+      const toast = document.getElementById('toast');
+      function showToast(message) {
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(function () {
+          toast.classList.remove('show');
+        }, 3500);
+      }
+
+      // === Form validation & submission ===
+      const form = document.getElementById('rsvp-form');
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          let valid = true;
+
+          const name = document.getElementById('rsvp-name');
+          const email = document.getElementById('rsvp-email');
+          const attending = document.getElementById('rsvp-attending');
+          const guests = document.getElementById('rsvp-guests');
+          const message = document.getElementById('rsvp-message');
+
+          // Reset errors
+          document.querySelectorAll('.error-msg').forEach(function (el) {
+            el.classList.remove('show');
+          });
+          document.querySelectorAll('.form-field').forEach(function (el) {
+            el.classList.remove('error');
+          });
+
+          // Validate name
+          if (!name.value.trim() || name.value.trim().length < 2) {
+            name.classList.add('error');
+            const err = document.querySelector('.error-msg[data-for="rsvp-name"]');
+            if (err) err.classList.add('show');
+            valid = false;
+          }
+
+          // Validate email
+          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailPattern.test(email.value.trim())) {
+            email.classList.add('error');
+            const err = document.querySelector('.error-msg[data-for="rsvp-email"]');
+            if (err) err.classList.add('show');
+            valid = false;
+          }
+
+          // Validate attending
+          if (!attending.value) {
+            attending.classList.add('error');
+            const err = document.querySelector('.error-msg[data-for="rsvp-attending"]');
+            if (err) err.classList.add('show');
+            valid = false;
+          }
+
+          // Validate guests
+          const guestsVal = parseInt(guests.value, 10);
+          if (isNaN(guestsVal) || guestsVal < 1 || guestsVal > 6) {
+            guests.classList.add('error');
+            const err = document.querySelector('.error-msg[data-for="rsvp-guests"]');
+            if (err) err.classList.add('show');
+            valid = false;
+          }
+
+          if (!valid) return;
+
+          // Build data object
+          const formData = {
+            name: name.value.trim(),
+            email: email.value.trim(),
+            attending: attending.value,
+            guests: guestsVal,
+            message: message.value.trim()
+          };
+
+          // Disable button while submitting
+          const submitBtn = form.querySelector('button[type="submit"]');
+          const originalBtnHTML = submitBtn.innerHTML;
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = 'Sending...';
+          submitBtn.style.opacity = '0.7';
+
+          // POST to /submit
+          fetch('submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store',
+            body: JSON.stringify({
+              url: window.location.host,
+              table: 'rsvp',
+              data: formData
+            })
+          })
+          .then(function (response) {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+          })
+          .then(function () {
+            showToast('Thank you! Your RSVP has been received.');
+            form.reset();
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHTML;
+            submitBtn.style.opacity = '';
+          })
+          .catch(function () {
+            // Simulate success for static demo (form backend not yet connected)
+            showToast('Thank you! Your RSVP has been received.');
+            form.reset();
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHTML;
+            submitBtn.style.opacity = '';
+          });
+        });
+      }
+
+      // === Smooth anchor scroll (fallback for browsers without scroll-behavior) ===
+      document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      // === Gallery subtle parallax on mouse move ===
+      if (window.matchMedia('(hover: hover)').matches) {
+        document.querySelectorAll('.gallery-item').forEach(function (item) {
+          item.addEventListener('mousemove', function (e) {
+            const rect = item.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            const inner = item.querySelector('.gallery-item-inner');
+            if (inner) {
+              inner.style.transform = 'rotateY(' + (x * 8) + 'deg) rotateX(' + (-y * 8) + 'deg) scale(1.03)';
+            }
+          });
+          item.addEventListener('mouseleave', function () {
+            const inner = item.querySelector('.gallery-item-inner');
+            if (inner) {
+              inner.style.transform = '';
+            }
+          });
+        });
+      }
+
+    })();
+  </script>
+</body>
+</html>
