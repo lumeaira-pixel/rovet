@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MONOLITH — Objects for modern living</title>
+  <!-- Tailwind CDN + config -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- Google Fonts: distinctive display + clean body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1a1a1a;
+      --ink-soft: #4a4a4a;
+      --cream: #fdfbf7;
+      --stone: #f4f1ea;
+      --stone-dark: #e8e3d9;
+      --sand: #d6cec0;
+      --brass: #b89a6b;
+      --brass-deep: #9a7d4f;
+      --white: #ffffff;
+      --border-hairline: rgba(26, 26, 26, 0.08);
+      --shadow-sm: 0 1px 2px rgba(26,26,26,0.03), 0 4px 12px rgba(26,26,26,0.03);
+      --shadow-md: 0 4px 24px rgba(26,26,26,0.06), 0 1px 2px rgba(26,26,26,0.04);
+      --shadow-lg: 0 20px 60px rgba(26,26,26,0.08), 0 4px 12px rgba(26,26,26,0.03);
+      --radius: 1.5rem;
+      --focus-ring: 0 0 0 2px var(--white), 0 0 0 4px var(--brass);
+    }
+
+    /* === Reset & Base === */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      margin: 0;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+    .font-mono-label {
+      font-family: 'Instrument Sans', monospace;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+    }
+
+    /* === Selection === */
+    ::selection { background: var(--brass); color: var(--white); }
+
+    /* === Focus === */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Custom Cursor (dot + ring) === */
+    .cursor-dot, .cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      transition: opacity 0.3s ease;
+      will-change: transform;
+    }
+    .cursor-dot {
+      width: 6px; height: 6px;
+      background: var(--brass);
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--brass);
+      opacity: 0.4;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.2s ease, width 0.2s ease, height 0.2s ease;
+    }
+    @media (max-width: 1024px) {
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Image treatment === */
+    .img-cover {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .img-hover-zoom {
+      overflow: hidden;
+      border-radius: var(--radius);
+    }
+    .img-hover-zoom img {
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .img-hover-zoom:hover img {
+      transform: scale(1.05);
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--ink);
+      color: var(--white);
+      padding: 0.875rem 2rem;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.01em;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      background: var(--brass);
+      color: var(--white);
+      box-shadow: 0 8px 24px rgba(184, 154, 107, 0.35);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active {
+      transform: scale(0.97) translateY(0);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      padding: 0.875rem 2rem;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.01em;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid var(--border-hairline);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-secondary:hover {
+      background: var(--stone);
+      border-color: var(--sand);
+    }
+    .btn-secondary:active {
+      transform: scale(0.97);
+    }
+
+    /* === Cards === */
+    .card-premium {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-hairline);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .card-premium:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+      border-color: rgba(184, 154, 107, 0.2);
+    }
+
+    /* === Navbar === */
+    .navbar-glass {
+      background: rgba(253, 251, 247, 0.75);
+      backdrop-filter: blur(20px) saturate(1.1);
+      -webkit-backdrop-filter: blur(20px) saturate(1.1);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    /* === Hero text reveal (split chars) === */
+    .reveal-line {
+      overflow: hidden;
+      display: block;
+    }
+    .reveal-line span {
+      display: inline-block;
+      transform: translateY(110%);
+      transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-line span.is-visible {
+      transform: translateY(0);
+    }
+
+    /* === Glass card === */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    /* === Section label === */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--brass-deep);
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 1.5rem;
+      height: 1px;
+      background: var(--brass);
+    }
+
+    /* === Horizontal scroll gallery === */
+    .h-scroll-gallery {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 1rem;
+      scrollbar-width: none;
+    }
+    .h-scroll-gallery::-webkit-scrollbar { display: none; }
+    .h-scroll-gallery > * {
+      scroll-snap-align: start;
+      flex-shrink: 0;
+    }
+
+    /* === Footer link === */
+    .footer-link {
+      color: var(--ink-soft);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+    .footer-link:hover {
+      color: var(--ink);
+    }
+
+    /* === Form === */
+    .form-input {
+      width: 100%;
+      padding: 0.875rem 1.125rem;
+      border-radius: 0.875rem;
+      border: 1px solid var(--border-hairline);
+      background: var(--white);
+      color: var(--ink);
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+    .form-input::placeholder {
+      color: #a8a29e;
+    }
+    .form-input:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184, 154, 107, 0.15);
+      outline: none;
+    }
+    .form-input.error {
+      border-color: #e53e3e;
+      box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+    }
+    .error-message {
+      color: #e53e3e;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    .form-input.error + .error-message {
+      display: block;
+    }
+
+    /* === Loading spinner === */
+    .spinner {
+      width: 1.25rem; height: 1.25rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* === Success check === */
+    .success-check {
+      animation: pop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      80% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+
+  <!-- ========== HEADER ========== -->
+  <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-500" id="navbar">
+    <nav class="navbar-glass">
+      <div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between h-16 md:h-20">
+        <!-- Logo -->
+        <a href="#" class="font-display text-2xl md:text-3xl tracking-tight text-ink" aria-label="Monolith home">
+          MONOLITH
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-10">
+          <a href="#collection" class="text-sm font-medium text-ink-soft hover:text-ink transition-colors duration-200">Collection</a>
+          <a href="#craft" class="text-sm font-medium text-ink-soft hover:text-ink transition-colors duration-200">Craft</a>
+          <a href="#stories" class="text-sm font-medium text-ink-soft hover:text-ink transition-colors duration-200">Stories</a>
+          <a href="#contact" class="text-sm font-medium text-ink-soft hover:text-ink transition-colors duration-200">Contact</a>
+        </div>
+
+        <!-- Desktop CTA + Cart -->
+        <div class="hidden md:flex items-center gap-4">
+          <button class="relative p-2 text-ink hover:text-brass transition-colors duration-200" aria-label="Shopping cart">
+            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-brass text-white text-[10px] font-semibold rounded-full flex items-center justify-center">0</span>
+          </button>
+          <a href="#collection" class="btn-primary text-sm">Shop Now</a>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button id="mobileMenuBtn" class="md:hidden p-2 text-ink" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div id="mobileMenu" class="md:hidden hidden border-t border-[var(--border-hairline)] bg-white/95 backdrop-blur-xl">
+        <div class="px-5 py-6 flex flex-col gap-4">
+          <a href="#collection" class="text-base font-medium text-ink py-2 border-b border-[var(--border-hairline)]">Collection</a>
+          <a href="#craft" class="text-base font-medium text-ink py-2 border-b border-[var(--border-hairline)]">Craft</a>
+          <a href="#stories" class="text-base font-medium text-ink py-2 border-b border-[var(--border-hairline)]">Stories</a>
+          <a href="#contact" class="text-base font-medium text-ink py-2 border-b border-[var(--border-hairline)]">Contact</a>
+          <a href="#collection" class="btn-primary mt-2">Shop Now</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ========== HERO ========== -->
+    <section class="relative min-h-screen flex items-center pt-20 md:pt-24 overflow-hidden" id="hero">
+      <!-- Background subtle gradient -->
+      <div class="absolute inset-0 bg-gradient-to-b from-[#fdfbf7] via-[#f8f5ef] to-[#f4f1ea]" aria-hidden="true"></div>
+      <div class="absolute top-1/4 right-0 w-[600px] h-[600px] rounded-full bg-[var(--brass)] opacity-[0.06] blur-[120px]" aria-hidden="true"></div>
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-[var(--sand)] opacity-20 blur-[100px]" aria-hidden="true"></div>
+
+      <div class="relative max-w-7xl mx-auto px-5 md:px-8 w-full py-12 md:py-20">
+        <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <!-- Text -->
+          <div class="lg:col-span-6">
+            <span class="section-label mb-6 md:mb-8">New Collection — Volume II</span>
+            <h1 class="text-[clamp(2.8rem,7vw,5.5rem)] leading-[1.05] font-display text-ink mt-4 md:mt-6">
+              <span class="reveal-line"><span>Objects that</span></span>
+              <span class="reveal-line"><span>outlive trends.</span></span>
+            </h1>
+            <p class="mt-6 md:mt-8 text-lg md:text-xl text-ink-soft max-w-lg leading-relaxed font-light">
+              Sculptural furniture and objects, designed with intention and built by hand in small batches. For spaces that feel like sanctuaries.
+            </p>
+            <div class="mt-8 md:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <a href="#collection" class="btn-primary">
+                Explore the Collection
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
+              <a href="#craft" class="btn-secondary">
+                Our Craft
+              </a>
+            </div>
+            <!-- Trust stats -->
+            <div class="mt-12 md:mt-16 flex items-center gap-6 md:gap-10">
+              <div>
+                <p class="font-display text-3xl md:text-4xl text-ink">240+</p>
+                <p class="font-mono-label text-ink-soft mt-1">Objects shipped</p>
+              </div>
+              <div class="w-px h-10 bg-[var(--border-hairline)]"></div>
+              <div>
+                <p class="font-display text-3xl md:text-4xl text-ink">14</p>
+                <p class="font-mono-label text-ink-soft mt-1">Artisan partners</p>
+              </div>
+              <div class="w-px h-10 bg-[var(--border-hairline)]"></div>
+              <div>
+                <p class="font-display text-3xl md:text-4xl text-ink">100%</p>
+                <p class="font-mono-label text-ink-soft mt-1">Natural materials</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Visual — 3D tilt card -->
+          <div class="lg:col-span-6 relative mt-8 lg:mt-0">
+            <div class="relative" style="perspective: 1200px;">
+              <div id="heroCard" class="relative rounded-3xl overflow-hidden shadow-2xl transition-transform duration-300 ease-out" style="transform-style: preserve-3d;">
+                <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=900&q=80&auto=format&fit=crop" 
+                     alt="Sculptural wooden chair in a minimalist sunlit room" 
+                     class="w-full h-[400px] md:h-[560px] object-cover" 
+                     loading="eager">
+                <!-- Overlay label -->
+                <div class="absolute bottom-5 left-5 right-5 glass-card rounded-2xl p-4 md:p-5 flex items-center justify-between">
+                  <div>
+                    <p class="font-display text-xl text-ink">The Arca Chair</p>
+                    <p class="text-sm text-ink-soft">Solid oak · Natural finish</p>
+                  </div>
+                  <span class="text-lg font-semibold text-ink">$1,240</span>
+                </div>
+              </div>
+              <!-- Floating accent badge -->
+              <div class="absolute -top-4 -right-3 md:-top-6 md:-right-6 glass-card rounded-2xl px-4 py-3 shadow-md">
+                <p class="font-mono-label text-brass-deep">Limited Edition</p>
+                <p class="text-sm font-medium text-ink">Batch No. 07</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== MARQUEE / LOGO STRIP ========== -->
+    <section class="py-8 md:py-10 border-y border-[var(--border-hairline)] bg-white overflow-hidden" aria-label="Featured in">
+      <div class="marquee-track">
+        <!-- repeat set 1 -->
+        <div class="flex items-center gap-16 pr-16">
+          <span class="font-display text-xl md:text-2xl text-ink-soft/60 whitespace-nowrap">Architectural Digest</span>
+          <span class="text-[var(--sand)]">●</span>
+          <span class="font-display text-xl md:text-2xl text-ink-soft/60 whitespace-nowrap">Kinfolk</span>
+          <span class="text-[var(--sand)]">●</span>
+          <span class="font-display text-xl md:text-2xl text-ink-soft/60 whitespace-nowrap">Dwell</span>
+          <span class="text-[var(--sand)]">●</span>
+          <span class="font-display text-xl md:text-2xl text-ink-soft/60 whitespace-nowrap">Wallpaper*</span>
+          <span class="text-[var(--sand)]">●</span>
+          <span class="font-display text-xl md:text-2xl text-ink-soft/60 whitespace-nowrap">Cereal Magazine</span>
+          <span class="text-[var(--sand)]">●</span>
+        </div>
+        <!-- repeat set 2 (duplicate for seamless loop) -->
+        <div class="flex items-center gap-16 pr-16">
+          <span class="font-display text-xl md:text-2xl text-ink-soft/60 whitespace-nowrap">Architectural Digest</span>
+          <span class="text-[var(--sand)]">●</span>
+          <span class="font-display text-xl md:text-2xl text-ink-soft/60 whitespace-nowrap">Kinfolk</span>
+          <span class="text-[var(--sand)]">●</span>
+          <span class="font-display text-xl md:text-2xl text-ink-soft/60 whitespace-nowrap">Dwell</span>
+          <span class="text-[var(--sand)]">●</span>
+          <span class="font-display text-xl md:text-2xl text-ink-soft/60 whitespace-nowrap">Wallpaper*</span>
+          <span class="text-[var(--sand)]">●</span>
+          <span class="font-display text-xl md:text-2xl text-ink-soft/60 whitespace-nowrap">Cereal Magazine</span>
+          <span class="text-[var(--sand)]">●</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== COLLECTION / PRODUCTS ========== -->
+    <section id="collection" class="py-16 md:py-28 bg-[var(--cream)]">
+      <div class="max-w-7xl mx-auto px-5 md:px-8">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
+          <div>
+            <span class="section-label mb-4">The Collection</span>
+            <h2 class="font-display text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.1] text-ink mt-3">
+              Pieces with<br class="hidden md:block"> quiet presence.
+            </h2>
+          </div>
+          <p class="text-ink-soft max-w-sm text-base md:text-lg leading-relaxed font-light">
+            Each object is made to be lived with — not just looked at. Explore our core collection of furniture, lighting, and ceramics.
+          </p>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          <!-- Product 1 -->
+          <div class="card-premium overflow-hidden group">
+            <div class="img-hover-zoom rounded-none">
+              <img src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=700&q=80&auto=format&fit=crop" alt="Arca Lounge Chair in oak" class="w-full h-72 md:h-80 object-cover" loading="lazy">
+            </div>
+            <div class="p-5 md:p-6">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="font-display text-xl md:text-2xl text-ink">Arca Lounge Chair</h3>
+                  <p class="text-sm text-ink-soft mt-1">Solid oak · Natural oil</p>
+                </div>
+                <span class="text-base font-semibold text-ink">$1,240</span>
+              </div>
+              <div class="mt-4 flex items-center justify-between">
+                <span class="font-mono-label text-brass-deep">In stock</span>
+                <button class="text-sm font-medium text-ink hover:text-brass transition-colors flex items-center gap-1" aria-label="Add Arca Lounge Chair to cart">
+                  Add to cart <i data-lucide="plus" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 2 -->
+          <div class="card-premium overflow-hidden group">
+            <div class="img-hover-zoom rounded-none">
+              <img src="https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=700&q=80&auto=format&fit=crop" alt="Noma Floor Lamp in brass" class="w-full h-72 md:h-80 object-cover" loading="lazy">
+            </div>
+            <div class="p-5 md:p-6">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="font-display text-xl md:text-2xl text-ink">Noma Floor Lamp</h3>
+                  <p class="text-sm text-ink-soft mt-1">Brushed brass · Linen shade</p>
+                </div>
+                <span class="text-base font-semibold text-ink">$860</span>
+              </div>
+              <div class="mt-4 flex items-center justify-between">
+                <span class="font-mono-label text-brass-deep">In stock</span>
+                <button class="text-sm font-medium text-ink hover:text-brass transition-colors flex items-center gap-1" aria-label="Add Noma Floor Lamp to cart">
+                  Add to cart <i data-lucide="plus" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product 3 -->
+          <div class="card-premium overflow-hidden group">
+            <div class="img-hover-zoom rounded-none">
+              <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=700&q=80&auto=format&fit=crop" alt="Oru Ceramic Vase in stoneware" class="w-full h-72 md:h-80 object-cover" loading="lazy">
+            </div>
+            <div class="p-5 md:p-6">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="font-display text-xl md:text-2xl text-ink">Oru Ceramic Vase</h3>
+                  <p class="text-sm text-ink-soft mt-1">Stoneware · Matte glaze</p>
+                </div>
+                <span class="text-base font-semibold text-ink">$180</span>
+              </div>
+              <div class="mt-4 flex items-center justify-between">
+                <span class="font-mono-label text-brass-deep">In stock</span>
+                <button class="text-sm font-medium text-ink hover:text-brass transition-colors flex items-center gap-1" aria-label="Add Oru Ceramic Vase to cart">
+                  Add to cart <i data-lucide="plus" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-10 md:mt-14 text-center">
+          <a href="#" class="btn-secondary">
+            View all objects
+            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CRAFT / ABOUT ========== -->
+    <section id="craft" class="py-16 md:py-28 bg-[var(--stone)] relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-96 h-96 bg-[var(--brass)] opacity-[0.04] rounded-full blur-[100px]" aria-hidden="true"></div>
+      <div class="max-w-7xl mx-auto px-5 md:px-8 relative">
+        <div class="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+          <!-- Image collage -->
+          <div class="relative">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="rounded-3xl overflow-hidden shadow-lg row-span-2">
+                <img src="https://images.unsplash.com/photo-1615529182904-14819c35db37?w=600&q=80&auto=format&fit=crop" alt="Artisan sanding wood in workshop" class="w-full h-full object-cover min-h-[240px] md:min-h-[400px]" loading="lazy">
+              </div>
+              <div class="rounded-3xl overflow-hidden shadow-lg">
+                <img src="https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=500&q=80&auto=format&fit=crop" alt="Close-up of wood grain texture" class="w-full h-32 md:h-48 object-cover" loading="lazy">
+              </div>
+              <div class="rounded-3xl overflow-hidden shadow-lg">
+                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&q=80&auto=format&fit=crop" alt="Finished chair in studio light" class="w-full h-32 md:h-48 object-cover" loading="lazy">
+              </div>
+            </div>
+            <!-- floating stat card -->
+            <div class="absolute -bottom-4 -right-2 md:-bottom-6 md:-right-6 glass-card rounded-2xl px-5 py-4 shadow-lg">
+              <p class="font-display text-2xl md:text-3xl text-ink">48 hrs</p>
+              <p class="font-mono-label text-ink-soft mt-1">Avg. build time per piece</p>
+            </div>
+          </div>
+
+          <!-- Text -->
+          <div>
+            <span class="section-label mb-4">Our Craft</span>
+            <h2 class="font-display text-[clamp(2rem,4.5vw,3.4rem)] leading-[1.1] text-ink mt-3">
+              Made slowly,<br class="hidden md:block"> made to last.
+            </h2>
+            <p class="mt-6 text-ink-soft text-base md:text-lg leading-relaxed font-light">
+              We work with a small circle of artisans across Europe and Japan — craftspeople who share our obsession with joinery, grain, and the quiet poetry of a well-made object.
+            </p>
+            <p class="mt-4 text-ink-soft text-base md:text-lg leading-relaxed font-light">
+              No shortcuts. No synthetic finishes. Just honest materials, shaped by hand, finished with care.
+            </p>
+
+            <!-- Feature list -->
+            <div class="mt-8 md:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white border border-[var(--border-hairline)] flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="tree-pine" class="w-5 h-5 text-brass-deep"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-ink text-sm md:text-base">Responsibly sourced</p>
+                  <p class="text-sm text-ink-soft mt-0.5">FSC-certified hardwoods only</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white border border-[var(--border-hairline)] flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="hand" class="w-5 h-5 text-brass-deep"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-ink text-sm md:text-base">Hand-finished</p>
+                  <p class="text-sm text-ink-soft mt-0.5">Every surface sanded by hand</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white border border-[var(--border-hairline)] flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="package" class="w-5 h-5 text-brass-deep"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-ink text-sm md:text-base">Plastic-free shipping</p>
+                  <p class="text-sm text-ink-soft mt-0.5">Recycled, recyclable packaging</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white border border-[var(--border-hairline)] flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="shield-check" class="w-5 h-5 text-brass-deep"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-ink text-sm md:text-base">Lifetime repair</p>
+                  <p class="text-sm text-ink-soft mt-0.5">We fix what we make, forever</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TESTIMONIALS ========== -->
+    <section id="stories" class="py-16 md:py-28 bg-[var(--cream)]">
+      <div class="max-w-7xl mx-auto px-5 md:px-8">
+        <div class="max-w-2xl mb-12 md:mb-16">
+          <span class="section-label mb-4">Stories</span>
+          <h2 class="font-display text-[clamp(2rem,4.5vw,3.4rem)] leading-[1.1] text-ink mt-3">
+            Living with<br class="hidden md:block"> Monolith.
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+          <!-- Testimonial 1 -->
+          <div class="card-premium p-6 md:p-8 flex flex-col justify-between">
+            <div>
+              <div class="flex gap-1 mb-4" aria-hidden="true">
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+              </div>
+              <blockquote class="text-ink text-base md:text-lg leading-relaxed font-light italic">
+                "The Arca chair changed the entire feel of our living room. It's the first thing guests ask about — and the last thing I'd ever sell."
+              </blockquote>
+            </div>
+            <div class="mt-6 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-[var(--stone-dark)] flex items-center justify-center font-display text-sm text-ink">EM</div>
+              <div>
+                <p class="font-medium text-ink text-sm">Elena Marchetti</p>
+                <p class="text-xs text-ink-soft">Milan, Italy</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="card-premium p-6 md:p-8 flex flex-col justify-between">
+            <div>
+              <div class="flex gap-1 mb-4" aria-hidden="true">
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+              </div>
+              <blockquote class="text-ink text-base md:text-lg leading-relaxed font-light italic">
+                "Ordered the Noma lamp and it arrived in perfect condition, wrapped like a piece of art. The craftsmanship is genuinely exceptional."
+              </blockquote>
+            </div>
+            <div class="mt-6 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-[var(--stone-dark)] flex items-center justify-center font-display text-sm text-ink">JT</div>
+              <div>
+                <p class="font-medium text-ink text-sm">James Thornton</p>
+                <p class="text-xs text-ink-soft">London, UK</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 3 -->
+          <div class="card-premium p-6 md:p-8 flex flex-col justify-between">
+            <div>
+              <div class="flex gap-1 mb-4" aria-hidden="true">
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current text-brass"></i>
+              </div>
+              <blockquote class="text-ink text-base md:text-lg leading-relaxed font-light italic">
+                "I've bought from big-name furniture brands and from Monolith. There's no comparison. The weight, the joinery, the grain — it's another level."
+              </blockquote>
+            </div>
+            <div class="mt-6 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-[var(--stone-dark)] flex items-center justify-center font-display text-sm text-ink">SK</div>
+              <div>
+                <p class="font-medium text-ink text-sm">Sofia Kessler</p>
+                <p class="text-xs text-ink-soft">Copenhagen, DK</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CTA BANNER ========== -->
+    <section class="py-16 md:py-24 bg-[var(--ink)] relative overflow-hidden">
+      <div class="absolute inset-0 opacity-[0.06]" aria-hidden="true">
+        <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-[var(--brass)] blur-[120px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-[var(--sand)] blur-[120px]"></div>
+      </div>
+      <div class="relative max-w-7xl mx-auto px-5 md:px-8 text-center">
+        <span class="font-mono-label text-[var(--brass)] mb-4 block">Join the circle</span>
+        <h2 class="font-display text-[clamp(2rem,5vw,4rem)] leading-[1.1] text-white max-w-3xl mx-auto">
+          First access to new batches, studio stories, and the occasional quiet sale.
+        </h2>
+        <p class="mt-6 text-white/60 text-base md:text-lg max-w-xl mx-auto font-light">
+          No noise. Just the good stuff — delivered a few times a year.
+        </p>
+        <div class="mt-8 md:mt-10 max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+          <input type="email" placeholder="your@email.com" 
+                 class="flex-1 px-5 py-3 rounded-full bg-white/10 border border-white/15 text-white placeholder:text-white/40 text-sm focus:outline-none focus:border-[var(--brass)] transition-colors"
+                 aria-label="Email address for newsletter">
+          <button class="btn-primary bg-[var(--brass)] hover:bg-white hover:text-ink text-sm px-6">
+            Subscribe
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONTACT / ENQUIRY ========== -->
+    <section id="contact" class="py-16 md:py-28 bg-[var(--stone)]">
+      <div class="max-w-7xl mx-auto px-5 md:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+          <!-- Text -->
+          <div>
+            <span class="section-label mb-4">Enquiries</span>
+            <h2 class="font-display text-[clamp(2rem,4.5vw,3.4rem)] leading-[1.1] text-ink mt-3">
+              Have something<br class="hidden md:block"> in mind?
+            </h2>
+            <p class="mt-6 text-ink-soft text-base md:text-lg leading-relaxed font-light max-w-md">
+              Custom commissions, trade enquiries, or just a question about a piece — we'd love to hear from you. We reply within two working days.
+            </p>
+
+            <div class="mt-10 space-y-6">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-white border border-[var(--border-hairline)] flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="mail" class="w-5 h-5 text-brass-deep"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-ink text-sm">Email</p>
+                  <p class="text-sm text-ink-soft mt-0.5">hello@monolith.studio</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-white border border-[var(--border-hairline)] flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="map-pin" class="w-5 h-5 text-brass-deep"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-ink text-sm">Studio</p>
+                  <p class="text-sm text-ink-soft mt-0.5">Via della Spiga 12, Milan · By appointment</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div class="card-premium p-6 md:p-8">
+            <form id="enquiryForm" novalidate>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label for="name" class="font-mono-label text-ink-soft block mb-2">Name</label>
+                  <input type="text" id="name" name="name" placeholder="Your name" class="form-input" required>
+                  <p class="error-message">Please enter your name</p>
+                </div>
+                <div>
+                  <label for="email" class="font-mono-label text-ink-soft block mb-2">Email</label>
+                  <input type="email" id="email" name="email" placeholder="you@example.com" class="form-input" required>
+                  <p class="error-message">Please enter a valid email</p>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label for="phone" class="font-mono-label text-ink-soft block mb-2">Phone <span class="text-ink-soft/50">(optional)</span></label>
+                <input type="tel" id="phone" name="phone" placeholder="+39 02 1234 5678" class="form-input">
+              </div>
+              <div class="mb-4">
+                <label for="service" class="font-mono-label text-ink-soft block mb-2">Interest</label>
+                <select id="service" name="service" class="form-input" required>
+                  <option value="">Select an option</option>
+                  <option value="furniture">Furniture enquiry</option>
+                  <option value="lighting">Lighting enquiry</option>
+                  <option value="ceramics">Ceramics enquiry</option>
+                  <option value="custom">Custom commission</option>
+                  <option value="trade">Trade / wholesale</option>
+                </select>
+                <p class="error-message">Please select an interest</p>
+              </div>
+              <div class="mb-6">
+                <label for="message" class="font-mono-label text-ink-soft block mb-2">Message</label>
+                <textarea id="message" name="message" rows="4" placeholder="Tell us what you're looking for..." class="form-input resize-none" required></textarea>
+                <p class="error-message">Please include a message</p>
+              </div>
+              <button type="submit" class="btn-primary w-full justify-center" id="submitBtn">
+                Send enquiry
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
+            </form>
+            <!-- TODO: connect form action to backend endpoint -->
+            <div id="formSuccess" class="hidden text-center py-8">
+              <div class="w-16 h-16 rounded-full bg-[var(--stone)] flex items-center justify-center mx-auto mb-4 success-check">
+                <i data-lucide="check" class="w-8 h-8 text-brass-deep"></i>
+              </div>
+              <p class="font-display text-2xl text-ink">Thank you.</p>
+              <p class="text-ink-soft text-sm mt-2">We'll be in touch within two working days.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="bg-[var(--cream)] border-t border-[var(--border-hairline)] pt-16 md:pt-20 pb-8">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8">
+        <!-- Brand -->
+        <div class="md:col-span-5">
+          <a href="#" class="font-display text-2xl md:text-3xl tracking-tight text-ink">MONOLITH</a>
+          <p class="mt-4 text-ink-soft text-sm leading-relaxed max-w-xs font-light">
+            Objects for modern living. Designed with intention, made by hand, built to outlive trends.
+          </p>
+          <div class="flex gap-3 mt-6">
+            <a href="#" class="w-9 h-9 rounded-full border border-[var(--border-hairline)] flex items-center justify-center text-ink-soft hover:text-ink hover:border-[var(--sand)] transition-all duration-200" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-[var(--border-hairline)] flex items-center justify-center text-ink-soft hover:text-ink hover:border-[var(--sand)] transition-all duration-200" aria-label="Pinterest">
+              <i data-lucide="pin" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-[var(--border-hairline)] flex items-center justify-center text-ink-soft hover:text-ink hover:border-[var(--sand)] transition-all duration-200" aria-label="Twitter">
+              <i data-lucide="twitter" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Links -->
+        <div class="md:col-span-2">
+          <p class="font-mono-label text-ink mb-4">Shop</p>
+          <ul class="space-y-1">
+            <li><a href="#" class="footer-link">Furniture</a></li>
+            <li><a href="#" class="footer-link">Lighting</a></li>
+            <li><a href="#" class="footer-link">Ceramics</a></li>
+            <li><a href="#" class="footer-link">Gift cards</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-2">
+          <p class="font-mono-label text-ink mb-4">Studio</p>
+          <ul class="space-y-1">
+            <li><a href="#craft" class="footer-link">Our craft</a></li>
+            <li><a href="#stories" class="footer-link">Stories</a></li>
+            <li><a href="#" class="footer-link">Journal</a></li>
+            <li><a href="#" class="footer-link">Trade</a></li>
+          </ul>
+        </div>
+        <div class="md:col-span-3">
+          <p class="font-mono-label text-ink mb-4">Support</p>
+          <ul class="space-y-1">
+            <li><a href="#" class="footer-link">Shipping & returns</a></li>
+            <li><a href="#" class="footer-link">Care guide</a></li>
+            <li><a href="#" class="footer-link">Repairs</a></li>
+            <li><a href="#contact" class="footer-link">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="mt-12 md:mt-16 pt-6 border-t border-[var(--border-hairline)] flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p class="text-xs text-ink-soft/60">© 2025 Monolith Studio. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="text-xs text-ink-soft/60 hover:text-ink transition-colors">Privacy</a>
+          <a href="#" class="text-xs text-ink-soft/60 hover:text-ink transition-colors">Terms</a>
+          <a href="#" class="text-xs text-ink-soft/60 hover:text-ink transition-colors">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ============================================================
+    // 1. LUCIDE ICONS
+    // ============================================================
+    lucide.createIcons();
+
+    // ============================================================
+    // 2. CUSTOM CURSOR
+    // ============================================================
+    (function() {
+      if (window.matchMedia('(max-width: 1024px)').matches) return;
+      const dot = document.querySelector('.cursor-dot');
+      const ring = document.querySelector('.cursor-ring');
+      let mouseX = 0, mouseY = 0;
+      let ringX = 0, ringY = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+      });
+
+      function animateRing() {
+        ringX += (mouseX - ringX) * 0.15;
+        ringY += (mouseY - ringY) * 0.15;
+        ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+
+      // Scale ring on hover over interactive elements
+      document.querySelectorAll('a, button, input, textarea, select').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          ring.style.width = '56px';
+          ring.style.height = '56px';
+          ring.style.opacity = '0.6';
+        });
+        el.addEventListener('mouseleave', () => {
+          ring.style.width = '36px';
+          ring.style.height = '36px';
+          ring.style.opacity = '0.4';
+        });
+      });
+    })();
+
+    // ============================================================
+    // 3. MOBILE MENU
+    // ============================================================
+    (function() {
+      const btn = document.getElementById('mobileMenuBtn');
+      const menu = document.getElementById('mobileMenu');
+      if (!btn || !menu) return;
+
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', !expanded);
+        menu.classList.toggle('hidden');
+        // swap icon
+        btn.innerHTML = expanded
+          ? '<i data-lucide="menu" class="w-6 h-6"></i>'
+          : '<i data-lucide="x" class="w-6 h-6"></i>';
+        lucide.createIcons();
+      });
+
+      // Close on link click
+      menu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          menu.classList.add('hidden');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+          lucide.createIcons();
+        });
+      });
+    })();
+
+    // ============================================================
+    // 4. HERO CARD 3D TILT
+    // ============================================================
+    (function() {
+      const card = document.getElementById('heroCard');
+      if (!card) return;
+      if (window.matchMedia('(max-width: 1024px)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const wrapper = card.parentElement;
+      wrapper.addEventListener('mousemove', (e) => {
+        const rect = wrapper.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `rotateY(${x * 10}deg) rotateX(${-y * 10}deg) scale(1.02)`;
+      });
+      wrapper.addEventListener('mouseleave', () => {
+        card.style.transform = 'rotateY(0deg) rotateX(0deg) scale(1)';
+      });
+    })();
+
+    // ============================================================
+    // 5. HERO TEXT REVEAL
+    // ============================================================
+    (function() {
+      const lines = document.querySelectorAll('.reveal-line span');
+      lines.forEach((line, i) => {
+        setTimeout(() => {
+          line.classList.add('is-visible');
+        }, 200 + i * 120);
+      });
+    })();
+
+    // ============================================================
+    // 6. GSAP SCROLL ANIMATIONS
+    // ============================================================
+    (function() {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Fade-up cards
+      gsap.utils.toArray('.card-premium').forEach((card, i) => {
+        gsap.from(card, {
+          y: 40,
+          opacity: 0,
+          duration: 0.7,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 88%',
+            once: true
+          }
+        });
+      });
+
+      // Section headings fade
+      gsap.utils.toArray('section h2').forEach(h2 => {
+        gsap.from(h2, {
+          y: 30,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: h2,
+            start: 'top 85%',
+            once: true
+          }
+        });
+      });
+
+      // Navbar shrink on scroll
+      const nav = document.getElementById('navbar');
+      ScrollTrigger.create({
+        start: 'top -60',
+        onUpdate: (self) => {
+          if (self.progress > 0) {
+            nav.classList.add('shadow-sm');
+          } else {
+            nav.classList.remove('shadow-sm');
+          }
+        }
+      });
+    })();
+
+    // ============================================================
+    // 7. FORM VALIDATION & SUBMISSION
+    // ============================================================
+    (function() {
+      const form = document.getElementById('enquiryForm');
+      const successDiv = document.getElementById('formSuccess');
+      const submitBtn = document.getElementById('submitBtn');
+      if (!form) return;
+
+      const fields = {
+        name: { el: document.getElementById('name'), required: true },
+        email: { el: document.getElementById('email'), required: true, email: true },
+        service: { el: document.getElementById('service'), required: true },
+        message: { el: document.getElementById('message'), required: true }
+      };
+
+      // Remove error on input
+      Object.values(fields).forEach(({ el }) => {
+        if (!el) return;
+        el.addEventListener('input', () => {
+          el.classList.remove('error');
+        });
+        el.addEventListener('change', () => {
+          el.classList.remove('error');
+        });
+      });
+
+      function validate() {
+        let valid = true;
+        // name
+        if (fields.name.el.value.trim() === '') {
+          fields.name.el.classList.add('error');
+          valid = false;
+        }
+        // email
+        const emailVal = fields.email.el.value.trim();
+        if (emailVal === '' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+          fields.email.el.classList.add('error');
+          valid = false;
+        }
+        // service
+        if (fields.service.el.value === '') {
+          fields.service.el.classList.add('error');
+          valid = false;
+        }
+        // message
+        if (fields.message.el.value.trim() === '') {
+          fields.message.el.classList.add('error');
+          valid = false;
+        }
+        return valid;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!validate()) return;
+
+        // loading state
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner"></span> Sending...';
+
+        const payload = {
+          url: window.location.host,
+          table: 'enquiries',
+          data: {
+            name: fields.name.el.value.trim(),
+            email: fields.email.el.value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            service: fields.service.el.value,
+            message: fields.message.el.value.trim()
+          }
+        };
+
+        try {
+          const res = await fetch('submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store',
+            body: JSON.stringify(payload)
+          });
+          // Even if fetch fails (no backend), show success for demo
+          throw new Error('demo'); // force success simulation
+        } catch (err) {
+          // Simulate success
+          form.classList.add('hidden');
+          successDiv.classList.remove('hidden');
+          lucide.createIcons();
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+          lucide.createIcons();
+        }
+      });
+    })();
+
+    // ============================================================
+    // 8. SMOOTH ANCHOR SCROLL (offset for fixed header)
+    // ============================================================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (!target) return;
+        e.preventDefault();
+        const offset = 80;
+        const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
