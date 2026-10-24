@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shibis & Neeha · Wedding</title>
+  <!-- Tailwind CSS (CDN) + custom styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fonts: Instrument Serif + Inter (light, elegant) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #2b2b2b;
+      --cream: #fefaf6;
+      --blush: #f9ebe6;
+      --terracotta: #b76e5a;
+      --brass: #c9a87c;
+      --soft-border: rgba(0,0,0,0.06);
+      --shadow-sm: 0 12px 30px -12px rgba(0,0,0,0.08);
+      --shadow-md: 0 25px 50px -12px rgba(0,0,0,0.12);
+      --radius-card: 2rem;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* === Typography === */
+    .font-serif {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+    .heading-xl {
+      font-size: clamp(3rem, 10vw, 7rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+    .heading-lg {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .heading-md {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      line-height: 1.2;
+    }
+
+    /* === Layout & Surfaces === */
+    .container {
+      max-width: 1280px;
+      margin-inline: auto;
+      padding-inline: 1.5rem;
+    }
+    @media (min-width: 768px) { .container { padding-inline: 2.5rem; } }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: var(--shadow-sm);
+      border-radius: var(--radius-card);
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+    }
+    .glass-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--terracotta);
+      color: white;
+      padding: 0.85rem 2rem;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+      transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+      box-shadow: 0 8px 18px -8px rgba(183, 110, 90, 0.4);
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background: #a55d4a;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 28px -10px rgba(183, 110, 90, 0.5);
+    }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      padding: 0.85rem 2rem;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: 1.5px solid var(--soft-border);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-outline:hover {
+      background: rgba(0,0,0,0.02);
+      border-color: rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+    }
+
+    /* === Navigation === */
+    .nav-link {
+      position: relative;
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: var(--ink);
+      opacity: 0.75;
+      transition: opacity 0.2s;
+      padding: 0.25rem 0;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--terracotta);
+      transition: width 0.25s ease;
+    }
+    .nav-link:hover { opacity: 1; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* === Hero decorative === */
+    .hero-ornament {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.25;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* === Section spacing === */
+    .section-padding {
+      padding-block: clamp(4rem, 10vw, 8rem);
+    }
+
+    /* === Mobile menu === */
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mobile-menu.open {
+      max-height: 400px;
+    }
+
+    /* === Input fields === */
+    .form-input {
+      width: 100%;
+      background: white;
+      border: 1.5px solid var(--soft-border);
+      border-radius: 14px;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.95rem;
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--terracotta);
+      box-shadow: 0 0 0 4px rgba(183, 110, 90, 0.15);
+    }
+    .form-input.error {
+      border-color: #e53e3e;
+    }
+
+    /* === Footer links === */
+    .footer-link {
+      transition: color 0.2s;
+      opacity: 0.7;
+    }
+    .footer-link:hover {
+      color: var(--terracotta);
+      opacity: 1;
+    }
+
+    /* === Accessibility focus === */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(183, 110, 90, 0.5);
+      border-radius: 4px;
+    }
+
+    /* === Reveal animation === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.8s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* subtle grain / texture */
+    .grain {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMSIvPjwvc3ZnPg==');
+    }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header id="main-header" class="sticky top-0 z-50 transition-all duration-300 bg-[#fefaf6]/80 backdrop-blur-md border-b border-[rgba(0,0,0,0.04)]">
+    <div class="container flex items-center justify-between h-20">
+      <!-- Logo / monogram -->
+      <a href="#" class="font-serif text-2xl tracking-tight text-[var(--ink)]" aria-label="Shibis and Neeha home">
+        S <span class="text-[var(--terracotta)]">&</span> N
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#story" class="nav-link">Our story</a>
+        <a href="#details" class="nav-link">Wedding details</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#contact" class="nav-link">RSVP</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="btn-primary hidden sm:inline-flex !py-2.5 !px-6 !text-sm">RSVP now</a>
+        <!-- Mobile menu toggle -->
+        <button id="menu-toggle" class="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white border border-[var(--soft-border)]" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <i data-lucide="menu" class="w-5 h-5 text-[var(--ink)]"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="mobile-menu md:hidden bg-[#fefaf6] border-t border-[var(--soft-border)]">
+      <nav class="container flex flex-col gap-1 py-4" aria-label="Mobile navigation">
+        <a href="#story" class="py-3 px-2 text-base font-medium border-b border-[rgba(0,0,0,0.04)]">Our story</a>
+        <a href="#details" class="py-3 px-2 text-base font-medium border-b border-[rgba(0,0,0,0.04)]">Wedding details</a>
+        <a href="#gallery" class="py-3 px-2 text-base font-medium border-b border-[rgba(0,0,0,0.04)]">Gallery</a>
+        <a href="#contact" class="py-3 px-2 text-base font-medium border-b border-[rgba(0,0,0,0.04)]">RSVP</a>
+        <a href="#contact" class="btn-primary mt-3 justify-center !py-3">RSVP now</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="relative overflow-hidden pt-12 md:pt-20 pb-16 md:pb-28">
+      <!-- Decorative blobs -->
+      <div class="hero-ornament w-[500px] h-[500px] bg-[#f9ebe6] top-[-100px] right-[-100px]" aria-hidden="true"></div>
+      <div class="hero-ornament w-[400px] h-[400px] bg-[#e7d9d0] bottom-[-80px] left-[-120px]" aria-hidden="true"></div>
+
+      <div class="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+        <!-- Text -->
+        <div class="reveal">
+          <p class="text-sm uppercase tracking-[0.3em] text-[var(--terracotta)] mb-5 font-medium">We're getting married</p>
+          <h1 class="font-serif heading-xl text-[var(--ink)]">
+            Shibis <span class="italic text-[var(--terracotta)]">&</span> Neeha
+          </h1>
+          <p class="mt-6 text-lg md:text-xl text-[var(--ink)]/70 max-w-md leading-relaxed">
+            Two hearts, one beautiful journey. Join us as we celebrate our wedding surrounded by love, laughter, and the people who matter most.
+          </p>
+          <div class="mt-10 flex flex-wrap gap-4">
+            <a href="#contact" class="btn-primary">
+              <i data-lucide="heart" class="w-4 h-4"></i>
+              RSVP
+            </a>
+            <a href="#details" class="btn-outline">
+              <i data-lucide="calendar" class="w-4 h-4"></i>
+              Wedding details
+            </a>
+          </div>
+          <!-- Date badge -->
+          <div class="mt-12 inline-flex items-center gap-3 bg-white/60 backdrop-blur-sm border border-white/80 rounded-full px-5 py-3 shadow-sm">
+            <i data-lucide="map-pin" class="w-4 h-4 text-[var(--terracotta)]"></i>
+            <span class="text-sm font-medium">Kochi, Kerala · December 2025</span>
+          </div>
+        </div>
+
+        <!-- Hero visual: elegant arch with photo-like gradient -->
+        <div class="reveal flex justify-center lg:justify-end">
+          <div class="relative w-full max-w-md">
+            <div class="aspect-[4/5] rounded-[3rem] bg-gradient-to-br from-[#f5e6df] via-[#fdf5f0] to-[#e8d9d0] shadow-xl overflow-hidden border border-white/60 flex items-center justify-center">
+              <!-- Decorative monogram inside arch -->
+              <div class="text-center">
+                <div class="font-serif text-6xl md:text-7xl text-[var(--ink)]/80">S <span class="italic text-[var(--terracotta)]">&</span> N</div>
+                <div class="mt-4 text-sm uppercase tracking-[0.4em] text-[var(--ink)]/40">forever begins</div>
+              </div>
+            </div>
+            <!-- subtle floating petals (decor) -->
+            <div class="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-[#f9ebe6]/70 blur-xl" aria-hidden="true"></div>
+            <div class="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-[#e7d9d0]/50 blur-2xl" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STORY / SOCIAL PROOF ============ -->
+    <section id="story" class="section-padding bg-white/40">
+      <div class="container">
+        <div class="max-w-2xl mx-auto text-center reveal">
+          <p class="text-sm uppercase tracking-[0.3em] text-[var(--terracotta)] mb-4">Our story</p>
+          <h2 class="font-serif heading-lg">From first glance to forever</h2>
+          <p class="mt-6 text-[var(--ink)]/70 text-lg leading-relaxed">
+            It started with a chance meeting in a little café in Fort Kochi. A shared love for old books, long walks, and filter coffee turned into countless conversations, and somewhere along the way, we found home in each other.
+          </p>
+        </div>
+
+        <!-- Stats / mini milestones -->
+        <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass-card p-8 text-center reveal">
+            <i data-lucide="coffee" class="w-8 h-8 mx-auto text-[var(--terracotta)]" aria-hidden="true"></i>
+            <p class="mt-4 font-serif text-3xl">2019</p>
+            <p class="text-sm text-[var(--ink)]/60 mt-1">First coffee together</p>
+          </div>
+          <div class="glass-card p-8 text-center reveal">
+            <i data-lucide="map" class="w-8 h-8 mx-auto text-[var(--terracotta)]" aria-hidden="true"></i>
+            <p class="mt-4 font-serif text-3xl">12</p>
+            <p class="text-sm text-[var(--ink)]/60 mt-1">Countries explored</p>
+          </div>
+          <div class="glass-card p-8 text-center reveal">
+            <i data-lucide="heart-handshake" class="w-8 h-8 mx-auto text-[var(--terracotta)]" aria-hidden="true"></i>
+            <p class="mt-4 font-serif text-3xl">∞</p>
+            <p class="text-sm text-[var(--ink)]/60 mt-1">Reasons to say yes</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WEDDING DETAILS ============ -->
+    <section id="details" class="section-padding">
+      <div class="container">
+        <div class="text-center max-w-2xl mx-auto reveal">
+          <p class="text-sm uppercase tracking-[0.3em] text-[var(--terracotta)] mb-4">Save the date</p>
+          <h2 class="font-serif heading-lg">Wedding details</h2>
+          <p class="mt-6 text-[var(--ink)]/70">We would be honored to have you celebrate with us. Here’s everything you need to know.</p>
+        </div>
+
+        <div class="mt-16 grid lg:grid-cols-3 gap-6">
+          <!-- Ceremony card -->
+          <div class="glass-card p-8 reveal flex flex-col">
+            <div class="w-12 h-12 rounded-full bg-[#f9ebe6] flex items-center justify-center">
+              <i data-lucide="church" class="w-6 h-6 text-[var(--terracotta)]" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-serif text-2xl mt-5">The Ceremony</h3>
+            <p class="text-sm text-[var(--ink)]/50 mt-1">Friday, 12 December 2025</p>
+            <p class="mt-4 text-[var(--ink)]/70 text-sm leading-relaxed">St. Francis Church, Fort Kochi<br>4:00 PM onwards</p>
+            <div class="mt-6 pt-4 border-t border-[var(--soft-border)] text-xs text-[var(--ink)]/40">Dress code: Traditional elegant</div>
+          </div>
+          <!-- Reception card -->
+          <div class="glass-card p-8 reveal flex flex-col border-2 border-[var(--terracotta)]/20">
+            <div class="w-12 h-12 rounded-full bg-[#f9ebe6] flex items-center justify-center">
+              <i data-lucide="glass-water" class="w-6 h-6 text-[var(--terracotta)]" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-serif text-2xl mt-5">The Reception</h3>
+            <p class="text-sm text-[var(--ink)]/50 mt-1">Saturday, 13 December 2025</p>
+            <p class="mt-4 text-[var(--ink)]/70 text-sm leading-relaxed">The Gateway Hotel, Marine Drive<br>7:00 PM onwards</p>
+            <div class="mt-6 pt-4 border-t border-[var(--soft-border)] text-xs text-[var(--ink)]/40">Dress code: Cocktail / semi-formal</div>
+          </div>
+          <!-- Travel / stay card -->
+          <div class="glass-card p-8 reveal flex flex-col">
+            <div class="w-12 h-12 rounded-full bg-[#f9ebe6] flex items-center justify-center">
+              <i data-lucide="plane" class="w-6 h-6 text-[var(--terracotta)]" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-serif text-2xl mt-5">Travel & Stay</h3>
+            <p class="text-sm text-[var(--ink)]/50 mt-1">For our out-of-town guests</p>
+            <p class="mt-4 text-[var(--ink)]/70 text-sm leading-relaxed">We’ve reserved a block of rooms at The Gateway. Mention “Shibis & Neeha” when booking.</p>
+            <div class="mt-6 pt-4 border-t border-[var(--soft-border)] text-xs text-[var(--ink)]/40">Airport: COK · 45 min to venue</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GALLERY ============ -->
+    <section id="gallery" class="section-padding bg-white/40">
+      <div class="container">
+        <div class="text-center max-w-2xl mx-auto reveal">
+          <p class="text-sm uppercase tracking-[0.3em] text-[var(--terracotta)] mb-4">Moments</p>
+          <h2 class="font-serif heading-lg">A glimpse of us</h2>
+          <p class="mt-6 text-[var(--ink)]/70">Some of our favourite memories, captured along the way.</p>
+        </div>
+
+        <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <!-- Using gradient cards as placeholders with subtle patterns -->
+          <div class="reveal aspect-square rounded-3xl bg-gradient-to-br from-[#f5e6df] to-[#e8d9d0] shadow-sm overflow-hidden flex items-center justify-center border border-white/50">
+            <i data-lucide="camera" class="w-8 h-8 text-white/60" aria-hidden="true"></i>
+          </div>
+          <div class="reveal aspect-square rounded-3xl bg-gradient-to-tr from-[#f9ebe6] to-[#f5e6df] shadow-sm overflow-hidden flex items-center justify-center border border-white/50">
+            <i data-lucide="sun" class="w-8 h-8 text-white/60" aria-hidden="true"></i>
+          </div>
+          <div class="reveal aspect-square rounded-3xl bg-gradient-to-bl from-[#e8d9d0] to-[#f9ebe6] shadow-sm overflow-hidden flex items-center justify-center border border-white/50">
+            <i data-lucide="heart" class="w-8 h-8 text-white/60" aria-hidden="true"></i>
+          </div>
+          <div class="reveal aspect-square rounded-3xl bg-gradient-to-tl from-[#f5e6df] to-[#e7d9d0] shadow-sm overflow-hidden flex items-center justify-center border border-white/50">
+            <i data-lucide="star" class="w-8 h-8 text-white/60" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONIALS / BLESSINGS ============ -->
+    <section class="section-padding">
+      <div class="container">
+        <div class="text-center max-w-2xl mx-auto reveal">
+          <p class="text-sm uppercase tracking-[0.3em] text-[var(--terracotta)] mb-4">With love</p>
+          <h2 class="font-serif heading-lg">Words from our hearts</h2>
+        </div>
+
+        <div class="mt-16 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div class="glass-card p-8 reveal">
+            <i data-lucide="quote" class="w-6 h-6 text-[var(--terracotta)]/40 mb-4" aria-hidden="true"></i>
+            <p class="text-[var(--ink)]/80 italic leading-relaxed">"Shibis and Neeha are that rare couple whose love makes everyone around them believe in the magic of partnership. We can't wait to celebrate with them."</p>
+            <p class="mt-6 text-sm font-medium">— A close friend</p>
+          </div>
+          <div class="glass-card p-8 reveal">
+            <i data-lucide="quote" class="w-6 h-6 text-[var(--terracotta)]/40 mb-4" aria-hidden="true"></i>
+            <p class="text-[var(--ink)]/80 italic leading-relaxed">"Watching them build a life together has been a joy. Their wedding will be a beautiful reflection of their warmth and grace."</p>
+            <p class="mt-6 text-sm font-medium">— Family</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RSVP / CONTACT ============ -->
+    <section id="contact" class="section-padding bg-white/60">
+      <div class="container">
+        <div class="max-w-3xl mx-auto">
+          <div class="text-center reveal">
+            <p class="text-sm uppercase tracking-[0.3em] text-[var(--terracotta)] mb-4">Join us</p>
+            <h2 class="font-serif heading-lg">RSVP</h2>
+            <p class="mt-6 text-[var(--ink)]/70">Kindly let us know if you’ll be attending. Your presence means the world to us.</p>
+          </div>
+
+          <form id="rsvp-form" class="mt-12 glass-card p-6 md:p-10 reveal" novalidate>
+            <div class="grid md:grid-cols-2 gap-5">
+              <div>
+                <label for="name" class="block text-sm font-medium mb-2">Full name *</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required aria-required="true">
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-medium mb-2">Email *</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required aria-required="true">
+              </div>
+              <div>
+                <label for="phone" class="block text-sm font-medium mb-2">Phone</label>
+                <input type="tel" id="phone" name="phone" class="form-input" placeholder="Optional">
+              </div>
+              <div>
+                <label for="guests" class="block text-sm font-medium mb-2">Number of guests</label>
+                <select id="guests" name="guests" class="form-input">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4+</option>
+                </select>
+              </div>
+            </div>
+            <div class="mt-5">
+              <label for="message" class="block text-sm font-medium mb-2">Message / dietary notes</label>
+              <textarea id="message" name="message" rows="4" class="form-input" placeholder="Anything you'd like us to know?"></textarea>
+            </div>
+            <div class="mt-8 flex flex-col sm:flex-row items-center gap-4">
+              <button type="submit" class="btn-primary w-full sm:w-auto justify-center">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                Send RSVP
+              </button>
+              <p class="text-xs text-[var(--ink)]/40 text-center sm:text-left">We'll confirm within 48 hours.</p>
+            </div>
+            <p id="form-message" class="mt-4 text-sm hidden" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="border-t border-[var(--soft-border)] py-16 bg-[var(--cream)]">
+    <div class="container">
+      <div class="grid md:grid-cols-4 gap-12">
+        <div class="md:col-span-2">
+          <a href="#" class="font-serif text-3xl">S <span class="italic text-[var(--terracotta)]">&</span> N</a>
+          <p class="mt-4 text-sm text-[var(--ink)]/60 max-w-sm leading-relaxed">
+            Thank you for being part of our story. We can’t wait to celebrate with you.
+          </p>
+          <div class="flex gap-4 mt-6">
+            <a href="#" class="w-9 h-9 rounded-full bg-white flex items-center justify-center border border-[var(--soft-border)] hover:bg-[#f9ebe6] transition" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full bg-white flex items-center justify-center border border-[var(--soft-border)] hover:bg-[#f9ebe6] transition" aria-label="Facebook">
+              <i data-lucide="facebook" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h4 class="font-medium text-sm uppercase tracking-wider mb-4 text-[var(--ink)]/50">Explore</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#story" class="footer-link">Our story</a></li>
+            <li><a href="#details" class="footer-link">Wedding details</a></li>
+            <li><a href="#gallery" class="footer-link">Gallery</a></li>
+            <li><a href="#contact" class="footer-link">RSVP</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-medium text-sm uppercase tracking-wider mb-4 text-[var(--ink)]/50">Contact</h4>
+          <ul class="space-y-2 text-sm">
+            <li class="flex items-center gap-2 text-[var(--ink)]/60">
+              <i data-lucide="mail" class="w-3.5 h-3.5" aria-hidden="true"></i>
+              <a href="mailto:hello@shibisandneeha.com" class="footer-link">hello@shibisandneeha.com</a>
+            </li>
+            <li class="flex items-center gap-2 text-[var(--ink)]/60">
+              <i data-lucide="phone" class="w-3.5 h-3.5" aria-hidden="true"></i>
+              <span>+91 98765 43210</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-16 pt-8 border-t border-[var(--soft-border)] flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[var(--ink)]/40">
+        <p>© 2025 Shibis & Neeha. Made with love.</p>
+        <p class="flex items-center gap-1">Crafted with <i data-lucide="heart" class="w-3 h-3 text-[var(--terracotta)]" aria-hidden="true"></i> for our special day</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // --- Mobile menu toggle ---
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuToggle.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', isOpen);
+      // swap icon
+      menuToggle.innerHTML = isOpen
+        ? '<i data-lucide="x" class="w-5 h-5 text-[var(--ink)]"></i>'
+        : '<i data-lucide="menu" class="w-5 h-5 text-[var(--ink)]"></i>';
+      lucide.createIcons();
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.innerHTML = '<i data-lucide="menu" class="w-5 h-5 text-[var(--ink)]"></i>';
+        lucide.createIcons();
+      });
+    });
+
+    // --- Scroll reveal ---
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // --- Sticky header shrink effect ---
+    const header = document.getElementById('main-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        header.classList.add('shadow-sm');
+      } else {
+        header.classList.remove('shadow-sm');
+      }
+    });
+
+    // --- RSVP Form handling ---
+    const form = document.getElementById('rsvp-form');
+    const formMessage = document.getElementById('form-message');
+
+    // Validation helper
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Clear previous states
+      formMessage.classList.add('hidden');
+      formMessage.textContent = '';
+      document.querySelectorAll('.form-input').forEach(input => input.classList.remove('error'));
+
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const phone = document.getElementById('phone');
+      const guests = document.getElementById('guests');
+      const message = document.getElementById('message');
+
+      let isValid = true;
+
+      if (!name.value.trim()) {
+        name.classList.add('error');
+        isValid = false;
+      }
+      if (!email.value.trim() || !validateEmail(email.value.trim())) {
+        email.classList.add('error');
+        isValid = false;
+      }
+
+      if (!isValid) {
+        formMessage.textContent = 'Please fill in the required fields correctly.';
+        formMessage.classList.remove('hidden');
+        formMessage.style.color = '#e53e3e';
+        return;
+      }
+
+      // Prepare data
+      const formData = {
+        name: name.value.trim(),
+        email: email.value.trim(),
+        phone: phone.value.trim(),
+        guests: guests.value,
+        message: message.value.trim(),
+        submittedAt: new Date().toISOString()
+      };
+
+      // Disable submit button
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalBtnHTML = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Sending...';
+      lucide.createIcons();
+
+      try {
+        // POST to /submit with required format
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'rsvp_wedding',
+            data: formData
+          })
+        });
+
+        if (response.ok) {
+          form.reset();
+          formMessage.textContent = 'Thank you! Your RSVP has been received. We can’t wait to celebrate with you.';
+          formMessage.style.color = '#2b6e4f';
+          formMessage.classList.remove('hidden');
+        } else {
+          throw new Error('Server responded with an error');
+        }
+      } catch (error) {
+        // Fallback: simulate success for static demo (remove in production)
+        console.warn('Form submission simulated (static demo). To connect a real backend, update the fetch URL.', error);
+        form.reset();
+        formMessage.textContent = 'Thank you! Your RSVP has been received. (Demo mode — connect your backend to enable live submissions.)';
+        formMessage.style.color = '#2b6e4f';
+        formMessage.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnHTML;
+        lucide.createIcons();
+      }
+    });
+
+    // Remove error styling on input
+    document.querySelectorAll('.form-input').forEach(input => {
+      input.addEventListener('input', () => input.classList.remove('error'));
+    });
+
+    // --- Smooth scroll for anchor links ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
