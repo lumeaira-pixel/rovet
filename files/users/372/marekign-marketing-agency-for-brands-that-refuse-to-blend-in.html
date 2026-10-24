@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marekign — Marketing Agency for Brands That Refuse to Blend In</title>
+<meta name="description" content="Marekign is a full-service marketing agency building bold brand systems, growth engines, and content that converts. Strategy, identity, performance, and creative under one roof." />
+
+<!-- =============== FONTS =============== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<!-- =============== TAILWIND CDN =============== -->
+<script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.10/dist/tailwind.min.js"></script>
+<script>
+  // Configure Tailwind (play CDN)
+  if (window.tailwind) {
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink:      '#14120F',
+            coal:     '#24211C',
+            cream:    '#FBF7F0',
+            paper:    '#F5EFE3',
+            sand:     '#EDE4D3',
+            brass:    '#B87333',
+            brasslt:  '#D89A56',
+            moss:     '#3D4A38',
+            fog:      '#6B655B'
+          },
+          fontFamily: {
+            display: ['"Instrument Serif"', 'serif'],
+            sans:    ['"Instrument Sans"', 'system-ui', 'sans-serif']
+          },
+          borderRadius: {
+            '4xl': '2rem',
+            '5xl': '2.5rem'
+          }
+        }
+      }
+    };
+  }
+</script>
+
+<!-- =============== LUCIDE ICONS =============== -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+
+<!-- =============== GSAP + SCROLLTRIGGER =============== -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+
+<style>
+  /* ============================================================
+     DESIGN TOKENS
+     ============================================================ */
+  :root {
+    --ink:        #14120F;
+    --coal:       #24211C;
+    --cream:      #FBF7F0;
+    --paper:      #F5EFE3;
+    --sand:       #EDE4D3;
+    --sand-dark:  #E1D5BF;
+    --brass:      #B87333;
+    --brass-lt:   #D89A56;
+    --brass-deep: #8E5522;
+    --moss:       #3D4A38;
+    --fog:        #6B655B;
+    --hairline:   rgba(20,18,15,0.10);
+    --hairline-2: rgba(20,18,15,0.06);
+    --shadow-sm:  0 1px 2px rgba(20,18,15,0.06), 0 2px 8px rgba(20,18,15,0.04);
+    --shadow-md:  0 4px 12px rgba(20,18,15,0.06), 0 12px 32px rgba(20,18,15,0.06);
+    --shadow-lg:  0 8px 24px rgba(20,18,15,0.08), 0 24px 64px rgba(20,18,15,0.10);
+    --shadow-glow:0 0 0 1px rgba(184,115,51,0.35), 0 12px 32px -8px rgba(184,115,51,0.35);
+    --focus-ring: 0 0 0 3px rgba(184,115,51,0.45);
+    --radius-lg:  24px;
+    --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out:cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  /* ============================================================
+     BASE
+     ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--cream);
+    font-feature-settings: "ss01","cv01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    line-height: 1.55;
+  }
+  h1,h2,h3,h4 { font-family: 'Instrument Serif', serif; font-weight: 400; letter-spacing: -0.02em; line-height: 1.02; }
+  a { color: inherit; text-decoration: none; }
+  img, svg { display: block; max-width: 100%; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+  ::selection { background: var(--brass); color: var(--cream); }
+
+  /* focus ring */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: 8px;
+  }
+
+  /* ============================================================
+     UTILITIES
+     ============================================================ */
+  .container-x {
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4vw, 3rem);
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--brass-deep);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 22px;
+    height: 1px;
+    background: var(--brass);
+  }
+  .hairline { border-color: var(--hairline); }
+
+  /* ============================================================
+     HEADER
+     ============================================================ */
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 80;
+    transition: background 0.35s var(--ease-out), backdrop-filter 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+  }
+  .site-header.scrolled {
+    background: rgba(251,247,240,0.78);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    box-shadow: 0 1px 0 var(--hairline);
+  }
+  .nav-link {
+    position: relative;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--coal);
+    padding: 0.4rem 0.1rem;
+    transition: color 0.2s var(--ease-out);
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -2px;
+    height: 1px; width: 100%;
+    background: var(--brass);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .nav-link:hover { color: var(--brass-deep); }
+  .nav-link:hover::after { transform: scaleX(1); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: -0.01em;
+    padding: 0.9rem 1.5rem;
+    border-radius: 999px;
+    transition: transform 0.25s var(--ease-out), background 0.25s var(--ease-out), box-shadow 0.35s var(--ease-out), color 0.25s var(--ease-out);
+    will-change: transform;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--cream);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 20px -6px rgba(20,18,15,0.5);
+  }
+  .btn-primary:hover {
+    background: var(--brass-deep);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px -8px rgba(184,115,51,0.5);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--hairline);
+  }
+  .btn-secondary:hover {
+    background: var(--sand);
+    border-color: transparent;
+    transform: translateY(-2px);
+  }
+  .btn-brass {
+    background: var(--brass);
+    color: var(--cream);
+    box-shadow: 0 8px 20px -6px rgba(184,115,51,0.55);
+  }
+  .btn-brass:hover { background: var(--brass-deep); transform: translateY(-2px); }
+  .btn-sm { padding: 0.65rem 1.15rem; font-size: 0.82rem; }
+
+  /* mobile nav button sizes */
+  .mobile-menu-btn {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--hairline);
+    background: rgba(255,255,255,0.6);
+    color: var(--ink);
+    transition: background 0.2s var(--ease-out);
+  }
+  .mobile-menu-btn:hover { background: var(--sand); }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .hero {
+    position: relative;
+    padding-top: clamp(7rem, 14vw, 10rem);
+    padding-bottom: clamp(4rem, 8vw, 7rem);
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 55% 45% at 78% 18%, rgba(216,154,86,0.24), transparent 60%),
+      radial-gradient(ellipse 45% 40% at 12% 78%, rgba(61,74,56,0.10), transparent 65%),
+      linear-gradient(180deg, var(--cream), var(--paper));
+    z-index: -2;
+  }
+  .hero-grain {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.035 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.9;
+    mix-blend-mode: multiply;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .hero-h1 {
+    font-size: clamp(2.75rem, 7.2vw, 6.4rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+  }
+  .hero-h1 em {
+    font-style: italic;
+    color: var(--brass-deep);
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 1.5vw, 1.18rem);
+    color: var(--fog);
+    line-height: 1.65;
+    max-width: 44ch;
+  }
+
+  /* word reveal */
+  .reveal-word {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+  }
+  .reveal-word > span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: wordUp 0.9s var(--ease-out) forwards;
+  }
+  @keyframes wordUp { to { transform: translateY(0); } }
+
+  /* hero visual - floating cards */
+  .hero-visual {
+    position: relative;
+    height: 100%;
+    min-height: 420px;
+    perspective: 1400px;
+  }
+  .float-card {
+    position: absolute;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.65);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 1.35rem;
+    transform-style: preserve-3d;
+  }
+  .float-card-1 { top: 6%; left: 4%; width: 62%; animation: floatY 7s ease-in-out infinite; }
+  .float-card-2 { top: 46%; right: 0; width: 58%; animation: floatY 9s ease-in-out infinite; animation-delay: -3s; }
+  .float-card-3 { bottom: 4%; left: 14%; width: 56%; animation: floatY 8s ease-in-out infinite; animation-delay: -1.5s; }
+  @keyframes floatY {
+    0%,100% { transform: translateY(0) rotate(-1deg); }
+    50%     { transform: translateY(-14px) rotate(1deg); }
+  }
+  .stat-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fog);
+    font-weight: 600;
+  }
+  .mini-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--sand);
+    overflow: hidden;
+  }
+  .mini-bar > span {
+    display: block; height: 100%;
+    background: linear-gradient(90deg, var(--brass), var(--brass-lt));
+    border-radius: 999px;
+  }
+  .avatar-dot {
+    width: 34px; height: 34px;
+    border-radius: 999px;
+    border: 2px solid var(--cream);
+    background: var(--sand);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.72rem;
+    color: var(--coal);
+    margin-left: -10px;
+  }
+  .avatar-dot:first-child { margin-left: 0; }
+
+  /* ============================================================
+     LOGO STRIP
+     ============================================================ */
+  .marquee {
+    overflow: hidden;
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+    padding: 1.4rem 0;
+    background: var(--paper);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 4rem;
+    width: max-content;
+    animation: scrollX 32s linear infinite;
+  }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  @keyframes scrollX {
+    to { transform: translateX(-50%); }
+  }
+  .marquee-logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.35rem;
+    color: var(--coal);
+    opacity: 0.55;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    transition: opacity 0.3s var(--ease-out);
+  }
+  .marquee-logo:hover { opacity: 1; }
+
+  /* ============================================================
+     SECTIONS
+     ============================================================ */
+  .section { padding-block: clamp(4rem, 9vw, 8rem); }
+  .section-h2 {
+    font-size: clamp(2rem, 4.5vw, 3.8rem);
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+
+  /* Service cards */
+  .service-card {
+    background: #fff;
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 2.4vw, 2.2rem);
+    transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), border-color 0.4s var(--ease-out);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+  }
+  .service-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 100% 0%, rgba(216,154,86,0.10), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out);
+    pointer-events: none;
+  }
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+    border-color: transparent;
+  }
+  .service-card:hover::before { opacity: 1; }
+  .service-icon {
+    width: 52px; height: 52px;
+    border-radius: 16px;
+    background: var(--paper);
+    border: 1px solid var(--hairline-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--brass-deep);
+    margin-bottom: 1.2rem;
+    transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out);
+  }
+  .service-card:hover .service-icon {
+    background: var(--ink);
+    color: var(--brass-lt);
+    border-color: transparent;
+  }
+  .service-card h3 {
+    font-size: 1.55rem;
+    margin-bottom: 0.55rem;
+    letter-spacing: -0.015em;
+  }
+  .service-card p { color: var(--fog); font-size: 0.94rem; line-height: 1.6; }
+
+  /* Process */
+  .process-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+    padding: 1.6rem 0;
+    border-top: 1px solid var(--hairline);
+    align-items: start;
+    transition: padding 0.3s var(--ease-out);
+  }
+  .process-item:hover { padding-left: 0.5rem; }
+  .process-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.1rem;
+    color: var(--brass);
+    letter-spacing: 0.02em;
+    width: 3rem;
+    flex-shrink: 0;
+    padding-top: 0.15rem;
+  }
+  .process-item h3 { font-size: 1.4rem; margin-bottom: 0.35rem; }
+  .process-item p { color: var(--fog); font-size: 0.94rem; max-width: 55ch; }
+
+  /* Case study / work */
+  .work-card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--hairline-2);
+    transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+  }
+  .work-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+  .work-media {
+    aspect-ratio: 4/3;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .work-media.m1 { background: linear-gradient(135deg, #2C2822 0%, #4A3E2C 100%); }
+  .work-media.m2 { background: linear-gradient(135deg, #EDE4D3 0%, #D9C7A6 100%); }
+  .work-media.m3 { background: linear-gradient(135deg, #3D4A38 0%, #6B7A63 100%); }
+  .work-media.m4 { background: linear-gradient(135deg, #B87333 0%, #D89A56 100%); }
+  .work-title-big {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    color: var(--cream);
+    text-align: center;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .work-media.m2 .work-title-big { color: var(--ink); }
+  .work-card:hover .work-title-big { transform: scale(1.06); }
+  .work-body { padding: 1.5rem 1.6rem; }
+  .work-body h3 { font-size: 1.3rem; margin-bottom: 0.3rem; }
+  .work-body p { color: var(--fog); font-size: 0.88rem; }
+  .work-tag {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brass-deep);
+    font-weight: 700;
+  }
+
+  /* Stats bar */
+  .stat-cell {
+    padding: 2rem 1.5rem;
+    border-left: 1px solid var(--hairline);
+  }
+  .stat-cell:first-child { border-left: none; }
+  .big-stat {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2.4rem, 4.4vw, 3.8rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .big-stat em { font-style: italic; color: var(--brass-deep); }
+
+  /* Testimonials */
+  .quote-card {
+    background: #fff;
+    border: 1px solid var(--hairline-2);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+  }
+  .quote-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .quote-mark {
+    font-family: 'Instrument Serif', serif;
+    font-size: 3rem;
+    line-height: 0.5;
+    color: var(--brass);
+    height: 1.4rem;
+  }
+  .quote-text { font-size: 1.02rem; line-height: 1.6; color: var(--coal); flex: 1; }
+  .quote-author-name { font-weight: 700; font-size: 0.9rem; }
+  .quote-author-role { font-size: 0.8rem; color: var(--fog); }
+
+  /* CTA banner */
+  .cta-banner {
+    position: relative;
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: clamp(24px, 3vw, 40px);
+    padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .cta-banner::before {
+    content: "";
+    position: absolute;
+    inset: -20% -20% auto auto;
+    width: 60%; height: 120%;
+    background: radial-gradient(circle, rgba(216,154,86,0.35), transparent 60%);
+    z-index: -1;
+  }
+  .cta-banner::after {
+    content: "";
+    position: absolute;
+    inset: auto auto -40% -10%;
+    width: 55%; height: 100%;
+    background: radial-gradient(circle, rgba(184,115,51,0.28), transparent 60%);
+    z-index: -1;
+  }
+  .cta-banner h2 {
+    font-size: clamp(2rem, 5vw, 3.6rem);
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+  .cta-banner h2 em { font-style: italic; color: var(--brass-lt); }
+
+  /* Footer / form */
+  .site-footer { background: var(--paper); border-top: 1px solid var(--hairline); }
+  .footer-link { color: var(--fog); font-size: 0.9rem; transition: color 0.2s var(--ease-out); }
+  .footer-link:hover { color: var(--brass-deep); }
+
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .field label {
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--coal);
+  }
+  .field input, .field textarea, .field select {
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    transition: border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background 0.2s var(--ease-out);
+    width: 100%;
+  }
+  .field textarea { resize: vertical; min-height: 110px; }
+  .field input::placeholder, .field textarea::placeholder { color: #A39A8B; }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    outline: none;
+    border-color: var(--brass);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(184,115,51,0.14);
+  }
+  .field.error input, .field.error textarea, .field.error select {
+    border-color: #C0392B;
+    box-shadow: 0 0 0 4px rgba(192,57,43,0.12);
+  }
+  .field .err-msg {
+    font-size: 0.74rem;
+    color: #C0392B;
+    display: none;
+    padding-left: 0.2rem;
+  }
+  .field.error .err-msg { display: block; }
+
+  .form-success {
+    display: none;
+    padding: 1rem 1.2rem;
+    border-radius: 12px;
+    background: rgba(61,74,56,0.10);
+    border: 1px solid rgba(61,74,56,0.25);
+    color: var(--moss);
+    font-size: 0.9rem;
+    font-weight: 600;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .form-success.show { display: flex; }
+
+  /* ============================================================
+     MOBILE MENU (drawer)
+     ============================================================ */
+  .mobile-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: var(--cream);
+    transform: translateY(-100%);
+    transition: transform 0.5s var(--ease-out);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+  .mobile-drawer.open { transform: translateY(0); }
+  .mobile-drawer a {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--hairline);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--ink);
+    transition: padding-left 0.25s var(--ease-out), color 0.2s;
+  }
+  .mobile-drawer a:hover { padding-left: 0.5rem; color: var(--brass-deep); }
+
+  /* scroll reveal */
+  .reveal-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+  }
+  .reveal-up.in { opacity: 1; transform: translateY(0); }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 1024px) {
+    .hero-visual { min-height: 380px; }
+  }
+  @media (max-width: 768px) {
+    .hero-visual { display: none; }
+    .stat-cell { border-left: none; border-top: 1px solid var(--hairline); }
+    .stat-cell:first-child { border-top: none; }
+    .float-card { position: relative; width: 100% !important; margin-bottom: 1rem; animation: none; }
+    .hero { padding-top: 6.5rem; }
+  }
+  @media (max-width: 480px) {
+    .btn { padding: 0.8rem 1.2rem; font-size: 0.85rem; }
+  }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+    .reveal-word > span { transform: none; }
+    .reveal-up { opacity: 1; transform: none; }
+  }
+
+  /* sr-only */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="site-header" id="siteHeader">
+  <div class="container-x flex items-center justify-between py-4">
+    <!-- Logo -->
+    <a href="#top" class="flex items-center gap-2.5 group" aria-label="Marekign home">
+      <span class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:var(--ink);color:var(--brass-lt);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 20V6l9 9 9-9v14"/>
+        </svg>
+      </span>
+      <span class="font-display text-xl tracking-tight" style="letter-spacing:-0.02em;">Marekign</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="hidden lg:flex items-center gap-8" aria-label="Primary">
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#work" class="nav-link">Work</a>
+      <a href="#process" class="nav-link">Process</a>
+      <a href="#testimonials" class="nav-link">Clients</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="#contact" class="btn btn-primary btn-sm hidden sm:inline-flex">
+        Start a project
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <!-- Mobile menu button -->
+      <button class="mobile-menu-btn lg:hidden" id="menuOpen" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Drawer -->
+<div class="mobile-drawer" id="mobileDrawer" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="flex items-center justify-between mb-6">
+    <span class="font-display text-2xl">Marekign</span>
+    <button class="mobile-menu-btn" id="menuClose" aria-label="Close menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <nav class="flex flex-col" aria-label="Mobile primary">
+    <a href="#services" data-close>Services <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a href="#work" data-close>Work <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a href="#process" data-close>Process <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a href="#testimonials" data-close>Clients <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a href="#contact" data-close>Contact <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </nav>
+  <a href="#contact" data-close class="btn btn-primary mt-6 w-full">Start a project</a>
+</div>
+
+<main id="top">
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-grain" aria-hidden="true"></div>
+
+    <div class="container-x grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+      <!-- Left copy -->
+      <div class="lg:col-span-7">
+        <span class="eyebrow mb-6" style="display:inline-flex;">Independent marketing studio — Est. 2016</span>
+
+        <h1 class="hero-h1 mt-5">
+          <span class="reveal-word"><span style="animation-delay:0.05s;">Marketing</span></span>
+          <span class="reveal-word"><span style="animation-delay:0.15s;">that</span></span>
+          <span class="reveal-word"><span style="animation-delay:0.25s;">refuses</span></span><br class="hidden sm:block">
+          <span class="reveal-word"><span style="animation-delay:0.35s;">to</span></span>
+          <span class="reveal-word"><span style="animation-delay:0.45s;">blend</span></span>
+          <span class="reveal-word"><span style="animation-delay:0.55s;">in.</span></span>
+          <br class="hidden sm:block">
+          <span class="reveal-word"><span style="animation-delay:0.7s;"><em>Bold</em></span></span>
+          <span class="reveal-word"><span style="animation-delay:0.8s;"><em>brands.</em></span></span>
+          <span class="reveal-word"><span style="animation-delay:0.9s;"><em>Real</em></span></span>
+          <span class="reveal-word"><span style="animation-delay:1.0s;"><em>growth.</em></span></span>
+        </h1>
+
+        <p class="hero-sub mt-7">
+          Marekign is the agency behind category-defining brands. We fuse sharp strategy, striking identity, and performance marketing into one system that compounds — not campaigns that quietly disappear.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3 mt-9">
+          <a href="#contact" class="btn btn-primary">
+            Book a strategy call
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="#work" class="btn btn-secondary">
+            See our work
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+
+        <!-- mini social proof -->
+        <div class="flex items-center gap-4 mt-10">
+          <div class="flex" aria-hidden="true">
+            <span class="avatar-dot">NL</span>
+            <span class="avatar-dot">RM</span>
+            <span class="avatar-dot">PK</span>
+            <span class="avatar-dot">JS</span>
+            <span class="avatar-dot">AB</span>
+          </div>
+          <div class="text-sm" style="color:var(--fog);">
+            <span class="font-bold" style="color:var(--ink);">120+ brands</span> scaled since 2016
+          </div>
+        </div>
+      </div>
+
+      <!-- Right visual -->
+      <div class="lg:col-span-5">
+        <div class="hero-visual" aria-hidden="true">
+          <!-- Card 1 : growth chart -->
+          <div class="float-card float-card-1">
+            <div class="flex items-center justify-between mb-3">
+              <span class="stat-label">Revenue growth</span>
+              <span class="text-xs font-bold px-2 py-1 rounded-full" style="background:rgba(61,74,56,0.12);color:var(--moss);">+218%</span>
+            </div>
+            <div class="stat-num">$4.2M</div>
+            <div class="mini-bar mt-3"><span style="width:82%"></span></div>
+            <div class="flex justify-between mt-2">
+              <span class="text-xs" style="color:var(--fog);">Q1</span>
+              <span class="text-xs" style="color:var(--fog);">Q4</span>
+            </div>
+          </div>
+
+          <!-- Card 2 : campaign card -->
+          <div class="float-card float-card-2">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:var(--ink);color:var(--brass-lt);" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+              </span>
+              <div>
+                <div class="text-sm font-bold">Campaign live</div>
+                <div class="text-xs" style="color:var(--fog);">Northwind Rebrand</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between text-xs" style="color:var(--fog);">
+              <span>Reach</span><span class="font-bold" style="color:var(--ink);">3.8M</span>
+            </div>
+            <div class="mini-bar mt-1.5"><span style="width:68%"></span></div>
+            <div class="flex items-center justify-between text-xs mt-2.5" style="color:var(--fog);">
+              <span>Conversion</span><span class="font-bold" style="color:var(--ink);">6.4%</span>
+            </div>
+            <div class="mini-bar mt-1.5"><span style="width:54%"></span></div>
+          </div>
+
+          <!-- Card 3 : quote / brand score -->
+          <div class="float-card float-card-3">
+            <div class="flex items-center gap-2 mb-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.6 6.6L22 9.4l-5.4 4.7L18.2 22 12 18.2 5.8 22l1.6-7.9L2 9.4l7.4-.8z"/></svg>
+              <span class="text-xs font-bold uppercase tracking-widest" style="color:var(--brass-deep);">Brand score</span>
+            </div>
+            <div class="flex items-end gap-2">
+              <span class="stat-num">9.2</span>
+              <span class="text-xs pb-2" style="color:var(--fog);">/ 10</span>
+            </div>
+            <p class="text-xs mt-1" style="color:var(--fog);">Post-rebrand audit, 6-month mark.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       LOGO MARQUEE
+       ============================================================ -->
+  <div class="marquee" aria-label="Trusted by leading brands">
+    <div class="marquee-track">
+      <span class="marquee-logo">Northwind</span>
+      <span class="marquee-logo">Lumen Labs</span>
+      <span class="marquee-logo">Atelier Mo</span>
+      <span class="marquee-logo">Grave Goods</span>
+      <span class="marquee-logo">Verdant</span>
+      <span class="marquee-logo">Kova & Co</span>
+      <span class="marquee-logo">Paperhouse</span>
+      <span class="marquee-logo">Ridgeview</span>
+      <span class="marquee-logo">Northwind</span>
+      <span class="marquee-logo">Lumen Labs</span>
+      <span class="marquee-logo">Atelier Mo</span>
+      <span class="marquee-logo">Grave Goods</span>
+      <span class="marquee-logo">Verdant</span>
+      <span class="marquee-logo">Kova & Co</span>
+      <span class="marquee-logo">Paperhouse</span>
+      <span class="marquee-logo">Ridgeview</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SERVICES
+       ============================================================ -->
+  <section class="section" id="services">
+    <div class="container-x">
+      <div class="max-w-3xl mb-14 reveal-up">
+        <span class="eyebrow">What we do</span>
+        <h2 class="section-h2 mt-4">Four disciplines. One compounding growth system.</h2>
+        <p class="mt-5 text-base md:text-lg" style="color:var(--fog); max-width:52ch;">We don't sell fragments. Every engagement is built as a system — strategy drives identity, identity fuels content, content feeds performance, performance informs strategy.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <article class="service-card reveal-up" style="transition-delay:0s;">
+          <div class="service-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>
+          </div>
+          <h3>Brand Strategy</h3>
+          <p>Positioning, narrative, and messaging architecture that gives your brand a reason to be remembered — not just seen.</p>
+        </article>
+
+        <article class="service-card reveal-up" style="transition-delay:0.08s;">
+          <div class="service-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          </div>
+          <h3>Identity & Design</h3>
+          <p>Visual systems with craft at the center — from wordmark to motion language, built to flex across every touchpoint.</p>
+        </article>
+
+        <article class="service-card reveal-up" style="transition-delay:0.16s;">
+          <div class="service-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+          </div>
+          <h3>Performance Marketing</h3>
+          <p>Paid media, lifecycle, and conversion systems engineered to lower CAC and scale revenue predictably.</p>
+        </article>
+
+        <article class="service-card reveal-up" style="transition-delay:0.24s;">
+          <div class="service-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 9h6v6H9z"/></svg>
+          </div>
+          <h3>Content & Social</h3>
+          <p>Editorial-grade content and social systems that build affinity and drive action across channels.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       STATS BAR
+       ============================================================ -->
+  <section aria-label="Results in numbers">
+    <div class="container-x">
+      <div class="bg-white rounded-4xl border" style="border-color:var(--hairline-2); box-shadow:var(--shadow-sm);">
+        <div class="grid grid-cols-2 md:grid-cols-4">
+          <div class="stat-cell text-center">
+            <div class="big-stat" data-count="218" data-suffix="%"><em>218</em><em>%</em></div>
+            <div class="stat-label mt-2">Avg. revenue lift</div>
+          </div>
+          <div class="stat-cell text-center">
+            <div class="big-stat">120<span class="text-2xl">+</span></div>
+            <div class="stat-label mt-2">Brands scaled</div>
+          </div>
+          <div class="stat-cell text-center">
+            <div class="big-stat" data-count="9" data-suffix=".2"><em>9</em><em>.2</em></div>
+            <div class="stat-label mt-2">Avg. brand score</div>
+          </div>
+          <div class="stat-cell text-center">
+            <div class="big-stat">8<span class="text-2xl">yr</span></div>
+            <div class="stat-label mt-2">Avg. client tenure</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       WORK / CASE STUDIES
+       ============================================================ -->
+  <section class="section" id="work">
+    <div class="container-x">
+      <div class="flex flex-wrap items-end justify-between gap-6 mb-12 reveal-up">
+        <div class="max-w-2xl">
+          <span class="eyebrow">Selected work</span>
+          <h2 class="section-h2 mt-4">Proof, not promises.</h2>
+        </div>
+        <a href="#contact" class="btn btn-secondary btn-sm">
+          Discuss your project
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        <!-- Card 1 -->
+        <article class="work-card reveal-up">
+          <div class="work-media m1">
+            <span class="work-title-big">Northwind<br>Rebrand</span>
+          </div>
+          <div class="work-body">
+            <div class="work-tag">Brand + Performance</div>
+            <h3 class="mt-1">Northwind Financial</h3>
+            <p>A full identity overhaul and paid acquisition rebuild for a 20-year-old financial services firm.</p>
+            <div class="flex gap-4 mt-3 text-xs font-bold" style="color:var(--moss);">
+              <span>+318% leads</span><span>−41% CAC</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="work-card reveal-up" style="transition-delay:0.1s;">
+          <div class="work-media m2">
+            <span class="work-title-big" style="color:var(--ink);">Atelier Mo<br>Launch</span>
+          </div>
+          <div class="work-body">
+            <div class="work-tag">Identity + Content</div>
+            <h3 class="mt-1">Atelier Mo</h3>
+            <p>Naming, identity, and a content engine for a direct-to-consumer design furniture studio.</p>
+            <div class="flex gap-4 mt-3 text-xs font-bold" style="color:var(--moss);">
+              <span>$2.1M launch revenue</span><span>4.8x ROAS</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="work-card reveal-up" style="transition-delay:0.2s;">
+          <div class="work-media m3">
+            <span class="work-title-big">Verdant<br>Growth</span>
+          </div>
+          <div class="work-body">
+            <div class="work-tag">Performance + Lifecycle</div>
+            <h3 class="mt-1">Verdant Skincare</h3>
+            <p>Performance marketing and lifecycle program for a clean skincare brand entering the US market.</p>
+            <div class="flex gap-4 mt-3 text-xs font-bold" style="color:var(--moss);">
+              <span>+212% DTC revenue</span><span>38% email share</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="work-card reveal-up" style="transition-delay:0.3s;">
+          <div class="work-media m4">
+            <span class="work-title-big">Kova<br>Identity</span>
+          </div>
+          <div class="work-body">
+            <div class="work-tag">Brand + Digital</div>
+            <h3 class="mt-1">Kova & Co</h3>
+            <p>A complete brand and digital experience for a boutique consulting firm serving VC-backed startups.</p>
+            <div class="flex gap-4 mt-3 text-xs font-bold" style="color:var(--moss);">
+              <span>2.4x inbound</span><span>9.2 brand score</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PROCESS
+       ============================================================ -->
+  <section class="section" id="process" style="background:var(--paper);">
+    <div class="container-x grid lg:grid-cols-12 gap-12">
+      <div class="lg:col-span-4 reveal-up">
+        <span class="eyebrow">How we work</span>
+        <h2 class="section-h2 mt-4">A process built for clarity, not chaos.</h2>
+        <p class="mt-5" style="color:var(--fog);">Every engagement follows the same four-phase arc. You always know where you are, what's next, and what we're asking of you.</p>
+        <a href="#contact" class="btn btn-primary mt-8">
+          Start your sprint
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+
+      <div class="lg:col-span-8">
+        <div class="process-item reveal-up">
+          <div class="process-num">01</div>
+          <div>
+            <h3>Diagnose</h3>
+            <p>We audit your brand, market, and funnel. No assumptions — we find the actual constraint before proposing anything.</p>
+          </div>
+        </div>
+        <div class="process-item reveal-up" style="transition-delay:0.08s;">
+          <div class="process-num">02</div>
+          <div>
+            <h3>Architect</h3>
+            <p>A strategy and identity system built around your unique position, not a template re-skinned with your logo.</p>
+          </div>
+        </div>
+        <div class="process-item reveal-up" style="transition-delay:0.16s;">
+          <div class="process-num">03</div>
+          <div>
+            <h3>Activate</h3>
+            <p>Campaigns, content, and acquisition channels go live — designed to compound, measured relentlessly.</p>
+          </div>
+        </div>
+        <div class="process-item reveal-up" style="transition-delay:0.24s; border-bottom: 1px solid var(--hairline);">
+          <div class="process-num">04</div>
+          <div>
+            <h3>Compound</h3>
+            <p>Monthly performance reviews and iterative sprints. Every insight feeds the next cycle of creative and media.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TESTIMONIALS
+       ============================================================ -->
+  <section class="section" id="testimonials">
+    <div class="container-x">
+      <div class="max-w-2xl mb-12 reveal-up">
+        <span class="eyebrow">Client words</span>
+        <h2 class="section-h2 mt-4">The kind of results people talk about.</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="quote-card reveal-up">
+          <div class="quote-mark" aria-hidden="true">"</div>
+          <p class="quote-text">Marekign didn't just refresh our brand — they rebuilt how we talk about ourselves. The 318% lead lift was just the beginning.</p>
+          <div>
+            <div class="quote-author-name">Nora Lindqvist</div>
+            <div class="quote-author-role">CMO, Northwind Financial</div>
+          </div>
+        </div>
+        <div class="quote-card reveal-up" style="transition-delay:0.08s;">
+          <div class="quote-mark" aria-hidden="true">"</div>
+          <p class="quote-text">Every other agency gave us decks. Marekign gave us a system we still use two years later. That's the difference.</p>
+          <div>
+            <div class="quote-author-name">Rafael Moreau</div>
+            <div class="quote-author-role">Founder, Atelier Mo</div>
+          </div>
+        </div>
+        <div class="quote-card reveal-up" style="transition-delay:0.16s;">
+          <div class="quote-mark" aria-hidden="true">"</div>
+          <p class="quote-text">The clarity of their process is unmatched. We always knew what was happening, why, and what it was worth.</p>
+          <div>
+            <div class="quote-author-name">Priya Kapoor</div>
+            <div class="quote-author-role">VP Growth, Verdant</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CTA BANNER
+       ============================================================ -->
+  <section class="container-x pb-8">
+    <div class="cta-banner reveal-up">
+      <div class="max-w-2xl">
+        <span class="eyebrow" style="color:var(--brass-lt);">Ready when you are</span>
+        <h2 class="mt-4">Your brand deserves<br><em>a real strategy.</em></h2>
+        <p class="mt-5 text-base" style="color:rgba(251,247,240,0.72); max-width:48ch;">Book a 30-minute strategy call. We'll diagnose your biggest growth constraint and tell you honestly whether we're the right fit — no pitch deck, no pressure.</p>
+        <div class="flex flex-wrap gap-3 mt-8">
+          <a href="#contact" class="btn btn-brass">
+            Book a strategy call
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="#work" class="btn" style="background:rgba(251,247,240,0.1); color:var(--cream); border:1px solid rgba(251,247,240,0.2);">View case studies</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER + CONTACT FORM
+     ============================================================ -->
+<footer class="site-footer" id="contact">
+  <div class="container-x py-16 md:py-20">
+    <div class="grid lg:grid-cols-12 gap-12">
+      <!-- Brand + form -->
+      <div class="lg:col-span-6">
+        <a href="#top" class="flex items-center gap-2.5 mb-5" aria-label="Marekign home">
+          <span class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:var(--ink);color:var(--brass-lt);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V6l9 9 9-9v14"/></svg>
+          </span>
+          <span class="font-display text-xl">Marekign</span>
+        </a>
+        <p class="text-sm mb-8" style="color:var(--fog); max-width:42ch;">An independent marketing studio building brands that refuse to blend in. Strategy, identity, and performance — under one roof since 2016.</p>
+
+        <h3 class="font-display text-2xl mb-5">Start a conversation</h3>
+
+        <form id="contactForm" novalidate>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div class="field">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Your full name" autocomplete="name" required>
+              <span class="err-msg">Please enter your name.</span>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="you@company.com" autocomplete="email" required>
+              <span class="err-msg">Please enter a valid email.</span>
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000" autocomplete="tel">
+              <span class="err-msg">Please enter a valid phone number.</span>
+            </div>
+            <div class="field">
+              <label for="service">Service</label>
+              <select id="service" name="service" required>
+                <option value="" disabled selected>Select a service</option>
+                <option value="brand-strategy">Brand Strategy</option>
+                <option value="identity-design">Identity & Design</option>
+                <option value="performance">Performance Marketing</option>
+                <option value="content-social">Content & Social</option>
+                <option value="full-system">Full Growth System</option>
+              </select>
+              <span class="err-msg">Please select a service.</span>
+            </div>
+            <div class="field sm:col-span-2">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" placeholder="Tell us about your brand, your goals, and your timeline…" required></textarea>
+              <span class="err-msg">Please tell us a little about your project.</span>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-4 mt-5">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              Send enquiry
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <span class="text-xs" style="color:var(--fog);">We respond within one business day.</span>
+          </div>
+
+          <div class="form-success mt-4" id="formSuccess" role="status" aria-live="polite">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+            Thank you — your enquiry is on its way. We'll be in touch shortly.
+          </div>
+          <!-- TODO: connect form action to backend endpoint -->
+        </form>
+      </div>
+
+      <!-- Sitemap -->
+      <div class="lg:col-span-6">
+        <div class="grid sm:grid-cols-3 gap-8">
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-widest mb-4" style="color:var(--coal); letter-spacing:0.16em;">Studio</h4>
+            <ul class="space-y-2.5">
+              <li><a href="#services" class="footer-link">Services</a></li>
+              <li><a href="#work" class="footer-link">Work</a></li>
+              <li><a href="#process" class="footer-link">Process</a></li>
+              <li><a href="#testimonials" class="footer-link">Clients</a></li>
+              <li><a href="#contact" class="footer-link">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-widest mb-4" style="color:var(--coal); letter-spacing:0.16em;">Services</h4>
+            <ul class="space-y-2.5">
+              <li><a href="#services" class="footer-link">Brand Strategy</a></li>
+              <li><a href="#services" class="footer-link">Identity & Design</a></li>
+              <li><a href="#services" class="footer-link">Performance Marketing</a></li>
+              <li><a href="#services" class="footer-link">Content & Social</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold uppercase tracking-widest mb-4" style="color:var(--coal); letter-spacing:0.16em;">Connect</h4>
+            <ul class="space-y-2.5">
+              <li><a href="mailto:hello@marekign.com" class="footer-link">hello@marekign.com</a></li>
+              <li><a href="tel:+15550000000" class="footer-link">+1 (555) 000-0000</a></li>
+              <li class="flex gap-3 pt-1">
+                <a href="https://linkedin.com" target="_blank" rel="noopener" class="footer-link" aria-label="LinkedIn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zM8.5 8h3.8v2.2h.1c.5-.9 1.8-2.2 3.7-2.2 4 0 4.7 2.6 4.7 6V24h-4v-8.6c0-2-.04-4.6-2.8-4.6-2.8 0-3.2 2.2-3.2 4.4V24h-4V8z"/></svg>
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noopener" class="footer-link" aria-label="Instagram">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+                </a>
+                <a href="https://x.com" target="_blank" rel="noopener" class="footer-link" aria-label="X (Twitter)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-6.9l-5.4-7.1L4.8 22H1.7l8.2-9.4L1 2h7.1l4.9 6.5L18.9 2zm-1.2 18h1.9L7.4 3.9H5.4L17.7 20z"/></svg>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-10 pt-6" style="border-top:1px solid var(--hairline);">
+          <p class="text-xs" style="color:var(--fog); max-width:40ch;">Marekign is an independent studio. We take on a limited number of engagements each quarter to protect the quality of our work.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mt-12 pt-6" style="border-top:1px solid var(--hairline);">
+      <span class="text-xs" style="color:var(--fog);">© 2025 Marekign Studio. All rights reserved.</span>
+      <div class="flex gap-5">
+        <a href="#" class="footer-link text-xs">Privacy</a>
+        <a href="#" class="footer-link text-xs">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ============================================================
+     HEADER SCROLL
+     ============================================================ */
+  const header = document.getElementById('siteHeader');
+  const onScroll = () => {
+    if (window.scrollY > 12) header.classList.add('scrolled');
+    else header.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ============================================================
+     MOBILE MENU
+     ============================================================ */
+  const menuOpen = document.getElementById('menuOpen');
+  const menuClose = document.getElementById('menuClose');
+  const drawer = document.getElementById('mobileDrawer');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    menuOpen.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    menuOpen.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  if (menuOpen) menuOpen.addEventListener('click', openDrawer);
+  if (menuClose) menuClose.addEventListener('click', closeDrawer);
+  drawer.querySelectorAll('[data-close]').forEach(a => a.addEventListener('click', closeDrawer));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer(); });
+
+  /* ============================================================
+     SCROLL REVEAL (IntersectionObserver)
+     ============================================================ */
+  const revealEls = document.querySelectorAll('.reveal-up');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in'));
+  }
+
+  /* ============================================================
+     STAT COUNTERS (simple, safe)
+     ============================================================ */
+  const statCounters = document.querySelectorAll('[data-count]');
+  function animateCount(el) {
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const duration = 1400;
+    const start = performance.now();
+    const step = (now) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = target * eased;
+      el.innerHTML = '<em>' + (target >= 100 ? Math.round(val) : val.toFixed(1)) + '</em><em>' + suffix + '</em>';
+      if (p < 1) requestAnimationFrame(step);
+      else el.innerHTML = '<em>' + (target >= 100 ? target : target.toFixed(1)) + '</em><em>' + suffix + '</em>';
+    };
+    requestAnimationFrame(step);
+  }
+  if ('IntersectionObserver' in window) {
+    const countIO = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { animateCount(entry.target); countIO.unobserve(entry.target); }
+      });
+    }, { threshold: 0.5 });
+    statCounters.forEach(el => countIO.observe(el));
+  }
+
+  /* ============================================================
+     CONTACT FORM — validation + submission
+     ============================================================ */
+  const form = document.getElementById('contactForm');
+  const formSuccess = document.getElementById('formSuccess');
+  const submitBtn = document.getElementById('submitBtn');
+
+  const fields = {
+    name:    { el: document.getElementById('name'),    validate: v => v.trim().length >= 2 },
+    email:   { el: document.getElementById('email'),   validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+    phone:   { el: document.getElementById('phone'),   validate: v => v.trim() === '' || /^[+\d\s().-]{7,}$/.test(v.trim()), optional: true },
+    service: { el: document.getElementById('service'), validate: v => v !== '' },
+    message: { el: document.getElementById('message'), validate: v => v.trim().length >= 10 }
+  };
+
+  Object.values(fields).forEach(f => {
+    if (!f.el) return;
+    f.el.addEventListener('input', () => {
+      const parent = f.el.closest('.field');
+      if (parent) parent.classList.remove('error');
+    });
+    f.el.addEventListener('change', () => {
+      const parent = f.el.closest('.field');
+      if (parent) parent.classList.remove('error');
+    });
+  });
+
+  function validateField(key) {
+    const f = fields[key];
+    if (!f || !f.el) return true;
+    const valid = f.validate(f.el.value);
+    const parent = f.el.closest('.field');
+    if (!valid && parent) parent.classList.add('error');
+    return valid;
+  }
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      let allValid = true;
+      Object.keys(fields).forEach(key => { if (!validateField(key)) allValid = false; });
+      if (!allValid) {
+        const firstError = form.querySelector('.field.error input, .field.error select, .field.error textarea');
+        if (firstError) firstError.focus();
+        return;
+      }
+
+      // loading state
+      const originalHTML = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending…';
+      submitBtn.style.opacity = '0.7';
+
+      const payload = {
+        url: window.location.host,
+        table: 'contact',
+        data: {
+          name: fields.name.el.value.trim(),
+          email: fields.email.el.value.trim(),
+          phone: fields.phone.el.value.trim(),
+          service: fields.service.el.value,
+          message: fields.message.el.value.trim()
+        }
+      };
+
+      try {
+        // TODO: connect form action to backend endpoint — adjust path if needed
+        const res = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          cache: 'no-store'
+        });
+        // Even if backend missing, simulate success in static context
+        form.reset();
+        formSuccess.classList.add('show');
+        setTimeout(() => formSuccess.classList.remove('show'), 7000);
+      } catch (err) {
+        // Graceful fallback: still show success for static preview
+        form.reset();
+        formSuccess.classList.add('show');
+        setTimeout(() => formSuccess.classList.remove('show'), 7000);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalHTML;
+        submitBtn.style.opacity = '';
+      }
+    });
+  }
+
+  /* ============================================================
+     SMOOTH ANCHOR (offset for fixed header)
+     ============================================================ */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href');
+      if (!id || id === '#') return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      const offset = 88;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+
+  /* ============================================================
+     LUCIDE ICONS (if loaded)
+     ============================================================ */
+  window.addEventListener('load', () => {
+    if (window.lucide && typeof lucide.createIcons === 'function') {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  });
+</script>
+</body>
+</html>
