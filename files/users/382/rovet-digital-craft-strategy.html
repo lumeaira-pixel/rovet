@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROVET — Digital Craft & Strategy</title>
+  <!-- Google Fonts: Instrument Serif + Geist -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <!-- Tailwind CDN + Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Geist', 'system-ui', 'sans-serif'],
+            'serif': ['Instrument Serif', 'Georgia', 'serif'],
+          },
+          colors: {
+            ink: '#121212',
+            cream: '#FAFAFB',
+            brass: '#B8976A',
+            stone: '#F0F0F2',
+            slate: '#5A5A5E',
+          },
+          boxShadow: {
+            'soft': '0 12px 40px -12px rgba(0, 0, 0, 0.08)',
+            'lift': '0 24px 48px -16px rgba(0, 0, 0, 0.12)',
+          },
+        },
+      },
+    };
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #121212;
+      --cream: #FAFAFB;
+      --brass: #B8976A;
+      --stone: #F0F0F2;
+      --slate: #5A5A5E;
+      --white: #FFFFFF;
+      --radius-xl: 1.5rem;
+      --radius-2xl: 2rem;
+      --focus-ring: 0 0 0 3px rgba(184, 151, 106, 0.4);
+    }
+
+    /* === Base === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    ::selection {
+      background-color: var(--brass);
+      color: var(--white);
+    }
+
+    /* === Focus States === */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--brass);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    /* === Typography === */
+    .font-display {
+      font-family: 'Instrument Serif', Georgia, serif;
+      letter-spacing: -0.03em;
+    }
+
+    /* === Utility: Glass Panel === */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* === Header === */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      background: transparent;
+    }
+
+    .site-header.scrolled {
+      background: rgba(250, 250, 251, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .site-header.scrolled .header-inner {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+
+    .header-inner {
+      transition: padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* === Hero === */
+    .hero-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    /* === Button Base === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--ink);
+      color: var(--white);
+      padding: 0.875rem 2rem;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      letter-spacing: -0.01em;
+      transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border: 1px solid transparent;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary:hover {
+      background: #2A2A2A;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px -8px rgba(18, 18, 18, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      padding: 0.875rem 2rem;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      letter-spacing: -0.01em;
+      transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border: 1px solid rgba(18, 18, 18, 0.15);
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(18, 18, 18, 0.04);
+      border-color: rgba(18, 18, 18, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* === Card Hover === */
+    .card-lift {
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .card-lift:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.12);
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      animation: marquee 30s linear infinite;
+      gap: 4rem;
+      width: max-content;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Form Inputs === */
+    .form-input {
+      width: 100%;
+      padding: 0.875rem 1.125rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      background: var(--white);
+      font-family: 'Geist', system-ui, sans-serif;
+      font-size: 0.9375rem;
+      color: var(--ink);
+      transition: all 0.2s ease;
+    }
+
+    .form-input:hover {
+      border-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184, 151, 106, 0.15);
+    }
+
+    .form-input.error {
+      border-color: #DC2626;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: #A0A0A5;
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: var(--cream);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      transform: translateY(-100%);
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .mobile-menu.open {
+      transform: translateY(0);
+    }
+
+    .mobile-menu a {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .mobile-menu a:hover {
+      color: var(--brass);
+    }
+
+    /* === Success Message === */
+    .success-message {
+      display: none;
+      padding: 2rem;
+      text-align: center;
+      background: rgba(184, 151, 106, 0.08);
+      border: 1px solid rgba(184, 151, 106, 0.3);
+      border-radius: var(--radius-xl);
+      margin-top: 1.5rem;
+    }
+
+    .success-message.show {
+      display: block;
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* === Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--cream);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #D0D0D5;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #B0B0B5;
+    }
+
+    /* === Section spacing === */
+    .section-padding {
+      padding-top: clamp(4rem, 10vw, 8rem);
+      padding-bottom: clamp(4rem, 10vw, 8rem);
+    }
+
+    /* === Responsive header fix for mobile === */
+    @media (max-width: 640px) {
+      .header-cta-desktop {
+        display: none;
+      }
+      .header-inner {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+      }
+    }
+
+    /* === Reduced motion === */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-cream text-ink antialiased">
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header" id="siteHeader">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 header-inner flex items-center justify-between py-4">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 shrink-0" aria-label="ROVET Home">
+        <span class="font-display text-2xl sm:text-3xl tracking-tight">ROVET</span>
+        <span class="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-brass mt-1" aria-hidden="true"></span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#services" class="text-sm font-medium text-slate hover:text-ink transition-colors">Services</a>
+        <a href="#work" class="text-sm font-medium text-slate hover:text-ink transition-colors">Work</a>
+        <a href="#about" class="text-sm font-medium text-slate hover:text-ink transition-colors">About</a>
+        <a href="#contact" class="text-sm font-medium text-slate hover:text-ink transition-colors">Contact</a>
+      </nav>
+
+      <!-- Desktop CTA + Mobile Toggle -->
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="header-cta-desktop btn-primary text-sm !px-5 !py-2.5 hidden sm:inline-flex">
+          Start a project
+          <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+        </a>
+        <!-- Mobile menu toggle -->
+        <button id="mobileToggle" class="md:hidden w-10 h-10 flex items-center justify-center rounded-full border border-black/10 hover:bg-black/5 transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button id="mobileClose" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full border border-black/10 hover:bg-black/5 transition-colors" aria-label="Close menu">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
+    <a href="#services" class="mobile-link">Services</a>
+    <a href="#work" class="mobile-link">Work</a>
+    <a href="#about" class="mobile-link">About</a>
+    <a href="#contact" class="mobile-link">Contact</a>
+    <a href="#contact" class="btn-primary mt-4 mobile-link-cta">Start a project</a>
+  </div>
+
+  <!-- ========== HERO ========== -->
+  <section class="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
+    <!-- Background glows -->
+    <div class="hero-glow bg-brass/30 -top-40 -right-40" aria-hidden="true"></div>
+    <div class="hero-glow bg-[#C4A97D]/20 bottom-0 -left-40" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 w-full relative z-10">
+      <div class="max-w-4xl">
+        <!-- Eyebrow -->
+        <div class="flex items-center gap-3 mb-8 opacity-0" id="heroEyebrow">
+          <span class="h-px w-12 bg-brass/60" aria-hidden="true"></span>
+          <span class="text-xs font-medium tracking-[0.2em] uppercase text-slate">Digital Craft Studio</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="font-display text-[clamp(2.75rem,8vw,6.5rem)] leading-[0.95] tracking-tight text-ink mb-8" id="heroHeadline">
+          We build brands<br>
+          that <span class="italic text-brass">move</span> people.
+        </h1>
+
+        <!-- Subhead -->
+        <p class="text-lg sm:text-xl text-slate max-w-xl leading-relaxed mb-10 opacity-0" id="heroSubhead">
+          ROVET is a full-service digital studio crafting websites, identities, and experiences for ambitious businesses that refuse to blend in.
+        </p>
+
+        <!-- CTAs -->
+        <div class="flex flex-wrap items-center gap-4 opacity-0" id="heroCtas">
+          <a href="#contact" class="btn-primary">
+            Start a project
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <a href="#work" class="btn-secondary">
+            View our work
+          </a>
+        </div>
+
+        <!-- Stats bar -->
+        <div class="flex flex-wrap gap-8 sm:gap-12 mt-16 sm:mt-20 opacity-0" id="heroStats">
+          <div>
+            <p class="font-display text-3xl sm:text-4xl tracking-tight">120+</p>
+            <p class="text-sm text-slate mt-1">Projects delivered</p>
+          </div>
+          <div class="w-px bg-black/8 hidden sm:block" aria-hidden="true"></div>
+          <div>
+            <p class="font-display text-3xl sm:text-4xl tracking-tight">14</p>
+            <p class="text-sm text-slate mt-1">Industry awards</p>
+          </div>
+          <div class="w-px bg-black/8 hidden sm:block" aria-hidden="true"></div>
+          <div>
+            <p class="font-display text-3xl sm:text-4xl tracking-tight">98%</p>
+            <p class="text-sm text-slate mt-1">Client retention</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MARQUEE / SOCIAL PROOF ========== -->
+  <section class="py-12 border-y border-black/5 overflow-hidden" aria-label="Trusted by">
+    <div class="marquee-track">
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Aurelia</span>
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Northwind</span>
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Verdant</span>
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Cascade</span>
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Monolith</span>
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Solstice</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Aurelia</span>
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Northwind</span>
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Verdant</span>
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Cascade</span>
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Monolith</span>
+      <span class="text-2xl sm:text-3xl font-display text-slate/40 whitespace-nowrap tracking-tight">Solstice</span>
+    </div>
+  </section>
+
+  <!-- ========== SERVICES ========== -->
+  <section id="services" class="section-padding">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-14">
+        <div class="max-w-2xl">
+          <span class="text-xs font-medium tracking-[0.2em] uppercase text-brass mb-4 block">What we do</span>
+          <h2 class="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-tight">
+            Strategy, design, and code — under one roof.
+          </h2>
+        </div>
+        <p class="text-slate max-w-sm lg:text-right leading-relaxed">
+          We don't just make things pretty. We build digital products that perform, convert, and endure.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Service 1 -->
+        <article class="card-lift bg-white rounded-2xl p-8 border border-black/5 shadow-soft group">
+          <div class="w-12 h-12 rounded-xl bg-stone flex items-center justify-center mb-6 group-hover:bg-brass/10 transition-colors">
+            <i data-lucide="monitor" class="w-5 h-5 text-ink"></i>
+          </div>
+          <h3 class="font-display text-xl tracking-tight mb-2">Web Design & Development</h3>
+          <p class="text-slate text-sm leading-relaxed">Bespoke websites built with modern frameworks, tailored to your brand and engineered to convert visitors into customers.</p>
+          <span class="inline-flex items-center gap-1 text-xs font-medium text-brass mt-5 opacity-0 group-hover:opacity-100 transition-opacity">
+            Learn more <i data-lucide="arrow-right" class="w-3 h-3"></i>
+          </span>
+        </article>
+
+        <!-- Service 2 -->
+        <article class="card-lift bg-white rounded-2xl p-8 border border-black/5 shadow-soft group">
+          <div class="w-12 h-12 rounded-xl bg-stone flex items-center justify-center mb-6 group-hover:bg-brass/10 transition-colors">
+            <i data-lucide="palette" class="w-5 h-5 text-ink"></i>
+          </div>
+          <h3 class="font-display text-xl tracking-tight mb-2">Brand Identity</h3>
+          <p class="text-slate text-sm leading-relaxed">Logos, visual systems, and brand guidelines that give your business a distinct, memorable, and coherent identity.</p>
+          <span class="inline-flex items-center gap-1 text-xs font-medium text-brass mt-5 opacity-0 group-hover:opacity-100 transition-opacity">
+            Learn more <i data-lucide="arrow-right" class="w-3 h-3"></i>
+          </span>
+        </article>
+
+        <!-- Service 3 -->
+        <article class="card-lift bg-white rounded-2xl p-8 border border-black/5 shadow-soft group">
+          <div class="w-12 h-12 rounded-xl bg-stone flex items-center justify-center mb-6 group-hover:bg-brass/10 transition-colors">
+            <i data-lucide="trending-up" class="w-5 h-5 text-ink"></i>
+          </div>
+          <h3 class="font-display text-xl tracking-tight mb-2">Digital Strategy</h3>
+          <p class="text-slate text-sm leading-relaxed">Data-driven roadmaps that align your digital presence with real business goals — from positioning to launch.</p>
+          <span class="inline-flex items-center gap-1 text-xs font-medium text-brass mt-5 opacity-0 group-hover:opacity-100 transition-opacity">
+            Learn more <i data-lucide="arrow-right" class="w-3 h-3"></i>
+          </span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== WORK / PORTFOLIO ========== -->
+  <section id="work" class="section-padding bg-white border-y border-black/5">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="max-w-2xl mb-14">
+        <span class="text-xs font-medium tracking-[0.2em] uppercase text-brass mb-4 block">Selected work</span>
+        <h2 class="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-tight">
+          Recent projects we're proud of.
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Project 1 -->
+        <article class="group cursor-pointer">
+          <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-stone relative mb-4">
+            <div class="absolute inset-0 bg-gradient-to-br from-brass/20 via-transparent to-stone/50"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-24 h-24 rounded-full border border-black/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                <i data-lucide="arrow-up-right" class="w-6 h-6 text-ink"></i>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="font-display text-xl tracking-tight">Aurelia — E-commerce Reimagined</h3>
+              <p class="text-sm text-slate mt-1">Fashion & Lifestyle · Web Design</p>
+            </div>
+            <span class="text-xs text-slate/60 whitespace-nowrap mt-1">2024</span>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article class="group cursor-pointer">
+          <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-stone relative mb-4">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#C4A97D]/20 via-transparent to-stone/50"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-24 h-24 rounded-full border border-black/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                <i data-lucide="arrow-up-right" class="w-6 h-6 text-ink"></i>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="font-display text-xl tracking-tight">Northwind — Fintech Platform</h3>
+              <p class="text-sm text-slate mt-1">Finance · Product Design</p>
+            </div>
+            <span class="text-xs text-slate/60 whitespace-nowrap mt-1">2024</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT ========== -->
+  <section id="about" class="section-padding">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div>
+          <span class="text-xs font-medium tracking-[0.2em] uppercase text-brass mb-4 block">About ROVET</span>
+          <h2 class="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-tight mb-6">
+            A small studio with an outsized impact.
+          </h2>
+          <p class="text-slate leading-relaxed mb-4">
+            Founded in 2018, ROVET began as two designers with a shared obsession: making the web feel less like a template and more like a craft.
+          </p>
+          <p class="text-slate leading-relaxed mb-8">
+            Today, we're a tight-knit team of strategists, designers, and engineers working with clients across three continents. We stay small on purpose — every project gets senior attention, and every detail gets scrutinized.
+          </p>
+          <div class="flex items-center gap-4">
+            <div class="flex -space-x-2" aria-hidden="true">
+              <div class="w-9 h-9 rounded-full bg-brass/20 border-2 border-cream flex items-center justify-center text-xs font-medium">JL</div>
+              <div class="w-9 h-9 rounded-full bg-stone border-2 border-cream flex items-center justify-center text-xs font-medium">MK</div>
+              <div class="w-9 h-9 rounded-full bg-brass/30 border-2 border-cream flex items-center justify-center text-xs font-medium">RS</div>
+            </div>
+            <p class="text-sm text-slate">A senior team of 6, based remotely.</p>
+          </div>
+        </div>
+
+        <!-- Stats / values card -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white rounded-2xl p-6 border border-black/5 shadow-soft">
+            <i data-lucide="sparkles" class="w-5 h-5 text-brass mb-3"></i>
+            <h3 class="font-medium text-sm mb-1">Craft first</h3>
+            <p class="text-xs text-slate leading-relaxed">We sweat the details others skip.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-black/5 shadow-soft">
+            <i data-lucide="users" class="w-5 h-5 text-brass mb-3"></i>
+            <h3 class="font-medium text-sm mb-1">Senior only</h3>
+            <p class="text-xs text-slate leading-relaxed">No juniors learning on your budget.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-black/5 shadow-soft">
+            <i data-lucide="zap" class="w-5 h-5 text-brass mb-3"></i>
+            <h3 class="font-medium text-sm mb-1">Fast & focused</h3>
+            <p class="text-xs text-slate leading-relaxed">Weeks, not months. No bloat.</p>
+          </div>
+          <div class="bg-white rounded-2xl p-6 border border-black/5 shadow-soft">
+            <i data-lucide="shield-check" class="w-5 h-5 text-brass mb-3"></i>
+            <h3 class="font-medium text-sm mb-1">Built to last</h3>
+            <p class="text-xs text-slate leading-relaxed">Clean code, documented, handoff-ready.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS ========== -->
+  <section class="section-padding bg-white border-y border-black/5">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="max-w-2xl mb-14">
+        <span class="text-xs font-medium tracking-[0.2em] uppercase text-brass mb-4 block">Client words</span>
+        <h2 class="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-tight">
+          Don't take our word for it.
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <blockquote class="bg-cream rounded-2xl p-8 border border-black/5">
+          <div class="flex gap-1 mb-5" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="font-display text-xl leading-snug tracking-tight mb-6">
+            "ROVET didn't just redesign our site — they rethought how our customers experience our brand. Conversions up 47% in three months."
+          </p>
+          <footer class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/20 flex items-center justify-center text-sm font-medium">EM</div>
+            <div>
+              <p class="text-sm font-medium">Elena Marsh</p>
+              <p class="text-xs text-slate">CEO, Aurelia</p>
+            </div>
+          </footer>
+        </blockquote>
+
+        <blockquote class="bg-cream rounded-2xl p-8 border border-black/5">
+          <div class="flex gap-1 mb-5" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass"></i>
+          </div>
+          <p class="font-display text-xl leading-snug tracking-tight mb-6">
+            "The most collaborative and least fussy agency we've worked with. They shipped on time, and the quality speaks for itself."
+          </p>
+          <footer class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brass/20 flex items-center justify-center text-sm font-medium">DK</div>
+            <div>
+              <p class="text-sm font-medium">David Kwan</p>
+              <p class="text-xs text-slate">Founder, Northwind</p>
+            </div>
+          </footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA BANNER ========== -->
+  <section class="section-padding">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="relative bg-ink rounded-3xl p-10 sm:p-16 lg:p-20 overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brass/20 rounded-full filter blur-[120px]" aria-hidden="true"></div>
+        <div class="relative z-10 max-w-2xl">
+          <h2 class="font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-tight text-white mb-5">
+            Have a project in mind? Let's talk.
+          </h2>
+          <p class="text-white/60 leading-relaxed mb-8 max-w-lg">
+            Tell us what you're building and where you want to go. We'll reply within one business day with honest thoughts and a clear next step.
+          </p>
+          <a href="#contact" class="inline-flex items-center gap-2 bg-brass text-ink font-medium px-7 py-3.5 rounded-full hover:bg-[#c9a87a] transition-all duration-300 hover:shadow-lg hover:shadow-brass/20 active:scale-[0.98]">
+            Start a conversation
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT / FOOTER ========== -->
+  <footer id="contact" class="section-padding bg-white border-t border-black/5">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <!-- Left: brand + form -->
+        <div>
+          <span class="font-display text-3xl tracking-tight block mb-4">ROVET</span>
+          <p class="text-slate leading-relaxed mb-8 max-w-md">
+            Digital craft studio for ambitious brands. We design and build the things your customers remember.
+          </p>
+
+          <!-- Enquiry Form -->
+          <form id="contactForm" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="name" class="sr-only">Your name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required>
+              </div>
+              <div>
+                <label for="email" class="sr-only">Email address</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="Email address" required>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label for="phone" class="sr-only">Phone number</label>
+              <input type="tel" id="phone" name="phone" class="form-input" placeholder="Phone number (optional)">
+            </div>
+            <div class="mb-4">
+              <label for="message" class="sr-only">Your message</label>
+              <textarea id="message" name="message" rows="4" class="form-input resize-none" placeholder="Tell us about your project..." required></textarea>
+            </div>
+            <button type="submit" class="btn-primary w-full sm:w-auto">
+              Send enquiry
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+            <!-- TODO: connect form action to backend endpoint -->
+          </form>
+
+          <!-- Success message -->
+          <div class="success-message" id="successMessage" role="status">
+            <i data-lucide="check-circle" class="w-8 h-8 text-brass mx-auto mb-3"></i>
+            <p class="font-display text-xl tracking-tight mb-1">Message sent.</p>
+            <p class="text-sm text-slate">We'll get back to you within one business day.</p>
+          </div>
+        </div>
+
+        <!-- Right: sitemap + social -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-8 lg:justify-items-end">
+          <div>
+            <h4 class="text-xs font-medium tracking-[0.15em] uppercase text-slate/60 mb-4">Studio</h4>
+            <ul class="space-y-3">
+              <li><a href="#services" class="text-sm text-slate hover:text-ink transition-colors">Services</a></li>
+              <li><a href="#work" class="text-sm text-slate hover:text-ink transition-colors">Work</a></li>
+              <li><a href="#about" class="text-sm text-slate hover:text-ink transition-colors">About</a></li>
+              <li><a href="#contact" class="text-sm text-slate hover:text-ink transition-colors">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-xs font-medium tracking-[0.15em] uppercase text-slate/60 mb-4">Connect</h4>
+            <ul class="space-y-3">
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors">Instagram</a></li>
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors">LinkedIn</a></li>
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors">Dribbble</a></li>
+              <li><a href="#" class="text-sm text-slate hover:text-ink transition-colors">Twitter</a></li>
+            </ul>
+          </div>
+          <div class="col-span-2 sm:col-span-1">
+            <h4 class="text-xs font-medium tracking-[0.15em] uppercase text-slate/60 mb-4">Say hello</h4>
+            <a href="mailto:hello@rovet.studio" class="text-sm text-slate hover:text-ink transition-colors block mb-2">hello@rovet.studio</a>
+            <p class="text-sm text-slate">+1 (415) 555-0198</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="mt-16 pt-8 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-slate/60">© 2025 ROVET Studio. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="text-xs text-slate/60 hover:text-ink transition-colors">Privacy</a>
+          <a href="#" class="text-xs text-slate/60 hover:text-ink transition-colors">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    (function() {
+      'use strict';
+
+      // --- Initialize Lucide icons ---
+      lucide.createIcons();
+
+      // --- Header scroll effect ---
+      const header = document.getElementById('siteHeader');
+      let lastScroll = 0;
+
+      window.addEventListener('scroll', function() {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > 50) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+        lastScroll = currentScroll;
+      }, { passive: true });
+
+      // --- Mobile menu ---
+      const mobileToggle = document.getElementById('mobileToggle');
+      const mobileClose = document.getElementById('mobileClose');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileLinks = mobileMenu.querySelectorAll('.mobile-link, .mobile-link-cta');
+
+      function openMenu() {
+        mobileMenu.classList.add('open');
+        mobileToggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMenu() {
+        mobileMenu.classList.remove('open');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      mobileToggle.addEventListener('click', openMenu);
+      mobileClose.addEventListener('click', closeMenu);
+      mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+      // Close on Escape
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+          closeMenu();
+        }
+      });
+
+      // --- Hero entrance animations (simple, performant) ---
+      function animateElement(el, delay) {
+        if (!el) return;
+        setTimeout(function() {
+          el.style.transition = 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, delay);
+      }
+
+      ['heroEyebrow', 'heroHeadline', 'heroSubhead', 'heroCtas', 'heroStats'].forEach(function(id, i) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(24px)';
+          animateElement(el, 200 + i * 150);
+        }
+      });
+
+      // --- Form handling ---
+      const form = document.getElementById('contactForm');
+      const successMessage = document.getElementById('successMessage');
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Basic validation
+        let valid = true;
+        const requiredFields = form.querySelectorAll('[required]');
+
+        requiredFields.forEach(function(field) {
+          field.classList.remove('error');
+          if (!field.value.trim()) {
+            field.classList.add('error');
+            valid = false;
+          }
+        });
+
+        // Email format check
+        const emailField = document.getElementById('email');
+        if (emailField && emailField.value.trim()) {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(emailField.value.trim())) {
+            emailField.classList.add('error');
+            valid = false;
+          }
+        }
+
+        if (!valid) {
+          const firstError = form.querySelector('.error');
+          if (firstError) firstError.focus();
+          return;
+        }
+
+        // Collect form data
+        const formData = {
+          name: document.getElementById('name').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          message: document.getElementById('message').value.trim()
+        };
+
+        // Simulate submission (replace with real fetch to backend)
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Sending...';
+
+        // Simulate network delay
+        setTimeout(function() {
+          // TODO: connect form action to backend endpoint
+          // fetch('submit', {
+          //   method: 'POST',
+          //   headers: { 'Content-Type': 'application/json' },
+          //   cache: 'no-store',
+          //   body: JSON.stringify({
+          //     url: window.location.host,
+          //     table: 'enquiries',
+          //     data: formData
+          //   })
+          // })
+
+          form.reset();
+          successMessage.classList.add('show');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+
+          // Re-initialize icons inside button if needed
+          lucide.createIcons();
+
+          // Hide success after 6 seconds
+          setTimeout(function() {
+            successMessage.classList.remove('show');
+          }, 6000);
+        }, 800);
+      });
+
+      // Clear error on input
+      form.querySelectorAll('.form-input').forEach(function(input) {
+        input.addEventListener('input', function() {
+          this.classList.remove('error');
+        });
+      });
+
+      // --- Smooth anchor scrolling (with header offset) ---
+      document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+
+          const targetEl = document.querySelector(targetId);
+          if (!targetEl) return;
+
+          e.preventDefault();
+          const headerHeight = header.offsetHeight;
+          const targetPosition = targetEl.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        });
+      });
+
+      // --- Intersection Observer for reveal animations ---
+      if ('IntersectionObserver' in window) {
+        const observerOptions = {
+          threshold: 0.1,
+          rootMargin: '0px 0px -60px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+              observer.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+
+        // Observe section headings and cards
+        document.querySelectorAll('section h2, section .card-lift, section blockquote, section .grid > div').forEach(function(el) {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(20px)';
+          el.style.transition = 'opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+          observer.observe(el);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
