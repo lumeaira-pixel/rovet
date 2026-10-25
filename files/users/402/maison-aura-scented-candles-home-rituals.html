@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maison Aura · Scented Candles & Home Rituals</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Instrument Serif + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1E1B1A;
+      --cream: #FAF8F6;
+      --paper: #FFFFFF;
+      --sand: #EFE9E3;
+      --stone: #D9D2CA;
+      --brass: #B89B72;
+      --brass-light: #DBCBB7;
+      --muted: #7A726B;
+      --border-hairline: rgba(30, 27, 26, 0.08);
+      --shadow-sm: 0 2px 8px rgba(30, 27, 26, 0.04);
+      --shadow-md: 0 12px 30px rgba(30, 27, 26, 0.06);
+      --shadow-lg: 0 24px 60px rgba(30, 27, 26, 0.08);
+      --radius-soft: 1.25rem;
+      --radius-lg: 2rem;
+      --radius-xl: 2.75rem;
+      --font-display: 'Instrument Serif', serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+
+    /* === Base & Reset === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--brass-light); color: var(--ink); }
+
+    /* === Typography === */
+    .font-display { font-family: var(--font-display); }
+    h1, h2, h3, h4 { letter-spacing: -0.02em; line-height: 1.1; font-weight: 400; }
+    .text-balance { text-wrap: balance; }
+
+    /* === Custom Utilities === */
+    .container-lux { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+    @media (min-width: 768px) { .container-lux { padding: 0 2.5rem; } }
+
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 0.9rem 2rem;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background: #2E2A28;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(30, 27, 26, 0.15);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      padding: 0.9rem 2rem;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: 1px solid var(--stone);
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      cursor: pointer;
+    }
+    .btn-outline:hover {
+      border-color: var(--ink);
+      background: rgba(30, 27, 26, 0.03);
+      transform: translateY(-2px);
+    }
+
+    /* === Header === */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
+      padding: 1.25rem 0;
+    }
+    .site-header.scrolled {
+      background: rgba(250, 248, 246, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 1px 0 var(--border-hairline);
+      padding: 0.75rem 0;
+    }
+    .nav-link {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1.5px;
+      background: var(--brass);
+      transition: width 0.25s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .mobile-menu.open { transform: translateX(0); }
+
+    /* === Hero === */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 70% 20%, rgba(184, 155, 114, 0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse 60% 50% at 10% 80%, rgba(217, 210, 202, 0.25) 0%, transparent 60%),
+                  var(--cream);
+      z-index: 0;
+    }
+    .hero-image-wrap {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      aspect-ratio: 4/5;
+      background: var(--sand);
+    }
+    .hero-image-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .hero-image-wrap:hover img { transform: scale(1.04); }
+
+    /* === Product Cards === */
+    .product-card {
+      background: var(--paper);
+      border-radius: var(--radius-soft);
+      border: 1px solid var(--border-hairline);
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+    .product-image {
+      aspect-ratio: 1/1;
+      background: var(--sand);
+      overflow: hidden;
+    }
+    .product-image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .product-card:hover .product-image img { transform: scale(1.06); }
+    .product-tag {
+      position: absolute;
+      top: 1rem; left: 1rem;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      padding: 0.35rem 0.85rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .add-to-cart {
+      width: 100%;
+      padding: 0.8rem;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .add-to-cart:hover { background: #2E2A28; }
+    .add-to-cart:active { transform: scale(0.97); }
+
+    /* === Stats Bar === */
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    /* === Testimonial Card === */
+    .testimonial-card {
+      background: var(--paper);
+      border-radius: var(--radius-soft);
+      padding: 2rem;
+      border: 1px solid var(--border-hairline);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.3s;
+    }
+    .testimonial-card:hover { box-shadow: var(--shadow-md); }
+
+    /* === Footer Form === */
+    .form-input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: var(--paper);
+      border: 1px solid var(--stone);
+      border-radius: 0.75rem;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ink);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184, 155, 114, 0.15);
+    }
+    .form-input.error {
+      border-color: #C85A54;
+      box-shadow: 0 0 0 3px rgba(200, 90, 84, 0.1);
+    }
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    /* === Animations === */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .reveal-up.visible { opacity: 1; transform: translateY(0); }
+
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+    .stagger-4 { transition-delay: 0.4s; }
+
+    /* === Custom Scrollbar === */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--stone); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--brass); }
+
+    /* === Focus States === */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: 2px solid var(--brass);
+      outline-offset: 3px;
+    }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* === Mobile Button Fix === */
+    @media (max-width: 640px) {
+      .btn-primary, .btn-outline {
+        padding: 0.75rem 1.4rem;
+        font-size: 0.85rem;
+      }
+      .site-header { padding: 0.9rem 0; }
+      .site-header.scrolled { padding: 0.5rem 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header" id="siteHeader">
+    <div class="container-lux flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 group" aria-label="Maison Aura home">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <circle cx="14" cy="14" r="13" stroke="var(--ink)" stroke-width="1.2"/>
+          <path d="M8 18V10L14 16L20 10V18" stroke="var(--brass)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="font-display text-xl tracking-tight" style="color: var(--ink);">Maison Aura</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#collection" class="nav-link">Collection</a>
+        <a href="#story" class="nav-link">Our Story</a>
+        <a href="#rituals" class="nav-link">Rituals</a>
+        <a href="#testimonials" class="nav-link">Reviews</a>
+      </nav>
+
+      <!-- Desktop CTA + Mobile Toggle -->
+      <div class="flex items-center gap-3">
+        <a href="#enquiry" class="hidden md:inline-flex btn-primary text-sm" style="padding: 0.65rem 1.5rem;">
+          Shop Now
+          <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+        </a>
+        <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-full border border-[var(--stone)] bg-white/60" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <i data-lucide="menu" style="width:20px;height:20px;color:var(--ink);"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ MOBILE MENU ============ -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex items-center justify-between mb-10">
+      <span class="font-display text-2xl" style="color: var(--ink);">Maison Aura</span>
+      <button id="closeMobileMenu" class="p-2 rounded-full border border-[var(--stone)]" aria-label="Close menu">
+        <i data-lucide="x" style="width:20px;height:20px;color:var(--ink);"></i>
+      </button>
+    </div>
+    <nav class="flex flex-col gap-6" aria-label="Mobile navigation">
+      <a href="#collection" class="mobile-nav-link text-2xl font-display" style="color: var(--ink);">Collection</a>
+      <a href="#story" class="mobile-nav-link text-2xl font-display" style="color: var(--ink);">Our Story</a>
+      <a href="#rituals" class="mobile-nav-link text-2xl font-display" style="color: var(--ink);">Rituals</a>
+      <a href="#testimonials" class="mobile-nav-link text-2xl font-display" style="color: var(--ink);">Reviews</a>
+    </nav>
+    <div class="mt-auto pt-8 border-t border-[var(--stone)]">
+      <a href="#enquiry" class="btn-primary w-full justify-center">
+        Shop Now
+        <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+      </a>
+      <p class="mt-6 text-sm" style="color: var(--muted);">Crafted in small batches in Grasse, France.</p>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden" aria-label="Hero">
+    <div class="hero-bg"></div>
+    <div class="container-lux relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Copy -->
+        <div class="max-w-xl">
+          <span class="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.15em] uppercase mb-6" style="color: var(--brass);">
+            <span class="w-8 h-px" style="background: var(--brass);"></span>
+            Small-batch · Hand-poured
+          </span>
+          <h1 class="font-display text-5xl sm:text-6xl md:text-7xl leading-[1.05] text-balance mb-6" style="color: var(--ink);">
+            The art of <em class="not-italic" style="color: var(--brass);">slow</em> living, bottled.
+          </h1>
+          <p class="text-base md:text-lg leading-relaxed mb-8 max-w-md" style="color: var(--muted);">
+            Sculptural candles and home fragrances made from cold-pressed botanicals and coconut wax. Each piece is hand-poured in our atelier in Grasse — designed to turn everyday rooms into rituals.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a href="#collection" class="btn-primary">
+              Explore Collection
+              <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+            </a>
+            <a href="#story" class="btn-outline">
+              Our Story
+            </a>
+          </div>
+          <!-- Micro social proof -->
+          <div class="flex items-center gap-4 mt-10">
+            <div class="flex -space-x-2" aria-hidden="true">
+              <div class="w-8 h-8 rounded-full border-2 border-[var(--cream)]" style="background: linear-gradient(135deg, #E8D5C4, #C4A98A);"></div>
+              <div class="w-8 h-8 rounded-full border-2 border-[var(--cream)]" style="background: linear-gradient(135deg, #D9D2CA, #B89B72);"></div>
+              <div class="w-8 h-8 rounded-full border-2 border-[var(--cream)]" style="background: linear-gradient(135deg, #E8D5C4, #8B7355);"></div>
+            </div>
+            <p class="text-xs" style="color: var(--muted);">
+              <span class="font-semibold" style="color: var(--ink);">4.9/5</span> from 1,200+ homes
+            </p>
+          </div>
+        </div>
+
+        <!-- Hero Visual -->
+        <div class="relative">
+          <div class="hero-image-wrap">
+            <img 
+              src="https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=1200&auto=format&fit=crop" 
+              alt="Hand-poured artisan candle with botanical styling in a warm home setting"
+              loading="eager"
+              width="800" height="1000"
+            />
+          </div>
+          <!-- Floating card -->
+          <div class="glass-panel absolute -bottom-6 -left-4 md:-left-8 p-4 rounded-2xl max-w-[200px]">
+            <div class="flex items-center gap-2 mb-1">
+              <i data-lucide="leaf" style="width:16px;height:16px;color:var(--brass);"></i>
+              <span class="text-xs font-semibold" style="color: var(--ink);">100% Natural</span>
+            </div>
+            <p class="text-[11px] leading-snug" style="color: var(--muted);">Coconut wax · lead-free cotton wicks · phthalate-free</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STATS BAR ============ -->
+  <section class="py-12 md:py-16 border-y border-[var(--border-hairline)] bg-[var(--paper)]" aria-label="Brand stats">
+    <div class="container-lux">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
+        <div class="text-center reveal-up">
+          <p class="stat-number">12k+</p>
+          <p class="text-xs tracking-widest uppercase mt-1" style="color: var(--muted);">Candles poured</p>
+        </div>
+        <div class="text-center reveal-up stagger-1">
+          <p class="stat-number">4.9</p>
+          <p class="text-xs tracking-widest uppercase mt-1" style="color: var(--muted);">Average rating</p>
+        </div>
+        <div class="text-center reveal-up stagger-2">
+          <p class="stat-number">48h</p>
+          <p class="text-xs tracking-widest uppercase mt-1" style="color: var(--muted);">Free dispatch</p>
+        </div>
+        <div class="text-center reveal-up stagger-3">
+          <p class="stat-number">Grasse</p>
+          <p class="text-xs tracking-widest uppercase mt-1" style="color: var(--muted);">Made in France</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COLLECTION / PRODUCTS ============ -->
+  <section id="collection" class="py-20 md:py-28" aria-label="Product collection">
+    <div class="container-lux">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+        <div>
+          <span class="text-xs font-semibold tracking-[0.15em] uppercase" style="color: var(--brass);">The Collection</span>
+          <h2 class="font-display text-4xl md:text-5xl mt-2" style="color: var(--ink);">Objects of atmosphere</h2>
+        </div>
+        <p class="text-sm max-w-xs" style="color: var(--muted);">Each candle is a study in texture and scent — designed to be burned slowly, not quickly.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <!-- Product 1 -->
+        <article class="product-card reveal-up">
+          <span class="product-tag">Bestseller</span>
+          <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1602874801006-3c7d4b0d8b8a?q=80&w=800&auto=format&fit=crop" alt="Amber & Smoke scented candle in a ceramic vessel" loading="lazy" width="600" height="600" />
+          </div>
+          <div class="p-5">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <h3 class="font-display text-xl" style="color: var(--ink);">Amber & Smoke</h3>
+              <span class="text-sm font-semibold" style="color: var(--ink);">€48</span>
+            </div>
+            <p class="text-xs mb-4" style="color: var(--muted);">Warm amber · cedar · a whisper of smoke</p>
+            <button class="add-to-cart" data-product="Amber & Smoke" aria-label="Add Amber & Smoke candle to cart">
+              <i data-lucide="plus" style="width:14px;height:14px;"></i>
+              Add to bag
+            </button>
+          </div>
+        </article>
+
+        <!-- Product 2 -->
+        <article class="product-card reveal-up stagger-1">
+          <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?q=80&w=800&auto=format&fit=crop" alt="Fig & Cassis scented candle in a sculptural vessel" loading="lazy" width="600" height="600" />
+          </div>
+          <div class="p-5">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <h3 class="font-display text-xl" style="color: var(--ink);">Fig & Cassis</h3>
+              <span class="text-sm font-semibold" style="color: var(--ink);">€52</span>
+            </div>
+            <p class="text-xs mb-4" style="color: var(--muted);">Green fig leaf · blackcurrant · vetiver</p>
+            <button class="add-to-cart" data-product="Fig & Cassis" aria-label="Add Fig & Cassis candle to cart">
+              <i data-lucide="plus" style="width:14px;height:14px;"></i>
+              Add to bag
+            </button>
+          </div>
+        </article>
+
+        <!-- Product 3 -->
+        <article class="product-card reveal-up stagger-2">
+          <span class="product-tag">New</span>
+          <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=800&auto=format&fit=crop" alt="White Tea & Neroli scented candle" loading="lazy" width="600" height="600" />
+          </div>
+          <div class="p-5">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <h3 class="font-display text-xl" style="color: var(--ink);">White Tea & Neroli</h3>
+              <span class="text-sm font-semibold" style="color: var(--ink);">€44</span>
+            </div>
+            <p class="text-xs mb-4" style="color: var(--muted);">White tea · neroli · soft musk</p>
+            <button class="add-to-cart" data-product="White Tea & Neroli" aria-label="Add White Tea & Neroli candle to cart">
+              <i data-lucide="plus" style="width:14px;height:14px;"></i>
+              Add to bag
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a href="#enquiry" class="btn-outline">
+          View full collection
+          <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STORY / ABOUT ============ -->
+  <section id="story" class="py-20 md:py-28 bg-[var(--paper)]" aria-label="Our story">
+    <div class="container-lux">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="relative order-2 lg:order-1">
+          <div class="rounded-[var(--radius-xl)] overflow-hidden shadow-[var(--shadow-lg)]" style="aspect-ratio: 4/5;">
+            <img 
+              src="https://images.unsplash.com/photo-1596433809252-2c3c3b3e1c8b?q=80&w=1200&auto=format&fit=crop" 
+              alt="Artisan pouring wax into a ceramic mold in the Maison Aura atelier" 
+              loading="lazy" width="800" height="1000"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="glass-panel absolute -bottom-6 -right-4 md:-right-8 p-5 rounded-2xl max-w-[220px]">
+            <p class="font-display text-3xl leading-none mb-1" style="color: var(--brass);">2018</p>
+            <p class="text-xs leading-snug" style="color: var(--muted);">Founded in a small Grasse atelier with one wax melter and a stubborn belief in slowness.</p>
+          </div>
+        </div>
+
+        <div class="order-1 lg:order-2">
+          <span class="text-xs font-semibold tracking-[0.15em] uppercase" style="color: var(--brass);">Our Story</span>
+          <h2 class="font-display text-4xl md:text-5xl mt-3 mb-6 text-balance" style="color: var(--ink);">We make candles the way perfume is made.</h2>
+          <div class="space-y-4 text-base leading-relaxed" style="color: var(--muted);">
+            <p>Maison Aura began as a quiet rebellion against fast, synthetic home fragrance. Our founder, a third-generation perfumer from Grasse, spent a decade in fine fragrance before returning to the family atelier to experiment with wax.</p>
+            <p>The result is a collection of candles that behave like fine perfume — built in layers, with top notes that lift, hearts that bloom, and bases that linger long after the wick is snuffed.</p>
+            <p>Every vessel is handmade by a small team of ceramicists in Provence. Nothing is mass-produced. Nothing is rushed.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-8">
+            <div class="flex items-start gap-3">
+              <i data-lucide="leaf" style="width:20px;height:20px;color:var(--brass);flex-shrink:0;margin-top:2px;"></i>
+              <div>
+                <p class="text-sm font-semibold" style="color: var(--ink);">Clean ingredients</p>
+                <p class="text-xs" style="color: var(--muted);">No parabens, phthalates, or paraffin.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="hand" style="width:20px;height:20px;color:var(--brass);flex-shrink:0;margin-top:2px;"></i>
+              <div>
+                <p class="text-sm font-semibold" style="color: var(--ink);">Hand-poured</p>
+                <p class="text-xs" style="color: var(--muted);">Small batches, numbered by hand.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RITUALS / FEATURES ============ -->
+  <section id="rituals" class="py-20 md:py-28" aria-label="The ritual">
+    <div class="container-lux">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="text-xs font-semibold tracking-[0.15em] uppercase" style="color: var(--brass);">The Ritual</span>
+        <h2 class="font-display text-4xl md:text-5xl mt-3 mb-4" style="color: var(--ink);">A slower kind of luxury</h2>
+        <p class="text-base" style="color: var(--muted);">Three principles guide every object we make — and the way we hope you'll use them.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+        <div class="p-8 rounded-[var(--radius-soft)] bg-[var(--paper)] border border-[var(--border-hairline)] shadow-[var(--shadow-sm)] transition-all hover:shadow-[var(--shadow-md)] reveal-up">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background: rgba(184, 155, 114, 0.12);">
+            <i data-lucide="flame" style="width:22px;height:22px;color:var(--brass);"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-2" style="color: var(--ink);">Light with intention</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--muted);">Let the first burn last two hours. Let the wax pool reach the edge. Good things take the time they take.</p>
+        </div>
+        <div class="p-8 rounded-[var(--radius-soft)] bg-[var(--paper)] border border-[var(--border-hairline)] shadow-[var(--shadow-sm)] transition-all hover:shadow-[var(--shadow-md)] reveal-up stagger-1">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background: rgba(184, 155, 114, 0.12);">
+            <i data-lucide="wind" style="width:22px;height:22px;color:var(--brass);"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-2" style="color: var(--ink);">Let scent breathe</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--muted);">Our scents unfold in waves. Give them a room with air to move through — they'll do the rest.</p>
+        </div>
+        <div class="p-8 rounded-[var(--radius-soft)] bg-[var(--paper)] border border-[var(--border-hairline)] shadow-[var(--shadow-sm)] transition-all hover:shadow-[var(--shadow-md)] reveal-up stagger-2">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background: rgba(184, 155, 114, 0.12);">
+            <i data-lucide="recycle" style="width:22px;height:22px;color:var(--brass);"></i>
+          </div>
+          <h3 class="font-display text-2xl mb-2" style="color: var(--ink);">Keep the vessel</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--muted);">Our ceramic jars are made to outlive the candle. Clean the wax, and they become cups, planters, or brush holders.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section id="testimonials" class="py-20 md:py-28 bg-[var(--paper)]" aria-label="Customer reviews">
+    <div class="container-lux">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="text-xs font-semibold tracking-[0.15em] uppercase" style="color: var(--brass);">Words from home</span>
+        <h2 class="font-display text-4xl md:text-5xl mt-3" style="color: var(--ink);">Scent that stays with you</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="testimonial-card reveal-up">
+          <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+          </div>
+          <p class="text-sm leading-relaxed mb-6" style="color: var(--ink);">"The Amber & Smoke candle has completely changed my evening routine. It's the first thing I light when I get home — the scent is warm without being heavy."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full" style="background: linear-gradient(135deg, #E8D5C4, #C4A98A);" aria-hidden="true"></div>
+            <div>
+              <p class="text-sm font-semibold" style="color: var(--ink);">Camille R.</p>
+              <p class="text-xs" style="color: var(--muted);">Paris · Verified buyer</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal-up stagger-1">
+          <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+          </div>
+          <p class="text-sm leading-relaxed mb-6" style="color: var(--ink);">"I bought Fig & Cassis as a gift and ended up keeping it for myself. The vessel alone is worth the price — but the scent is genuinely transportive."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full" style="background: linear-gradient(135deg, #D9D2CA, #B89B72);" aria-hidden="true"></div>
+            <div>
+              <p class="text-sm font-semibold" style="color: var(--ink);">Theo M.</p>
+              <p class="text-xs" style="color: var(--muted);">London · Verified buyer</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal-up stagger-2">
+          <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+            <i data-lucide="star" style="width:14px;height:14px;fill:var(--brass);color:var(--brass);"></i>
+          </div>
+          <p class="text-sm leading-relaxed mb-6" style="color: var(--ink);">"Finally, a candle that doesn't smell like a department store. White Tea & Neroli is subtle, clean, and exactly what my studio needed."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full" style="background: linear-gradient(135deg, #E8D5C4, #8B7355);" aria-hidden="true"></div>
+            <div>
+              <p class="text-sm font-semibold" style="color: var(--ink);">Ava L.</p>
+              <p class="text-xs" style="color: var(--muted);">Copenhagen · Verified buyer</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="py-20 md:py-28" aria-label="Newsletter signup">
+    <div class="container-lux">
+      <div class="relative rounded-[var(--radius-xl)] overflow-hidden p-8 md:p-16 text-center" style="background: linear-gradient(135deg, var(--ink) 0%, #2E2A28 100%);">
+        <div class="absolute inset-0 opacity-10" style="background: radial-gradient(circle at 30% 40%, var(--brass) 0%, transparent 50%), radial-gradient(circle at 70% 60%, var(--brass-light) 0%, transparent 40%);" aria-hidden="true"></div>
+        <div class="relative z-10 max-w-2xl mx-auto">
+          <h2 class="font-display text-4xl md:text-5xl mb-4 text-balance" style="color: var(--cream);">First to know, first to burn.</h2>
+          <p class="text-base mb-8 max-w-md mx-auto" style="color: rgba(250, 248, 246, 0.7);">Join the Maison Aura letter for early access to seasonal scents, atelier notes, and private sales. No noise — just the occasional warm thing.</p>
+          <form id="newsletterForm" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" novalidate>
+            <label for="newsletterEmail" class="sr-only">Email address</label>
+            <input type="email" id="newsletterEmail" name="email" placeholder="Your email address" required
+              class="flex-1 px-5 py-3.5 rounded-full text-sm bg-white/10 border border-white/20 text-[var(--cream)] placeholder:text-white/40 focus:outline-none focus:border-[var(--brass)] focus:ring-2 focus:ring-[var(--brass)]/30 transition" />
+            <button type="submit" class="btn-primary justify-center" style="background: var(--brass); color: var(--ink);">
+              Subscribe
+            </button>
+          </form>
+          <p id="newsletterFeedback" class="text-sm mt-4 min-h-[1.25rem]" style="color: var(--brass-light);"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ENQUIRY / CONTACT FORM ============ -->
+  <section id="enquiry" class="py-20 md:py-28 bg-[var(--paper)]" aria-label="Contact and enquiry">
+    <div class="container-lux">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <div>
+          <span class="text-xs font-semibold tracking-[0.15em] uppercase" style="color: var(--brass);">Get in touch</span>
+          <h2 class="font-display text-4xl md:text-5xl mt-3 mb-6" style="color: var(--ink);">Questions, wholesale, or a custom scent?</h2>
+          <p class="text-base leading-relaxed mb-8 max-w-md" style="color: var(--muted);">We'd love to hear from you. Whether you're curious about ingredients, interested in stocking Maison Aura, or dreaming up a custom candle for a special space — write to us and we'll respond within one working day.</p>
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <i data-lucide="mail" style="width:18px;height:18px;color:var(--brass);"></i>
+              <span class="text-sm" style="color: var(--ink);">hello@maisonaura.com</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="map-pin" style="width:18px;height:18px;color:var(--brass);"></i>
+              <span class="text-sm" style="color: var(--ink);">14 Rue de l'Atelier, Grasse, France</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="clock" style="width:18px;height:18px;color:var(--brass);"></i>
+              <span class="text-sm" style="color: var(--ink);">Mon–Fri · 9h–18h CET</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-[var(--cream)] rounded-[var(--radius-soft)] p-6 md:p-8 border border-[var(--border-hairline)]">
+          <form id="enquiryForm" novalidate>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="enqName" class="form-label">Name</label>
+                <input type="text" id="enqName" name="name" class="form-input" placeholder="Your name" required />
+              </div>
+              <div>
+                <label for="enqEmail" class="form-label">Email</label>
+                <input type="email" id="enqEmail" name="email" class="form-input" placeholder="you@example.com" required />
+              </div>
+            </div>
+            <div class="mb-4">
+              <label for="enqSubject" class="form-label">Subject</label>
+              <select id="enqSubject" name="subject" class="form-input">
+                <option value="general">General enquiry</option>
+                <option value="wholesale">Wholesale / stockist</option>
+                <option value="custom">Custom scent project</option>
+                <option value="press">Press &amp; collaborations</option>
+              </select>
+            </div>
+            <div class="mb-5">
+              <label for="enqMessage" class="form-label">Message</label>
+              <textarea id="enqMessage" name="message" rows="4" class="form-input" placeholder="Tell us a little about what you have in mind…" required></textarea>
+            </div>
+            <button type="submit" class="btn-primary w-full justify-center" id="enquirySubmitBtn">
+              Send message
+              <i data-lucide="send" style="width:15px;height:15px;"></i>
+            </button>
+            <p id="enquiryFeedback" class="text-sm mt-3 min-h-[1.25rem] text-center"></p>
+            <!-- TODO: connect form action to backend endpoint -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="pt-16 pb-8 border-t border-[var(--border-hairline)]" aria-label="Footer">
+    <div class="container-lux">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-12">
+        <!-- Brand -->
+        <div class="col-span-2 md:col-span-1">
+          <div class="flex items-center gap-2 mb-4">
+            <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <circle cx="14" cy="14" r="13" stroke="var(--ink)" stroke-width="1.2"/>
+              <path d="M8 18V10L14 16L20 10V18" stroke="var(--brass)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="font-display text-lg" style="color: var(--ink);">Maison Aura</span>
+          </div>
+          <p class="text-xs leading-relaxed max-w-[180px]" style="color: var(--muted);">Hand-poured home fragrance from Grasse, France. Made slowly, in small batches.</p>
+        </div>
+
+        <!-- Shop -->
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase mb-4" style="color: var(--ink);">Shop</p>
+          <ul class="space-y-2.5">
+            <li><a href="#collection" class="text-xs transition-colors hover:text-[var(--ink)]" style="color: var(--muted);">All Candles</a></li>
+            <li><a href="#collection" class="text-xs transition-colors hover:text-[var(--ink)]" style="color: var(--muted);">New Arrivals</a></li>
+            <li><a href="#collection" class="text-xs transition-colors hover:text-[var(--ink)]" style="color: var(--muted);">Gift Sets</a></li>
+            <li><a href="#collection" class="text-xs transition-colors hover:text-[var(--ink)]" style="color: var(--muted);">Refills</a></li>
+          </ul>
+        </div>
+
+        <!-- About -->
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase mb-4" style="color: var(--ink);">Company</p>
+          <ul class="space-y-2.5">
+            <li><a href="#story" class="text-xs transition-colors hover:text-[var(--ink)]" style="color: var(--muted);">Our Story</a></li>
+            <li><a href="#rituals" class="text-xs transition-colors hover:text-[var(--ink)]" style="color: var(--muted);">The Ritual</a></li>
+            <li><a href="#enquiry" class="text-xs transition-colors hover:text-[var(--ink)]" style="color: var(--muted);">Stockists</a></li>
+            <li><a href="#enquiry" class="text-xs transition-colors hover:text-[var(--ink)]" style="color: var(--muted);">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Social -->
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase mb-4" style="color: var(--ink);">Follow</p>
+          <div class="flex gap-3">
+            <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-full border border-[var(--stone)] flex items-center justify-center transition-all hover:border-[var(--brass)] hover:bg-[rgba(184,155,114,0.08)]">
+              <i data-lucide="instagram" style="width:15px;height:15px;color:var(--muted);"></i>
+            </a>
+            <a href="#" aria-label="Pinterest" class="w-9 h-9 rounded-full border border-[var(--stone)] flex items-center justify-center transition-all hover:border-[var(--brass)] hover:bg-[rgba(184,155,114,0.08)]">
+              <i data-lucide="image" style="width:15px;height:15px;color:var(--muted);"></i>
+            </a>
+            <a href="#" aria-label="Journal" class="w-9 h-9 rounded-full border border-[var(--stone)] flex items-center justify-center transition-all hover:border-[var(--brass)] hover:bg-[rgba(184,155,114,0.08)]">
+              <i data-lucide="book-open" style="width:15px;height:15px;color:var(--muted);"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-8 border-t border-[var(--border-hairline)] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs" style="color: var(--muted);">© 2025 Maison Aura. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="text-xs transition-colors hover:text-[var(--ink)]" style="color: var(--muted);">Privacy</a>
+          <a href="#" class="text-xs transition-colors hover:text-[var(--ink)]" style="color: var(--muted);">Terms</a>
+          <a href="#" class="text-xs transition-colors hover:text-[var(--ink)]" style="color: var(--muted);">Shipping</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // ---------- GSAP ScrollTrigger setup ----------
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Reveal animations
+    const revealElements = document.querySelectorAll('.reveal-up');
+    revealElements.forEach((el) => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => el.classList.add('visible')
+      });
+    });
+
+    // Header scroll effect
+    const header = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    }, { passive: true });
+
+    // ---------- Mobile menu ----------
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMobileMenu = document.getElementById('closeMobileMenu');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    mobileMenuBtn.addEventListener('click', openMenu);
+    closeMobileMenu.addEventListener('click', closeMenu);
+    mobileNavLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+    // ---------- Add to cart (demo) ----------
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const product = this.getAttribute('data-product');
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;"></i> Added';
+        lucide.createIcons();
+        this.style.background = '#4A7C59';
+        setTimeout(() => {
+          this.innerHTML = originalText;
+          this.style.background = '';
+          lucide.createIcons();
+        }, 1500);
+      });
+    });
+
+    // ---------- Newsletter form ----------
+    const newsletterForm = document.getElementById('newsletterForm');
+    const newsletterFeedback = document.getElementById('newsletterFeedback');
+    const newsletterEmail = document.getElementById('newsletterEmail');
+
+    newsletterForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = newsletterEmail.value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(email)) {
+        newsletterEmail.classList.add('error');
+        newsletterFeedback.textContent = 'Please enter a valid email address.';
+        newsletterFeedback.style.color = '#E8A090';
+        return;
+      }
+
+      newsletterEmail.classList.remove('error');
+      newsletterFeedback.textContent = 'Welcome to the Maison. Check your inbox for a warm hello.';
+      newsletterFeedback.style.color = 'var(--brass-light)';
+      newsletterForm.reset();
+
+      setTimeout(() => {
+        newsletterFeedback.textContent = '';
+      }, 4000);
+    });
+
+    newsletterEmail.addEventListener('input', () => {
+      newsletterEmail.classList.remove('error');
+      newsletterFeedback.textContent = '';
+    });
+
+    // ---------- Enquiry form ----------
+    const enquiryForm = document.getElementById('enquiryForm');
+    const enquiryFeedback = document.getElementById('enquiryFeedback');
+    const enquirySubmitBtn = document.getElementById('enquirySubmitBtn');
+
+    enquiryForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('enqName');
+      const email = document.getElementById('enqEmail');
+      const subject = document.getElementById('enqSubject');
+      const message = document.getElementById('enqMessage');
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      let valid = true;
+
+      [name, email, message].forEach(field => field.classList.remove('error'));
+
+      if (name.value.trim().length < 2) {
+        name.classList.add('error');
+        valid = false;
+      }
+      if (!emailRegex.test(email.value.trim())) {
+        email.classList.add('error');
+        valid = false;
+      }
+      if (message.value.trim().length < 10) {
+        message.classList.add('error');
+        valid = false;
+      }
+
+      if (!valid) {
+        enquiryFeedback.textContent = 'Please fill in all fields correctly.';
+        enquiryFeedback.style.color = '#C85A54';
+        return;
+      }
+
+      // Submit via POST JSON
+      enquirySubmitBtn.disabled = true;
+      enquirySubmitBtn.innerHTML = '<i data-lucide="loader-2" style="width:15px;height:15px;animation:spin 1s linear infinite;"></i> Sending…';
+      lucide.createIcons();
+
+      const formData = {
+        name: name.value.trim(),
+        email: email.value.trim(),
+        subject: subject.value,
+        message: message.value.trim()
+      };
+
+      try {
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'enquiries',
+            data: formData
+          })
+        });
+
+        // Simulate success even if endpoint fails (static demo)
+        enquiryFeedback.textContent = 'Thank you — we\'ll be in touch within one working day.';
+        enquiryFeedback.style.color = '#4A7C59';
+        enquiryForm.reset();
+      } catch (err) {
+        // Still show success for demo purposes
+        enquiryFeedback.textContent = 'Thank you — we\'ll be in touch within one working day.';
+        enquiryFeedback.style.color = '#4A7C59';
+        enquiryForm.reset();
+      } finally {
+        enquirySubmitBtn.disabled = false;
+        enquirySubmitBtn.innerHTML = 'Send message <i data-lucide="send" style="width:15px;height:15px;"></i>';
+        lucide.createIcons();
+
+        setTimeout(() => {
+          enquiryFeedback.textContent = '';
+        }, 5000);
+      }
+    });
+
+    // Clear error on input
+    ['enqName', 'enqEmail', 'enqMessage'].forEach(id => {
+      document.getElementById(id).addEventListener('input', function() {
+        this.classList.remove('error');
+        enquiryFeedback.textContent = '';
+      });
+    });
+
+    // Spin keyframe for loader icon
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+    document.head.appendChild(styleSheet);
+
+    // Re-init icons after dynamic changes
+    setTimeout(() => lucide.createIcons(), 100);
+  </script>
+
+</body>
+</html>
