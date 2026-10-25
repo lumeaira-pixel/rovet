@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurelia — Boutique Advisory for Modern Enterprise</title>
+
+  <!-- Tailwind CSS via jsDelivr CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/lib/index.min.js"></script>
+
+  <!-- Google Fonts: Bricolage Grotesque + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            ink: '#1A1A1F',
+            cream: '#FAFAF8',
+            brass: '#B8864A',
+            sage: '#E8EDE6',
+          },
+          borderRadius: {
+            '2xl': '1rem',
+            '3xl': '1.5rem',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1A1F;
+      --cream: #FAFAF8;
+      --brass: #B8864A;
+      --brass-light: #D4A96C;
+      --sage: #E8EDE6;
+      --white: #FFFFFF;
+      --gray-soft: #F2F1EE;
+      --border-hairline: rgba(26,26,31,0.08);
+      --shadow-soft: 0 2px 20px rgba(26,26,31,0.06);
+      --shadow-elevated: 0 12px 40px rgba(26,26,31,0.10);
+      --shadow-brass: 0 8px 30px rgba(184,134,74,0.25);
+      --focus-ring: 0 0 0 3px rgba(184,134,74,0.35);
+      --radius-card: 1.5rem;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* === Base === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--brass); color: #fff; }
+
+    /* === Typography === */
+    .font-display { font-family: 'Bricolage Grotesque', sans-serif; }
+    .headline-xl {
+      font-size: clamp(2.8rem, 7vw, 6.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      font-weight: 700;
+    }
+    .headline-lg {
+      font-size: clamp(2rem, 4.5vw, 3.8rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+    .headline-md {
+      font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      font-weight: 600;
+    }
+    .body-lg { font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.7; color: rgba(26,26,31,0.65); }
+    .body-md { font-size: 0.95rem; line-height: 1.65; color: rgba(26,26,31,0.6); }
+    .eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--brass);
+    }
+
+    /* === Focus === */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.8rem 1.8rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary:hover {
+      background: #2d2d35;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(26,26,31,0.25);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.8rem 1.8rem;
+      border-radius: 100px;
+      border: 1px solid rgba(26,26,31,0.15);
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out);
+    }
+    .btn-secondary:hover {
+      background: rgba(26,26,31,0.04);
+      border-color: rgba(26,26,31,0.3);
+      transform: translateY(-2px);
+    }
+    .btn-secondary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-brass {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--brass);
+      color: #fff;
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.8rem 1.8rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out);
+    }
+    .btn-brass:hover {
+      background: #a6743e;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-brass);
+    }
+    .btn-brass:active { transform: translateY(0) scale(0.98); }
+
+    /* === Cards === */
+    .card-lux {
+      background: var(--white);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-hairline);
+      box-shadow: var(--shadow-soft);
+      transition: all 0.4s var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+    .card-lux:hover {
+      box-shadow: var(--shadow-elevated);
+      transform: translateY(-4px);
+    }
+
+    /* === Gradient Mesh === */
+    .mesh-gradient {
+      background:
+        radial-gradient(ellipse 60% 50% at 10% 20%, rgba(184,134,74,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 90% 70%, rgba(232,237,230,0.8) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(250,250,248,1) 0%, transparent 70%);
+    }
+
+    /* === Noise Texture === */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* === Header === */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      transition: all 0.4s var(--ease-out);
+      padding: 1.2rem 0;
+    }
+    .site-header.scrolled {
+      background: rgba(250,250,248,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--border-hairline);
+      box-shadow: 0 1px 12px rgba(26,26,31,0.04);
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s var(--ease-out);
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: auto; }
+    .mobile-menu a {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--brass); }
+
+    /* === Tilt Card === */
+    .tilt-card {
+      perspective: 800px;
+    }
+    .tilt-card-inner {
+      transition: transform 0.15s ease-out;
+      transform-style: preserve-3d;
+    }
+
+    /* === Form === */
+    .form-input {
+      width: 100%;
+      padding: 0.9rem 1.1rem;
+      border-radius: 0.9rem;
+      border: 1px solid rgba(26,26,31,0.12);
+      background: rgba(255,255,255,0.7);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--ink);
+      transition: all 0.3s var(--ease-out);
+    }
+    .form-input:focus {
+      border-color: var(--brass);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(184,134,74,0.12);
+    }
+    .form-input::placeholder { color: rgba(26,26,31,0.3); }
+    .form-input.error { border-color: #d9534f; background: rgba(217,83,79,0.03); }
+    .form-error { color: #d9534f; font-size: 0.75rem; margin-top: 0.3rem; display: none; }
+    .form-error.visible { display: block; }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      gap: 3rem;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Reveal Animations === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* === Split Text === */
+    .split-char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px) rotateX(30deg);
+      animation: charReveal 0.6s var(--ease-out) forwards;
+    }
+    @keyframes charReveal {
+      to { opacity: 1; transform: translateY(0) rotateX(0); }
+    }
+
+    /* === Stat Counter === */
+    .stat-number {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+
+    /* === Testimonial Carousel === */
+    .testimonial-card {
+      background: var(--white);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-hairline);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+    }
+    .testimonial-card::before {
+      content: '"';
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 6rem;
+      line-height: 1;
+      color: rgba(184,134,74,0.12);
+      position: absolute;
+      top: 0.5rem;
+      left: 1.5rem;
+    }
+
+    /* === Smooth Scroll === */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* === Responsive Tweaks === */
+    @media (max-width: 640px) {
+      .site-header { padding: 0.8rem 0; }
+      .btn-primary, .btn-secondary, .btn-brass { padding: 0.7rem 1.3rem; font-size: 0.82rem; }
+      .headline-xl { font-size: clamp(2.2rem, 9vw, 3rem); }
+      .testimonial-card { padding: 1.5rem; }
+    }
+
+    /* === Custom Scrollbar === */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: rgba(26,26,31,0.15); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(26,26,31,0.25); }
+
+    /* === Skip Link === */
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      z-index: 999;
+      background: var(--ink);
+      color: #fff;
+      padding: 0.8rem 1.5rem;
+      border-radius: 0 0 0.5rem 0;
+      font-size: 0.85rem;
+    }
+    .skip-link:focus { left: 0; }
+
+    /* === Logo Strip === */
+    .logo-strip-item {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: rgba(26,26,31,0.25);
+      transition: color 0.3s;
+      white-space: nowrap;
+    }
+    .logo-strip-item:hover { color: rgba(26,26,31,0.5); }
+  </style>
+</head>
+<body>
+
+  <!-- Skip Link -->
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <!-- Noise Overlay -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header" id="siteHeader" role="banner">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2" aria-label="Aurelia home">
+        <span class="font-display text-xl font-bold tracking-tight text-ink">Aurelia</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brass inline-block"></span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#services" class="text-sm font-medium text-ink/60 hover:text-ink transition-colors duration-200">Services</a>
+        <a href="#about" class="text-sm font-medium text-ink/60 hover:text-ink transition-colors duration-200">About</a>
+        <a href="#pricing" class="text-sm font-medium text-ink/60 hover:text-ink transition-colors duration-200">Pricing</a>
+        <a href="#testimonials" class="text-sm font-medium text-ink/60 hover:text-ink transition-colors duration-200">Testimonials</a>
+      </nav>
+
+      <!-- Desktop CTA -->
+      <div class="hidden md:flex items-center gap-3">
+        <a href="#contact" class="btn-primary text-sm">
+          Book a Consultation
+          <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobileMenuBtn" class="md:hidden flex items-center justify-center w-10 h-10 rounded-full border border-ink/10 bg-white/50" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu" class="w-5 h-5 text-ink" aria-hidden="true"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobileMenu" class="mobile-menu md:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button id="mobileMenuClose" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full border border-ink/10" aria-label="Close menu">
+      <i data-lucide="x" class="w-5 h-5 text-ink" aria-hidden="true"></i>
+    </button>
+    <a href="#services" class="mobile-link">Services</a>
+    <a href="#about" class="mobile-link">About</a>
+    <a href="#pricing" class="mobile-link">Pricing</a>
+    <a href="#testimonials" class="mobile-link">Testimonials</a>
+    <a href="#contact" class="mobile-link text-brass">Book a Consultation</a>
+  </div>
+
+  <!-- ========== MAIN ========== -->
+  <main id="main">
+
+    <!-- ========== HERO ========== -->
+    <section class="relative min-h-screen flex items-center mesh-gradient pt-24 pb-16 md:pt-32 md:pb-24" aria-labelledby="hero-heading">
+      <div class="max-w-7xl mx-auto px-6 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          <!-- Left: Copy -->
+          <div class="lg:col-span-7">
+            <div class="eyebrow mb-6 reveal" id="heroEyebrow">Boutique Advisory — Est. 2015</div>
+            <h1 id="hero-heading" class="headline-xl font-display mb-6" aria-label="Strategic clarity for ambitious enterprises">
+              <span class="split-line block">Strategic clarity</span>
+              <span class="split-line block">for ambitious</span>
+              <span class="split-line block text-brass">enterprises.</span>
+            </h1>
+            <p class="body-lg max-w-lg mb-10 reveal reveal-delay-2">
+              We partner with founders and boards to unlock growth, streamline operations, and navigate complex transitions — with the rigour of a large firm and the agility of a boutique.
+            </p>
+            <div class="flex flex-wrap items-center gap-4 reveal reveal-delay-3">
+              <a href="#contact" class="btn-primary">
+                Start a Conversation
+                <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+              <a href="#services" class="btn-secondary">
+                Explore Services
+              </a>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="mt-16 grid grid-cols-3 gap-6 max-w-md reveal reveal-delay-4">
+              <div>
+                <div class="stat-number" data-count="120">0</div>
+                <div class="text-xs font-medium text-ink/40 mt-1">Clients served</div>
+              </div>
+              <div>
+                <div class="stat-number" data-count="98">0</div>
+                <div class="text-xs font-medium text-ink/40 mt-1">% retention</div>
+              </div>
+              <div>
+                <div class="stat-number" data-count="1.2">0</div>
+                <div class="text-xs font-medium text-ink/40 mt-1">B+ in value</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Abstract Visual -->
+          <div class="lg:col-span-5 hidden lg:flex justify-center items-center">
+            <div class="relative w-full max-w-md aspect-square tilt-card" id="heroVisual">
+              <div class="tilt-card-inner absolute inset-0">
+                <!-- Layered abstract composition -->
+                <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-brass/10 via-transparent to-sage/40" style="transform: rotate(-3deg) translateZ(20px);"></div>
+                <div class="absolute inset-4 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-lg" style="transform: translateZ(40px);">
+                  <div class="flex flex-col items-center justify-center h-full gap-6 p-8">
+                    <div class="w-16 h-16 rounded-2xl bg-brass/10 flex items-center justify-center">
+                      <i data-lucide="trending-up" class="w-8 h-8 text-brass" aria-hidden="true"></i>
+                    </div>
+                    <div class="text-center">
+                      <div class="font-display text-4xl font-bold text-ink">3.4×</div>
+                      <div class="text-xs text-ink/40 mt-1">Average ROI delivered</div>
+                    </div>
+                    <div class="w-full h-px bg-ink/5"></div>
+                    <div class="flex items-center gap-3 w-full">
+                      <div class="w-8 h-8 rounded-full bg-sage flex items-center justify-center">
+                        <i data-lucide="check" class="w-4 h-4 text-ink/40" aria-hidden="true"></i>
+                      </div>
+                      <div class="text-xs text-ink/50">Trusted by 120+ enterprises</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="absolute -bottom-6 -left-6 w-24 h-24 rounded-2xl bg-brass/5 border border-brass/10 backdrop-blur-sm" style="transform: translateZ(60px);"></div>
+                <div class="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-sage/60 backdrop-blur-sm" style="transform: translateZ(50px);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== LOGO STRIP ========== -->
+    <section class="py-10 border-y border-ink/5 bg-white/40" aria-label="Trusted by leading organizations">
+      <div class="max-w-7xl mx-auto px-6">
+        <p class="text-center text-xs font-medium tracking-widest text-ink/30 uppercase mb-6">Trusted by forward-thinking organizations</p>
+        <div class="overflow-hidden" aria-hidden="true">
+          <div class="marquee-track">
+            <span class="logo-strip-item">Meridian Capital</span>
+            <span class="logo-strip-item">Vanta Labs</span>
+            <span class="logo-strip-item">Northshore Group</span>
+            <span class="logo-strip-item">Atlas & Co</span>
+            <span class="logo-strip-item">Lumen Health</span>
+            <span class="logo-strip-item">Onyx Ventures</span>
+            <span class="logo-strip-item">Meridian Capital</span>
+            <span class="logo-strip-item">Vanta Labs</span>
+            <span class="logo-strip-item">Northshore Group</span>
+            <span class="logo-strip-item">Atlas & Co</span>
+            <span class="logo-strip-item">Lumen Health</span>
+            <span class="logo-strip-item">Onyx Ventures</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SERVICES ========== -->
+    <section id="services" class="py-24 md:py-32" aria-labelledby="services-heading">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-2xl mb-16">
+          <div class="eyebrow mb-4 reveal">What we do</div>
+          <h2 id="services-heading" class="headline-lg font-display mb-6 reveal">
+            Advisory built around your reality, not a playbook.
+          </h2>
+          <p class="body-lg reveal reveal-delay-1">
+            Every engagement begins with deep listening. We map the terrain, identify the leverage points, and build a plan you can actually execute.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Service 1 -->
+          <article class="card-lux p-8 reveal">
+            <div class="w-12 h-12 rounded-xl bg-brass/10 flex items-center justify-center mb-6">
+              <i data-lucide="compass" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display text-xl font-semibold mb-3">Growth Strategy</h3>
+            <p class="body-md">
+              Market entry, product-market fit, and scaling roadmaps grounded in data — not guesswork. We help you find the next curve before you need it.
+            </p>
+          </article>
+
+          <!-- Service 2 -->
+          <article class="card-lux p-8 reveal reveal-delay-1">
+            <div class="w-12 h-12 rounded-xl bg-sage flex items-center justify-center mb-6">
+              <i data-lucide="workflow" class="w-6 h-6 text-ink/60" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display text-xl font-semibold mb-3">Operational Excellence</h3>
+            <p class="body-md">
+              Process redesign, org structuring, and systems implementation that remove friction and free your team to do their best work.
+            </p>
+          </article>
+
+          <!-- Service 3 -->
+          <article class="card-lux p-8 reveal reveal-delay-2">
+            <div class="w-12 h-12 rounded-xl bg-brass/10 flex items-center justify-center mb-6">
+              <i data-lucide="handshake" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display text-xl font-semibold mb-3">M&A and Partnerships</h3>
+            <p class="body-md">
+              From target identification to post-merger integration, we guide you through high-stakes transactions with clarity and conviction.
+            </p>
+          </article>
+
+          <!-- Service 4 -->
+          <article class="card-lux p-8 reveal">
+            <div class="w-12 h-12 rounded-xl bg-sage flex items-center justify-center mb-6">
+              <i data-lucide="shield-check" class="w-6 h-6 text-ink/60" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display text-xl font-semibold mb-3">Risk & Governance</h3>
+            <p class="body-md">
+              Frameworks, controls, and board-level reporting that keep you compliant without slowing you down.
+            </p>
+          </article>
+
+          <!-- Service 5 -->
+          <article class="card-lux p-8 reveal reveal-delay-1">
+            <div class="w-12 h-12 rounded-xl bg-brass/10 flex items-center justify-center mb-6">
+              <i data-lucide="users" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display text-xl font-semibold mb-3">Leadership Advisory</h3>
+            <p class="body-md">
+              Executive coaching, team alignment, and succession planning for founders and C-suites navigating inflection points.
+            </p>
+          </article>
+
+          <!-- Service 6 -->
+          <article class="card-lux p-8 reveal reveal-delay-2">
+            <div class="w-12 h-12 rounded-xl bg-sage flex items-center justify-center mb-6">
+              <i data-lucide="bar-chart-3" class="w-6 h-6 text-ink/60" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display text-xl font-semibold mb-3">Data & Analytics</h3>
+            <p class="body-md">
+              Dashboarding, KPI design, and predictive modelling that turn raw data into decisions you can defend.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ABOUT ========== -->
+    <section id="about" class="py-24 md:py-32 bg-white/60 border-y border-ink/5" aria-labelledby="about-heading">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <div class="eyebrow mb-4 reveal">Why Aurelia</div>
+            <h2 id="about-heading" class="headline-lg font-display mb-6 reveal">
+              Small by design. Senior by default.
+            </h2>
+            <p class="body-lg mb-6 reveal reveal-delay-1">
+              We deliberately keep our team small so that every engagement is led by a partner — not handed off to a junior analyst after the pitch. You get direct access to the people doing the thinking.
+            </p>
+            <p class="body-md mb-8 reveal reveal-delay-2">
+              Our model is simple: fewer clients, deeper relationships, better outcomes. We take on a limited number of engagements each quarter so we can show up fully for each one.
+            </p>
+            <div class="grid grid-cols-2 gap-6 reveal reveal-delay-3">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-brass/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="check" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="font-medium text-sm">Partner-led delivery</div>
+                  <div class="text-xs text-ink/40 mt-1">Every project, every time</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-brass/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="check" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="font-medium text-sm">Fixed-fee engagements</div>
+                  <div class="text-xs text-ink/40 mt-1">No surprise invoices</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-brass/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="check" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="font-medium text-sm">Cross-industry insight</div>
+                  <div class="text-xs text-ink/40 mt-1">Patterns from 120+ clients</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-brass/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="check" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="font-medium text-sm">Confidentiality first</div>
+                  <div class="text-xs text-ink/40 mt-1">NDA-standard from day one</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Visual -->
+          <div class="relative">
+            <div class="rounded-3xl overflow-hidden bg-gradient-to-br from-sage/60 to-brass/5 p-1">
+              <div class="rounded-[1.3rem] bg-white/80 backdrop-blur-sm p-8 md:p-12 flex flex-col gap-6">
+                <div class="flex items-center gap-4">
+                  <div class="w-14 h-14 rounded-full bg-brass/10 flex items-center justify-center">
+                    <i data-lucide="quote" class="w-6 h-6 text-brass" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <div class="font-display font-semibold">Clarity compounds.</div>
+                    <div class="text-xs text-ink/40">Our operating philosophy</div>
+                  </div>
+                </div>
+                <p class="body-md italic text-ink/60">
+                  "The most valuable thing we do is help leaders see the situation clearly — without noise, without ego, without unnecessary complexity. Everything else follows from that."
+                </p>
+                <div class="flex items-center gap-3 pt-2">
+                  <div class="w-10 h-10 rounded-full bg-sage flex items-center justify-center text-xs font-bold text-ink/60">JC</div>
+                  <div>
+                    <div class="text-sm font-medium">James Chen</div>
+                    <div class="text-xs text-ink/40">Founding Partner</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PRICING ========== -->
+    <section id="pricing" class="py-24 md:py-32" aria-labelledby="pricing-heading">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-2xl mx-auto text-center mb-16">
+          <div class="eyebrow mb-4 reveal">Engagement models</div>
+          <h2 id="pricing-heading" class="headline-lg font-display mb-6 reveal">
+            Transparent pricing. No surprises.
+          </h2>
+          <p class="body-lg reveal reveal-delay-1">
+            Choose the engagement model that fits where you are. All engagements include a senior partner from day one.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <!-- Tier 1 -->
+          <div class="card-lux p-8 flex flex-col reveal">
+            <div class="text-xs font-medium tracking-widest uppercase text-ink/40 mb-2">Advisory</div>
+            <div class="font-display text-3xl font-bold mb-1">$8k</div>
+            <div class="text-xs text-ink/40 mb-6">per month, rolling</div>
+            <p class="body-md mb-6 flex-1">
+              Ongoing strategic counsel for founders and leadership teams. Weekly sessions, async access, and quarterly deep-dives.
+            </p>
+            <ul class="space-y-2.5 mb-8 text-sm text-ink/60">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass shrink-0" aria-hidden="true"></i>Weekly partner sessions</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass shrink-0" aria-hidden="true"></i>Async Slack access</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass shrink-0" aria-hidden="true"></i>Quarterly strategy review</li>
+            </ul>
+            <a href="#contact" class="btn-secondary w-full justify-center text-sm">Get started</a>
+          </div>
+
+          <!-- Tier 2 — Recommended -->
+          <div class="card-lux p-8 flex flex-col reveal reveal-delay-1 relative border-brass/30" style="border-color: rgba(184,134,74,0.3); box-shadow: var(--shadow-brass);">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brass text-white text-[0.65rem] font-semibold tracking-widest uppercase px-4 py-1 rounded-full">Recommended</div>
+            <div class="text-xs font-medium tracking-widest uppercase text-brass mb-2">Project</div>
+            <div class="font-display text-3xl font-bold mb-1">$45k</div>
+            <div class="text-xs text-ink/40 mb-6">fixed fee, 6–10 weeks</div>
+            <p class="body-md mb-6 flex-1">
+              A focused engagement to solve a specific challenge — market entry, operational redesign, or M&A support.
+            </p>
+            <ul class="space-y-2.5 mb-8 text-sm text-ink/60">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass shrink-0" aria-hidden="true"></i>Dedicated partner team</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass shrink-0" aria-hidden="true"></i>Full diagnostic & roadmap</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass shrink-0" aria-hidden="true"></i>Implementation support</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass shrink-0" aria-hidden="true"></i>Board-ready deliverables</li>
+            </ul>
+            <a href="#contact" class="btn-brass w-full justify-center text-sm">Book a scoping call</a>
+          </div>
+
+          <!-- Tier 3 -->
+          <div class="card-lux p-8 flex flex-col reveal reveal-delay-2">
+            <div class="text-xs font-medium tracking-widest uppercase text-ink/40 mb-2">Retainer</div>
+            <div class="font-display text-3xl font-bold mb-1">$15k</div>
+            <div class="text-xs text-ink/40 mb-6">per month, 6-month minimum</div>
+            <p class="body-md mb-6 flex-1">
+              Embedded advisory for organizations navigating continuous change. We become part of your operating rhythm.
+            </p>
+            <ul class="space-y-2.5 mb-8 text-sm text-ink/60">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass shrink-0" aria-hidden="true"></i>Embedded partner access</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass shrink-0" aria-hidden="true"></i>Unlimited async support</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass shrink-0" aria-hidden="true"></i>Monthly on-site workshops</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brass shrink-0" aria-hidden="true"></i>Priority scheduling</li>
+            </ul>
+            <a href="#contact" class="btn-secondary w-full justify-center text-sm">Inquire</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TESTIMONIALS ========== -->
+    <section id="testimonials" class="py-24 md:py-32 bg-white/60 border-y border-ink/5" aria-labelledby="testimonials-heading">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-2xl mx-auto text-center mb-16">
+          <div class="eyebrow mb-4 reveal">Client outcomes</div>
+          <h2 id="testimonials-heading" class="headline-lg font-display mb-6 reveal">
+            What partnership feels like.
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card reveal">
+            <p class="body-md mb-6 relative z-10 pt-4">
+              "Aurelia helped us see our business clearly for the first time. The team's ability to distill complexity into a clear plan was transformative. We're still using their frameworks two years later."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-sage flex items-center justify-center text-xs font-bold text-ink/60">SM</div>
+              <div>
+                <div class="text-sm font-medium">Sarah Mitchell</div>
+                <div class="text-xs text-ink/40">CEO, Meridian Capital</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card reveal reveal-delay-1">
+            <p class="body-md mb-6 relative z-10 pt-4">
+              "We brought Aurelia in to help with a complex acquisition. Their rigour and calm under pressure made all the difference. The integration went smoother than we could have hoped."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-sage flex items-center justify-center text-xs font-bold text-ink/60">DR</div>
+              <div>
+                <div class="text-sm font-medium">David Reyes</div>
+                <div class="text-xs text-ink/40">COO, Vanta Labs</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card reveal reveal-delay-2">
+            <p class="body-md mb-6 relative z-10 pt-4">
+              "What sets Aurelia apart is their honesty. They told us what we needed to hear, not what we wanted. That candour is rare, and it's why we keep coming back."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-sage flex items-center justify-center text-xs font-bold text-ink/60">EK</div>
+              <div>
+                <div class="text-sm font-medium">Elena Kowalski</div>
+                <div class="text-xs text-ink/40">Founder, Northshore Group</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CTA BANNER ========== -->
+    <section class="py-24 md:py-32" aria-labelledby="cta-heading">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <h2 id="cta-heading" class="headline-lg font-display mb-6 reveal">
+          Ready to see your business with fresh eyes?
+        </h2>
+        <p class="body-lg max-w-xl mx-auto mb-10 reveal reveal-delay-1">
+          Let's have a real conversation about where you are, where you want to be, and what's standing in the way.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4 reveal reveal-delay-2">
+          <a href="#contact" class="btn-primary">
+            Book a Consultation
+            <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+          <a href="mailto:hello@aurelia.co" class="btn-secondary">hello@aurelia.co</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONTACT / FOOTER ========== -->
+    <footer id="contact" class="bg-ink text-white/70 pt-24 pb-12" role="contentinfo">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-20">
+          <!-- Left: Brand + Links -->
+          <div>
+            <div class="flex items-center gap-2 mb-6">
+              <span class="font-display text-2xl font-bold text-white">Aurelia</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-brass inline-block"></span>
+            </div>
+            <p class="text-sm text-white/50 max-w-sm mb-12 leading-relaxed">
+              Boutique advisory for ambitious enterprises. We help leaders navigate complexity with clarity and conviction.
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
+              <div>
+                <div class="text-xs font-semibold tracking-widest uppercase text-white/30 mb-4">Services</div>
+                <ul class="space-y-2.5 text-sm">
+                  <li><a href="#services" class="hover:text-white transition-colors duration-200">Growth Strategy</a></li>
+                  <li><a href="#services" class="hover:text-white transition-colors duration-200">Operations</a></li>
+                  <li><a href="#services" class="hover:text-white transition-colors duration-200">M&A</a></li>
+                  <li><a href="#services" class="hover:text-white transition-colors duration-200">Governance</a></li>
+                </ul>
+              </div>
+              <div>
+                <div class="text-xs font-semibold tracking-widest uppercase text-white/30 mb-4">Company</div>
+                <ul class="space-y-2.5 text-sm">
+                  <li><a href="#about" class="hover:text-white transition-colors duration-200">About</a></li>
+                  <li><a href="#pricing" class="hover:text-white transition-colors duration-200">Pricing</a></li>
+                  <li><a href="#testimonials" class="hover:text-white transition-colors duration-200">Clients</a></li>
+                </ul>
+              </div>
+              <div>
+                <div class="text-xs font-semibold tracking-widest uppercase text-white/30 mb-4">Connect</div>
+                <ul class="space-y-2.5 text-sm">
+                  <li><a href="#" class="hover:text-white transition-colors duration-200">LinkedIn</a></li>
+                  <li><a href="#" class="hover:text-white transition-colors duration-200">Twitter / X</a></li>
+                  <li><a href="mailto:hello@aurelia.co" class="hover:text-white transition-colors duration-200">Email</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="mt-12 text-xs text-white/30">
+              &copy; 2025 Aurelia Advisory. All rights reserved.
+            </div>
+          </div>
+
+          <!-- Right: Contact Form -->
+          <div>
+            <h3 class="font-display text-xl font-semibold text-white mb-2">Start a conversation</h3>
+            <p class="text-sm text-white/40 mb-8">Tell us a little about your situation. We'll respond within one business day.</p>
+
+            <form id="contactForm" novalidate>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label for="name" class="sr-only">Full name</label>
+                  <input type="text" id="name" name="name" class="form-input" placeholder="Full name" required autocomplete="name" />
+                  <div class="form-error" id="nameError">Please enter your name.</div>
+                </div>
+                <div>
+                  <label for="email" class="sr-only">Email address</label>
+                  <input type="email" id="email" name="email" class="form-input" placeholder="Email address" required autocomplete="email" />
+                  <div class="form-error" id="emailError">Please enter a valid email.</div>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label for="company" class="sr-only">Company</label>
+                  <input type="text" id="company" name="company" class="form-input" placeholder="Company (optional)" autocomplete="organization" />
+                </div>
+                <div>
+                  <label for="phone" class="sr-only">Phone</label>
+                  <input type="tel" id="phone" name="phone" class="form-input" placeholder="Phone (optional)" autocomplete="tel" />
+                </div>
+              </div>
+              <div class="mb-4">
+                <label for="message" class="sr-only">Message</label>
+                <textarea id="message" name="message" class="form-input" rows="4" placeholder="How can we help?" required></textarea>
+                <div class="form-error" id="messageError">Please tell us a little about your needs.</div>
+              </div>
+
+              <!-- TODO: connect form action to backend endpoint -->
+              <button type="submit" class="btn-brass w-full justify-center text-sm" id="submitBtn">
+                Send Message
+                <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
+              </button>
+
+              <div id="formSuccess" class="hidden mt-4 p-4 rounded-xl bg-brass/10 border border-brass/20 text-sm text-brass text-center">
+                Thank you. Your message has been sent — we'll be in touch shortly.
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // === Header scroll effect ===
+    const header = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // === Mobile Menu ===
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    mobileMenuBtn.addEventListener('click', openMenu);
+    mobileMenuClose.addEventListener('click', closeMenu);
+    mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+
+    // === Split text animation on hero headline ===
+    document.querySelectorAll('.split-line').forEach((line, i) => {
+      const text = line.textContent;
+      line.textContent = '';
+      line.setAttribute('aria-label', text);
+      text.split('').forEach((char, j) => {
+        const span = document.createElement('span');
+        span.className = 'split-char';
+        span.textContent = char === ' ' ? '\u00A0' : char;
+        span.style.animationDelay = `${i * 0.12 + j * 0.025}s`;
+        span.setAttribute('aria-hidden', 'true');
+        line.appendChild(span);
+      });
+    });
+
+    // === Scroll reveal ===
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // === Stat counters ===
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseFloat(el.dataset.count);
+          const isDecimal = target % 1 !== 0;
+          let current = 0;
+          const duration = 1600;
+          const start = performance.now();
+
+          function animate(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            current = target * eased;
+            el.textContent = isDecimal ? current.toFixed(1) : Math.floor(current);
+            if (progress < 1) requestAnimationFrame(animate);
+          }
+          requestAnimationFrame(animate);
+          statObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('[data-count]').forEach(el => statObserver.observe(el));
+
+    // === 3D Tilt on hero visual ===
+    const heroVisual = document.getElementById('heroVisual');
+    if (heroVisual) {
+      const inner = heroVisual.querySelector('.tilt-card-inner');
+      heroVisual.addEventListener('mousemove', (e) => {
+        const rect = heroVisual.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        inner.style.transform = `rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`;
+      });
+      heroVisual.addEventListener('mouseleave', () => {
+        inner.style.transform = 'rotateY(0deg) rotateX(0deg)';
+      });
+    }
+
+    // === GSAP ScrollTrigger for subtle parallax ===
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.to('#heroVisual', {
+        y: -40,
+        scrollTrigger: {
+          trigger: '#hero-heading',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1,
+        }
+      });
+    }
+
+    // === Contact Form Validation & Submission ===
+    const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formSuccess = document.getElementById('formSuccess');
+
+    function showError(fieldId, errorId) {
+      document.getElementById(fieldId).classList.add('error');
+      document.getElementById(errorId).classList.add('visible');
+    }
+    function clearError(fieldId, errorId) {
+      document.getElementById(fieldId).classList.remove('error');
+      document.getElementById(errorId).classList.remove('visible');
+    }
+
+    // Live validation
+    ['name', 'email', 'message'].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener('input', () => {
+        el.classList.remove('error');
+        const err = document.getElementById(id + 'Error');
+        if (err) err.classList.remove('visible');
+      });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      let valid = true;
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name) { showError('name', 'nameError'); valid = false; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('email', 'emailError'); valid = false; }
+      if (!message) { showError('message', 'messageError'); valid = false; }
+
+      if (!valid) return;
+
+      // Simulate submission
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending…';
+
+      const formData = {
+        name,
+        email,
+        company: document.getElementById('company').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        message,
+      };
+
+      try {
+        // TODO: Replace with real endpoint
+        // await fetch('submit', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   cache: 'no-store',
+        //   body: JSON.stringify({
+        //     url: window.location.host,
+        //     table: 'contact_submissions',
+        //     data: formData,
+        //   })
+        // });
+
+        // Simulated delay
+        await new Promise(resolve => setTimeout(resolve, 900));
+
+        formSuccess.classList.remove('hidden');
+        submitBtn.innerHTML = 'Message Sent';
+        submitBtn.classList.add('opacity-60');
+
+        setTimeout(() => {
+          form.reset();
+          formSuccess.classList.add('hidden');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Send Message <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>';
+          submitBtn.classList.remove('opacity-60');
+          lucide.createIcons();
+        }, 3500);
+
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send Message <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>';
+        alert('Something went wrong. Please try again or email hello@aurelia.co directly.');
+      }
+    });
+
+    // === Smooth anchor scrolling with offset for fixed header ===
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
