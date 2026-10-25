@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curated Categories — Luxury Curation Service</title>
+  <!-- Tailwind CDN + custom config -->
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+  <!-- Google Fonts: Bricolage Grotesque + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1a1a1a;
+      --cream: #fcfaf7;
+      --paper: #ffffff;
+      --stone: #f0eee9;
+      --brass: #b89b7b;
+      --brass-light: #d9c7b1;
+      --muted: #6b6b6b;
+      --border-light: rgba(0,0,0,0.06);
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.02), 0 4px 16px rgba(0,0,0,0.02);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.04), 0 16px 48px rgba(0,0,0,0.03);
+      --shadow-lg: 0 16px 48px rgba(0,0,0,0.06), 0 32px 80px rgba(0,0,0,0.04);
+      --font-display: 'Bricolage Grotesque', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --focus-ring: 0 0 0 3px rgba(184,155,123,0.4);
+    }
+
+    /* === Base === */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, h5 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
+
+    /* === Typography scale === */
+    .text-hero { font-size: clamp(2.8rem, 8vw, 6rem); line-height: 1.05; letter-spacing: -0.04em; }
+    .text-section { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.1; letter-spacing: -0.03em; }
+    .text-sub { font-size: clamp(1rem, 1.2vw, 1.25rem); line-height: 1.7; color: var(--muted); }
+
+    /* === Components === */
+    .btn-primary {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 0.9rem 2rem;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid transparent;
+    }
+    .btn-primary:hover {
+      background: #2d2d2d;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--ink);
+      padding: 0.9rem 2rem;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: 1.5px solid rgba(0,0,0,0.12);
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-secondary:hover {
+      border-color: var(--ink);
+      background: rgba(0,0,0,0.02);
+      transform: translateY(-2px);
+    }
+    .btn-secondary:active { transform: translateY(0); }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--border-light);
+      border-radius: 24px;
+      padding: 2.5rem;
+      transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+      box-shadow: var(--shadow-sm);
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(184,155,123,0.25);
+    }
+
+    /* === Header === */
+    .header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem 2rem;
+      background: rgba(252,250,247,0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      transition: all 0.3s ease;
+    }
+    .header.scrolled {
+      padding: 0.75rem 2rem;
+      background: rgba(252,250,247,0.95);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.03);
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .logo span { color: var(--brass); }
+    .nav-link {
+      font-size: 0.9rem;
+      font-weight: 450;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1.5px;
+      background: var(--brass);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* === Hero === */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      background: radial-gradient(ellipse 80% 60% at 70% 20%, rgba(184,155,123,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse 60% 50% at 10% 80%, rgba(184,155,123,0.06) 0%, transparent 50%);
+    }
+    .hero-visual {
+      position: relative;
+      border-radius: 32px;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--stone) 0%, #e8e2d9 100%);
+      aspect-ratio: 4 / 5;
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .hero-visual:hover { transform: scale(1.01) rotate(-0.5deg); }
+    .hero-visual img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* === Marquee === */
+    .marquee {
+      overflow: hidden;
+      white-space: nowrap;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 1rem 0;
+    }
+    .marquee-content {
+      display: inline-block;
+      animation: marquee 32s linear infinite;
+    }
+    .marquee-content span {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      margin: 0 2.5rem;
+      opacity: 0.85;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Section spacing === */
+    .section-pad { padding: 6rem 2rem; }
+    @media (max-width: 768px) { .section-pad { padding: 4rem 1.25rem; } }
+
+    /* === Stats === */
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 650;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    /* === Testimonial === */
+    .testimonial-card {
+      background: var(--paper);
+      border: 1px solid var(--border-light);
+      border-radius: 24px;
+      padding: 2.5rem;
+      transition: all 0.3s ease;
+    }
+    .testimonial-card:hover { box-shadow: var(--shadow-md); }
+    .quote-mark {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      line-height: 1;
+      color: var(--brass-light);
+      opacity: 0.5;
+    }
+
+    /* === Form === */
+    .form-input {
+      width: 100%;
+      padding: 0.9rem 1.25rem;
+      border-radius: 14px;
+      border: 1.5px solid rgba(0,0,0,0.08);
+      background: var(--paper);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: all 0.2s ease;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184,155,123,0.15);
+    }
+    .form-input::placeholder { color: #a0a0a0; }
+    .form-input.error {
+      border-color: #d44;
+      box-shadow: 0 0 0 3px rgba(221,68,68,0.1);
+    }
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* === Footer === */
+    .footer {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 4rem 2rem 2rem;
+    }
+    .footer a {
+      color: rgba(252,250,247,0.7);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      font-size: 0.9rem;
+    }
+    .footer a:hover { color: var(--cream); }
+
+    /* === Mobile menu === */
+    .mobile-menu {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(252,250,247,0.98);
+      backdrop-filter: blur(24px);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: auto; }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .mobile-menu a:hover { color: var(--brass); }
+    .menu-close {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    /* === Focus visible === */
+    *:focus-visible {
+      outline: 2px solid var(--brass);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* === Animations === */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* === Responsive fixes === */
+    @media (max-width: 640px) {
+      .header { padding: 0.9rem 1rem; }
+      .header.scrolled { padding: 0.6rem 1rem; }
+      .btn-primary, .btn-secondary { padding: 0.75rem 1.5rem; font-size: 0.85rem; }
+      .hero { padding: 7rem 1.25rem 3rem; min-height: auto; }
+      .card { padding: 1.75rem; }
+      .hero-visual { aspect-ratio: 1 / 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- === HEADER === -->
+  <header class="header" id="header">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="#" class="logo">Curated<span>.</span></a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#services" class="nav-link">Services</a>
+        <a href="#process" class="nav-link">Process</a>
+        <a href="#work" class="nav-link">Work</a>
+        <a href="#testimonials" class="nav-link">Testimonials</a>
+      </nav>
+
+      <div class="hidden md:flex items-center gap-4">
+        <a href="#contact" class="btn-primary">
+          Start a Project
+          <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button class="md:hidden p-2 rounded-lg hover:bg-black/5 transition" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- === MOBILE MENU === -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button class="menu-close" id="menuClose" aria-label="Close menu">
+      <i data-lucide="x" class="w-7 h-7"></i>
+    </button>
+    <a href="#services" class="mobile-link">Services</a>
+    <a href="#process" class="mobile-link">Process</a>
+    <a href="#work" class="mobile-link">Work</a>
+    <a href="#testimonials" class="mobile-link">Testimonials</a>
+    <a href="#contact" class="mobile-link" style="color: var(--brass);">Start a Project</a>
+  </div>
+
+  <!-- === HERO === -->
+  <section class="hero" id="home">
+    <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div class="fade-up">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-black/5 text-sm font-medium text-muted mb-8 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-green-500" aria-hidden="true"></span>
+          Now accepting new clients for Q3
+        </div>
+        <h1 class="text-hero mb-6">
+          The art of<br>
+          <span style="color: var(--brass);">curated</span> categories.
+        </h1>
+        <p class="text-sub mb-8 max-w-lg">
+          We help discerning brands curate, organize, and present their product categories with uncompromising taste. From taxonomy design to visual merchandising — every detail matters.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#contact" class="btn-primary">
+            Book a Consultation
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <a href="#work" class="btn-secondary">
+            View Our Work
+          </a>
+        </div>
+      </div>
+
+      <div class="fade-up" style="transition-delay: 0.15s;">
+        <div class="hero-visual">
+          <!-- Premium abstract visual: layered geometric composition -->
+          <svg viewBox="0 0 600 750" class="w-full h-full" aria-hidden="true" style="display:block;">
+            <defs>
+              <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#e8e2d9;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#d9c7b1;stop-opacity:1" />
+              </linearGradient>
+              <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#fcfaf7;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#f0eee9;stop-opacity:1" />
+              </linearGradient>
+              <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#b89b7b;stop-opacity:0.9" />
+                <stop offset="100%" style="stop-color:#d9c7b1;stop-opacity:0.6" />
+              </linearGradient>
+            </defs>
+            <!-- Background -->
+            <rect width="600" height="750" fill="url(#g2)" />
+            <!-- Large organic shape -->
+            <path d="M0,300 C150,200 300,350 400,250 C500,150 550,280 600,200 L600,750 L0,750 Z" fill="url(#g1)" opacity="0.6"/>
+            <!-- Circle accent -->
+            <circle cx="420" cy="200" r="120" fill="url(#g3)" opacity="0.35"/>
+            <!-- Thin lines (category structure) -->
+            <line x1="80" y1="180" x2="520" y2="180" stroke="#b89b7b" stroke-width="1" opacity="0.3"/>
+            <line x1="80" y1="240" x2="400" y2="240" stroke="#b89b7b" stroke-width="1" opacity="0.25"/>
+            <line x1="80" y1="300" x2="460" y2="300" stroke="#b89b7b" stroke-width="1" opacity="0.2"/>
+            <line x1="80" y1="360" x2="320" y2="360" stroke="#b89b7b" stroke-width="1" opacity="0.15"/>
+            <!-- Floating rectangles -->
+            <rect x="340" y="420" width="180" height="180" rx="24" fill="#ffffff" opacity="0.7" stroke="#b89b7b" stroke-width="0.5"/>
+            <rect x="380" y="460" width="100" height="6" rx="3" fill="#b89b7b" opacity="0.4"/>
+            <rect x="380" y="480" width="140" height="4" rx="2" fill="#b89b7b" opacity="0.25"/>
+            <rect x="380" y="496" width="80" height="4" rx="2" fill="#b89b7b" opacity="0.25"/>
+            <rect x="380" y="520" width="120" height="4" rx="2" fill="#b89b7b" opacity="0.15"/>
+            <!-- Small dot accents -->
+            <circle cx="160" cy="500" r="4" fill="#b89b7b" opacity="0.5"/>
+            <circle cx="200" cy="500" r="4" fill="#b89b7b" opacity="0.3"/>
+            <circle cx="240" cy="500" r="4" fill="#b89b7b" opacity="0.2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === MARQUEE === -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-content">
+      <span>Taxonomy Design</span><span>·</span>
+      <span>Visual Merchandising</span><span>·</span>
+      <span>Category Strategy</span><span>·</span>
+      <span>Editorial Curation</span><span>·</span>
+      <span>Product Organization</span><span>·</span>
+      <span>Brand Positioning</span><span>·</span>
+      <span>Taxonomy Design</span><span>·</span>
+      <span>Visual Merchandising</span><span>·</span>
+      <span>Category Strategy</span><span>·</span>
+      <span>Editorial Curation</span><span>·</span>
+      <span>Product Organization</span><span>·</span>
+      <span>Brand Positioning</span><span>·</span>
+    </div>
+  </div>
+
+  <!-- === STATS === -->
+  <section class="section-pad" style="background: var(--paper);">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+        <div class="fade-up text-center md:text-left">
+          <div class="stat-number">200+</div>
+          <p class="text-sm text-muted mt-2">Categories curated</p>
+        </div>
+        <div class="fade-up text-center md:text-left" style="transition-delay: 0.1s;">
+          <div class="stat-number">48</div>
+          <p class="text-sm text-muted mt-2">Brands partnered</p>
+        </div>
+        <div class="fade-up text-center md:text-left" style="transition-delay: 0.2s;">
+          <div class="stat-number">12</div>
+          <p class="text-sm text-muted mt-2">Countries served</p>
+        </div>
+        <div class="fade-up text-center md:text-left" style="transition-delay: 0.3s;">
+          <div class="stat-number">98%</div>
+          <p class="text-sm text-muted mt-2">Client retention</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === SERVICES === -->
+  <section class="section-pad" id="services">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-2xl mb-16 fade-up">
+        <p class="text-sm font-medium tracking-widest uppercase mb-3" style="color: var(--brass);">What we do</p>
+        <h2 class="text-section mb-4">Category curation, elevated.</h2>
+        <p class="text-sub">We bring structure and soul to your product categories — making them intuitive for customers and beautiful for your brand.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="card fade-up">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style="background: var(--stone);">
+            <i data-lucide="layers" class="w-6 h-6" style="color: var(--brass);"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Taxonomy Design</h3>
+          <p class="text-sm text-muted leading-relaxed">We architect intuitive category structures that scale with your catalog — logical, searchable, and built for growth.</p>
+        </div>
+
+        <div class="card fade-up" style="transition-delay: 0.1s;">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style="background: var(--stone);">
+            <i data-lucide="layout-grid" class="w-6 h-6" style="color: var(--brass);"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Visual Merchandising</h3>
+          <p class="text-sm text-muted leading-relaxed">Every category deserves a considered visual treatment. We design layouts that guide the eye and elevate perception.</p>
+        </div>
+
+        <div class="card fade-up" style="transition-delay: 0.2s;">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6" style="background: var(--stone);">
+            <i data-lucide="compass" class="w-6 h-6" style="color: var(--brass);"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">Category Strategy</h3>
+          <p class="text-sm text-muted leading-relaxed">We help you decide what belongs, what doesn't, and how each category tells its own part of the brand story.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === PROCESS === -->
+  <section class="section-pad" id="process" style="background: var(--paper);">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-2xl mb-16 fade-up">
+        <p class="text-sm font-medium tracking-widest uppercase mb-3" style="color: var(--brass);">How we work</p>
+        <h2 class="text-section mb-4">A process built on precision.</h2>
+        <p class="text-sub">Three deliberate phases. No guesswork. Just clarity, craft, and results.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="fade-up">
+          <div class="text-5xl font-bold mb-4" style="color: var(--brass-light); font-family: var(--font-display);">01</div>
+          <h3 class="text-lg font-semibold mb-2">Discover</h3>
+          <p class="text-sm text-muted leading-relaxed">We immerse ourselves in your catalog, audience, and competitive landscape. We ask the questions others overlook.</p>
+        </div>
+        <div class="fade-up" style="transition-delay: 0.1s;">
+          <div class="text-5xl font-bold mb-4" style="color: var(--brass-light); font-family: var(--font-display);">02</div>
+          <h3 class="text-lg font-semibold mb-2">Design</h3>
+          <p class="text-sm text-muted leading-relaxed">We craft the taxonomy, visual system, and merchandising rules. Every decision is documented and intentional.</p>
+        </div>
+        <div class="fade-up" style="transition-delay: 0.2s;">
+          <div class="text-5xl font-bold mb-4" style="color: var(--brass-light); font-family: var(--font-display);">03</div>
+          <h3 class="text-lg font-semibold mb-2">Deliver</h3>
+          <p class="text-sm text-muted leading-relaxed">You receive a complete category playbook — ready to hand to your dev team or implement in your CMS immediately.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === WORK / PORTFOLIO === -->
+  <section class="section-pad" id="work">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-2xl mb-16 fade-up">
+        <p class="text-sm font-medium tracking-widest uppercase mb-3" style="color: var(--brass);">Selected work</p>
+        <h2 class="text-section mb-4">Proof in the details.</h2>
+        <p class="text-sub">A glimpse into recent category transformations for forward-thinking brands.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="fade-up group cursor-pointer">
+          <div class="rounded-3xl overflow-hidden mb-4" style="aspect-ratio: 4/3; background: linear-gradient(135deg, #e8e2d9, #d9c7b1);">
+            <div class="w-full h-full flex items-center justify-center p-12 transition-transform duration-500 group-hover:scale-105">
+              <div class="w-full max-w-xs space-y-3" aria-hidden="true">
+                <div class="h-2 rounded-full bg-white/60 w-3/4"></div>
+                <div class="h-2 rounded-full bg-white/40 w-full"></div>
+                <div class="h-2 rounded-full bg-white/30 w-2/3"></div>
+                <div class="h-10 rounded-xl bg-white/50 mt-4"></div>
+              </div>
+            </div>
+          </div>
+          <h3 class="text-lg font-semibold">Maison Rue — Luxury Home</h3>
+          <p class="text-sm text-muted mt-1">Taxonomy redesign for 1,200+ SKUs across 8 verticals</p>
+        </div>
+
+        <div class="fade-up group cursor-pointer" style="transition-delay: 0.1s;">
+          <div class="rounded-3xl overflow-hidden mb-4" style="aspect-ratio: 4/3; background: linear-gradient(135deg, #f0eee9, #e8e2d9);">
+            <div class="w-full h-full flex items-center justify-center p-12 transition-transform duration-500 group-hover:scale-105">
+              <div class="grid grid-cols-3 gap-2 w-full max-w-xs" aria-hidden="true">
+                <div class="aspect-square rounded-lg bg-white/50"></div>
+                <div class="aspect-square rounded-lg bg-white/30"></div>
+                <div class="aspect-square rounded-lg bg-white/40"></div>
+                <div class="aspect-square rounded-lg bg-white/30"></div>
+                <div class="aspect-square rounded-lg bg-white/50"></div>
+                <div class="aspect-square rounded-lg bg-white/35"></div>
+              </div>
+            </div>
+          </div>
+          <h3 class="text-lg font-semibold">Aperture — Eyewear</h3>
+          <p class="text-sm text-muted mt-1">Visual merchandising system for seasonal collections</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === TESTIMONIALS === -->
+  <section class="section-pad" id="testimonials" style="background: var(--paper);">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-2xl mb-16 fade-up">
+        <p class="text-sm font-medium tracking-widest uppercase mb-3" style="color: var(--brass);">Testimonials</p>
+        <h2 class="text-section mb-4">What our clients say.</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="testimonial-card fade-up">
+          <div class="quote-mark" aria-hidden="true">"</div>
+          <p class="text-sm text-muted leading-relaxed mb-6 mt-2">Working with Curated was a revelation. They brought structure and elegance to a catalog we'd been struggling with for years.</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold" style="background: var(--stone); color: var(--brass);">SM</div>
+            <div>
+              <p class="text-sm font-medium">Sarah Mitchell</p>
+              <p class="text-xs text-muted">Head of E-commerce, Maison Rue</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-up" style="transition-delay: 0.1s;">
+          <div class="quote-mark" aria-hidden="true">"</div>
+          <p class="text-sm text-muted leading-relaxed mb-6 mt-2">The taxonomy playbook they delivered was worth every penny. Our conversion rate on category pages jumped 34% in the first month.</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold" style="background: var(--stone); color: var(--brass);">JC</div>
+            <div>
+              <p class="text-sm font-medium">James Chen</p>
+              <p class="text-xs text-muted">Founder, Aperture Eyewear</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-up" style="transition-delay: 0.2s;">
+          <div class="quote-mark" aria-hidden="true">"</div>
+          <p class="text-sm text-muted leading-relaxed mb-6 mt-2">They understand that a category isn't just a folder — it's a brand statement. That insight changed how we approach our entire site.</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold" style="background: var(--stone); color: var(--brass);">EV</div>
+            <div>
+              <p class="text-sm font-medium">Elena Vasquez</p>
+              <p class="text-xs text-muted">Creative Director, Studio Form</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === CTA BANNER === -->
+  <section class="section-pad" style="background: var(--ink); color: var(--cream);">
+    <div class="max-w-4xl mx-auto text-center fade-up">
+      <h2 class="text-section mb-4" style="color: var(--cream);">Ready to curate with intention?</h2>
+      <p class="text-base mb-8 max-w-lg mx-auto" style="color: rgba(252,250,247,0.7);">Let's talk about your catalog. We'll show you what's possible when every category is treated like a piece of your brand.</p>
+      <a href="#contact" class="btn-primary" style="background: var(--cream); color: var(--ink);">
+        Start the Conversation
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- === FOOTER + CONTACT === -->
+  <footer class="footer" id="contact">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16">
+        <!-- Left: brand + links -->
+        <div>
+          <div class="logo mb-4" style="color: var(--cream);">Curated<span>.</span></div>
+          <p class="text-sm mb-8 max-w-sm" style="color: rgba(252,250,247,0.5);">A category curation studio for brands that care about the details. We make structure beautiful.</p>
+
+          <div class="grid grid-cols-2 gap-8">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wider mb-4" style="color: rgba(252,250,247,0.35);">Navigate</p>
+              <div class="flex flex-col gap-2">
+                <a href="#home">Home</a>
+                <a href="#services">Services</a>
+                <a href="#process">Process</a>
+                <a href="#work">Work</a>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wider mb-4" style="color: rgba(252,250,247,0.35);">Connect</p>
+              <div class="flex flex-col gap-2">
+                <a href="#">Instagram</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">Twitter</a>
+                <a href="mailto:hello@curated.studio">hello@curated.studio</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: contact form -->
+        <div>
+          <h3 class="text-xl font-semibold mb-6" style="color: var(--cream);">Tell us about your project</h3>
+          <form id="contactForm" class="space-y-4" novalidate>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="name" class="form-label" style="color: rgba(252,250,247,0.5);">Name</label>
+                <input type="text" id="name" name="name" class="form-input" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: var(--cream);" placeholder="Your name" required>
+              </div>
+              <div>
+                <label for="email" class="form-label" style="color: rgba(252,250,247,0.5);">Email</label>
+                <input type="email" id="email" name="email" class="form-input" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: var(--cream);" placeholder="you@company.com" required>
+              </div>
+            </div>
+            <div>
+              <label for="message" class="form-label" style="color: rgba(252,250,247,0.5);">Message</label>
+              <textarea id="message" name="message" rows="3" class="form-input" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: var(--cream); resize: vertical;" placeholder="Tell us about your categories..." required></textarea>
+            </div>
+            <button type="submit" class="btn-primary w-full justify-center" style="background: var(--brass); color: var(--ink);">
+              Send Inquiry
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+            <p id="formMessage" class="text-sm hidden" style="color: var(--brass);"></p>
+          </form>
+          <!-- TODO: connect form action to backend endpoint -->
+        </div>
+      </div>
+
+      <div class="border-t pt-8 flex flex-col md:flex-row items-center justify-between gap-4" style="border-color: rgba(255,255,255,0.06);">
+        <p class="text-xs" style="color: rgba(252,250,247,0.3);">© 2025 Curated Studio. All rights reserved.</p>
+        <div class="flex gap-4">
+          <a href="#" class="text-xs" style="color: rgba(252,250,247,0.3);">Privacy Policy</a>
+          <a href="#" class="text-xs" style="color: rgba(252,250,247,0.3);">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- === SCRIPTS === -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // === Header scroll effect ===
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    // === Mobile menu ===
+    const menuBtn = document.getElementById('menuBtn');
+    const menuClose = document.getElementById('menuClose');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      menuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    menuBtn.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+    });
+
+    // === Scroll reveal (Intersection Observer) ===
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // === Form validation & submission ===
+    const form = document.getElementById('contactForm');
+    const formMessage = document.getElementById('formMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const message = document.getElementById('message');
+      let valid = true;
+
+      // Reset
+      [name, email, message].forEach(el => el.classList.remove('error'));
+      formMessage.classList.add('hidden');
+
+      if (!name.value.trim()) { name.classList.add('error'); valid = false; }
+      if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { email.classList.add('error'); valid = false; }
+      if (!message.value.trim()) { message.classList.add('error'); valid = false; }
+
+      if (!valid) {
+        formMessage.textContent = 'Please fill in all fields correctly.';
+        formMessage.style.color = '#ff6b6b';
+        formMessage.classList.remove('hidden');
+        return;
+      }
+
+      // Simulate submission (replace with real fetch to /submit endpoint)
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = 'Sending...';
+      submitBtn.disabled = true;
+
+      try {
+        // TODO: Replace with actual endpoint
+        // const res = await fetch('submit', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   cache: 'no-store',
+        //   body: JSON.stringify({
+        //     url: window.location.host,
+        //     table: 'enquiries',
+        //     data: {
+        //       name: name.value.trim(),
+        //       email: email.value.trim(),
+        //       message: message.value.trim()
+        //     }
+        //   })
+        // });
+        // if (!res.ok) throw new Error('Submission failed');
+
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        formMessage.textContent = 'Thank you — we\'ll be in touch within 24 hours.';
+        formMessage.style.color = 'var(--brass)';
+        formMessage.classList.remove('hidden');
+        form.reset();
+      } catch (err) {
+        formMessage.textContent = 'Something went wrong. Please try again or email hello@curated.studio.';
+        formMessage.style.color = '#ff6b6b';
+        formMessage.classList.remove('hidden');
+      } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        lucide.createIcons();
+      }
+    });
+
+    // Remove error state on input
+    ['name', 'email', 'message'].forEach(id => {
+      document.getElementById(id).addEventListener('input', function () {
+        this.classList.remove('error');
+      });
+    });
+  </script>
+</body>
+</html>
