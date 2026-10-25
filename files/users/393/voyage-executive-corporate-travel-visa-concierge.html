@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voyage Executive | Corporate Travel & Visa Concierge</title>
+  <!-- Design Direction: Premium light UI with deep navy, warm brass accent, and soft ivory surfaces. Fonts: Bricolage Grotesque + Inter. -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0B1B2B;
+      --ink-soft: #1E2E3F;
+      --ivory: #FCFBF9;
+      --ivory-soft: #F6F4F0;
+      --brass: #B08D57;
+      --brass-light: #D4B68A;
+      --brass-glow: rgba(176, 141, 87, 0.18);
+      --border-hair: rgba(11, 27, 43, 0.08);
+      --shadow-sm: 0 2px 8px rgba(11, 27, 43, 0.04);
+      --shadow-md: 0 8px 28px rgba(11, 27, 43, 0.07);
+      --shadow-lg: 0 20px 50px rgba(11, 27, 43, 0.10);
+      --radius-xl: 1.75rem;
+      --radius-2xl: 2.5rem;
+      --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+
+    /* === Base === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      background: var(--ivory);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .font-display { font-family: var(--font-display); }
+    .text-balance { text-wrap: balance; }
+
+    /* === Focus & Accessibility === */
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.45);
+      border-radius: 6px;
+    }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* === Custom Components === */
+    .glass-panel {
+      background: rgba(252, 251, 249, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-hair);
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: var(--ink); color: var(--ivory);
+      padding: 0.85rem 1.85rem; border-radius: 100px;
+      font-weight: 500; font-size: 0.9rem; letter-spacing: 0.01em;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      border: 1px solid var(--ink); cursor: pointer;
+      box-shadow: 0 4px 16px rgba(11, 27, 43, 0.10);
+    }
+    .btn-primary:hover {
+      background: var(--ink-soft);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(11, 27, 43, 0.16);
+    }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: transparent; color: var(--ink);
+      padding: 0.85rem 1.85rem; border-radius: 100px;
+      font-weight: 500; font-size: 0.9rem;
+      border: 1px solid var(--border-hair);
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      border-color: var(--brass);
+      background: rgba(176, 141, 87, 0.06);
+      transform: translateY(-2px);
+    }
+    .btn-secondary:active { transform: scale(0.97); }
+    .accent-line {
+      width: 3rem; height: 2px; background: var(--brass);
+      display: block; margin-bottom: 1rem;
+    }
+    .card-lift {
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.35s ease;
+    }
+    .card-lift:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(176, 141, 87, 0.25);
+    }
+
+    /* === Hero Visual Depth === */
+    .hero-orbit {
+      position: absolute; border-radius: 50%;
+      border: 1px solid rgba(176, 141, 87, 0.15);
+      pointer-events: none;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 60vw; height: 60vw;
+      background: radial-gradient(circle at 70% 30%, rgba(176, 141, 87, 0.10) 0%, transparent 65%);
+      top: -15%; right: -20%; z-index: 0; pointer-events: none;
+    }
+
+    /* === WhatsApp Floating Button === */
+    .whatsapp-float {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+      width: 3.75rem; height: 3.75rem; border-radius: 50%;
+      background: #25D366; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 28px rgba(37, 211, 102, 0.35);
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer; border: none;
+    }
+    .whatsapp-float:hover {
+      transform: scale(1.08);
+      box-shadow: 0 12px 36px rgba(37, 211, 102, 0.45);
+    }
+    .whatsapp-float:active { transform: scale(0.95); }
+    .whatsapp-float svg { width: 1.75rem; height: 1.75rem; }
+
+    /* === Mobile Nav === */
+    .mobile-nav {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(252, 251, 249, 0.98);
+      backdrop-filter: blur(30px);
+      display: flex; flex-direction: column;
+      padding: 2rem; gap: 0.5rem;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      visibility: hidden;
+    }
+    .mobile-nav.open {
+      transform: translateX(0);
+      visibility: visible;
+    }
+    .mobile-nav a {
+      font-family: var(--font-display);
+      font-size: 1.75rem; font-weight: 600;
+      color: var(--ink); text-decoration: none;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-hair);
+      transition: color 0.2s ease;
+    }
+    .mobile-nav a:hover { color: var(--brass); }
+
+    /* === Reduced Motion === */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+    }
+
+    /* === Custom Scrollbar === */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--ivory-soft); }
+    ::-webkit-scrollbar-thumb { background: var(--brass-light); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--brass); }
+
+    /* === Form Error === */
+    .field-error input, .field-error textarea {
+      border-color: #C0392B !important;
+      background: rgba(192, 57, 43, 0.03);
+    }
+    .error-msg {
+      color: #C0392B; font-size: 0.75rem; margin-top: 0.35rem;
+      display: none;
+    }
+    .field-error .error-msg { display: block; }
+
+    /* === Success Modal === */
+    .success-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(11, 27, 43, 0.35);
+      backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    .success-overlay.visible { display: flex; }
+    .success-card {
+      background: var(--ivory); border-radius: var(--radius-2xl);
+      padding: 3rem 2.5rem; max-width: 28rem; width: 100%;
+      text-align: center; box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-hair);
+      animation: modalIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.94) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="flex items-center justify-between h-20 lg:h-24 transition-all duration-300" id="header-inner">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2.5 group" aria-label="Voyage Executive Home">
+          <span class="w-9 h-9 rounded-full bg-[var(--ink)] flex items-center justify-center text-[var(--ivory)] font-display font-bold text-sm transition-transform duration-300 group-hover:scale-105">VE</span>
+          <span class="font-display text-lg font-700 tracking-tight text-[var(--ink)]">Voyage<span class="text-[var(--brass)]">Exec</span></span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden lg:flex items-center gap-9" aria-label="Primary">
+          <a href="#services" class="text-sm font-medium text-[var(--ink-soft)] hover:text-[var(--brass)] transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[1.5px] after:bg-[var(--brass)] after:transition-all after:duration-300 hover:after:w-full">Services</a>
+          <a href="#visa" class="text-sm font-medium text-[var(--ink-soft)] hover:text-[var(--brass)] transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[1.5px] after:bg-[var(--brass)] after:transition-all after:duration-300 hover:after:w-full">Visa Desk</a>
+          <a href="#why-us" class="text-sm font-medium text-[var(--ink-soft)] hover:text-[var(--brass)] transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[1.5px] after:bg-[var(--brass)] after:transition-all after:duration-300 hover:after:w-full">Why Us</a>
+          <a href="#testimonials" class="text-sm font-medium text-[var(--ink-soft)] hover:text-[var(--brass)] transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[1.5px] after:bg-[var(--brass)] after:transition-all after:duration-300 hover:after:w-full">Clients</a>
+        </nav>
+
+        <div class="hidden lg:flex items-center gap-3">
+          <a href="tel:8129297698" class="btn-secondary text-sm" aria-label="Call us">
+            <i data-lucide="phone" class="w-4 h-4"></i>
+            8129297698
+          </a>
+          <a href="#contact" class="btn-primary text-sm">Plan Your Trip</a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="lg:hidden w-11 h-11 flex items-center justify-center rounded-full border border-[var(--border-hair)] bg-white/60 backdrop-blur-sm transition-all duration-200 hover:border-[var(--brass)]" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+          <i data-lucide="menu" class="w-5 h-5 text-[var(--ink)]"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Nav Overlay -->
+  <div id="mobile-nav" class="mobile-nav" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex items-center justify-between mb-6">
+      <span class="font-display text-lg font-bold text-[var(--ink)]">Menu</span>
+      <button id="mobile-close-btn" class="w-11 h-11 flex items-center justify-center rounded-full border border-[var(--border-hair)] bg-white" aria-label="Close menu">
+        <i data-lucide="x" class="w-5 h-5 text-[var(--ink)]"></i>
+      </button>
+    </div>
+    <a href="#services" class="mobile-link">Services</a>
+    <a href="#visa" class="mobile-link">Visa Desk</a>
+    <a href="#why-us" class="mobile-link">Why Us</a>
+    <a href="#testimonials" class="mobile-link">Clients</a>
+    <a href="#contact" class="mobile-link">Contact</a>
+    <div class="mt-8">
+      <a href="tel:8129297698" class="btn-primary w-full text-center">Call 8129297698</a>
+    </div>
+  </div>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-orbit w-[55vw] h-[55vw] top-[-10%] right-[-15%]" aria-hidden="true"></div>
+    <div class="hero-orbit w-[35vw] h-[35vw] bottom-[-8%] left-[-10%] border-[var(--brass)] opacity-40" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10 w-full">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <!-- Left: Copy -->
+        <div class="lg:col-span-7">
+          <div class="flex items-center gap-3 mb-8 reveal">
+            <span class="accent-line"></span>
+            <span class="text-xs font-semibold tracking-[0.2em] uppercase text-[var(--brass)]">Corporate Travel & Visa Concierge</span>
+          </div>
+          <h1 class="text-[clamp(2.75rem,6vw,5.5rem)] font-800 text-[var(--ink)] text-balance leading-[1.02] reveal">
+            Travel that works<br />
+            <span class="text-[var(--brass)]">as hard as you do.</span>
+          </h1>
+          <p class="mt-8 text-lg lg:text-xl text-[var(--ink-soft)]/80 max-w-xl leading-relaxed reveal">
+            From multi-city business itineraries to last-minute visa approvals — we handle the logistics so your team can focus on the deal, not the departure gate.
+          </p>
+          <div class="mt-10 flex flex-wrap items-center gap-4 reveal">
+            <a href="#contact" class="btn-primary text-base px-8 py-4">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              Plan Your Trip
+            </a>
+            <a href="#services" class="btn-secondary text-base px-8 py-4">
+              Explore Services
+            </a>
+          </div>
+          <!-- Quick stats -->
+          <div class="mt-14 grid grid-cols-3 gap-6 max-w-lg reveal">
+            <div>
+              <p class="font-display text-3xl font-700 text-[var(--ink)]">98%</p>
+              <p class="text-xs text-[var(--ink-soft)]/60 mt-1">Visa approval rate</p>
+            </div>
+            <div class="border-l border-[var(--border-hair)] pl-6">
+              <p class="font-display text-3xl font-700 text-[var(--ink)]">40+</p>
+              <p class="text-xs text-[var(--ink-soft)]/60 mt-1">Countries covered</p>
+            </div>
+            <div class="border-l border-[var(--border-hair)] pl-6">
+              <p class="font-display text-3xl font-700 text-[var(--ink)]">24/7</p>
+              <p class="text-xs text-[var(--ink-soft)]/60 mt-1">Executive support</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Visual Card -->
+        <div class="lg:col-span-5 reveal">
+          <div class="relative">
+            <!-- Floating card -->
+            <div class="glass-panel rounded-[var(--radius-2xl)] p-8 lg:p-10 shadow-[var(--shadow-lg)] relative z-10 card-lift">
+              <div class="flex items-center justify-between mb-6">
+                <span class="text-xs font-semibold tracking-[0.15em] uppercase text-[var(--brass)]">Live Itinerary</span>
+                <span class="flex items-center gap-1.5 text-[0.7rem] font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  On Track
+                </span>
+              </div>
+              <div class="space-y-5">
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl bg-[var(--ink)] flex items-center justify-center shrink-0">
+                    <i data-lucide="plane" class="w-4 h-4 text-[var(--ivory)]"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-semibold text-[var(--ink)]">Singapore → London</p>
+                    <p class="text-xs text-[var(--ink-soft)]/60 mt-0.5">Business Class · SQ 318 · 14h 20m</p>
+                  </div>
+                  <span class="text-xs font-medium text-[var(--brass)]">Confirmed</span>
+                </div>
+                <div class="w-full h-px bg-[var(--border-hair)]"></div>
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl bg-[var(--brass)]/10 flex items-center justify-center shrink-0">
+                    <i data-lucide="file-check" class="w-4 h-4 text-[var(--brass)]"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-semibold text-[var(--ink)]">UK Business Visa</p>
+                    <p class="text-xs text-[var(--ink-soft)]/60 mt-0.5">Priority processing · Approved</p>
+                  </div>
+                  <span class="text-xs font-medium text-emerald-700">Ready</span>
+                </div>
+                <div class="w-full h-px bg-[var(--border-hair)]"></div>
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl bg-[var(--brass)]/10 flex items-center justify-center shrink-0">
+                    <i data-lucide="hotel" class="w-4 h-4 text-[var(--brass)]"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-semibold text-[var(--ink)]">The Langham, London</p>
+                    <p class="text-xs text-[var(--ink-soft)]/60 mt-0.5">3 nights · Executive Room</p>
+                  </div>
+                  <span class="text-xs font-medium text-[var(--brass)]">Booked</span>
+                </div>
+              </div>
+              <div class="mt-8 pt-6 border-t border-[var(--border-hair)] flex items-center justify-between">
+                <span class="text-xs text-[var(--ink-soft)]/50">Next: Airport transfer · 06:30</span>
+                <a href="#contact" class="text-xs font-semibold text-[var(--brass)] hover:underline">Manage</a>
+              </div>
+            </div>
+            <!-- Decorative back card -->
+            <div class="absolute inset-0 top-4 left-4 rounded-[var(--radius-2xl)] bg-[var(--brass)]/8 border border-[var(--brass)]/15 -z-10" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TRUST BAR ==================== -->
+  <section class="border-y border-[var(--border-hair)] bg-white/50 py-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+        <p class="text-xs font-semibold tracking-[0.15em] uppercase text-[var(--ink-soft)]/50">Trusted by teams at</p>
+        <div class="flex flex-wrap items-center justify-center gap-8 lg:gap-14 opacity-40">
+          <span class="font-display text-lg font-700 tracking-tight">Meridian&Co</span>
+          <span class="font-display text-lg font-700 tracking-tight">Apex Law</span>
+          <span class="font-display text-lg font-700 tracking-tight">NorthBridge</span>
+          <span class="font-display text-lg font-700 tracking-tight">Vantage Group</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SERVICES ==================== -->
+  <section id="services" class="py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="max-w-2xl mb-16 reveal">
+        <span class="accent-line"></span>
+        <h2 class="text-[clamp(2rem,4vw,3.5rem)] font-800 text-[var(--ink)] text-balance">Everything between<br />here and the boardroom.</h2>
+        <p class="mt-5 text-lg text-[var(--ink-soft)]/70">One agency, every detail handled — from the first visa form to the final hotel invoice.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <div class="bg-white rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] card-lift reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[var(--ink)] flex items-center justify-center mb-6">
+            <i data-lucide="briefcase" class="w-5 h-5 text-[var(--ivory)]"></i>
+          </div>
+          <h3 class="text-xl font-700 text-[var(--ink)] mb-3">Corporate Itineraries</h3>
+          <p class="text-sm text-[var(--ink-soft)]/70 leading-relaxed">Multi-city routing, preferred airline negotiations, and policy-compliant booking — all built around your meeting schedule.</p>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-white rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] card-lift reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[var(--brass)]/12 flex items-center justify-center mb-6">
+            <i data-lucide="stamp" class="w-5 h-5 text-[var(--brass)]"></i>
+          </div>
+          <h3 class="text-xl font-700 text-[var(--ink)] mb-3">Visa & Documentation</h3>
+          <p class="text-sm text-[var(--ink-soft)]/70 leading-relaxed">Business visas, work permits, and invitation letters handled by specialists who know each consulate's playbook.</p>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-white rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] card-lift reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[var(--ink)] flex items-center justify-center mb-6">
+            <i data-lucide="car-front" class="w-5 h-5 text-[var(--ivory)]"></i>
+          </div>
+          <h3 class="text-xl font-700 text-[var(--ink)] mb-3">Ground & Transfers</h3>
+          <p class="text-sm text-[var(--ink-soft)]/70 leading-relaxed">Chauffeured airport pickups, inter-city transfers, and on-demand executive cars in every destination you operate in.</p>
+        </div>
+        <!-- Card 4 -->
+        <div class="bg-white rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] card-lift reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[var(--brass)]/12 flex items-center justify-center mb-6">
+            <i data-lucide="building-2" class="w-5 h-5 text-[var(--brass)]"></i>
+          </div>
+          <h3 class="text-xl font-700 text-[var(--ink)] mb-3">Executive Accommodation</h3>
+          <p class="text-sm text-[var(--ink-soft)]/70 leading-relaxed">Curated business hotels and serviced apartments with negotiated corporate rates, late check-out, and loyalty stacking.</p>
+        </div>
+        <!-- Card 5 -->
+        <div class="bg-white rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] card-lift reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[var(--ink)] flex items-center justify-center mb-6">
+            <i data-lucide="shield-check" class="w-5 h-5 text-[var(--ivory)]"></i>
+          </div>
+          <h3 class="text-xl font-700 text-[var(--ink)] mb-3">Duty of Care</h3>
+          <p class="text-sm text-[var(--ink-soft)]/70 leading-relaxed">Real-time traveller tracking, risk alerts, and a 24/7 emergency desk so your team is never stranded or uninformed.</p>
+        </div>
+        <!-- Card 6 -->
+        <div class="bg-white rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] card-lift reveal">
+          <div class="w-12 h-12 rounded-2xl bg-[var(--brass)]/12 flex items-center justify-center mb-6">
+            <i data-lucide="receipt" class="w-5 h-5 text-[var(--brass)]"></i>
+          </div>
+          <h3 class="text-xl font-700 text-[var(--ink)] mb-3">Expense & Reporting</h3>
+          <p class="text-sm text-[var(--ink-soft)]/70 leading-relaxed">Consolidated invoicing, per-trip spend breakdowns, and policy-compliant reports delivered to your finance team automatically.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== VISA DESK ==================== -->
+  <section id="visa" class="py-24 lg:py-32 bg-white border-y border-[var(--border-hair)]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div class="reveal">
+          <span class="accent-line"></span>
+          <h2 class="text-[clamp(2rem,4vw,3.5rem)] font-800 text-[var(--ink)] text-balance">Visa approvals,<br />without the guesswork.</h2>
+          <p class="mt-5 text-lg text-[var(--ink-soft)]/70 leading-relaxed">Our in-house visa desk knows every form, fee, and consulate quirk across 40+ countries. We prepare, review, and submit — you just sign.</p>
+          <div class="mt-10 space-y-5">
+            <div class="flex items-start gap-4">
+              <div class="w-8 h-8 rounded-full bg-[var(--brass)]/12 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="check" class="w-4 h-4 text-[var(--brass)]"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-[var(--ink)]">Document pre-check</p>
+                <p class="text-sm text-[var(--ink-soft)]/60">We audit every page before submission to eliminate rejections.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-8 h-8 rounded-full bg-[var(--brass)]/12 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="check" class="w-4 h-4 text-[var(--brass)]"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-[var(--ink)]">Priority appointments</p>
+                <p class="text-sm text-[var(--ink-soft)]/60">Expedited slots at consulates for urgent business travel.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-8 h-8 rounded-full bg-[var(--brass)]/12 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="check" class="w-4 h-4 text-[var(--brass)]"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-[var(--ink)]">Live status tracking</p>
+                <p class="text-sm text-[var(--ink-soft)]/60">Daily updates on your application from submission to stamp.</p>
+              </div>
+            </div>
+          </div>
+          <a href="#contact" class="btn-primary mt-10">
+            <i data-lucide="file-text" class="w-4 h-4"></i>
+            Start Visa Application
+          </a>
+        </div>
+
+        <!-- Visa visual -->
+        <div class="reveal">
+          <div class="relative">
+            <div class="bg-[var(--ivory-soft)] rounded-[var(--radius-2xl)] p-8 lg:p-10 border border-[var(--border-hair)]">
+              <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-full bg-[var(--brass)]/15 flex items-center justify-center">
+                  <i data-lucide="globe" class="w-5 h-5 text-[var(--brass)]"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-700 text-[var(--ink)]">Global Visa Coverage</p>
+                  <p class="text-xs text-[var(--ink-soft)]/50">40+ countries · all business categories</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="bg-white rounded-xl p-4 border border-[var(--border-hair)] flex items-center gap-3 transition-all duration-200 hover:border-[var(--brass)]/40">
+                  <span class="text-lg font-display font-700 text-[var(--brass)]">UK</span>
+                  <span class="text-xs text-[var(--ink-soft)]/60">Standard & Priority</span>
+                </div>
+                <div class="bg-white rounded-xl p-4 border border-[var(--border-hair)] flex items-center gap-3 transition-all duration-200 hover:border-[var(--brass)]/40">
+                  <span class="text-lg font-display font-700 text-[var(--brass)]">US</span>
+                  <span class="text-xs text-[var(--ink-soft)]/60">B1/B2 & L1</span>
+                </div>
+                <div class="bg-white rounded-xl p-4 border border-[var(--border-hair)] flex items-center gap-3 transition-all duration-200 hover:border-[var(--brass)]/40">
+                  <span class="text-lg font-display font-700 text-[var(--brass)]">UAE</span>
+                  <span class="text-xs text-[var(--ink-soft)]/60">30/60-day business</span>
+                </div>
+                <div class="bg-white rounded-xl p-4 border border-[var(--border-hair)] flex items-center gap-3 transition-all duration-200 hover:border-[var(--brass)]/40">
+                  <span class="text-lg font-display font-700 text-[var(--brass)]">SCHENGEN</span>
+                  <span class="text-xs text-[var(--ink-soft)]/60">Multi-entry</span>
+                </div>
+                <div class="bg-white rounded-xl p-4 border border-[var(--border-hair)] flex items-center gap-3 transition-all duration-200 hover:border-[var(--brass)]/40">
+                  <span class="text-lg font-display font-700 text-[var(--brass)]">SGP</span>
+                  <span class="text-xs text-[var(--ink-soft)]/60">EP & business</span>
+                </div>
+                <div class="bg-white rounded-xl p-4 border border-[var(--border-hair)] flex items-center gap-3 transition-all duration-200 hover:border-[var(--brass)]/40">
+                  <span class="text-lg font-display font-700 text-[var(--brass)]">JPN</span>
+                  <span class="text-xs text-[var(--ink-soft)]/60">Business & transit</span>
+                </div>
+              </div>
+            </div>
+            <!-- Decorative badge -->
+            <div class="absolute -bottom-5 -right-3 bg-[var(--ink)] text-[var(--ivory)] rounded-2xl px-5 py-3 shadow-[var(--shadow-md)] flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-[var(--brass-light)]"></i>
+              <span class="text-xs font-semibold">Avg. 48h turnaround</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== WHY US ==================== -->
+  <section id="why-us" class="py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="max-w-2xl mb-16 reveal">
+        <span class="accent-line"></span>
+        <h2 class="text-[clamp(2rem,4vw,3.5rem)] font-800 text-[var(--ink)] text-balance">Built for people<br />who can't afford delays.</h2>
+        <p class="mt-5 text-lg text-[var(--ink-soft)]/70">We're not a booking engine. We're your travel operations team — proactive, precise, and always a phone call away.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] reveal">
+          <p class="font-display text-5xl font-800 text-[var(--brass)]/25 mb-4">01</p>
+          <h3 class="text-xl font-700 text-[var(--ink)] mb-2">One point of contact</h3>
+          <p class="text-sm text-[var(--ink-soft)]/70 leading-relaxed">A dedicated travel manager who knows your team's preferences, policies, and pain points — no call centres, no scripts.</p>
+        </div>
+        <div class="bg-white rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] reveal">
+          <p class="font-display text-5xl font-800 text-[var(--brass)]/25 mb-4">02</p>
+          <h3 class="text-xl font-700 text-[var(--ink)] mb-2">Proactive rebooking</h3>
+          <p class="text-sm text-[var(--ink-soft)]/70 leading-relaxed">Flight delayed? We're already rebooking before you've landed. Our team monitors every leg of your journey in real time.</p>
+        </div>
+        <div class="bg-white rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] reveal">
+          <p class="font-display text-5xl font-800 text-[var(--brass)]/25 mb-4">03</p>
+          <h3 class="text-xl font-700 text-[var(--ink)] mb-2">Consolidated billing</h3>
+          <p class="text-sm text-[var(--ink-soft)]/70 leading-relaxed">One invoice per month, split by department or traveller. Your finance team will thank you — and so will your auditors.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TESTIMONIALS ==================== -->
+  <section id="testimonials" class="py-24 lg:py-32 bg-white border-y border-[var(--border-hair)]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="max-w-2xl mb-16 reveal">
+        <span class="accent-line"></span>
+        <h2 class="text-[clamp(2rem,4vw,3.5rem)] font-800 text-[var(--ink)] text-balance">Trusted by travelling<br />decision-makers.</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Testimonial 1 -->
+        <div class="bg-[var(--ivory)] rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] card-lift reveal">
+          <div class="flex gap-1 mb-5 text-[var(--brass)]" aria-label="5 star rating">
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+          </div>
+          <p class="text-sm text-[var(--ink-soft)]/80 leading-relaxed mb-6">"Our VP needed a same-day visa for a client meeting in Dubai. Voyage Exec had the application submitted by noon and approved by the next morning. Unreal."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-[var(--ink)]/8 flex items-center justify-center text-xs font-700 text-[var(--ink)]">RK</div>
+            <div>
+              <p class="text-sm font-600 text-[var(--ink)]">Rahul Khanna</p>
+              <p class="text-xs text-[var(--ink-soft)]/50">COO, NorthBridge Capital</p>
+            </div>
+          </div>
+        </div>
+        <!-- Testimonial 2 -->
+        <div class="bg-[var(--ivory)] rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] card-lift reveal">
+          <div class="flex gap-1 mb-5 text-[var(--brass)]" aria-label="5 star rating">
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+          </div>
+          <p class="text-sm text-[var(--ink-soft)]/80 leading-relaxed mb-6">"We moved our entire executive travel programme to them. Flights, hotels, visas, transfers — one monthly invoice, zero drama. Our EA finally sleeps."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-[var(--ink)]/8 flex items-center justify-center text-xs font-700 text-[var(--ink)]">SM</div>
+            <div>
+              <p class="text-sm font-600 text-[var(--ink)]">Sarah Mitchell</p>
+              <p class="text-xs text-[var(--ink-soft)]/50">Head of Ops, Meridian&Co</p>
+            </div>
+          </div>
+        </div>
+        <!-- Testimonial 3 -->
+        <div class="bg-[var(--ivory)] rounded-[var(--radius-xl)] p-8 border border-[var(--border-hair)] shadow-[var(--shadow-sm)] card-lift reveal">
+          <div class="flex gap-1 mb-5 text-[var(--brass)]" aria-label="5 star rating">
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+          </div>
+          <p class="text-sm text-[var(--ink-soft)]/80 leading-relaxed mb-6">"A cancelled flight at 11pm could have derailed a three-day negotiation. Their team had us rebooked and in a hotel within 40 minutes. That's the service you pay for."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-[var(--ink)]/8 flex items-center justify-center text-xs font-700 text-[var(--ink)]">AD</div>
+            <div>
+              <p class="text-sm font-600 text-[var(--ink)]">Amit Desai</p>
+              <p class="text-xs text-[var(--ink-soft)]/50">Partner, Apex Law</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CTA BANNER ==================== -->
+  <section class="py-24 lg:py-32 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+      <div class="bg-[var(--ink)] rounded-[var(--radius-2xl)] p-10 lg:p-16 relative overflow-hidden reveal">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-[var(--brass)]/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3" aria-hidden="true"></div>
+        <div class="relative z-10 grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 class="text-[clamp(2rem,4vw,3.25rem)] font-800 text-[var(--ivory)] text-balance leading-[1.05]">Your next trip<br />starts here.</h2>
+            <p class="mt-4 text-[var(--ivory)]/60 text-base max-w-md leading-relaxed">Tell us where your team needs to be. We'll handle the rest — flights, visa, hotel, and the car that picks you up.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row lg:justify-end gap-4">
+            <a href="tel:8129297698" class="inline-flex items-center justify-center gap-2 bg-[var(--ivory)] text-[var(--ink)] px-8 py-4 rounded-full font-semibold text-sm transition-all duration-200 hover:bg-white hover:scale-[1.02] active:scale-[0.98]">
+              <i data-lucide="phone" class="w-4 h-4"></i>
+              Call 8129297698
+            </a>
+            <a href="#contact" class="inline-flex items-center justify-center gap-2 bg-transparent text-[var(--ivory)] border border-[var(--ivory)]/25 px-8 py-4 rounded-full font-semibold text-sm transition-all duration-200 hover:bg-[var(--ivory)]/10 hover:border-[var(--ivory)]/50">
+              Request a Quote
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CONTACT / FOOTER ==================== -->
+  <footer id="contact" class="bg-white border-t border-[var(--border-hair)]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 py-20 lg:py-28">
+      <div class="grid lg:grid-cols-2 gap-16">
+        <!-- Left: Form -->
+        <div>
+          <span class="accent-line"></span>
+          <h2 class="text-[clamp(1.75rem,3vw,2.75rem)] font-800 text-[var(--ink)] text-balance">Start planning your trip</h2>
+          <p class="mt-4 text-base text-[var(--ink-soft)]/70 max-w-md">Fill in the details and a travel manager will reply within 2 hours (business days). For urgent requests, call us directly.</p>
+
+          <form id="contact-form" class="mt-10 space-y-5" novalidate>
+            <div class="grid sm:grid-cols-2 gap-5">
+              <div>
+                <label for="name" class="block text-xs font-semibold text-[var(--ink)] mb-2">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Your name" required
+                  class="w-full px-4 py-3 rounded-xl border border-[var(--border-hair)] bg-[var(--ivory)] text-sm text-[var(--ink)] placeholder:text-[var(--ink-soft)]/30 focus:border-[var(--brass)] focus:bg-white transition-all duration-200 outline-none" />
+                <p class="error-msg">Please enter your name.</p>
+              </div>
+              <div>
+                <label for="email" class="block text-xs font-semibold text-[var(--ink)] mb-2">Email</label>
+                <input type="email" id="email" name="email" placeholder="you@company.com" required
+                  class="w-full px-4 py-3 rounded-xl border border-[var(--border-hair)] bg-[var(--ivory)] text-sm text-[var(--ink)] placeholder:text-[var(--ink-soft)]/30 focus:border-[var(--brass)] focus:bg-white transition-all duration-200 outline-none" />
+                <p class="error-msg">Please enter a valid email.</p>
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-5">
+              <div>
+                <label for="phone" class="block text-xs font-semibold text-[var(--ink)] mb-2">Phone</label>
+                <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" required
+                  class="w-full px-4 py-3 rounded-xl border border-[var(--border-hair)] bg-[var(--ivory)] text-sm text-[var(--ink)] placeholder:text-[var(--ink-soft)]/30 focus:border-[var(--brass)] focus:bg-white transition-all duration-200 outline-none" />
+                <p class="error-msg">Please enter your phone number.</p>
+              </div>
+              <div>
+                <label for="service" class="block text-xs font-semibold text-[var(--ink)] mb-2">Service Needed</label>
+                <select id="service" name="service" required
+                  class="w-full px-4 py-3 rounded-xl border border-[var(--border-hair)] bg-[var(--ivory)] text-sm text-[var(--ink)] focus:border-[var(--brass)] focus:bg-white transition-all duration-200 outline-none appearance-none cursor-pointer">
+                  <option value="" disabled selected>Select a service</option>
+                  <option value="flights">Business Flights</option>
+                  <option value="visa">Visa & Documentation</option>
+                  <option value="hotel">Executive Accommodation</option>
+                  <option value="transfers">Ground Transfers</option>
+                  <option value="full">Full Travel Management</option>
+                </select>
+                <p class="error-msg">Please select a service.</p>
+              </div>
+            </div>
+            <div>
+              <label for="message" class="block text-xs font-semibold text-[var(--ink)] mb-2">Trip Details</label>
+              <textarea id="message" name="message" rows="4" placeholder="Destination, dates, number of travellers, any specific requirements..." required
+                class="w-full px-4 py-3 rounded-xl border border-[var(--border-hair)] bg-[var(--ivory)] text-sm text-[var(--ink)] placeholder:text-[var(--ink-soft)]/30 focus:border-[var(--brass)] focus:bg-white transition-all duration-200 outline-none resize-none"></textarea>
+              <p class="error-msg">Please tell us about your trip.</p>
+            </div>
+            <!-- TODO: connect form action to backend endpoint -->
+            <button type="submit" class="btn-primary w-full py-4 text-base">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              Send Enquiry
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Info -->
+        <div class="lg:pl-12">
+          <div class="bg-[var(--ivory)] rounded-[var(--radius-2xl)] p-8 lg:p-10 border border-[var(--border-hair)]">
+            <h3 class="font-display text-xl font-700 text-[var(--ink)] mb-6">Get in touch directly</h3>
+            <div class="space-y-5">
+              <a href="tel:8129297698" class="flex items-center gap-4 group">
+                <div class="w-10 h-10 rounded-xl bg-white border border-[var(--border-hair)] flex items-center justify-center transition-all duration-200 group-hover:border-[var(--brass)] group-hover:bg-[var(--brass)]/5">
+                  <i data-lucide="phone" class="w-4 h-4 text-[var(--brass)]"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-[var(--ink-soft)]/50">Phone</p>
+                  <p class="text-sm font-600 text-[var(--ink)] group-hover:text-[var(--brass)] transition-colors">8129297698</p>
+                </div>
+              </a>
+              <a href="https://wa.me/918129297698" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 group">
+                <div class="w-10 h-10 rounded-xl bg-white border border-[var(--border-hair)] flex items-center justify-center transition-all duration-200 group-hover:border-[#25D366] group-hover:bg-[#25D366]/5">
+                  <i data-lucide="message-circle" class="w-4 h-4 text-[#25D366]"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-[var(--ink-soft)]/50">WhatsApp</p>
+                  <p class="text-sm font-600 text-[var(--ink)] group-hover:text-[#25D366] transition-colors">Chat with us</p>
+                </div>
+              </a>
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-white border border-[var(--border-hair)] flex items-center justify-center">
+                  <i data-lucide="mail" class="w-4 h-4 text-[var(--brass)]"></i>
+                </div>
+                <div>
+                  <p class="text-xs text-[var(--ink-soft)]/50">Email</p>
+                  <p class="text-sm font-600 text-[var(--ink)]">hello@voyageexec.com</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-[var(--border-hair)]">
+              <p class="text-xs text-[var(--ink-soft)]/50 mb-3">Office Hours</p>
+              <p class="text-sm text-[var(--ink-soft)]/70">Mon – Fri: 9:00 AM – 7:00 PM</p>
+              <p class="text-sm text-[var(--ink-soft)]/70">Emergency desk: 24/7</p>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-[var(--border-hair)]">
+              <p class="text-xs text-[var(--ink-soft)]/50 mb-3">Follow</p>
+              <div class="flex gap-3">
+                <a href="#" class="w-10 h-10 rounded-full bg-white border border-[var(--border-hair)] flex items-center justify-center transition-all duration-200 hover:border-[var(--brass)] hover:bg-[var(--brass)]/5" aria-label="LinkedIn">
+                  <i data-lucide="linkedin" class="w-4 h-4 text-[var(--ink)]"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white border border-[var(--border-hair)] flex items-center justify-center transition-all duration-200 hover:border-[var(--brass)] hover:bg-[var(--brass)]/5" aria-label="Instagram">
+                  <i data-lucide="instagram" class="w-4 h-4 text-[var(--ink)]"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white border border-[var(--border-hair)] flex items-center justify-center transition-all duration-200 hover:border-[var(--brass)] hover:bg-[var(--brass)]/5" aria-label="Twitter">
+                  <i data-lucide="twitter" class="w-4 h-4 text-[var(--ink)]"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer bottom -->
+      <div class="mt-20 pt-8 border-t border-[var(--border-hair)] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-[var(--ink-soft)]/40">© 2025 Voyage Executive. All rights reserved.</p>
+        <div class="flex items-center gap-6">
+          <a href="#" class="text-xs text-[var(--ink-soft)]/40 hover:text-[var(--brass)] transition-colors">Privacy Policy</a>
+          <a href="#" class="text-xs text-[var(--ink-soft)]/40 hover:text-[var(--brass)] transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== WHATSAPP FLOATING BUTTON ==================== -->
+  <a href="https://wa.me/918129297698" target="_blank" rel="noopener noreferrer" class="whatsapp-float" aria-label="Chat with us on WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <!-- ==================== SUCCESS MODAL ==================== -->
+  <div id="success-overlay" class="success-overlay" role="dialog" aria-modal="true" aria-label="Success message">
+    <div class="success-card">
+      <div class="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6">
+        <i data-lucide="check-circle" class="w-8 h-8 text-emerald-600"></i>
+      </div>
+      <h3 class="font-display text-xl font-700 text-[var(--ink)] mb-2">Enquiry sent</h3>
+      <p class="text-sm text-[var(--ink-soft)]/60 mb-8">A travel manager will get back to you within 2 business hours.</p>
+      <button id="success-close" class="btn-primary w-full">Got it</button>
+    </div>
+  </div>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Header scroll effect
+    const header = document.getElementById('site-header');
+    const headerInner = document.getElementById('header-inner');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        header.classList.add('bg-[var(--ivory)]/80', 'backdrop-blur-xl', 'shadow-[0_1px_0_var(--border-hair)]');
+        headerInner.classList.replace('h-20', 'h-16');
+        headerInner.classList.replace('lg:h-24', 'lg:h-20');
+      } else {
+        header.classList.remove('bg-[var(--ivory)]/80', 'backdrop-blur-xl', 'shadow-[0_1px_0_var(--border-hair)]');
+        headerInner.classList.replace('h-16', 'h-20');
+        headerInner.classList.replace('lg:h-20', 'lg:h-24');
+      }
+    }, { passive: true });
+
+    // Mobile menu
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+    const mobileCloseBtn = document.getElementById('mobile-close-btn');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    function openMenu() {
+      mobileNav.classList.add('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      mobileNav.classList.remove('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    mobileMenuBtn.addEventListener('click', openMenu);
+    mobileCloseBtn.addEventListener('click', closeMenu);
+    mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+    // Close on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileNav.classList.contains('open')) closeMenu();
+    });
+
+    // Form validation
+    const form = document.getElementById('contact-form');
+    const successOverlay = document.getElementById('success-overlay');
+    const successClose = document.getElementById('success-close');
+
+    function showError(input) {
+      input.closest('div').classList.add('field-error');
+    }
+    function clearError(input) {
+      input.closest('div').classList.remove('field-error');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      let valid = true;
+
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const phone = document.getElementById('phone');
+      const service = document.getElementById('service');
+      const message = document.getElementById('message');
+
+      // Reset
+      [name, email, phone, service, message].forEach(clearError);
+
+      if (!name.value.trim()) { showError(name); valid = false; }
+      if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { showError(email); valid = false; }
+      if (!phone.value.trim()) { showError(phone); valid = false; }
+      if (!service.value) { showError(service); valid = false; }
+      if (!message.value.trim()) { showError(message); valid = false; }
+
+      if (!valid) return;
+
+      // Simulate submission (replace with real fetch in production)
+      // TODO: connect form action to backend endpoint
+      const formData = {
+        name: name.value.trim(),
+        email: email.value.trim(),
+        phone: phone.value.trim(),
+        service: service.value,
+        message: message.value.trim()
+      };
+
+      // Simulated success — replace with actual fetch('/submit', { method: 'POST', ... })
+      setTimeout(() => {
+        successOverlay.classList.add('visible');
+        form.reset();
+      }, 400);
+
+      // Uncomment below for real submission:
+      /*
+      try {
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'enquiries',
+            data: formData
+          })
+        });
+        if (response.ok) {
+          successOverlay.classList.add('visible');
+          form.reset();
+        } else {
+          alert('Something went wrong. Please try again or call us at 8129297698.');
+        }
+      } catch (err) {
+        alert('Network error. Please try again or call us at 8129297698.');
+      }
+      */
+    });
+
+    successClose.addEventListener('click', () => {
+      successOverlay.classList.remove('visible');
+    });
+    successOverlay.addEventListener('click', (e) => {
+      if (e.target === successOverlay) successOverlay.classList.remove('visible');
+    });
+
+    // Intersection Observer for reveal animations
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    revealElements.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(28px)';
+      el.style.transition = 'opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)';
+      observer.observe(el);
+    });
+
+    // Smooth anchor scrolling (for browsers that don't respect CSS scroll-behavior with fixed header)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const headerHeight = 80;
+          const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
