@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atelier — Modern Strategy & Design</title>
+  <meta name="description" content="Atelier is a strategic design studio helping ambitious businesses build premium digital experiences that convert.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Tailwind CDN (DO NOT CHANGE THIS URL) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0B0B0F',
+            surface: '#FAFAFB',
+            accent: '#4F46E5',
+            accentLight: '#EEF2FF',
+            muted: '#6B7280',
+            hairline: 'rgba(0,0,0,0.06)',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+          borderRadius: {
+            '2xl': '1rem',
+            '3xl': '1.5rem',
+            '4xl': '2rem',
+          },
+          boxShadow: {
+            soft: '0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04)',
+            lift: '0 4px 12px rgba(0,0,0,0.05), 0 24px 48px rgba(0,0,0,0.06)',
+            glow: '0 0 0 1px rgba(79,70,229,0.08), 0 12px 32px rgba(79,70,229,0.12)',
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0B0B0F;
+      --surface: #FAFAFB;
+      --accent: #4F46E5;
+      --accent-light: #EEF2FF;
+      --muted: #6B7280;
+      --hairline: rgba(0,0,0,0.06);
+      --focus: rgba(79,70,229,0.45);
+      --radius: 1.5rem;
+      --max-w: 1200px;
+    }
+
+    /* === Base === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--surface);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    ::selection { background: var(--accent); color: #fff; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+    .font-display { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; }
+
+    /* === Components === */
+    .container-custom {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .container-custom { padding-left: 2.5rem; padding-right: 2.5rem; }
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: 9999px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid var(--ink);
+      cursor: pointer;
+    }
+    .btn-primary:hover { background: #1f1f2e; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--focus); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 500;
+      font-size: 0.9375rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: 9999px;
+      border: 1px solid var(--hairline);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    .btn-secondary:hover { background: #fff; border-color: rgba(0,0,0,0.12); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+    .btn-secondary:active { transform: scale(0.97); }
+    .btn-secondary:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--focus); }
+
+    .nav-link {
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.3s ease;
+      padding: 0.25rem 0;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--ink);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link:hover::after { width: 100%; }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+    }
+    .section-label::before {
+      content: '';
+      width: 1.5rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .card-glass {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02), 0 8px 32px rgba(0,0,0,0.04);
+    }
+
+    /* === Animations === */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.7; }
+    }
+
+    .anim-fade-up { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .anim-scale-in { opacity: 0; animation: scaleIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.35s; }
+    .delay-4 { animation-delay: 0.5s; }
+    .delay-5 { animation-delay: 0.65s; }
+    .delay-6 { animation-delay: 0.8s; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+
+    .float-card { animation: float 6s ease-in-out infinite; }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .mesh-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .mesh-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: pulseGlow 8s ease-in-out infinite;
+    }
+
+    .tilt-card {
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+      will-change: transform;
+    }
+    .tilt-card:hover {
+      transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-4px);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.08);
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .accordion-content.open { max-height: 500px; }
+
+    .faq-icon { transition: transform 0.3s ease; }
+    .faq-icon.rotated { transform: rotate(45deg); }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 3px var(--focus) !important;
+    }
+    .input-error {
+      border-color: #EF4444 !important;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.15) !important;
+    }
+
+    .header-scrolled {
+      background: rgba(250,250,251,0.85) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--hairline);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+    }
+
+    /* === Responsive === */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body class="font-body antialiased">
+
+  <!-- Header -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-5" role="banner">
+    <div class="container-custom flex items-center justify-between">
+      <a href="#" class="font-display text-2xl font-bold tracking-tight text-ink" aria-label="Atelier home">
+        Atelier<span class="text-accent">.</span>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-8" aria-label="Primary">
+        <a href="#services" class="nav-link">Services</a>
+        <a href="#work" class="nav-link">Work</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#testimonials" class="nav-link">Testimonials</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+      </nav>
+
+      <div class="hidden lg:flex items-center gap-3">
+        <a href="#contact" class="btn-secondary text-sm py-2.5 px-5">Get in touch</a>
+        <a href="#contact" class="btn-primary text-sm py-2.5 px-5">Start a project</a>
+      </div>
+
+      <button id="mobile-menu-btn" class="lg:hidden p-2 text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-lg" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="lg:hidden hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-hairline shadow-soft" role="navigation" aria-label="Mobile">
+      <div class="container-custom py-6 flex flex-col gap-4">
+        <a href="#services" class="text-base font-medium text-ink py-2">Services</a>
+        <a href="#work" class="text-base font-medium text-ink py-2">Work</a>
+        <a href="#pricing" class="text-base font-medium text-ink py-2">Pricing</a>
+        <a href="#testimonials" class="text-base font-medium text-ink py-2">Testimonials</a>
+        <a href="#faq" class="text-base font-medium text-ink py-2">FAQ</a>
+        <a href="#contact" class="btn-primary justify-center mt-2">Start a project</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="relative pt-40 pb-24 lg:pt-48 lg:pb-32 overflow-hidden" aria-labelledby="hero-heading">
+      <div class="mesh-bg" aria-hidden="true">
+        <div class="mesh-blob" style="width:500px;height:500px;background:rgba(79,70,229,0.12);top:-10%;right:-5%;"></div>
+        <div class="mesh-blob" style="width:400px;height:400px;background:rgba(236,72,153,0.08);bottom:0;left:-10%;animation-delay:3s;"></div>
+      </div>
+
+      <div class="container-custom relative z-10">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          <div class="lg:col-span-7">
+            <div class="anim-fade-up">
+              <span class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-accent bg-accentLight px-4 py-2 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+                Strategic Design Studio
+              </span>
+            </div>
+            <h1 id="hero-heading" class="font-display text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mt-6 anim-fade-up delay-1">
+              We build brands<br>
+              that <span class="gradient-text">move people</span><br>
+              and markets.
+            </h1>
+            <p class="mt-6 text-lg lg:text-xl text-muted max-w-xl leading-relaxed anim-fade-up delay-2">
+              Atelier is a design and strategy studio for ambitious companies. We turn complex ideas into clear, beautiful, high-converting digital experiences.
+            </p>
+            <div class="mt-10 flex flex-wrap items-center gap-4 anim-fade-up delay-3">
+              <a href="#contact" class="btn-primary">
+                Start a project
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+              <a href="#work" class="btn-secondary">View our work</a>
+            </div>
+            <div class="mt-12 flex items-center gap-6 anim-fade-up delay-4">
+              <div class="flex -space-x-3">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face&q=80" alt="Client portrait" class="w-10 h-10 rounded-full border-2 border-white object-cover" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face&q=80" alt="Client portrait" class="w-10 h-10 rounded-full border-2 border-white object-cover" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face&q=80" alt="Client portrait" class="w-10 h-10 rounded-full border-2 border-white object-cover" loading="lazy">
+                <div class="w-10 h-10 rounded-full border-2 border-white bg-accentLight flex items-center justify-center text-xs font-semibold text-accent">+40</div>
+              </div>
+              <div>
+                <div class="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <span class="ml-1 text-sm font-semibold text-ink">4.9</span>
+                </div>
+                <p class="text-xs text-muted mt-0.5">Trusted by 40+ founders</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 relative anim-scale-in delay-4">
+            <div class="relative">
+              <div class="absolute -inset-4 bg-gradient-to-br from-accent/10 to-pink-500/10 rounded-[2.5rem] blur-2xl" aria-hidden="true"></div>
+              <div class="relative rounded-[2rem] overflow-hidden shadow-lift border border-white/60">
+                <img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&h=1000&fit=crop&q=80" alt="Design team collaborating in a bright studio" class="w-full h-[420px] lg:h-[520px] object-cover" loading="eager">
+              </div>
+              <div class="absolute -bottom-6 -left-6 card-glass rounded-2xl p-5 shadow-lift float-card" style="max-width:220px;">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-accentLight flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                  </div>
+                  <div>
+                    <p class="font-display text-2xl font-bold text-ink">3.2x</p>
+                    <p class="text-xs text-muted">Avg. conversion lift</p>
+                  </div>
+                </div>
+              </div>
+              <div class="absolute -top-4 -right-4 card-glass rounded-2xl px-4 py-3 shadow-lift float-card" style="animation-delay:2s;">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span class="text-xs font-semibold text-ink">Now booking Q3</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Logo marquee -->
+    <section class="py-12 border-y border-hairline bg-white/50" aria-label="Trusted by">
+      <div class="container-custom">
+        <p class="text-center text-xs font-semibold tracking-widest uppercase text-muted mb-8">Trusted by forward-thinking teams</p>
+        <div class="overflow-hidden">
+          <div class="marquee-track gap-16 items-center">
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Northwind</span>
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Lumina</span>
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Vertex</span>
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Arcade</span>
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Pulse</span>
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Harbor</span>
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Northwind</span>
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Lumina</span>
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Vertex</span>
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Arcade</span>
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Pulse</span>
+            <span class="font-display text-xl font-bold text-ink/30 whitespace-nowrap">Harbor</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="py-20 lg:py-28" aria-label="Studio statistics">
+      <div class="container-custom">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          <div class="reveal text-center lg:text-left">
+            <p class="font-display text-5xl lg:text-6xl font-bold tracking-tight text-ink" data-counter="120">0</p>
+            <p class="text-sm text-muted mt-2 font-medium">Projects shipped</p>
+          </div>
+          <div class="reveal text-center lg:text-left" style="transition-delay:0.1s;">
+            <p class="font-display text-5xl lg:text-6xl font-bold tracking-tight text-ink" data-counter="98">0</p>
+            <p class="text-sm text-muted mt-2 font-medium">Client satisfaction %</p>
+          </div>
+          <div class="reveal text-center lg:text-left" style="transition-delay:0.2s;">
+            <p class="font-display text-5xl lg:text-6xl font-bold tracking-tight text-ink" data-counter="14">0</p>
+            <p class="text-sm text-muted mt-2 font-medium">Design awards</p>
+          </div>
+          <div class="reveal text-center lg:text-left" style="transition-delay:0.3s;">
+            <p class="font-display text-5xl lg:text-6xl font-bold tracking-tight text-ink" data-counter="7">0</p>
+            <p class="text-sm text-muted mt-2 font-medium">Years of craft</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="py-20 lg:py-32 bg-white" aria-labelledby="services-heading">
+      <div class="container-custom">
+        <div class="max-w-2xl mb-16 reveal">
+          <span class="section-label">What we do</span>
+          <h2 id="services-heading" class="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
+            Full-stack creative,<br>built for growth.
+          </h2>
+          <p class="mt-5 text-lg text-muted leading-relaxed">
+            From positioning to pixel-perfect interfaces, we handle the entire journey — so you can focus on running your business.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <article class="tilt-card reveal group bg-surface rounded-3xl p-8 border border-hairline hover:border-accent/20">
+            <div class="w-12 h-12 rounded-2xl bg-accentLight flex items-center justify-center mb-6 group-hover:bg-accent group-hover:text-white transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-semibold text-ink mb-3">Brand Strategy</h3>
+            <p class="text-sm text-muted leading-relaxed">Positioning, messaging, and visual identity systems that make you unmistakable in a crowded market.</p>
+          </article>
+
+          <article class="tilt-card reveal group bg-surface rounded-3xl p-8 border border-hairline hover:border-accent/20" style="transition-delay:0.08s;">
+            <div class="w-12 h-12 rounded-2xl bg-accentLight flex items-center justify-center mb-6 group-hover:bg-accent group-hover:text-white transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-semibold text-ink mb-3">Web Design & Dev</h3>
+            <p class="text-sm text-muted leading-relaxed">Fast, accessible, beautifully engineered websites that turn visitors into customers — not bounces.</p>
+          </article>
+
+          <article class="tilt-card reveal group bg-surface rounded-3xl p-8 border border-hairline hover:border-accent/20" style="transition-delay:0.16s;">
+            <div class="w-12 h-12 rounded-2xl bg-accentLight flex items-center justify-center mb-6 group-hover:bg-accent group-hover:text-white transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-semibold text-ink mb-3">Product Design</h3>
+            <p class="text-sm text-muted leading-relaxed">Intuitive UX/UI for SaaS and mobile apps, validated through research and rapid prototyping.</p>
+          </article>
+
+          <article class="tilt-card reveal group bg-surface rounded-3xl p-8 border border-hairline hover:border-accent/20" style="transition-delay:0.24s;">
+            <div class="w-12 h-12 rounded-2xl bg-accentLight flex items-center justify-center mb-6 group-hover:bg-accent group-hover:text-white transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-semibold text-ink mb-3">Growth & SEO</h3>
+            <p class="text-sm text-muted leading-relaxed">Technical SEO, content strategy, and CRO experiments that compound your organic traffic.</p>
+          </article>
+
+          <article class="tilt-card reveal group bg-surface rounded-3xl p-8 border border-hairline hover:border-accent/20" style="transition-delay:0.32s;">
+            <div class="w-12 h-12 rounded-2xl bg-accentLight flex items-center justify-center mb-6 group-hover:bg-accent group-hover:text-white transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-semibold text-ink mb-3">Motion & 3D</h3>
+            <p class="text-sm text-muted leading-relaxed">Micro-interactions, scroll storytelling, and WebGL moments that make your brand unforgettable.</p>
+          </article>
+
+          <article class="tilt-card reveal group bg-ink rounded-3xl p-8 text-white relative overflow-hidden" style="transition-delay:0.4s;">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent rounded-full blur-3xl opacity-30" aria-hidden="true"></div>
+            <div class="relative">
+              <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              </div>
+              <h3 class="font-display text-xl font-semibold mb-3">Design Partner</h3>
+              <p class="text-sm text-white/60 leading-relaxed">An embedded creative team on retainer — unlimited requests, one flat fee, total flexibility.</p>
+              <a href="#contact" class="inline-flex items-center gap-1 text-sm font-semibold text-accentLight mt-4 hover:gap-2 transition-all duration-300">
+                Learn more
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Work / bento -->
+    <section id="work" class="py-20 lg:py-32" aria-labelledby="work-heading">
+      <div class="container-custom">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16 reveal">
+          <div class="max-w-xl">
+            <span class="section-label">Selected work</span>
+            <h2 id="work-heading" class="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
+              A few recent<br>collaborations.
+            </h2>
+          </div>
+          <a href="#contact" class="btn-secondary self-start lg:self-auto">Start yours</a>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <article class="reveal group relative rounded-3xl overflow-hidden bg-surface border border-hairline">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&h=600&fit=crop&q=80" alt="Lumina dashboard redesign" class="w-full h-[340px] lg:h-[420px] object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-8">
+              <p class="text-xs font-semibold tracking-widest uppercase text-white/60 mb-2">SaaS · Product Design</p>
+              <h3 class="font-display text-2xl font-bold text-white">Lumina Analytics</h3>
+              <p class="text-sm text-white/70 mt-1 max-w-sm">Rebuilt the entire dashboard experience — activation up 47% in 90 days.</p>
+            </div>
+          </article>
+
+          <article class="reveal group relative rounded-3xl overflow-hidden bg-surface border border-hairline" style="transition-delay:0.1s;">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=900&h=600&fit=crop&q=80" alt="Vertex brand identity system" class="w-full h-[340px] lg:h-[420px] object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-8">
+              <p class="text-xs font-semibold tracking-widest uppercase text-white/60 mb-2">E-commerce · Brand</p>
+              <h3 class="font-display text-2xl font-bold text-white">Vertex Supply Co.</h3>
+              <p class="text-sm text-white/70 mt-1 max-w-sm">Full identity and Shopify build. Launch month hit 4.2x revenue target.</p>
+            </div>
+          </article>
+
+          <article class="reveal md:col-span-2 relative rounded-3xl overflow-hidden bg-ink p-8 lg:p-14" style="transition-delay:0.2s;">
+            <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-accent rounded-full blur-[120px] opacity-20" aria-hidden="true"></div>
+            <div class="relative grid lg:grid-cols-2 gap-10 items-center">
+              <div>
+                <p class="text-xs font-semibold tracking-widest uppercase text-accentLight/70 mb-3">Featured case study</p>
+                <h3 class="font-display text-3xl lg:text-4xl font-bold text-white leading-tight">How we helped Harbor cut onboarding time by 68%</h3>
+                <p class="text-white/60 mt-4 leading-relaxed max-w-md">A ground-up rethink of Harbor's fintech onboarding flow — research, prototype, ship, measure. One quarter, one team.</p>
+                <a href="#contact" class="inline-flex items-center gap-2 text-sm font-semibold text-accentLight mt-6 hover:gap-3 transition-all duration-300">
+                  Read the story
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
+                  <p class="font-display text-3xl font-bold text-white">68%</p>
+                  <p class="text-xs text-white/50 mt-1">Faster onboarding</p>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
+                  <p class="font-display text-3xl font-bold text-white">2.4x</p>
+                  <p class="text-xs text-white/50 mt-1">Trial-to-paid</p>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
+                  <p class="font-display text-3xl font-bold text-white">-38%</p>
+                  <p class="text-xs text-white/50 mt-1">Support tickets</p>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-5 border border-white/10">
+                  <p class="font-display text-3xl font-bold text-white">9 wk</p>
+                  <p class="text-xs text-white/50 mt-1">To ship</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-20 lg:py-32 bg-white" aria-labelledby="pricing-heading">
+      <div class="container-custom">
+        <div class="max-w-2xl mb-16 reveal">
+          <span class="section-label">Engagements</span>
+          <h2 id="pricing-heading" class="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
+            Simple, transparent<br>ways to work together.
+          </h2>
+          <p class="mt-5 text-lg text-muted leading-relaxed">
+            No bloated retainers. No surprise invoices. Pick the engagement that fits your stage.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <article class="reveal bg-surface rounded-3xl p-8 border border-hairline flex flex-col">
+            <h3 class="font-display text-lg font-semibold text-ink">Sprint</h3>
+            <p class="text-sm text-muted mt-1">For focused, time-boxed projects.</p>
+            <p class="font-display text-4xl font-bold tracking-tight text-ink mt-6">$4,800<span class="text-base font-normal text-muted"> /project</span></p>
+            <ul class="mt-8 space-y-3 text-sm text-muted flex-1">
+              <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> 2-week design sprint</li>
+              <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> 1 landing page or core flow</li>
+              <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> 2 rounds of revisions</li>
+              <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Figma files + handoff</li>
+            </ul>
+            <a href="#contact" class="btn-secondary justify-center mt-8 w-full">Book a sprint</a>
+          </article>
+
+          <article class="reveal relative bg-ink rounded-3xl p-8 text-white flex flex-col overflow-hidden" style="transition-delay:0.1s;">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-accent rounded-full blur-[100px] opacity-30" aria-hidden="true"></div>
+            <div class="relative">
+              <div class="flex items-center justify-between">
+                <h3 class="font-display text-lg font-semibold">Studio</h3>
+                <span class="text-[10px] font-semibold tracking-widest uppercase bg-accent text-white px-3 py-1 rounded-full">Most popular</span>
+              </div>
+              <p class="text-sm text-white/50 mt-1">For full brand + web builds.</p>
+              <p class="font-display text-4xl font-bold tracking-tight mt-6">$12,500<span class="text-base font-normal text-white/40"> /project</span></p>
+              <ul class="mt-8 space-y-3 text-sm text-white/70 flex-1">
+                <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A5B4FC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Full brand identity system</li>
+                <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A5B4FC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Multi-page website design & build</li>
+                <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A5B4FC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Copywriting + messaging</li>
+                <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A5B4FC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> 30 days post-launch support</li>
+                <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A5B4FC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> SEO foundation included</li>
+              </ul>
+              <a href="#contact" class="btn-primary justify-center mt-8 w-full !bg-white !text-ink !border-white hover:!bg-accentLight">Start a build</a>
+            </div>
+          </article>
+
+          <article class="reveal bg-surface rounded-3xl p-8 border border-hairline flex flex-col" style="transition-delay:0.2s;">
+            <h3 class="font-display text-lg font-semibold text-ink">Partner</h3>
+            <p class="text-sm text-muted mt-1">For ongoing creative support.</p>
+            <p class="font-display text-4xl font-bold tracking-tight text-ink mt-6">$6,000<span class="text-base font-normal text-muted"> /month</span></p>
+            <ul class="mt-8 space-y-3 text-sm text-muted flex-1">
+              <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Dedicated design team</li>
+              <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Unlimited requests & revisions</li>
+              <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Weekly strategy calls</li>
+              <li class="flex items-start gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0"><polyline points="20 6 9 17 4 12"/></svg> Pause or cancel anytime</li>
+            </ul>
+            <a href="#contact" class="btn-secondary justify-center mt-8 w-full">Become a partner</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="py-20 lg:py-32" aria-labelledby="testimonials-heading">
+      <div class="container-custom">
+        <div class="max-w-2xl mb-16 reveal">
+          <span class="section-label">Kind words</span>
+          <h2 id="testimonials-heading" class="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
+            Don't take our<br>word for it.
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <figure class="reveal bg-white rounded-3xl p-8 border border-hairline shadow-soft">
+            <div class="flex gap-1 mb-5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote class="text-sm text-ink leading-relaxed">"Atelier didn't just redesign our site — they rethought our entire positioning. Inbound demos are up 3x and our sales team finally has a story that lands."</blockquote>
+            <figcaption class="flex items-center gap-3 mt-6">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face&q=80" alt="Sarah Chen" class="w-10 h-10 rounded-full object-cover" loading="lazy">
+              <div>
+                <p class="text-sm font-semibold text-ink">Sarah Chen</p>
+                <p class="text-xs text-muted">CEO, Lumina</p>
+              </div>
+            </figcaption>
+          </figure>
+
+          <figure class="reveal bg-white rounded-3xl p-8 border border-hairline shadow-soft" style="transition-delay:0.1s;">
+            <div class="flex gap-1 mb-5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote class="text-sm text-ink leading-relaxed">"The most thoughtful team we've worked with. They ask the right questions, ship fast, and the quality is genuinely award-winning."</blockquote>
+            <figcaption class="flex items-center gap-3 mt-6">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face&q=80" alt="Marcus Webb" class="w-10 h-10 rounded-full object-cover" loading="lazy">
+              <div>
+                <p class="text-sm font-semibold text-ink">Marcus Webb</p>
+                <p class="text-xs text-muted">Founder, Vertex</p>
+              </div>
+            </figcaption>
+          </figure>
+
+          <figure class="reveal bg-white rounded-3xl p-8 border border-hairline shadow-soft" style="transition-delay:0.2s;">
+            <div class="flex gap-1 mb-5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <blockquote class="text-sm text-ink leading-relaxed">"Working with Atelier felt like adding a senior design department overnight. Our conversion rate has never been higher."</blockquote>
+            <figcaption class="flex items-center gap-3 mt-6">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face&q=80" alt="Priya Nair" class="w-10 h-10 rounded-full object-cover" loading="lazy">
+              <div>
+                <p class="text-sm font-semibold text-ink">Priya Nair</p>
+                <p class="text-xs text-muted">CMO, Harbor</p>
+              </div>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-20 lg:py-32 bg-white" aria-labelledby="faq-heading">
+      <div class="container-custom">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
+          <div class="lg:col-span-4 reveal">
+            <span class="section-label">FAQ</span>
+            <h2 id="faq-heading" class="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
+              Questions,<br>answered.
+            </h2>
+            <p class="mt-5 text-muted leading-relaxed">Can't find what you're looking for? <a href="#contact" class="text-accent font-semibold underline underline-offset-2 hover:text-ink transition-colors">Drop us a line</a>.</p>
+          </div>
+
+          <div class="lg:col-span-8 space-y-4">
+            <div class="reveal border border-hairline rounded-2xl bg-surface overflow-hidden">
+              <button class="faq-trigger w-full flex items-center justify-between gap-4 p-6 text-left" aria-expanded="false" aria-controls="faq-1">
+                <span class="font-display text-lg font-semibold text-ink">How long does a typical project take?</span>
+                <svg class="faq-icon shrink-0 text-ink" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              </button>
+              <div id="faq-1" class="accordion-content px-6">
+                <p class="text-sm text-muted leading-relaxed pb-6">A focused sprint is 2 weeks. A full brand and website build usually takes 6–9 weeks from kickoff to launch, depending on scope and feedback speed. We'll give you a precise timeline before we start.</p>
+              </div>
+            </div>
+
+            <div class="reveal border border-hairline rounded-2xl bg-surface overflow-hidden" style="transition-delay:0.06s;">
+              <button class="faq-trigger w-full flex items-center justify-between gap-4 p-6 text-left" aria-expanded="false" aria-controls="faq-2">
+                <span class="font-display text-lg font-semibold text-ink">Do you work with early-stage startups?</span>
+                <svg class="faq-icon shrink-0 text-ink" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              </button>
+              <div id="faq-2" class="accordion-content px-6">
+                <p class="text-sm text-muted leading-relaxed pb-6">Absolutely. We work with founders from pre-seed to Series C. For early-stage teams, our Sprint engagement is a great way to get a high-quality landing page or core product flow without a huge upfront investment.</p>
+              </div>
+            </div>
+
+            <div class="reveal border border-hairline rounded-2xl bg-surface overflow-hidden" style="transition-delay:0.12s;">
+              <button class="faq-trigger w-full flex items-center justify-between gap-4 p-6 text-left" aria-expanded="false" aria-controls="faq-3">
+                <span class="font-display text-lg font-semibold text-ink">What do you need from us to get started?</span>
+                <svg class="faq-icon shrink-0 text-ink" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              </button>
+              <div id="faq-3" class="accordion-content px-6">
+                <p class="text-sm text-muted leading-relaxed pb-6">A clear brief (we'll help you write it), access to your existing brand assets if any, and one decision-maker on your side. That's it. We handle the rest.</p>
+              </div>
+            </div>
+
+            <div class="reveal border border-hairline rounded-2xl bg-surface overflow-hidden" style="transition-delay:0.18s;">
+              <button class="faq-trigger w-full flex items-center justify-between gap-4 p-6 text-left" aria-expanded="false" aria-controls="faq-4">
+                <span class="font-display text-lg font-semibold text-ink">Do you offer ongoing support after launch?</span>
+                <svg class="faq-icon shrink-0 text-ink" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              </button>
+              <div id="faq-4" class="accordion-content px-6">
+                <p class="text-sm text-muted leading-relaxed pb-6">Yes — every project includes 30 days of post-launch support. After that, most clients move to our Partner retainer for ongoing design, development, and growth work.</p>
+              </div>
+            </div>
+
+            <div class="reveal border border-hairline rounded-2xl bg-surface overflow-hidden" style="transition-delay:0.24s;">
+              <button class="faq-trigger w-full flex items-center justify-between gap-4 p-6 text-left" aria-expanded="false" aria-controls="faq-5">
+                <span class="font-display text-lg font-semibold text-ink">Who actually does the work?</span>
+                <svg class="faq-icon shrink-0 text-ink" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+              </button>
+              <div id="faq-5" class="accordion-content px-6">
+                <p class="text-sm text-muted leading-relaxed pb-6">Atelier is a small, senior team. The people you meet in the first call are the same people who do the work — no account managers, no offshore handoffs, no surprises.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA banner -->
+    <section class="py-20 lg:py-32" aria-labelledby="cta-heading">
+      <div class="container-custom">
+        <div class="reveal relative bg-ink rounded-[2rem] lg:rounded-[2.5rem] px-8 py-16 lg:px-16 lg:py-24 overflow-hidden text-center">
+          <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-accent rounded-full blur-[140px] opacity-25" aria-hidden="true"></div>
+          <div class="relative">
+            <h2 id="cta-heading" class="font-display text-4xl lg:text-6xl font-bold tracking-tight text-white leading-[1.05] max-w-3xl mx-auto">
+              Ready to build something<br><span class="gradient-text">worth talking about?</span>
+            </h2>
+            <p class="text-white/60 mt-6 max-w-xl mx-auto leading-relaxed">
+              Tell us about your project. We'll reply within one business day with honest thoughts and next steps.
+            </p>
+            <a href="#contact" class="btn-primary mt-10 !bg-white !text-ink !border-white hover:!bg-accentLight">
+              Start a project
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="py-20 lg:py-32 bg-white" aria-labelledby="contact-heading">
+      <div class="container-custom">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-16">
+          <div class="lg:col-span-5 reveal">
+            <span class="section-label">Get in touch</span>
+            <h2 id="contact-heading" class="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
+              Let's talk<br>about your project.
+            </h2>
+            <p class="mt-5 text-muted leading-relaxed max-w-md">
+              Whether you have a fully-formed brief or just a rough idea, we'd love to hear from you. We reply to every enquiry personally.
+            </p>
+
+            <div class="mt-10 space-y-5">
+              <a href="mailto:hello@atelier.studio" class="flex items-center gap-4 group">
+                <div class="w-11 h-11 rounded-xl bg-accentLight flex items-center justify-center shrink-0 group-hover:bg-accent transition-colors duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="text-accent group-hover:text-white transition-colors duration-300"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-ink">Email us</p>
+                  <p class="text-sm text-muted">hello@atelier.studio</p>
+                </div>
+              </a>
+              <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-xl bg-accentLight flex items-center justify-center shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-ink">Studio</p>
+                  <p class="text-sm text-muted">London · Remote worldwide</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 reveal" style="transition-delay:0.1s;">
+            <form id="contact-form" class="bg-surface rounded-3xl p-8 lg:p-10 border border-hairline" novalidate>
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="name" class="block text-sm font-semibold text-ink mb-2">Name <span class="text-accent">*</span></label>
+                  <input type="text" id="name" name="name" required placeholder="Jane Smith" class="w-full px-4 py-3 rounded-xl border border-hairline bg-white text-sm text-ink placeholder:text-muted/60 transition-all duration-200">
+                </div>
+                <div>
+                  <label for="email" class="block text-sm font-semibold text-ink mb-2">Email <span class="text-accent">*</span></label>
+                  <input type="email" id="email" name="email" required placeholder="jane@company.com" class="w-full px-4 py-3 rounded-xl border border-hairline bg-white text-sm text-ink placeholder:text-muted/60 transition-all duration-200">
+                </div>
+                <div>
+                  <label for="phone" class="block text-sm font-semibold text-ink mb-2">Phone</label>
+                  <input type="tel" id="phone" name="phone" placeholder="+1 555 000 0000" class="w-full px-4 py-3 rounded-xl border border-hairline bg-white text-sm text-ink placeholder:text-muted/60 transition-all duration-200">
+                </div>
+                <div>
+                  <label for="budget" class="block text-sm font-semibold text-ink mb-2">Budget</label>
+                  <select id="budget" name="budget" class="w-full px-4 py-3 rounded-xl border border-hairline bg-white text-sm text-ink transition-all duration-200">
+                    <option value="" disabled selected>Select a range</option>
+                    <option value="under-5k">Under $5,000</option>
+                    <option value="5-12k">$5,000 – $12,000</option>
+                    <option value="12-25k">$12,000 – $25,000</option>
+                    <option value="25k-plus">$25,000+</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-2">
+                  <label for="message" class="block text-sm font-semibold text-ink mb-2">Message <span class="text-accent">*</span></label>
+                  <textarea id="message" name="message" rows="5" required placeholder="Tell us about your project, timeline, and goals..." class="w-full px-4 py-3 rounded-xl border border-hairline bg-white text-sm text-ink placeholder:text-muted/60 transition-all duration-200 resize-none"></textarea>
+                </div>
+              </div>
+              <button type="submit" class="btn-primary w-full justify-center mt-6" id="submit-btn">
+                <span id="submit-text">Send enquiry</span>
+                <svg id="submit-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </button>
+              <p id="form-message" class="text-sm text-center mt-4 hidden" role="status" aria-live="polite"></p>
+              <!-- TODO: connect form action to backend endpoint -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-hairline bg-surface" role="contentinfo">
+    <div class="container-custom py-16 lg:py-20">
+      <div class="grid md:grid-cols-12 gap-10">
+        <div class="md:col-span-5">
+          <a href="#" class="font-display text-2xl font-bold tracking-tight text-ink" aria-label="Atelier home">Atelier<span class="text-accent">.</span></a>
+          <p class="text-sm text-muted mt-4 max-w-xs leading-relaxed">
+            A strategic design studio for ambitious companies. We build brands and digital experiences that move people — and markets.
+          </p>
+          <div class="flex items-center gap-3 mt-6">
+            <a href="#" aria-label="Atelier on Twitter" class="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-muted hover:text-ink hover:border-ink/20 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+            </a>
+            <a href="#" aria-label="Atelier on LinkedIn" class="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-muted hover:text-ink hover:border-ink/20 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="#" aria-label="Atelier on Instagram" class="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-muted hover:text-ink hover:border-ink/20 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="md:col-span-2">
+          <h3 class="text-xs font-semibold tracking-widest uppercase text-muted mb-4">Studio</h3>
+          <ul class="space-y-3">
+            <li><a href="#services" class="text-sm text-muted hover:text-ink transition-colors">Services</a></li>
+            <li><a href="#work" class="text-sm text-muted hover:text-ink transition-colors">Work</a></li>
+            <li><a href="#pricing" class="text-sm text-muted hover:text-ink transition-colors">Pricing</a></li>
+            <li><a href="#testimonials" class="text-sm text-muted hover:text-ink transition-colors">Testimonials</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-2">
+          <h3 class="text-xs font-semibold tracking-widest uppercase text-muted mb-4">Company</h3>
+          <ul class="space-y-3">
+            <li><a href="#faq" class="text-sm text-muted hover:text-ink transition-colors">FAQ</a></li>
+            <li><a href="#contact" class="text-sm text-muted hover:text-ink transition-colors">Contact</a></li>
+            <li><a href="#" class="text-sm text-muted hover:text-ink transition-colors">Privacy</a></li>
+            <li><a href="#" class="text-sm text-muted hover:text-ink transition-colors">Terms</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-3">
+          <h3 class="text-xs font-semibold tracking-widest uppercase text-muted mb-4">Stay in the loop</h3>
+          <p class="text-sm text-muted leading-relaxed">Occasional notes on design, strategy, and building better brands.</p>
+          <form class="mt-4 flex gap-2" id="newsletter-form">
+            <input type="email" required placeholder="you@company.com" aria-label="Email address for newsletter" class="flex-1 min-w-0 px-4 py-2.5 rounded-xl border border-hairline bg-white text-sm text-ink placeholder:text-muted/60 transition-all duration-200">
+            <button type="submit" class="btn-primary !px-4 !py-2.5 shrink-0" aria-label="Subscribe">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </form>
+          <p class="text-xs text-muted mt-2">No spam. Unsubscribe anytime.</p>
+        </div>
+      </div>
+
+      <div class="border-t border-hairline mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-muted">© 2025 Atelier Studio. All rights reserved.</p>
+        <p class="text-xs text-muted">Designed & built with intent.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ========== Mobile menu ==========
+    (function() {
+      const btn = document.getElementById('mobile-menu-btn');
+      const menu = document.getElementById('mobile-menu');
+      if (!btn || !menu) return;
+
+      btn.addEventListener('click', () => {
+        const isOpen = !menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', isOpen);
+        btn.setAttribute('aria-expanded', String(!isOpen));
+      });
+
+      menu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          menu.classList.add('hidden');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+    })();
+
+    // ========== Sticky header ==========
+    (function() {
+      const header = document.getElementById('header');
+      if (!header) return;
+      const onScroll = () => {
+        header.classList.toggle('header-scrolled', window.scrollY > 20);
+        header.classList.toggle('py-3', window.scrollY > 20);
+        header.classList.toggle('py-5', window.scrollY <= 20);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+
+    // ========== FAQ accordions ==========
+    (function() {
+      document.querySelectorAll('.faq-trigger').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const contentId = trigger.getAttribute('aria-controls');
+          const content = document.getElementById(contentId);
+          const icon = trigger.querySelector('.faq-icon');
+          const expanded = trigger.getAttribute('aria-expanded') === 'true';
+
+          // Close all
+          document.querySelectorAll('.faq-trigger').forEach(t => {
+            t.setAttribute('aria-expanded', 'false');
+            const c = document.getElementById(t.getAttribute('aria-controls'));
+            if (c) c.classList.remove('open');
+            const i = t.querySelector('.faq-icon');
+            if (i) i.classList.remove('rotated');
+          });
+
+          // Open current if it was closed
+          if (!expanded) {
+            trigger.setAttribute('aria-expanded', 'true');
+            if (content) content.classList.add('open');
+            if (icon) icon.classList.add('rotated');
+          }
+        });
+      });
+    })();
+
+    // ========== Scroll reveal ==========
+    (function() {
+      const reveals = document.querySelectorAll('.reveal');
+      if (!reveals.length) return;
+
+      if (!('IntersectionObserver' in window)) {
+        reveals.forEach(el => el.classList.add('is-visible'));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      reveals.forEach(el => observer.observe(el));
+    })();
+
+    // ========== Animated counters ==========
+    (function() {
+      const counters = document.querySelectorAll('[data-counter]');
+      if (!counters.length) return;
+
+      const animateCounter = (el) => {
+        const target = parseInt(el.getAttribute('data-counter'), 10);
+        const duration = 1600;
+        const start = performance.now();
+
+        const step = (now) => {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.floor(eased * target);
+          if (progress < 1) requestAnimationFrame(step);
+          else el.textContent = target;
+        };
+        requestAnimationFrame(step);
+      };
+
+      if (!('IntersectionObserver' in window)) {
+        counters.forEach(el => el.textContent = el.getAttribute('data-counter'));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      counters.forEach(el => observer.observe(el));
+    })();
+
+    // ========== Contact form ==========
+    (function() {
+      const form = document.getElementById('contact-form');
+      if (!form) return;
+
+      const submitBtn = document.getElementById('submit-btn');
+      const submitText = document.getElementById('submit-text');
+      const submitIcon = document.getElementById('submit-icon');
+      const formMessage = document.getElementById('form-message');
+
+      const clearErrors = () => {
+        form.querySelectorAll('input, textarea, select').forEach(el => el.classList.remove('input-error'));
+      };
+
+      const validate = () => {
+        let valid = true;
+        const name = form.querySelector('#name');
+        const email = form.querySelector('#email');
+        const message = form.querySelector('#message');
+
+        [name, email, message].forEach(el => {
+          if (!el.value.trim()) {
+            el.classList.add('input-error');
+            valid = false;
+          }
+        });
+
+        if (email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+          email.classList.add('input-error');
+          valid = false;
+        }
+
+        return valid;
+      };
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearErrors();
+        formMessage.classList.add('hidden');
+
+        if (!validate()) {
+          formMessage.textContent = 'Please fill in the required fields correctly.';
+          formMessage.className = 'text-sm text-center mt-4 text-red-500';
+          return;
+        }
+
+        const data = {
+          name: form.querySelector('#name').value.trim(),
+          email: form.querySelector('#email').value.trim(),
+          phone: form.querySelector('#phone').value.trim(),
+          budget: form.querySelector('#budget').value,
+          message: form.querySelector('#message').value.trim(),
+        };
+
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        submitBtn.style.cursor = 'not-allowed';
+        submitText.textContent = 'Sending...';
+        if (submitIcon) submitIcon.style.display = 'none';
+
+        try {
+          const res = await fetch('submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store',
+            body: JSON.stringify({
+              url: window.location.host,
+              table: 'contact_enquiries',
+              data: data,
+            }),
+          });
+
+          if (!res.ok) throw new Error('Request failed');
+
+          formMessage.textContent = 'Thanks — your enquiry is on its way. We\'ll reply within one business day.';
+          formMessage.className = 'text-sm text-center mt-4 text-emerald-600 font-medium';
+          form.reset();
+        } catch (err) {
+          formMessage.textContent = 'Something went wrong. Please try again or email us directly.';
+          formMessage.className = 'text-sm text-center mt-4 text-red-500';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+          submitBtn.style.cursor = 'pointer';
+          submitText.textContent = 'Send enquiry';
+          if (submitIcon) submitIcon.style.display = '';
+        }
+      });
+    })();
+
+    // ========== Newsletter form ==========
+    (function() {
+      const form = document.getElementById('newsletter-form');
+      if (!form) return;
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = form.querySelector('input');
+        if (input && input.value.trim()) {
+          input.value = '';
+          input.placeholder = 'Subscribed ✓';
+          setTimeout(() => { input.placeholder = 'you@company.com'; }, 2500);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
