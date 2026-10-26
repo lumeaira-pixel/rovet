@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumieère — Hair & Beauty Atelier</title>
+  <meta name="description" content="Lumieère is a modern hair and beauty salon offering precision cuts, colour artistry, and restorative treatments in a calm, light-filled space.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CDN (DO NOT CHANGE THIS URL) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1A1A1A',
+            surface: '#FAFAF8',
+            cream: '#F3F0EA',
+            sand: '#E8E2D8',
+            accent: '#B86B4A',
+            'accent-light': '#D4916E',
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Instrument Serif"', 'serif'],
+          },
+          borderRadius: {
+            '4xl': '2rem',
+            '5xl': '2.5rem',
+          },
+          boxShadow: {
+            'soft': '0 2px 20px rgba(0,0,0,0.04)',
+            'lift': '0 12px 40px rgba(0,0,0,0.08)',
+            'glow': '0 0 60px rgba(184,107,74,0.12)',
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1A1A;
+      --ink-soft: #4A4A4A;
+      --surface: #FAFAF8;
+      --cream: #F3F0EA;
+      --sand: #E8E2D8;
+      --accent: #B86B4A;
+      --accent-light: #D4916E;
+      --focus: rgba(184,107,74,0.45);
+    }
+
+    /* === Base === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--surface);
+      color: var(--ink);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    ::selection { background: var(--accent); color: white; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--sand); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-light); }
+
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--focus);
+      border-radius: 4px;
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* === Components === */
+    .font-serif-display { font-family: 'Instrument Serif', serif; }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--ink); color: white;
+      padding: 0.9rem 2rem; border-radius: 999px;
+      font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      border: 1px solid var(--ink);
+    }
+    .btn-primary:hover {
+      background: var(--accent); border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(184,107,74,0.25);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; color: var(--ink);
+      padding: 0.9rem 2rem; border-radius: 999px;
+      font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em;
+      border: 1px solid rgba(26,26,26,0.15);
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn-outline:hover {
+      border-color: var(--ink); background: var(--cream);
+      transform: translateY(-2px);
+    }
+    .btn-outline:active { transform: translateY(0) scale(0.98); }
+
+    .nav-link {
+      position: relative; font-size: 0.85rem; font-weight: 500;
+      color: var(--ink-soft); transition: color 0.3s;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1.5px; background: var(--accent);
+      transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link:hover::after { width: 100%; }
+
+    .card-tilt {
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s;
+    }
+    .card-tilt:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+    }
+
+    .service-card {
+      background: white; border-radius: 1.5rem;
+      padding: 2rem; border: 1px solid rgba(0,0,0,0.04);
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.06);
+      border-color: rgba(184,107,74,0.2);
+    }
+
+    .gallery-img {
+      overflow: hidden; border-radius: 1.25rem;
+      background: linear-gradient(135deg, var(--cream) 0%, var(--sand) 100%);
+    }
+    .gallery-img img {
+      transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s;
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .gallery-img:hover img { transform: scale(1.05); }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .faq-trigger {
+      display: flex; justify-content: space-between; align-items: center;
+      width: 100%; padding: 1.5rem 0; background: none; border: none;
+      text-align: left; cursor: pointer;
+      font-family: inherit; font-size: 1rem; font-weight: 600;
+      color: var(--ink); transition: color 0.3s;
+    }
+    .faq-trigger:hover { color: var(--accent); }
+    .faq-trigger .icon {
+      flex-shrink: 0; width: 20px; height: 20px;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      color: var(--ink-soft);
+    }
+    .faq-trigger[aria-expanded="true"] .icon { transform: rotate(45deg); color: var(--accent); }
+    .faq-content {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1), padding 0.3s;
+    }
+    .faq-content.open {
+      max-height: 300px;
+      padding-bottom: 1.5rem;
+    }
+    .faq-content p {
+      color: var(--ink-soft); font-size: 0.95rem; line-height: 1.7;
+      max-width: 90%;
+    }
+
+    .stat-number {
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 800;
+      letter-spacing: -0.03em; line-height: 1;
+    }
+
+    .marquee-track {
+      display: flex; gap: 3rem; align-items: center;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .hero-glow {
+      position: absolute; border-radius: 50%; filter: blur(120px);
+      pointer-events: none; z-index: 0;
+    }
+
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(250,250,248,0.98); backdrop-filter: blur(20px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2rem; opacity: 0; pointer-events: none;
+      transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: auto; }
+    .mobile-menu a {
+      font-size: 1.5rem; font-weight: 600; color: var(--ink);
+      text-decoration: none; transition: color 0.3s;
+    }
+    .mobile-menu a:hover { color: var(--accent); }
+
+    .header-shrink { transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+    .header-scrolled {
+      padding-top: 0.6rem !important; padding-bottom: 0.6rem !important;
+      background: rgba(250,250,248,0.85) !important;
+      backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .form-input {
+      width: 100%; padding: 0.85rem 1.1rem;
+      background: white; border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 0.75rem; font-family: inherit; font-size: 0.9rem;
+      color: var(--ink); transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .form-input:focus {
+      outline: none; border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(184,107,74,0.12);
+    }
+    .form-input.error { border-color: #D94444; }
+    .form-error {
+      color: #D94444; font-size: 0.75rem; margin-top: 0.3rem;
+      display: none;
+    }
+    .form-error.visible { display: block; }
+
+    /* === Animations === */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .float-anim { animation: float 6s ease-in-out infinite; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-fade { animation: fadeUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
+    .hero-fade-1 { animation-delay: 0.1s; }
+    .hero-fade-2 { animation-delay: 0.25s; }
+    .hero-fade-3 { animation-delay: 0.4s; }
+    .hero-fade-4 { animation-delay: 0.55s; }
+    .hero-fade-5 { animation-delay: 0.7s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      .hero-glow { display: none; }
+      .marquee-track { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button id="mobileMenuClose" aria-label="Close menu" class="absolute top-6 right-6 p-2 text-ink hover:text-accent transition-colors">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <a href="#services" class="mobile-link">Services</a>
+    <a href="#gallery" class="mobile-link">Gallery</a>
+    <a href="#about" class="mobile-link">About</a>
+    <a href="#reviews" class="mobile-link">Reviews</a>
+    <a href="#contact" class="mobile-link">Contact</a>
+    <a href="#contact" class="btn-primary mt-4 text-sm">Book Now</a>
+  </div>
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 header-shrink bg-transparent" id="header" role="banner">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2 group" aria-label="Lumieère home">
+        <span class="w-2.5 h-2.5 rounded-full bg-accent inline-block transition-transform duration-300 group-hover:scale-125"></span>
+        <span class="font-serif-display text-xl md:text-2xl tracking-tight text-ink">Lumieère</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#services" class="nav-link">Services</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#reviews" class="nav-link">Reviews</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="hidden md:inline-flex btn-primary text-xs px-5 py-2.5">Book Appointment</a>
+        <button id="mobileMenuOpen" class="md:hidden p-2 text-ink hover:text-accent transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16 md:pb-0" aria-labelledby="hero-heading">
+      <!-- Decorative glows -->
+      <div class="hero-glow w-[500px] h-[500px] bg-accent/10 -top-20 -right-20" aria-hidden="true"></div>
+      <div class="hero-glow w-[400px] h-[400px] bg-sand/60 top-1/2 -left-32" aria-hidden="true"></div>
+
+      <div class="max-w-7xl mx-auto px-5 md:px-8 w-full relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <!-- Text -->
+          <div>
+            <div class="hero-fade hero-fade-1 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-black/5 bg-white/60 backdrop-blur-sm mb-8">
+              <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+              <span class="text-xs font-medium tracking-wide text-ink-soft uppercase">Hair & Beauty Atelier</span>
+            </div>
+
+            <h1 id="hero-heading" class="hero-fade hero-fade-2 font-serif-display text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] leading-[0.95] tracking-tight text-ink mb-6">
+              Where <em class="gradient-text not-italic">light</em> meets<br>your <em class="italic">hair</em>
+            </h1>
+
+            <p class="hero-fade hero-fade-3 text-base md:text-lg text-ink-soft max-w-md leading-relaxed mb-10">
+              Precision cuts, dimensional colour, and restorative care — delivered in a calm, sunlit studio by stylists who listen first.
+            </p>
+
+            <div class="hero-fade hero-fade-4 flex flex-wrap items-center gap-4 mb-12">
+              <a href="#contact" class="btn-primary">
+                Book your visit
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+              <a href="#services" class="btn-outline">Explore services</a>
+            </div>
+
+            <!-- Trust cue -->
+            <div class="hero-fade hero-fade-5 flex items-center gap-6 flex-wrap">
+              <div class="flex -space-x-2">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt="Client portrait" class="w-9 h-9 rounded-full border-2 border-white object-cover" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="Client portrait" class="w-9 h-9 rounded-full border-2 border-white object-cover" loading="lazy">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" alt="Client portrait" class="w-9 h-9 rounded-full border-2 border-white object-cover" loading="lazy">
+              </div>
+              <div>
+                <div class="flex items-center gap-1 mb-0.5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <span class="text-xs font-semibold text-ink ml-1">4.9</span>
+                </div>
+                <p class="text-xs text-ink-soft">from 280+ verified reviews</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual -->
+          <div class="relative hero-fade hero-fade-3 hidden lg:block">
+            <div class="relative rounded-[2rem] overflow-hidden aspect-[4/5] bg-gradient-to-br from-cream to-sand">
+              <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=1000&fit=crop" alt="Stylist working on a client's hair in a sunlit salon" class="w-full h-full object-cover" loading="eager">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" aria-hidden="true"></div>
+            </div>
+            <!-- Floating card -->
+            <div class="absolute -bottom-6 -left-6 bg-white rounded-2xl p-4 shadow-lift border border-black/5 float-anim max-w-[200px]">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-ink">Walk-ins welcome</p>
+                  <p class="text-[10px] text-ink-soft">Same-day availability</p>
+                </div>
+              </div>
+              <div class="h-px bg-black/5 my-2"></div>
+              <div class="flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                <p class="text-[10px] text-ink-soft">Open today · 9am–7pm</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marquee -->
+    <section class="py-8 border-y border-black/5 bg-white overflow-hidden" aria-label="Salon specialities">
+      <div class="marquee-track text-ink-soft/40 font-serif-display text-xl md:text-2xl italic" aria-hidden="true">
+        <span>Precision cuts</span><span class="text-accent">·</span>
+        <span>Balayage artistry</span><span class="text-accent">·</span>
+        <span>Scalp therapy</span><span class="text-accent">·</span>
+        <span>Bridal styling</span><span class="text-accent">·</span>
+        <span>Keratin smoothing</span><span class="text-accent">·</span>
+        <span>Curly hair specialists</span><span class="text-accent">·</span>
+        <span>Precision cuts</span><span class="text-accent">·</span>
+        <span>Balayage artistry</span><span class="text-accent">·</span>
+        <span>Scalp therapy</span><span class="text-accent">·</span>
+        <span>Bridal styling</span><span class="text-accent">·</span>
+        <span>Keratin smoothing</span><span class="text-accent">·</span>
+        <span>Curly hair specialists</span><span class="text-accent">·</span>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="py-20 md:py-28 bg-surface" aria-label="Salon milestones">
+      <div class="max-w-7xl mx-auto px-5 md:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          <div class="reveal text-center md:text-left">
+            <p class="stat-number text-ink" data-count="12">0</p>
+            <p class="text-xs uppercase tracking-wider text-ink-soft mt-2">Years crafting</p>
+          </div>
+          <div class="reveal text-center md:text-left" style="transition-delay:0.1s">
+            <p class="stat-number text-ink"><span data-count="4800">0</span>+</p>
+            <p class="text-xs uppercase tracking-wider text-ink-soft mt-2">Heads styled</p>
+          </div>
+          <div class="reveal text-center md:text-left" style="transition-delay:0.2s">
+            <p class="stat-number text-ink"><span data-count="8">0</span></p>
+            <p class="text-xs uppercase tracking-wider text-ink-soft mt-2">Master stylists</p>
+          </div>
+          <div class="reveal text-center md:text-left" style="transition-delay:0.3s">
+            <p class="stat-number text-ink">4.9<span class="text-accent text-2xl">★</span></p>
+            <p class="text-xs uppercase tracking-wider text-ink-soft mt-2">Average rating</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="py-20 md:py-32 bg-cream/50" aria-labelledby="services-heading">
+      <div class="max-w-7xl mx-auto px-5 md:px-8">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+          <div class="reveal max-w-xl">
+            <p class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">What we do</p>
+            <h2 id="services-heading" class="font-serif-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-ink">
+              Crafted services,<br><em class="italic text-ink-soft">tailored to you</em>
+            </h2>
+          </div>
+          <p class="reveal text-sm text-ink-soft max-w-xs md:text-right" style="transition-delay:0.1s">
+            Every appointment begins with a consultation — because great hair starts with a real conversation.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Service 1 -->
+          <article class="service-card reveal">
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-12 h-12 rounded-2xl bg-accent/8 flex items-center justify-center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.12 15.88"/><path d="M14.47 14.48L20 20"/><path d="M8.12 8.12L12 12"/></svg>
+              </div>
+              <span class="text-xs font-semibold text-ink-soft bg-cream px-3 py-1 rounded-full">from $65</span>
+            </div>
+            <h3 class="text-lg font-bold text-ink mb-2">Precision Cut & Style</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">A bespoke cut shaped to your bone structure and lifestyle. Includes wash, scalp massage, and finish.</p>
+          </article>
+
+          <!-- Service 2 -->
+          <article class="service-card reveal" style="transition-delay:0.08s">
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-12 h-12 rounded-2xl bg-accent/8 flex items-center justify-center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <span class="text-xs font-semibold text-ink-soft bg-cream px-3 py-1 rounded-full">from $180</span>
+            </div>
+            <h3 class="text-lg font-bold text-ink mb-2">Dimensional Colour</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">Balayage, babylights, and full-colour work using low-ammonia formulas that protect hair integrity.</p>
+          </article>
+
+          <!-- Service 3 -->
+          <article class="service-card reveal" style="transition-delay:0.16s">
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-12 h-12 rounded-2xl bg-accent/8 flex items-center justify-center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <span class="text-xs font-semibold text-ink-soft bg-cream px-3 py-1 rounded-full">from $95</span>
+            </div>
+            <h3 class="text-lg font-bold text-ink mb-2">Restorative Treatment</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">Deep-repair masks, bond builders, and scalp therapy designed to bring dull hair back to life.</p>
+          </article>
+
+          <!-- Service 4 -->
+          <article class="service-card reveal" style="transition-delay:0.24s">
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-12 h-12 rounded-2xl bg-accent/8 flex items-center justify-center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20M12 2v20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>
+              </div>
+              <span class="text-xs font-semibold text-ink-soft bg-cream px-3 py-1 rounded-full">from $120</span>
+            </div>
+            <h3 class="text-lg font-bold text-ink mb-2">Smoothing & Keratin</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">Frizz-free, glassy finishes without harsh chemicals. Results that last up to twelve weeks.</p>
+          </article>
+
+          <!-- Service 5 -->
+          <article class="service-card reveal" style="transition-delay:0.32s">
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-12 h-12 rounded-2xl bg-accent/8 flex items-center justify-center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>
+              </div>
+              <span class="text-xs font-semibold text-ink-soft bg-cream px-3 py-1 rounded-full">from $150</span>
+            </div>
+            <h3 class="text-lg font-bold text-ink mb-2">Bridal & Event Styling</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">Trial sessions, on-site styling, and a calm, unhurried morning-of experience for your big day.</p>
+          </article>
+
+          <!-- Service 6 -->
+          <article class="service-card reveal" style="transition-delay:0.4s">
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-12 h-12 rounded-2xl bg-accent/8 flex items-center justify-center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              </div>
+              <span class="text-xs font-semibold text-ink-soft bg-cream px-3 py-1 rounded-full">from $75</span>
+            </div>
+            <h3 class="text-lg font-bold text-ink mb-2">Curly Hair Specialist</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">Dry-cutting, curl mapping, and education so you can recreate the look confidently at home.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery" class="py-20 md:py-32 bg-surface" aria-labelledby="gallery-heading">
+      <div class="max-w-7xl mx-auto px-5 md:px-8">
+        <div class="reveal mb-14">
+          <p class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">The work</p>
+          <h2 id="gallery-heading" class="font-serif-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-ink max-w-2xl">
+            A portfolio of <em class="italic text-ink-soft">quiet</em> transformations
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+          <div class="gallery-img reveal aspect-[3/4] col-span-2 md:col-span-1 md:row-span-2">
+            <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=800&fit=crop" alt="Client with long, layered brunette hair" loading="lazy">
+          </div>
+          <div class="gallery-img reveal aspect-square" style="transition-delay:0.08s">
+            <img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=500&h=500&fit=crop" alt="Close-up of blonde balayage waves" loading="lazy">
+          </div>
+          <div class="gallery-img reveal aspect-square" style="transition-delay:0.16s">
+            <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=500&h=500&fit=crop" alt="Salon interior with natural light" loading="lazy">
+          </div>
+          <div class="gallery-img reveal aspect-square md:aspect-[3/4] col-span-2 md:col-span-1" style="transition-delay:0.24s">
+            <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=600&h=800&fit=crop" alt="Stylist applying colour to a client's hair" loading="lazy">
+          </div>
+          <div class="gallery-img reveal aspect-square" style="transition-delay:0.32s">
+            <img src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=500&h=500&fit=crop" alt="Curly hair styled with volume" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="py-20 md:py-32 bg-cream/40" aria-labelledby="about-heading">
+      <div class="max-w-7xl mx-auto px-5 md:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div class="reveal relative">
+            <div class="rounded-[2rem] overflow-hidden aspect-[4/5] bg-gradient-to-br from-sand to-cream">
+              <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=700&h=900&fit=crop" alt="The Lumieère studio interior, warm and minimal" class="w-full h-full object-cover" loading="lazy">
+            </div>
+            <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl p-5 shadow-lift border border-black/5 max-w-[220px]">
+              <p class="font-serif-display text-3xl text-accent mb-1">12</p>
+              <p class="text-xs text-ink-soft leading-relaxed">Years of listening, learning, and refining our craft.</p>
+            </div>
+          </div>
+
+          <div class="reveal" style="transition-delay:0.1s">
+            <p class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">Our story</p>
+            <h2 id="about-heading" class="font-serif-display text-4xl md:text-5xl leading-[1.05] tracking-tight text-ink mb-6">
+              A studio built on <em class="italic text-ink-soft">attention</em>
+            </h2>
+            <p class="text-ink-soft leading-relaxed mb-5">
+              Lumieère began in 2012 with a simple belief: that a salon visit should feel less like an errand and more like a reset. We kept the space small, the lighting warm, and the team close-knit.
+            </p>
+            <p class="text-ink-soft leading-relaxed mb-8">
+              Today, our stylists specialise in everything from precision bobs to curl-specific dry cutting. But the core of what we do hasn't changed — we listen first, recommend second, and never rush the finish.
+            </p>
+
+            <div class="flex flex-wrap gap-6">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+                <span class="text-sm font-medium text-ink">Vegan colour lines</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+                <span class="text-sm font-medium text-ink">Gender-neutral pricing</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+                <span class="text-sm font-medium text-ink">Accessible entry</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="reviews" class="py-20 md:py-32 bg-surface" aria-labelledby="reviews-heading">
+      <div class="max-w-7xl mx-auto px-5 md:px-8">
+        <div class="reveal text-center mb-16">
+          <p class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">Kind words</p>
+          <h2 id="reviews-heading" class="font-serif-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-ink">
+            What our <em class="italic text-ink-soft">clients</em> say
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5">
+          <!-- Review 1 -->
+          <blockquote class="reveal bg-white rounded-3xl p-7 border border-black/5 shadow-soft card-tilt flex flex-col justify-between">
+            <div>
+              <div class="flex gap-1 mb-4">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <p class="text-sm text-ink-soft leading-relaxed mb-6">
+                "I've been going to Lumieère for three years and I've never had a bad cut. They actually listen — and the space smells like a spa, not a chemical lab."
+              </p>
+            </div>
+            <footer class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt="Portrait of Maya R." class="w-10 h-10 rounded-full object-cover" loading="lazy">
+              <div>
+                <p class="text-sm font-semibold text-ink">Maya R.</p>
+                <p class="text-xs text-ink-soft">Colour client since 2021</p>
+              </div>
+            </footer>
+          </blockquote>
+
+          <!-- Review 2 -->
+          <blockquote class="reveal bg-white rounded-3xl p-7 border border-black/5 shadow-soft card-tilt flex flex-col justify-between" style="transition-delay:0.1s">
+            <div>
+              <div class="flex gap-1 mb-4">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <p class="text-sm text-ink-soft leading-relaxed mb-6">
+                "Finally, a curly cut that actually works with my hair. I walked out with a shape I could recreate at home. Worth every penny."
+              </p>
+            </div>
+            <footer class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="Portrait of James K." class="w-10 h-10 rounded-full object-cover" loading="lazy">
+              <div>
+                <p class="text-sm font-semibold text-ink">James K.</p>
+                <p class="text-xs text-ink-soft">Curly cut client</p>
+              </div>
+            </footer>
+          </blockquote>
+
+          <!-- Review 3 -->
+          <blockquote class="reveal bg-white rounded-3xl p-7 border border-black/5 shadow-soft card-tilt flex flex-col justify-between" style="transition-delay:0.2s">
+            <div>
+              <div class="flex gap-1 mb-4">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-accent"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <p class="text-sm text-ink-soft leading-relaxed mb-6">
+                "The bridal trial was so calm — they didn't rush, asked the right questions, and my hair held perfectly through a 14-hour day. Genuinely the best in the city."
+              </p>
+            </div>
+            <footer class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" alt="Portrait of Sana P." class="w-10 h-10 rounded-full object-cover" loading="lazy">
+              <div>
+                <p class="text-sm font-semibold text-ink">Sana P.</p>
+                <p class="text-xs text-ink-soft">Bridal styling client</p>
+              </div>
+            </footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-20 md:py-32 bg-cream/40" aria-labelledby="faq-heading">
+      <div class="max-w-4xl mx-auto px-5 md:px-8">
+        <div class="reveal text-center mb-14">
+          <p class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">Questions</p>
+          <h2 id="faq-heading" class="font-serif-display text-4xl md:text-5xl leading-[1.05] tracking-tight text-ink">
+            Good to <em class="italic text-ink-soft">know</em>
+          </h2>
+        </div>
+
+        <div class="space-y-0">
+          <div class="faq-item reveal">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-1">
+              <span>Do you take walk-ins or is it appointment-only?</span>
+              <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <div class="faq-content" id="faq-1" role="region">
+              <p>We welcome walk-ins for quick services like blow-dries and trims, but colour and smoothing treatments need a reservation. We recommend booking at least a week ahead for colour appointments.</p>
+            </div>
+          </div>
+
+          <div class="faq-item reveal" style="transition-delay:0.08s">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-2">
+              <span>What should I do to prepare for a colour appointment?</span>
+              <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <div class="faq-content" id="faq-2" role="region">
+              <p>Come with dry, unwashed hair (day-two texture is ideal). Avoid heavy styling products and bring any reference photos. We'll handle the rest — including a full consultation before we mix colour.</p>
+            </div>
+          </div>
+
+          <div class="faq-item reveal" style="transition-delay:0.16s">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-3">
+              <span>Are your products vegan or cruelty-free?</span>
+              <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <div class="faq-content" id="faq-3" role="region">
+              <p>Yes. We use a curated line of vegan, cruelty-free colour and care products. If you have specific sensitivities, let us know and we'll patch-test or suggest an alternative.</p>
+            </div>
+          </div>
+
+          <div class="faq-item reveal" style="transition-delay:0.24s">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-4">
+              <span>What's your cancellation policy?</span>
+              <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <div class="faq-content" id="faq-4" role="region">
+              <p>We ask for 24 hours' notice for cancellations. Colour appointments cancelled with less notice may incur a 50% fee, which is credited toward your next visit.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="py-20 md:py-28 bg-ink relative overflow-hidden" aria-labelledby="cta-heading">
+      <div class="absolute inset-0 opacity-10" aria-hidden="true">
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-accent filter blur-[120px] -translate-y-1/2 translate-x-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-accent-light filter blur-[100px] translate-y-1/3 -translate-x-1/4"></div>
+      </div>
+      <div class="max-w-4xl mx-auto px-5 md:px-8 text-center relative z-10">
+        <h2 id="cta-heading" class="reveal font-serif-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-white mb-6">
+          Ready for hair that<br><em class="italic text-accent-light">feels like you?</em>
+        </h2>
+        <p class="reveal text-white/60 max-w-md mx-auto mb-10 text-sm leading-relaxed" style="transition-delay:0.1s">
+          Book a consultation and we'll take it from there. New clients get 15% off their first colour service.
+        </p>
+        <div class="reveal flex flex-wrap items-center justify-center gap-4" style="transition-delay:0.2s">
+          <a href="#contact" class="inline-flex items-center gap-2 bg-white text-ink px-8 py-3.5 rounded-full font-semibold text-sm hover:bg-accent hover:text-white transition-all duration-300 ease-out hover:-translate-y-0.5">
+            Book your appointment
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="tel:+15551234567" class="inline-flex items-center gap-2 text-white/70 hover:text-white px-6 py-3.5 font-medium text-sm transition-colors duration-300">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            (555) 123-4567
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer with Contact Form -->
+  <footer id="contact" class="bg-cream/60 pt-20 md:pt-28 pb-10" role="contentinfo">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 mb-16">
+        <!-- Brand + links -->
+        <div>
+          <a href="#" class="flex items-center gap-2 mb-6" aria-label="Lumieère home">
+            <span class="w-2.5 h-2.5 rounded-full bg-accent inline-block"></span>
+            <span class="font-serif-display text-2xl tracking-tight text-ink">Lumieère</span>
+          </a>
+          <p class="text-sm text-ink-soft leading-relaxed max-w-sm mb-8">
+            A hair and beauty atelier in the heart of the city. Precision cuts, dimensional colour, and a space designed to help you exhale.
+          </p>
+
+          <div class="grid grid-cols-2 gap-8 mb-10">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wider text-ink mb-4">Explore</p>
+              <ul class="space-y-2.5">
+                <li><a href="#services" class="text-sm text-ink-soft hover:text-accent transition-colors">Services</a></li>
+                <li><a href="#gallery" class="text-sm text-ink-soft hover:text-accent transition-colors">Gallery</a></li>
+                <li><a href="#about" class="text-sm text-ink-soft hover:text-accent transition-colors">About</a></li>
+                <li><a href="#reviews" class="text-sm text-ink-soft hover:text-accent transition-colors">Reviews</a></li>
+              </ul>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wider text-ink mb-4">Visit</p>
+              <ul class="space-y-2.5">
+                <li class="text-sm text-ink-soft">48 Larch Street</li>
+                <li class="text-sm text-ink-soft">Portland, OR 97205</li>
+                <li class="text-sm text-ink-soft">Mon–Sat · 9am–7pm</li>
+                <li class="text-sm text-ink-soft">Sun · Closed</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <a href="#" class="w-10 h-10 rounded-full border border-black/10 flex items-center justify-center text-ink-soft hover:bg-ink hover:text-white hover:border-ink transition-all duration-300" aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-black/10 flex items-center justify-center text-ink-soft hover:bg-ink hover:text-white hover:border-ink transition-all duration-300" aria-label="Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-black/10 flex items-center justify-center text-ink-soft hover:bg-ink hover:text-white hover:border-ink transition-all duration-300" aria-label="Pinterest">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 1 0 8 0 4 4 0 0 0-4-4 4 4 0 0 0-3 1"/><path d="M12 16v4"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="reveal">
+          <h3 class="font-serif-display text-2xl md:text-3xl text-ink mb-2">Book your appointment</h3>
+          <p class="text-sm text-ink-soft mb-8">Leave your details and we'll confirm within one business day.</p>
+
+          <form id="contactForm" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="name" class="sr-only">Your name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required aria-required="true">
+                <p class="form-error" id="nameError">Please enter your name.</p>
+              </div>
+              <div>
+                <label for="email" class="sr-only">Email address</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="Email address" required aria-required="true">
+                <p class="form-error" id="emailError">Please enter a valid email.</p>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="phone" class="sr-only">Phone number</label>
+                <input type="tel" id="phone" name="phone" class="form-input" placeholder="Phone (optional)">
+                <p class="form-error" id="phoneError">Please enter a valid phone number.</p>
+              </div>
+              <div>
+                <label for="service" class="sr-only">Service</label>
+                <select id="service" name="service" class="form-input" required aria-required="true">
+                  <option value="" disabled selected>Select a service</option>
+                  <option value="cut">Precision Cut & Style</option>
+                  <option value="colour">Dimensional Colour</option>
+                  <option value="treatment">Restorative Treatment</option>
+                  <option value="smoothing">Smoothing & Keratin</option>
+                  <option value="bridal">Bridal & Event Styling</option>
+                  <option value="curly">Curly Hair Specialist</option>
+                </select>
+                <p class="form-error" id="serviceError">Please choose a service.</p>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <label for="message" class="sr-only">Message</label>
+              <textarea id="message" name="message" rows="4" class="form-input resize-none" placeholder="Tell us a little about what you're looking for…" required aria-required="true"></textarea>
+              <p class="form-error" id="messageError">Please add a short message.</p>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-primary w-full justify-center">
+              Send request
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+
+            <p id="formSuccess" class="hidden text-center text-sm text-green-700 bg-green-50 rounded-xl py-3 px-4 mt-4" role="status">
+              Thank you — your request has been sent. We'll be in touch shortly.
+            </p>
+            <p id="formErrorMsg" class="hidden text-center text-sm text-red-700 bg-red-50 rounded-xl py-3 px-4 mt-4" role="alert">
+              Something went wrong. Please try again or call us directly.
+            </p>
+          </form>
+          <!-- TODO: connect form action to backend endpoint -->
+        </div>
+      </div>
+
+      <div class="border-t border-black/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-ink-soft">&copy; 2025 Lumieère Hair & Beauty. All rights reserved.</p>
+        <div class="flex items-center gap-6">
+          <a href="#" class="text-xs text-ink-soft hover:text-accent transition-colors">Privacy Policy</a>
+          <a href="#" class="text-xs text-ink-soft hover:text-accent transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // === Mobile Menu ===
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuOpen = document.getElementById('mobileMenuOpen');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      mobileMenuOpen.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      mobileMenuOpen.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    mobileMenuOpen.addEventListener('click', openMenu);
+    mobileMenuClose.addEventListener('click', closeMenu);
+    mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+    // === Header Shrink ===
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('header-scrolled');
+      } else {
+        header.classList.remove('header-scrolled');
+      }
+    }, { passive: true });
+
+    // === Reveal on Scroll ===
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // === Animated Counters ===
+    const counters = document.querySelectorAll('[data-count]');
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.getAttribute('data-count'));
+          const duration = 1800;
+          const start = performance.now();
+          function update(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.floor(eased * target);
+            if (progress < 1) requestAnimationFrame(update);
+            else el.textContent = target;
+          }
+          requestAnimationFrame(update);
+          counterObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(c => counterObserver.observe(c));
+
+    // === FAQ Accordion ===
+    document.querySelectorAll('.faq-trigger').forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const expanded = trigger.getAttribute('aria-expanded') === 'true';
+        const content = trigger.nextElementSibling;
+
+        // Close all others
+        document.querySelectorAll('.faq-trigger').forEach(t => {
+          if (t !== trigger) {
+            t.setAttribute('aria-expanded', 'false');
+            t.nextElementSibling.classList.remove('open');
+          }
+        });
+
+        trigger.setAttribute('aria-expanded', !expanded);
+        content.classList.toggle('open', !expanded);
+      });
+    });
+
+    // === Form Validation & Submission ===
+    const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formSuccess = document.getElementById('formSuccess');
+    const formErrorMsg = document.getElementById('formErrorMsg');
+
+    function setError(id, show) {
+      const el = document.getElementById(id + 'Error');
+      const input = document.getElementById(id);
+      if (show) {
+        el.classList.add('visible');
+        if (input) input.classList.add('error');
+      } else {
+        el.classList.remove('visible');
+        if (input) input.classList.remove('error');
+      }
+    }
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    function validatePhone(phone) {
+      if (!phone) return true;
+      return /^[\+]?[\d\s\-()]{7,}$/.test(phone);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      formSuccess.classList.add('hidden');
+      formErrorMsg.classList.add('hidden');
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const service = document.getElementById('service').value;
+      const message = document.getElementById('message').value.trim();
+
+      let valid = true;
+
+      if (!name) { setError('name', true); valid = false; } else setError('name', false);
+      if (!email || !validateEmail(email)) { setError('email', true); valid = false; } else setError('email', false);
+      if (!validatePhone(phone)) { setError('phone', true); valid = false; } else setError('phone', false);
+      if (!service) { setError('service', true); valid = false; } else setError('service', false);
+      if (!message) { setError('message', true); valid = false; } else setError('message', false);
+
+      if (!valid) return;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending…';
+
+      try {
+        const res = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'appointments',
+            data: { name, email, phone, service, message }
+          })
+        });
+
+        if (!res.ok) throw new Error('Server error');
+
+        formSuccess.classList.remove('hidden');
+        form.reset();
+      } catch (err) {
+        formErrorMsg.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send request <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>';
+      }
+    });
+
+    // Live clear errors on input
+    ['name','email','phone','service','message'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', () => setError(id, false));
+        el.addEventListener('change', () => setError(id, false));
+      }
+    });
+  </script>
+</body>
+</html>
