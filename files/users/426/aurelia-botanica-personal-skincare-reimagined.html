@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia Botanica — Personal Skincare, Reimagined</title>
+  <meta name="description" content="Aurelia Botanica: clean, clinical-grade personal skincare crafted for your unique skin rhythm. Shop serums, moisturizers, and rituals.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- Tailwind CDN (DO NOT CHANGE THIS URL) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1E2A24',
+            surface: '#FCFBF8',
+            'surface-alt': '#F4F1EA',
+            accent: '#8A9A7B',
+            'accent-deep': '#5C6B4F',
+            clay: '#C9A98C',
+          },
+          fontFamily: {
+            display: ['"Instrument Serif"', 'serif'],
+            sans: ['"Instrument Sans"', 'sans-serif'],
+          },
+          borderRadius: {
+            '4xl': '2rem',
+            '5xl': '2.5rem',
+          },
+          boxShadow: {
+            'soft': '0 8px 30px rgba(30, 42, 36, 0.04)',
+            'lift': '0 20px 50px -12px rgba(30, 42, 36, 0.12)',
+            'glow': '0 0 40px rgba(138, 154, 123, 0.15)',
+          }
+        }
+      }
+    }
+  </script>
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1E2A24;
+      --surface: #FCFBF8;
+      --surface-alt: #F4F1EA;
+      --accent: #8A9A7B;
+      --accent-deep: #5C6B4F;
+      --clay: #C9A98C;
+      --focus: #8A9A7B;
+      --radius: 1.25rem;
+    }
+
+    /* === Base === */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--surface);
+      color: var(--ink);
+      font-family: 'Instrument Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--accent); color: white; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--surface-alt); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-deep); }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+    }
+
+    /* === Components === */
+    .glass {
+      background: rgba(252, 251, 248, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(30, 42, 36, 0.06);
+    }
+    .btn-primary {
+      background: var(--ink);
+      color: var(--surface);
+      border-radius: 999px;
+      padding: 0.875rem 2rem;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid transparent;
+    }
+    .btn-primary:hover {
+      background: var(--accent-deep);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -8px rgba(92, 107, 79, 0.4);
+    }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid rgba(30, 42, 36, 0.15);
+      border-radius: 999px;
+      padding: 0.875rem 2rem;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-secondary:hover {
+      border-color: var(--ink);
+      background: var(--surface-alt);
+      transform: translateY(-2px);
+    }
+    .btn-secondary:active { transform: scale(0.97); }
+
+    .card-tilt {
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s ease;
+      transform-style: preserve-3d;
+    }
+    .card-tilt:hover {
+      transform: translateY(-6px) rotateX(2deg) rotateY(-2deg);
+      box-shadow: 0 24px 48px -12px rgba(30, 42, 36, 0.15);
+    }
+
+    .underline-grow {
+      position: relative;
+    }
+    .underline-grow::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .underline-grow:hover::after { width: 100%; }
+
+    .marquee-track {
+      display: flex;
+      gap: 3rem;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .focus-ring:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--accent);
+      border-radius: 0.5rem;
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1), padding 0.45s ease;
+    }
+    .accordion-content.open {
+      max-height: 300px;
+      padding-bottom: 1.25rem;
+    }
+    .accordion-icon { transition: transform 0.35s ease; }
+    .accordion-icon.rotated { transform: rotate(180deg); }
+
+    .mesh-bg {
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(138, 154, 123, 0.12), transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 40%, rgba(201, 169, 140, 0.10), transparent 60%),
+        radial-gradient(ellipse 70% 50% at 50% 90%, rgba(138, 154, 123, 0.08), transparent 60%);
+    }
+
+    .grain::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      z-index: 1;
+    }
+
+    .product-img {
+      background: linear-gradient(135deg, var(--surface-alt) 0%, #E8E4DA 100%);
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .product-card:hover .product-img { transform: scale(1.04); }
+
+    /* === Animations === */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .anim-fade-up {
+      animation: fadeUp 0.9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+      opacity: 0;
+    }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.35s; }
+    .delay-4 { animation-delay: 0.5s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+      .marquee-track { animation: none; }
+    }
+
+    /* === Responsive === */
+    @media (max-width: 640px) {
+      .btn-primary, .btn-secondary { padding: 0.75rem 1.5rem; font-size: 0.875rem; }
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-accent selection:text-white">
+
+  <!-- ============ HEADER ============ -->
+  <header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 glass">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 md:h-20 transition-all duration-500" id="header-inner">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 focus-ring rounded-lg" aria-label="Aurelia Botanica Home">
+        <span class="font-display text-2xl md:text-3xl tracking-tight text-ink">Aurelia<span class="text-accent">.</span></span>
+      </a>
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Primary navigation">
+        <a href="#shop" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors underline-grow focus-ring rounded">Shop</a>
+        <a href="#ritual" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors underline-grow focus-ring rounded">Ritual</a>
+        <a href="#story" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors underline-grow focus-ring rounded">Our Story</a>
+        <a href="#reviews" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors underline-grow focus-ring rounded">Reviews</a>
+        <a href="#faq" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors underline-grow focus-ring rounded">FAQ</a>
+      </nav>
+      <!-- Desktop CTA -->
+      <div class="hidden md:flex items-center gap-3">
+        <a href="#shop" class="btn-primary text-sm !py-2.5 !px-6">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          Shop Now
+        </a>
+      </div>
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="md:hidden flex items-center justify-center w-10 h-10 rounded-full border border-ink/10 hover:bg-surface-alt transition-colors focus-ring" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+        <i data-lucide="menu" class="w-5 h-5 text-ink" id="menu-icon"></i>
+      </button>
+    </div>
+    <!-- Mobile Menu Panel -->
+    <div id="mobile-menu" class="md:hidden hidden glass border-t border-ink/5 absolute top-full left-0 right-0 px-5 py-6 flex flex-col gap-1 shadow-lift" aria-hidden="true">
+      <a href="#shop" class="mobile-nav-link text-base font-medium text-ink/80 hover:text-ink py-3 border-b border-ink/5 focus-ring rounded">Shop</a>
+      <a href="#ritual" class="mobile-nav-link text-base font-medium text-ink/80 hover:text-ink py-3 border-b border-ink/5 focus-ring rounded">Ritual</a>
+      <a href="#story" class="mobile-nav-link text-base font-medium text-ink/80 hover:text-ink py-3 border-b border-ink/5 focus-ring rounded">Our Story</a>
+      <a href="#reviews" class="mobile-nav-link text-base font-medium text-ink/80 hover:text-ink py-3 border-b border-ink/5 focus-ring rounded">Reviews</a>
+      <a href="#faq" class="mobile-nav-link text-base font-medium text-ink/80 hover:text-ink py-3 border-b border-ink/5 focus-ring rounded">FAQ</a>
+      <a href="#shop" class="btn-primary mt-4 justify-center mobile-nav-link">
+        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+        Shop Now
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="relative min-h-screen flex items-center mesh-bg grain overflow-hidden pt-20">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 w-full grid lg:grid-cols-2 gap-12 lg:gap-8 items-center py-16 lg:py-0">
+        <!-- Text -->
+        <div class="relative z-10 text-center lg:text-left">
+          <p class="anim-fade-up delay-1 inline-flex items-center gap-2 text-xs font-semibold tracking-[0.2em] uppercase text-accent-deep mb-6">
+            <span class="w-6 h-px bg-accent"></span>
+            Clinical Botanicals
+          </p>
+          <h1 class="anim-fade-up delay-2 font-display text-[clamp(2.75rem,6vw,5.5rem)] leading-[0.95] tracking-[-0.03em] text-ink mb-6">
+            Skin that<br>
+            <span class="italic text-accent-deep">remembers</span><br>
+            how to glow.
+          </h1>
+          <p class="anim-fade-up delay-3 text-base sm:text-lg text-ink/60 max-w-md mx-auto lg:mx-0 leading-relaxed mb-8">
+            Aurelia Botanica blends cold-pressed botanicals with clinical-grade actives — a personal skincare ritual designed for your skin's unique rhythm.
+          </p>
+          <div class="anim-fade-up delay-4 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+            <a href="#shop" class="btn-primary justify-center">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              Explore the Collection
+            </a>
+            <a href="#ritual" class="btn-secondary justify-center">
+              <i data-lucide="play" class="w-4 h-4"></i>
+              Our Ritual
+            </a>
+          </div>
+          <!-- Trust cue -->
+          <div class="anim-fade-up delay-4 mt-10 flex items-center gap-4 justify-center lg:justify-start">
+            <div class="flex -space-x-2">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt="Customer portrait" class="w-9 h-9 rounded-full border-2 border-surface object-cover" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="Customer portrait" class="w-9 h-9 rounded-full border-2 border-surface object-cover" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" alt="Customer portrait" class="w-9 h-9 rounded-full border-2 border-surface object-cover" loading="lazy">
+            </div>
+            <div>
+              <div class="flex items-center gap-1" aria-label="Rated 4.9 out of 5 stars">
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-clay text-clay"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-clay text-clay"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-clay text-clay"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-clay text-clay"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-clay text-clay"></i>
+              </div>
+              <p class="text-xs text-ink/50 mt-0.5"><span class="font-semibold text-ink">4.9</span> from 2,400+ glowing reviews</p>
+            </div>
+          </div>
+        </div>
+        <!-- Hero Visual -->
+        <div class="relative z-10 hidden lg:block">
+          <div class="relative w-full aspect-[4/5] max-w-md mx-auto">
+            <!-- Layered image cards -->
+            <div class="absolute top-0 right-0 w-3/4 rounded-4xl overflow-hidden shadow-lift card-tilt">
+              <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=600&h=750&fit=crop" alt="Aurelia Botanica serum bottle styled with botanicals" class="w-full h-full object-cover" loading="eager">
+            </div>
+            <div class="absolute bottom-8 left-0 w-2/3 rounded-4xl overflow-hidden shadow-lift border-4 border-surface card-tilt">
+              <img src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500&h=500&fit=crop" alt="Close-up of botanical skincare cream texture" class="w-full h-full object-cover" loading="lazy">
+            </div>
+            <!-- Floating card -->
+            <div class="absolute bottom-0 right-4 glass rounded-2xl px-5 py-4 shadow-soft max-w-[200px]">
+              <div class="flex items-center gap-2 mb-1">
+                <i data-lucide="leaf" class="w-4 h-4 text-accent"></i>
+                <span class="text-xs font-semibold tracking-wide uppercase text-accent-deep">100% Clean</span>
+              </div>
+              <p class="text-xs text-ink/60 leading-snug">Dermatologist-tested, cruelty-free, and free from 1,400+ toxins.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MARQUEE / SOCIAL PROOF ============ -->
+    <section class="border-y border-ink/5 bg-surface-alt/50 py-6 overflow-hidden" aria-label="Trusted by">
+      <div class="marquee-track">
+        <div class="flex items-center gap-3 text-sm font-medium text-ink/40 whitespace-nowrap"><i data-lucide="award" class="w-4 h-4"></i> Dermatologist Approved</div>
+        <div class="flex items-center gap-3 text-sm font-medium text-ink/40 whitespace-nowrap"><i data-lucide="leaf" class="w-4 h-4"></i> Vegan &amp; Cruelty-Free</div>
+        <div class="flex items-center gap-3 text-sm font-medium text-ink/40 whitespace-nowrap"><i data-lucide="flask-conical" class="w-4 h-4"></i> Clinical-Grade Actives</div>
+        <div class="flex items-center gap-3 text-sm font-medium text-ink/40 whitespace-nowrap"><i data-lucide="recycle" class="w-4 h-4"></i> Sustainable Packaging</div>
+        <div class="flex items-center gap-3 text-sm font-medium text-ink/40 whitespace-nowrap"><i data-lucide="shield-check" class="w-4 h-4"></i> 30-Day Guarantee</div>
+        <div class="flex items-center gap-3 text-sm font-medium text-ink/40 whitespace-nowrap"><i data-lucide="award" class="w-4 h-4"></i> Dermatologist Approved</div>
+        <div class="flex items-center gap-3 text-sm font-medium text-ink/40 whitespace-nowrap"><i data-lucide="leaf" class="w-4 h-4"></i> Vegan &amp; Cruelty-Free</div>
+        <div class="flex items-center gap-3 text-sm font-medium text-ink/40 whitespace-nowrap"><i data-lucide="flask-conical" class="w-4 h-4"></i> Clinical-Grade Actives</div>
+        <div class="flex items-center gap-3 text-sm font-medium text-ink/40 whitespace-nowrap"><i data-lucide="recycle" class="w-4 h-4"></i> Sustainable Packaging</div>
+        <div class="flex items-center gap-3 text-sm font-medium text-ink/40 whitespace-nowrap"><i data-lucide="shield-check" class="w-4 h-4"></i> 30-Day Guarantee</div>
+      </div>
+    </section>
+
+    <!-- ============ STATS ============ -->
+    <section class="py-20 md:py-28" aria-label="Our impact">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          <div class="reveal text-center md:text-left">
+            <p class="font-display text-5xl md:text-6xl text-ink" data-counter="2400" data-suffix="+">0</p>
+            <p class="text-sm text-ink/50 mt-2 font-medium">Five-star reviews</p>
+          </div>
+          <div class="reveal text-center md:text-left" style="transition-delay: 0.1s;">
+            <p class="font-display text-5xl md:text-6xl text-ink" data-counter="98" data-suffix="%">0</p>
+            <p class="text-sm text-ink/50 mt-2 font-medium">Would repurchase</p>
+          </div>
+          <div class="reveal text-center md:text-left" style="transition-delay: 0.2s;">
+            <p class="font-display text-5xl md:text-6xl text-ink" data-counter="1400" data-suffix="+">0</p>
+            <p class="text-sm text-ink/50 mt-2 font-medium">Toxins excluded</p>
+          </div>
+          <div class="reveal text-center md:text-left" style="transition-delay: 0.3s;">
+            <p class="font-display text-5xl md:text-6xl text-ink" data-counter="100" data-suffix="%">0</p>
+            <p class="text-sm text-ink/50 mt-2 font-medium">Cruelty-free</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SHOP / PRODUCTS ============ -->
+    <section id="shop" class="py-20 md:py-32 bg-surface-alt/60 relative">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 reveal">
+          <div>
+            <p class="text-xs font-semibold tracking-[0.2em] uppercase text-accent-deep mb-3 flex items-center gap-2">
+              <span class="w-6 h-px bg-accent"></span> The Collection
+            </p>
+            <h2 class="font-display text-4xl md:text-5xl lg:text-6xl tracking-tight text-ink leading-[1.05]">
+              Essentials for<br><span class="italic text-accent-deep">every ritual.</span>
+            </h2>
+          </div>
+          <a href="#shop" class="btn-secondary self-start md:self-end text-sm focus-ring">
+            View all products
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          <!-- Product 1 -->
+          <article class="product-card reveal bg-surface rounded-4xl overflow-hidden shadow-soft hover:shadow-lift transition-shadow duration-500 group">
+            <div class="relative overflow-hidden aspect-[4/5] product-img">
+              <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&h=750&fit=crop" alt="Golden Hour Vitamin C Serum bottle" class="w-full h-full object-cover" loading="lazy">
+              <span class="absolute top-4 left-4 bg-surface/90 backdrop-blur-sm text-xs font-semibold px-3 py-1.5 rounded-full text-accent-deep">Bestseller</span>
+            </div>
+            <div class="p-6">
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <h3 class="font-display text-2xl text-ink">Golden Hour Serum</h3>
+                <span class="text-base font-semibold text-ink whitespace-nowrap">$68</span>
+              </div>
+              <p class="text-sm text-ink/50 mb-4">Vitamin C + Sea Buckthorn for luminous, even-toned skin.</p>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1" aria-label="Rated 4.9 stars">
+                  <i data-lucide="star" class="w-3.5 h-3.5 fill-clay text-clay"></i>
+                  <span class="text-xs text-ink/40 ml-1">(312)</span>
+                </div>
+                <button class="add-to-cart w-10 h-10 rounded-full border border-ink/10 flex items-center justify-center hover:bg-ink hover:text-surface transition-all duration-300 focus-ring" aria-label="Add Golden Hour Serum to cart">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </article>
+          <!-- Product 2 -->
+          <article class="product-card reveal bg-surface rounded-4xl overflow-hidden shadow-soft hover:shadow-lift transition-shadow duration-500 group" style="transition-delay: 0.1s;">
+            <div class="relative overflow-hidden aspect-[4/5] product-img">
+              <img src="https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=600&h=750&fit=crop" alt="Midnight Recovery Cream jar" class="w-full h-full object-cover" loading="lazy">
+              <span class="absolute top-4 left-4 bg-surface/90 backdrop-blur-sm text-xs font-semibold px-3 py-1.5 rounded-full text-accent-deep">New</span>
+            </div>
+            <div class="p-6">
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <h3 class="font-display text-2xl text-ink">Midnight Recovery</h3>
+                <span class="text-base font-semibold text-ink whitespace-nowrap">$82</span>
+              </div>
+              <p class="text-sm text-ink/50 mb-4">Peptide-rich night cream that restores while you sleep.</p>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1" aria-label="Rated 4.8 stars">
+                  <i data-lucide="star" class="w-3.5 h-3.5 fill-clay text-clay"></i>
+                  <span class="text-xs text-ink/40 ml-1">(198)</span>
+                </div>
+                <button class="add-to-cart w-10 h-10 rounded-full border border-ink/10 flex items-center justify-center hover:bg-ink hover:text-surface transition-all duration-300 focus-ring" aria-label="Add Midnight Recovery to cart">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </article>
+          <!-- Product 3 -->
+          <article class="product-card reveal bg-surface rounded-4xl overflow-hidden shadow-soft hover:shadow-lift transition-shadow duration-500 group" style="transition-delay: 0.2s;">
+            <div class="relative overflow-hidden aspect-[4/5] product-img">
+              <img src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&h=750&fit=crop" alt="Rose Dew Hydrating Mist bottle" class="w-full h-full object-cover" loading="lazy">
+            </div>
+            <div class="p-6">
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <h3 class="font-display text-2xl text-ink">Rose Dew Mist</h3>
+                <span class="text-base font-semibold text-ink whitespace-nowrap">$44</span>
+              </div>
+              <p class="text-sm text-ink/50 mb-4">Damask rose + hyaluronic acid for instant, dewy hydration.</p>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1" aria-label="Rated 4.9 stars">
+                  <i data-lucide="star" class="w-3.5 h-3.5 fill-clay text-clay"></i>
+                  <span class="text-xs text-ink/40 ml-1">(427)</span>
+                </div>
+                <button class="add-to-cart w-10 h-10 rounded-full border border-ink/10 flex items-center justify-center hover:bg-ink hover:text-surface transition-all duration-300 focus-ring" aria-label="Add Rose Dew Mist to cart">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RITUAL / ABOUT ============ -->
+    <section id="ritual" class="py-20 md:py-32 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+        <div class="relative reveal">
+          <div class="rounded-4xl overflow-hidden shadow-lift aspect-[4/5] max-w-md mx-auto lg:mx-0">
+            <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=700&h=875&fit=crop" alt="Woman applying skincare in a calm morning ritual" class="w-full h-full object-cover" loading="lazy">
+          </div>
+          <div class="absolute -bottom-6 -right-2 md:right-6 glass rounded-3xl p-6 shadow-soft max-w-[220px]">
+            <p class="font-display text-3xl text-ink mb-1">3 steps.</p>
+            <p class="text-sm text-ink/50 leading-snug">Cleanse. Treat. Seal. A ritual you'll actually keep.</p>
+          </div>
+        </div>
+        <div class="reveal" style="transition-delay: 0.15s;">
+          <p class="text-xs font-semibold tracking-[0.2em] uppercase text-accent-deep mb-4 flex items-center gap-2">
+            <span class="w-6 h-px bg-accent"></span> The Aurelia Ritual
+          </p>
+          <h2 class="font-display text-4xl md:text-5xl lg:text-6xl tracking-tight text-ink leading-[1.05] mb-6">
+            Less noise.<br>More <span class="italic text-accent-deep">nourishment.</span>
+          </h2>
+          <p class="text-ink/60 leading-relaxed mb-8 max-w-lg">
+            We believe skincare shouldn't be a 12-step chore. Aurelia Botanica distills your routine into three intentional moments — each formulated with cold-pressed botanicals and clinically proven actives that work in harmony with your skin barrier.
+          </p>
+          <div class="space-y-5 mb-10">
+            <div class="flex gap-4 items-start">
+              <span class="flex-shrink-0 w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                <i data-lucide="droplets" class="w-5 h-5 text-accent-deep"></i>
+              </span>
+              <div>
+                <h4 class="font-semibold text-ink mb-0.5">Cleanse gently</h4>
+                <p class="text-sm text-ink/50">pH-balanced formulas that never strip your microbiome.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <span class="flex-shrink-0 w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                <i data-lucide="sun" class="w-5 h-5 text-accent-deep"></i>
+              </span>
+              <div>
+                <h4 class="font-semibold text-ink mb-0.5">Treat with intention</h4>
+                <p class="text-sm text-ink/50">Targeted serums with encapsulated actives for slow, steady release.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <span class="flex-shrink-0 w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                <i data-lucide="shield" class="w-5 h-5 text-accent-deep"></i>
+              </span>
+              <div>
+                <h4 class="font-semibold text-ink mb-0.5">Seal &amp; protect</h4>
+                <p class="text-sm text-ink/50">Barrier-loving moisturizers that lock in hydration all day.</p>
+              </div>
+            </div>
+          </div>
+          <a href="#shop" class="btn-primary focus-ring">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            Build Your Ritual
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STORY / BENTO GRID ============ -->
+    <section id="story" class="py-20 md:py-32 bg-surface-alt/60">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="max-w-xl mb-14 reveal">
+          <p class="text-xs font-semibold tracking-[0.2em] uppercase text-accent-deep mb-3 flex items-center gap-2">
+            <span class="w-6 h-px bg-accent"></span> Our Philosophy
+          </p>
+          <h2 class="font-display text-4xl md:text-5xl lg:text-6xl tracking-tight text-ink leading-[1.05]">
+            Rooted in botany.<br>Backed by <span class="italic text-accent-deep">science.</span>
+          </h2>
+        </div>
+
+        <!-- Bento Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Large card -->
+          <div class="reveal md:col-span-2 lg:col-span-1 lg:row-span-2 rounded-4xl overflow-hidden relative group min-h-[320px] lg:min-h-0">
+            <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=800&h=900&fit=crop" alt="Botanical ingredients in a laboratory setting" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-7 text-surface">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="sprout" class="w-4 h-4 text-accent"></i>
+                <span class="text-xs font-semibold tracking-wider uppercase text-accent">Clean Sourcing</span>
+              </div>
+              <h3 class="font-display text-2xl mb-1">From soil to serum.</h3>
+              <p class="text-sm text-surface/70 leading-relaxed">We partner with regenerative farms across the Mediterranean to source botanicals at peak potency.</p>
+            </div>
+          </div>
+          <!-- Card -->
+          <div class="reveal bg-surface rounded-4xl p-7 shadow-soft hover:shadow-lift transition-shadow duration-500" style="transition-delay: 0.1s;">
+            <span class="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center mb-5">
+              <i data-lucide="flask-conical" class="w-5 h-5 text-accent-deep"></i>
+            </span>
+            <h3 class="font-display text-2xl text-ink mb-2">Clinically proven</h3>
+            <p class="text-sm text-ink/50 leading-relaxed">Every formula is tested in independent clinical trials for visible results in 4 weeks.</p>
+          </div>
+          <!-- Card -->
+          <div class="reveal bg-surface rounded-4xl p-7 shadow-soft hover:shadow-lift transition-shadow duration-500" style="transition-delay: 0.15s;">
+            <span class="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center mb-5">
+              <i data-lucide="heart-handshake" class="w-5 h-5 text-accent-deep"></i>
+            </span>
+            <h3 class="font-display text-2xl text-ink mb-2">Radically kind</h3>
+            <p class="text-sm text-ink/50 leading-relaxed">Vegan, cruelty-free, and packaged in post-consumer recycled glass. Always.</p>
+          </div>
+          <!-- Wide card -->
+          <div class="reveal md:col-span-2 bg-ink text-surface rounded-4xl p-7 md:p-9 flex flex-col justify-between relative overflow-hidden min-h-[220px]" style="transition-delay: 0.2s;">
+            <div class="absolute top-0 right-0 w-48 h-48 bg-accent/20 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+              <span class="w-11 h-11 rounded-full bg-surface/10 flex items-center justify-center mb-5">
+                <i data-lucide="leaf" class="w-5 h-5 text-accent"></i>
+              </span>
+              <h3 class="font-display text-2xl md:text-3xl mb-2">1% for the planet</h3>
+              <p class="text-sm text-surface/60 leading-relaxed max-w-md">Every Aurelia Botanica purchase funds reforestation and clean-water initiatives. Beauty that gives back.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ REVIEWS ============ -->
+    <section id="reviews" class="py-20 md:py-32">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="text-center max-w-xl mx-auto mb-14 reveal">
+          <p class="text-xs font-semibold tracking-[0.2em] uppercase text-accent-deep mb-3">Loved by 2,400+</p>
+          <h2 class="font-display text-4xl md:text-5xl lg:text-6xl tracking-tight text-ink leading-[1.05]">
+            Real skin.<br>Real <span class="italic text-accent-deep">results.</span>
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Review 1 -->
+          <div class="reveal bg-surface rounded-4xl p-7 shadow-soft border border-ink/5">
+            <div class="flex items-center gap-1 mb-4" aria-label="Rated 5 stars">
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+            </div>
+            <p class="text-ink/70 text-sm leading-relaxed mb-6">"The Golden Hour Serum completely transformed my dull winter skin. After three weeks, my complexion looked lit-from-within. I've repurchased twice."</p>
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt="Portrait of Elena R." class="w-10 h-10 rounded-full object-cover" loading="lazy">
+              <div>
+                <p class="text-sm font-semibold text-ink">Elena R.</p>
+                <p class="text-xs text-ink/40">Verified Buyer</p>
+              </div>
+            </div>
+          </div>
+          <!-- Review 2 -->
+          <div class="reveal bg-surface rounded-4xl p-7 shadow-soft border border-ink/5" style="transition-delay: 0.1s;">
+            <div class="flex items-center gap-1 mb-4" aria-label="Rated 5 stars">
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+            </div>
+            <p class="text-ink/70 text-sm leading-relaxed mb-6">"I have sensitive, acne-prone skin and I'm always nervous trying new products. The Midnight Recovery cream is the first moisturizer that calmed my redness without any irritation."</p>
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="Portrait of Marcus T." class="w-10 h-10 rounded-full object-cover" loading="lazy">
+              <div>
+                <p class="text-sm font-semibold text-ink">Marcus T.</p>
+                <p class="text-xs text-ink/40">Verified Buyer</p>
+              </div>
+            </div>
+          </div>
+          <!-- Review 3 -->
+          <div class="reveal bg-surface rounded-4xl p-7 shadow-soft border border-ink/5" style="transition-delay: 0.2s;">
+            <div class="flex items-center gap-1 mb-4" aria-label="Rated 5 stars">
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-clay text-clay"></i>
+            </div>
+            <p class="text-ink/70 text-sm leading-relaxed mb-6">"The Rose Dew Mist lives on my desk. It's the little moment of calm I need mid-afternoon. My skin drinks it up and the scent is subtle and natural — not synthetic at all."</p>
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" alt="Portrait of Priya K." class="w-10 h-10 rounded-full object-cover" loading="lazy">
+              <div>
+                <p class="text-sm font-semibold text-ink">Priya K.</p>
+                <p class="text-xs text-ink/40">Verified Buyer</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section id="faq" class="py-20 md:py-32 bg-surface-alt/60">
+      <div class="max-w-3xl mx-auto px-5 sm:px-8">
+        <div class="text-center mb-12 reveal">
+          <p class="text-xs font-semibold tracking-[0.2em] uppercase text-accent-deep mb-3">Questions</p>
+          <h2 class="font-display text-4xl md:text-5xl tracking-tight text-ink leading-[1.05]">
+            Everything you<br><span class="italic text-accent-deep">need to know.</span>
+          </h2>
+        </div>
+
+        <div class="space-y-3" role="region" aria-label="Frequently asked questions">
+          <!-- FAQ Item 1 -->
+          <div class="reveal bg-surface rounded-2xl border border-ink/5 overflow-hidden">
+            <button class="faq-toggle w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus-ring rounded-2xl" aria-expanded="false" aria-controls="faq-1">
+              <span class="font-medium text-ink text-sm md:text-base">Is Aurelia Botanica suitable for sensitive skin?</span>
+              <i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-ink/40 flex-shrink-0"></i>
+            </button>
+            <div id="faq-1" class="accordion-content px-6" role="region">
+              <p class="text-sm text-ink/50 leading-relaxed pb-1">Absolutely. Every formula is dermatologist-tested and free from common irritants like synthetic fragrance, drying alcohols, and essential oils that can trigger reactivity. Our products are pH-balanced and designed to support a healthy skin barrier.</p>
+            </div>
+          </div>
+          <!-- FAQ Item 2 -->
+          <div class="reveal bg-surface rounded-2xl border border-ink/5 overflow-hidden" style="transition-delay: 0.05s;">
+            <button class="faq-toggle w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus-ring rounded-2xl" aria-expanded="false" aria-controls="faq-2">
+              <span class="font-medium text-ink text-sm md:text-base">How long until I see results?</span>
+              <i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-ink/40 flex-shrink-0"></i>
+            </button>
+            <div id="faq-2" class="accordion-content px-6" role="region">
+              <p class="text-sm text-ink/50 leading-relaxed pb-1">Most customers notice increased hydration and a smoother texture within 7–10 days. For visible improvements in tone, firmness, and fine lines, we recommend a full 28-day skin cycle. Consistency is key — that's why our ritual is designed to be simple enough to stick with.</p>
+            </div>
+          </div>
+          <!-- FAQ Item 3 -->
+          <div class="reveal bg-surface rounded-2xl border border-ink/5 overflow-hidden" style="transition-delay: 0.1s;">
+            <button class="faq-toggle w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus-ring rounded-2xl" aria-expanded="false" aria-controls="faq-3">
+              <span class="font-medium text-ink text-sm md:text-base">What is your return policy?</span>
+              <i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-ink/40 flex-shrink-0"></i>
+            </button>
+            <div id="faq-3" class="accordion-content px-6" role="region">
+              <p class="text-sm text-ink/50 leading-relaxed pb-1">We offer a 30-day glow guarantee. If you're not completely satisfied with your purchase, contact us and we'll arrange a full refund — no need to return the product. We simply ask for your feedback so we can keep improving.</p>
+            </div>
+          </div>
+          <!-- FAQ Item 4 -->
+          <div class="reveal bg-surface rounded-2xl border border-ink/5 overflow-hidden" style="transition-delay: 0.15s;">
+            <button class="faq-toggle w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus-ring rounded-2xl" aria-expanded="false" aria-controls="faq-4">
+              <span class="font-medium text-ink text-sm md:text-base">Are your products clean and cruelty-free?</span>
+              <i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-ink/40 flex-shrink-0"></i>
+            </button>
+            <div id="faq-4" class="accordion-content px-6" role="region">
+              <p class="text-sm text-ink/50 leading-relaxed pb-1">Yes — always. We are Leaping Bunny certified, entirely vegan, and exclude over 1,400 questionable ingredients. Our packaging is made from post-consumer recycled glass and FSC-certified paper, and we offset 100% of shipping emissions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA BANNER ============ -->
+    <section class="py-20 md:py-32 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="reveal relative bg-ink rounded-5xl overflow-hidden px-7 py-14 md:px-16 md:py-20 text-center md:text-left grain">
+          <div class="absolute top-0 right-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" aria-hidden="true"></div>
+          <div class="absolute bottom-0 left-0 w-64 h-64 bg-clay/15 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" aria-hidden="true"></div>
+          <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="max-w-xl">
+              <h2 class="font-display text-3xl md:text-5xl text-surface leading-[1.05] mb-4">
+                Your best skin starts<br>with a <span class="italic text-accent">single step.</span>
+              </h2>
+              <p class="text-surface/50 text-sm md:text-base leading-relaxed">Join the Aurelia ritual. Get 15% off your first order and a personalised skin consultation — free.</p>
+            </div>
+            <a href="#contact" class="btn-primary !bg-accent !text-ink hover:!bg-accent-deep hover:!text-surface flex-shrink-0 text-base">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+              Claim Your 15% Off
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT / ENQUIRY ============ -->
+    <section id="contact" class="py-20 md:py-32">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-14 lg:gap-20 items-start">
+        <div class="reveal">
+          <p class="text-xs font-semibold tracking-[0.2em] uppercase text-accent-deep mb-3 flex items-center gap-2">
+            <span class="w-6 h-px bg-accent"></span> Get in Touch
+          </p>
+          <h2 class="font-display text-4xl md:text-5xl tracking-tight text-ink leading-[1.05] mb-5">
+            Let's find your<br><span class="italic text-accent-deep">perfect ritual.</span>
+          </h2>
+          <p class="text-ink/60 leading-relaxed mb-8 max-w-md">
+            Not sure where to start? Tell us about your skin type and concerns — our team will curate a personalised routine just for you, free of charge.
+          </p>
+          <div class="space-y-4">
+            <div class="flex items-center gap-3 text-sm text-ink/60">
+              <i data-lucide="mail" class="w-4 h-4 text-accent-deep"></i>
+              hello@aureliabotanica.com
+            </div>
+            <div class="flex items-center gap-3 text-sm text-ink/60">
+              <i data-lucide="map-pin" class="w-4 h-4 text-accent-deep"></i>
+              47 Botanical Row, London, UK
+            </div>
+            <div class="flex items-center gap-3 text-sm text-ink/60">
+              <i data-lucide="clock" class="w-4 h-4 text-accent-deep"></i>
+              Mon–Fri, 9am–6pm GMT
+            </div>
+          </div>
+        </div>
+
+        <form id="enquiry-form" class="reveal bg-surface rounded-4xl p-7 md:p-9 shadow-lift border border-ink/5" style="transition-delay: 0.1s;" novalidate>
+          <div class="grid sm:grid-cols-2 gap-5 mb-5">
+            <div>
+              <label for="name" class="block text-xs font-semibold text-ink/60 uppercase tracking-wide mb-1.5">Full Name</label>
+              <input type="text" id="name" name="name" placeholder="Elena Rossi" class="form-input w-full rounded-xl border border-ink/10 bg-surface-alt/50 px-4 py-3 text-sm text-ink placeholder:text-ink/25 focus-ring transition-colors" required>
+              <p class="error-msg hidden text-xs text-red-500 mt-1">Please enter your name.</p>
+            </div>
+            <div>
+              <label for="email" class="block text-xs font-semibold text-ink/60 uppercase tracking-wide mb-1.5">Email Address</label>
+              <input type="email" id="email" name="email" placeholder="elena@example.com" class="form-input w-full rounded-xl border border-ink/10 bg-surface-alt/50 px-4 py-3 text-sm text-ink placeholder:text-ink/25 focus-ring transition-colors" required>
+              <p class="error-msg hidden text-xs text-red-500 mt-1">Please enter a valid email.</p>
+            </div>
+          </div>
+          <div class="mb-5">
+            <label for="phone" class="block text-xs font-semibold text-ink/60 uppercase tracking-wide mb-1.5">Phone (optional)</label>
+            <input type="tel" id="phone" name="phone" placeholder="+44 7700 900000" class="form-input w-full rounded-xl border border-ink/10 bg-surface-alt/50 px-4 py-3 text-sm text-ink placeholder:text-ink/25 focus-ring transition-colors">
+          </div>
+          <div class="mb-5">
+            <label for="skin-type" class="block text-xs font-semibold text-ink/60 uppercase tracking-wide mb-1.5">Skin Type</label>
+            <select id="skin-type" name="skinType" class="form-input w-full rounded-xl border border-ink/10 bg-surface-alt/50 px-4 py-3 text-sm text-ink focus-ring transition-colors" required>
+              <option value="" disabled selected>Select your skin type</option>
+              <option value="dry">Dry</option>
+              <option value="oily">Oily</option>
+              <option value="combination">Combination</option>
+              <option value="sensitive">Sensitive</option>
+              <option value="normal">Normal</option>
+            </select>
+            <p class="error-msg hidden text-xs text-red-500 mt-1">Please select your skin type.</p>
+          </div>
+          <div class="mb-6">
+            <label for="message" class="block text-xs font-semibold text-ink/60 uppercase tracking-wide mb-1.5">Tell us about your skin</label>
+            <textarea id="message" name="message" rows="4" placeholder="Concerns, goals, or anything you'd like us to know…" class="form-input w-full rounded-xl border border-ink/10 bg-surface-alt/50 px-4 py-3 text-sm text-ink placeholder:text-ink/25 focus-ring transition-colors resize-none" required></textarea>
+            <p class="error-msg hidden text-xs text-red-500 mt-1">Please share a little about your skin.</p>
+          </div>
+          <button type="submit" id="submit-btn" class="btn-primary w-full justify-center text-base">
+            <span id="btn-text">Send My Enquiry</span>
+            <i data-lucide="arrow-right" class="w-4 h-4" id="btn-icon"></i>
+          </button>
+          <p id="form-success" class="hidden text-sm text-green-600 font-medium mt-4 text-center">Thank you! Your enquiry has been received. We'll be in touch within 24 hours.</p>
+          <p id="form-error" class="hidden text-sm text-red-500 font-medium mt-4 text-center">Something went wrong. Please try again.</p>
+          <!-- TODO: connect form action to backend endpoint -->
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-ink text-surface pt-16 md:pt-20 pb-8">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-14">
+        <!-- Brand -->
+        <div class="col-span-2 md:col-span-1">
+          <a href="#" class="font-display text-3xl tracking-tight text-surface focus-ring rounded-lg inline-block mb-4">Aurelia<span class="text-accent">.</span></a>
+          <p class="text-sm text-surface/40 leading-relaxed max-w-xs">Personal skincare rooted in botanical science. Kind to your skin, kinder to the planet.</p>
+        </div>
+        <!-- Shop -->
+        <div>
+          <h4 class="text-xs font-semibold tracking-[0.15em] uppercase text-surface/30 mb-4">Shop</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#shop" class="text-sm text-surface/60 hover:text-surface transition-colors focus-ring rounded">Serums</a></li>
+            <li><a href="#shop" class="text-sm text-surface/60 hover:text-surface transition-colors focus-ring rounded">Moisturizers</a></li>
+            <li><a href="#shop" class="text-sm text-surface/60 hover:text-surface transition-colors focus-ring rounded">Mists &amp; Toners</a></li>
+            <li><a href="#shop" class="text-sm text-surface/60 hover:text-surface transition-colors focus-ring rounded">Gift Sets</a></li>
+          </ul>
+        </div>
+        <!-- Company -->
+        <div>
+          <h4 class="text-xs font-semibold tracking-[0.15em] uppercase text-surface/30 mb-4">Company</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#story" class="text-sm text-surface/60 hover:text-surface transition-colors focus-ring rounded">Our Story</a></li>
+            <li><a href="#ritual" class="text-sm text-surface/60 hover:text-surface transition-colors focus-ring rounded">The Ritual</a></li>
+            <li><a href="#faq" class="text-sm text-surface/60 hover:text-surface transition-colors focus-ring rounded">FAQ</a></li>
+            <li><a href="#contact" class="text-sm text-surface/60 hover:text-surface transition-colors focus-ring rounded">Contact</a></li>
+          </ul>
+        </div>
+        <!-- Social -->
+        <div>
+          <h4 class="text-xs font-semibold tracking-[0.15em] uppercase text-surface/30 mb-4">Connect</h4>
+          <div class="flex gap-3">
+            <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-full border border-surface/15 flex items-center justify-center hover:bg-surface/10 transition-colors focus-ring">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-surface/60"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a href="#" aria-label="TikTok" class="w-9 h-9 rounded-full border border-surface/15 flex items-center justify-center hover:bg-surface/10 transition-colors focus-ring">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-surface/60"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+            </a>
+            <a href="#" aria-label="Pinterest" class="w-9 h-9 rounded-full border border-surface/15 flex items-center justify-center hover:bg-surface/10 transition-colors focus-ring">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-surface/60"><circle cx="12" cy="12" r="10"/><path d="M8.5 21c.5-2.5 1.5-5 2-7.5.5-2 1-4-.5-5.5-1.5-1.5-3.5-1-4.5.5s-1 4 1 5.5c1 .75 2 .5 2.5-1"/><path d="M12 15c-1 3-1.5 6-.5 9"/></svg>
+            </a>
+          </div>
+          <p class="text-xs text-surface/30 mt-4 leading-relaxed">hello@aureliabotanica.com</p>
+        </div>
+      </div>
+
+      <div class="border-t border-surface/10 pt-7 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-surface/30">&copy; 2025 Aurelia Botanica. All rights reserved.</p>
+        <div class="flex items-center gap-5">
+          <a href="#" class="text-xs text-surface/30 hover:text-surface/60 transition-colors focus-ring rounded">Privacy Policy</a>
+          <a href="#" class="text-xs text-surface/30 hover:text-surface/60 transition-colors focus-ring rounded">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // === Lucide Icons ===
+    lucide.createIcons();
+
+    // === Sticky Header Shrink ===
+    const header = document.getElementById('site-header');
+    const headerInner = document.getElementById('header-inner');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        header.classList.add('shadow-soft');
+        headerInner.classList.remove('h-20');
+        headerInner.classList.add('h-14');
+      } else {
+        header.classList.remove('shadow-soft');
+        headerInner.classList.add('h-20');
+        headerInner.classList.remove('h-14');
+      }
+    }, { passive: true });
+
+    // === Mobile Menu ===
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    let menuOpen = false;
+
+    function toggleMenu(open) {
+      menuOpen = open;
+      mobileMenu.classList.toggle('hidden', !open);
+      mobileBtn.setAttribute('aria-expanded', open);
+      mobileMenu.setAttribute('aria-hidden', !open);
+      menuIcon.setAttribute('data-lucide', open ? 'x' : 'menu');
+      lucide.createIcons();
+    }
+
+    mobileBtn.addEventListener('click', () => toggleMenu(!menuOpen));
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => toggleMenu(false));
+    });
+
+    // === GSAP Reveal on Scroll ===
+    gsap.registerPlugin(ScrollTrigger);
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 88%',
+        once: true,
+        onEnter: () => el.classList.add('visible'),
+      });
+    });
+
+    // === Counter Animation ===
+    document.querySelectorAll('[data-counter]').forEach(el => {
+      const target = parseInt(el.getAttribute('data-counter'), 10);
+      const suffix = el.getAttribute('data-suffix') || '';
+      let triggered = false;
+
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 90%',
+        once: true,
+        onEnter: () => {
+          if (triggered) return;
+          triggered = true;
+          let start = 0;
+          const duration = 1800;
+          const startTime = performance.now();
+          function update(now) {
+            const progress = Math.min((now - startTime) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.floor(eased * target).toLocaleString() + suffix;
+            if (progress < 1) requestAnimationFrame(update);
+          }
+          requestAnimationFrame(update);
+        }
+      });
+    });
+
+    // === FAQ Accordion ===
+    document.querySelectorAll('.faq-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        const icon = btn.querySelector('.accordion-icon');
+        const isOpen = content.classList.contains('open');
+
+        // Close all
+        document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
+        document.querySelectorAll('.accordion-icon').forEach(i => i.classList.remove('rotated'));
+        document.querySelectorAll('.faq-toggle').forEach(b => b.setAttribute('aria-expanded', 'false'));
+
+        if (!isOpen) {
+          content.classList.add('open');
+          icon.classList.add('rotated');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    // === Add to Cart Micro-interaction ===
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
+        btn.classList.add('!bg-accent-deep', '!text-surface', '!border-accent-deep');
+        lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.classList.remove('!bg-accent-deep', '!text-surface', '!border-accent-deep');
+          lucide.createIcons();
+        }, 1400);
+      });
+    });
+
+    // === Form Validation & Submission ===
+    const form = document.getElementById('enquiry-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnIcon = document.getElementById('btn-icon');
+    const formSuccess = document.getElementById('form-success');
+    const formError = document.getElementById('form-error');
+
+    function showError(input, show) {
+      const errorEl = input.parentElement.querySelector('.error-msg');
+      if (errorEl) errorEl.classList.toggle('hidden', !show);
+      input.classList.toggle('border-red-400', show);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Reset states
+      formSuccess.classList.add('hidden');
+      formError.classList.add('hidden');
+
+      // Validate
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const skinType = document.getElementById('skin-type');
+      const message = document.getElementById('message');
+      let valid = true;
+
+      if (!name.value.trim()) { showError(name, true); valid = false; } else { showError(name, false); }
+      if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { showError(email, true); valid = false; } else { showError(email, false); }
+      if (!skinType.value) { showError(skinType, true); valid = false; } else { showError(skinType, false); }
+      if (!message.value.trim()) { showError(message, true); valid = false; } else { showError(message, false); }
+
+      if (!valid) return;
+
+      // Submit
+      submitBtn.disabled = true;
+      btnText.textContent = 'Sending…';
+      btnIcon.setAttribute('data-lucide', 'loader-circle');
+      lucide.createIcons();
+      btnIcon.classList.add('animate-spin');
+
+      const formData = {
+        name: name.value.trim(),
+        email: email.value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        skinType: skinType.value,
+        message: message.value.trim()
+      };
+
+      try {
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'enquiries',
+            data: formData
+          })
+        });
+
+        if (!response.ok) throw new Error('Network error');
+
+        form.reset();
+        formSuccess.classList.remove('hidden');
+        btnText.textContent = 'Send My Enquiry';
+        btnIcon.setAttribute('data-lucide', 'arrow-right');
+        btnIcon.classList.remove('animate-spin');
+        lucide.createIcons();
+        submitBtn.disabled = false;
+      } catch (err) {
+        formError.classList.remove('hidden');
+        btnText.textContent = 'Try Again';
+        btnIcon.setAttribute('data-lucide', 'rotate-ccw');
+        btnIcon.classList.remove('animate-spin');
+        lucide.createIcons();
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
