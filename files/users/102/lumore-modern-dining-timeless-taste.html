@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumore — Modern dining, timeless taste</title>
+  <meta name="description" content="Lumore is a contemporary restaurant where seasonal ingredients meet precise technique. Book your table tonight.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <!-- Tailwind CDN (DO NOT CHANGE THIS URL) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1A1A1A',
+            surface: '#FDFCFA',
+            accent: '#B45A3C',
+            'accent-light': '#D17A5C',
+            'muted': '#6B6B6B',
+            'hairline': 'rgba(0,0,0,0.06)',
+          },
+          fontFamily: {
+            serif: ['Instrument Serif', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          borderRadius: {
+            '4xl': '2rem',
+            '5xl': '2.5rem',
+          },
+          boxShadow: {
+            'soft': '0 8px 30px rgba(0,0,0,0.04)',
+            'lift': '0 20px 60px rgba(0,0,0,0.06)',
+            'glow': '0 0 60px rgba(180,90,60,0.12)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1A1A;
+      --surface: #FDFCFA;
+      --accent: #B45A3C;
+      --accent-light: #D17A5C;
+      --muted: #6B6B6B;
+      --hairline: rgba(0, 0, 0, 0.06);
+      --focus: #B45A3C;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* === Base === */
+    ::selection {
+      background: #B45A3C;
+      color: #FDFCFA;
+    }
+
+    body {
+      background-color: var(--surface);
+      color: var(--ink);
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--surface);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D4D0CA;
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #B45A3C;
+    }
+
+    /* Focus ring */
+    *:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--focus);
+      border-radius: 4px;
+    }
+
+    /* === Components === */
+    .display-font {
+      font-family: 'Instrument Serif', Georgia, serif;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .body-font {
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--ink);
+      color: var(--surface);
+      padding: 0.875rem 2rem;
+      border-radius: 9999px;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      letter-spacing: 0.01em;
+      transition: all 0.3s var(--ease-out);
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(180, 90, 60, 0.25);
+    }
+    .btn-primary:active {
+      transform: scale(0.97) translateY(0);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      padding: 0.875rem 2rem;
+      border-radius: 9999px;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      letter-spacing: 0.01em;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      transition: all 0.3s var(--ease-out);
+      cursor: pointer;
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+    }
+    .btn-outline:active {
+      transform: scale(0.97) translateY(0);
+    }
+
+    /* Animated underline link */
+    .link-underline {
+      position: relative;
+      text-decoration: none;
+    }
+    .link-underline::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background-color: var(--accent);
+      transition: width 0.35s var(--ease-out);
+    }
+    .link-underline:hover::after {
+      width: 100%;
+    }
+
+    /* Split-text reveal */
+    .reveal-word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: revealWord 0.7s var(--ease-out) forwards;
+    }
+    @keyframes revealWord {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .reveal-word:nth-child(1) { animation-delay: 0.15s; }
+    .reveal-word:nth-child(2) { animation-delay: 0.25s; }
+    .reveal-word:nth-child(3) { animation-delay: 0.35s; }
+    .reveal-word:nth-child(4) { animation-delay: 0.45s; }
+    .reveal-word:nth-child(5) { animation-delay: 0.55s; }
+    .reveal-word:nth-child(6) { animation-delay: 0.65s; }
+    .reveal-word:nth-child(7) { animation-delay: 0.75s; }
+    .reveal-word:nth-child(8) { animation-delay: 0.85s; }
+
+    /* Fade-in-up */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Stagger delays for fade-up */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+    .delay-5 { transition-delay: 0.5s; }
+
+    /* Grain overlay */
+    .grain-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* Marquee */
+    .marquee-track {
+      display: flex;
+      gap: 3rem;
+      animation: marquee 28s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Tilt card */
+    .tilt-card {
+      transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+    }
+    .tilt-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Accordion */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s var(--ease-out), padding 0.45s var(--ease-out);
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .accordion-content.open {
+      max-height: 300px;
+      padding-top: 1rem;
+      padding-bottom: 1.25rem;
+    }
+    .accordion-icon {
+      transition: transform 0.35s var(--ease-out);
+    }
+    .accordion-icon.rotated {
+      transform: rotate(45deg);
+    }
+
+    /* Nav shrink */
+    .nav-shrink {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      background: rgba(253, 252, 250, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    /* Mobile menu */
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s var(--ease-out), opacity 0.35s var(--ease-out);
+      opacity: 0;
+    }
+    .mobile-menu.open {
+      max-height: 400px;
+      opacity: 1;
+    }
+
+    /* Form input */
+    .form-input {
+      width: 100%;
+      background: transparent;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 0.75rem;
+      padding: 0.875rem 1rem;
+      font-size: 0.9375rem;
+      color: var(--ink);
+      transition: border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(180, 90, 60, 0.12);
+    }
+    .form-input.error {
+      border-color: #C0392B;
+      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+    }
+    .form-input::placeholder {
+      color: #A8A5A0;
+    }
+
+    /* Image fallback gradient */
+    .img-fallback {
+      background: linear-gradient(135deg, #EDE8E3 0%, #D9D2CB 100%);
+    }
+
+    /* Star rating */
+    .star-filled {
+      color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal-word { opacity: 1; transform: none; }
+      .fade-up { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased">
+
+  <!-- Grain overlay -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- ============ HEADER / NAV ============ -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500" role="banner">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <nav class="flex items-center justify-between py-5 transition-all duration-500" id="nav-inner" aria-label="Main navigation">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2.5 group" aria-label="Lumore home">
+          <span class="w-2.5 h-2.5 rounded-full bg-accent transition-transform duration-300 group-hover:scale-125"></span>
+          <span class="display-font text-2xl tracking-tight text-ink">Lumore</span>
+        </a>
+
+        <!-- Desktop links -->
+        <div class="hidden md:flex items-center gap-9">
+          <a href="#story" class="link-underline text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-300">Our story</a>
+          <a href="#menu" class="link-underline text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-300">Menu</a>
+          <a href="#gallery" class="link-underline text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-300">Gallery</a>
+          <a href="#reviews" class="link-underline text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-300">Reviews</a>
+        </div>
+
+        <!-- Desktop CTA -->
+        <div class="hidden md:flex items-center gap-3">
+          <a href="#reserve" class="btn-primary text-sm px-6 py-2.5">Reserve a table</a>
+        </div>
+
+        <!-- Mobile toggle -->
+        <button id="menu-toggle" class="md:hidden flex items-center justify-center w-10 h-10 rounded-full border border-black/10 transition-colors duration-300 hover:border-accent" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <line x1="3" y1="7" x2="21" y2="7"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="17" x2="21" y2="17"/>
+          </svg>
+        </button>
+      </nav>
+
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="mobile-menu md:hidden" role="region" aria-label="Mobile navigation">
+        <div class="pb-6 pt-2 flex flex-col gap-1">
+          <a href="#story" class="py-2.5 text-base font-medium text-ink/70 hover:text-ink transition-colors">Our story</a>
+          <a href="#menu" class="py-2.5 text-base font-medium text-ink/70 hover:text-ink transition-colors">Menu</a>
+          <a href="#gallery" class="py-2.5 text-base font-medium text-ink/70 hover:text-ink transition-colors">Gallery</a>
+          <a href="#reviews" class="py-2.5 text-base font-medium text-ink/70 hover:text-ink transition-colors">Reviews</a>
+          <a href="#reserve" class="btn-primary mt-3 justify-center text-sm px-6 py-2.5 w-full">Reserve a table</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main role="main">
+
+    <!-- ============ HERO ============ -->
+    <section class="relative min-h-screen flex items-center pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden" aria-label="Hero">
+      <!-- Background accents -->
+      <div class="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-accent-light/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 w-full relative z-10">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          <!-- Left: Text -->
+          <div class="lg:col-span-7">
+            <p class="text-sm font-medium tracking-widest uppercase text-accent mb-6 fade-up visible">Seasonal · Local · Uncompromised</p>
+            <h1 class="display-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-ink leading-[1.05]">
+              <span class="reveal-word">Food</span>
+              <span class="reveal-word">that</span>
+              <span class="reveal-word">feels</span>
+              <span class="reveal-word">like</span>
+              <br class="hidden sm:block">
+              <span class="reveal-word italic text-accent">a memory.</span>
+            </h1>
+            <p class="mt-8 text-lg md:text-xl text-muted leading-relaxed max-w-lg font-light">
+              Lumore is a contemporary restaurant where seasonal ingredients meet precise technique. Every plate tells a story of the land, the season, and the hands that crafted it.
+            </p>
+            <div class="mt-10 flex flex-wrap gap-4">
+              <a href="#reserve" class="btn-primary">
+                Reserve a table
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <a href="#menu" class="btn-outline">Explore the menu</a>
+            </div>
+
+            <!-- Trust cue -->
+            <div class="mt-12 flex items-center gap-5 fade-up visible delay-2">
+              <div class="flex -space-x-2">
+                <div class="w-9 h-9 rounded-full border-2 border-surface overflow-hidden img-fallback">
+                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt="Guest portrait" class="w-full h-full object-cover" loading="lazy" width="36" height="36">
+                </div>
+                <div class="w-9 h-9 rounded-full border-2 border-surface overflow-hidden img-fallback">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="Guest portrait" class="w-full h-full object-cover" loading="lazy" width="36" height="36">
+                </div>
+                <div class="w-9 h-9 rounded-full border-2 border-surface overflow-hidden img-fallback">
+                  <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" alt="Guest portrait" class="w-full h-full object-cover" loading="lazy" width="36" height="36">
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center gap-1">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <p class="text-xs text-muted mt-0.5">Rated 4.9 by 2,400+ guests</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Hero visual -->
+          <div class="lg:col-span-5 relative fade-up visible delay-3">
+            <div class="relative rounded-[2rem] overflow-hidden shadow-lift aspect-[4/5] img-fallback">
+              <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=1000&fit=crop" alt="Elegant plated dish at Lumore restaurant" class="w-full h-full object-cover" loading="eager" width="800" height="1000">
+              <!-- Floating card -->
+              <div class="absolute bottom-5 left-5 right-5 bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-soft border border-white/40">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-xs uppercase tracking-widest text-accent font-medium">Tonight's special</p>
+                    <p class="display-font text-xl mt-0.5">Charred leek &amp; hazelnut</p>
+                  </div>
+                  <span class="text-sm font-semibold text-ink">$28</span>
+                </div>
+              </div>
+            </div>
+            <!-- Decorative element -->
+            <div class="absolute -top-4 -right-4 w-24 h-24 rounded-full border border-accent/20 flex items-center justify-center rotate-12" aria-hidden="true">
+              <span class="text-[10px] uppercase tracking-[0.2em] text-accent font-medium text-center leading-tight">Est.<br>2018</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MARQUEE / SOCIAL PROOF ============ -->
+    <section class="py-12 border-y border-hairline bg-white/50 overflow-hidden" aria-label="Awards and recognition">
+      <div class="marquee-track">
+        <span class="display-font text-2xl text-ink/30 whitespace-nowrap">Michelin Guide 2025</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-accent/40 self-center" aria-hidden="true"></span>
+        <span class="display-font text-2xl text-ink/30 whitespace-nowrap">James Beard Semifinalist</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-accent/40 self-center" aria-hidden="true"></span>
+        <span class="display-font text-2xl text-ink/30 whitespace-nowrap">World's 50 Best Discovery</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-accent/40 self-center" aria-hidden="true"></span>
+        <span class="display-font text-2xl text-ink/30 whitespace-nowrap">Bon Appétit Hot 10</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-accent/40 self-center" aria-hidden="true"></span>
+        <span class="display-font text-2xl text-ink/30 whitespace-nowrap">Michelin Guide 2025</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-accent/40 self-center" aria-hidden="true"></span>
+        <span class="display-font text-2xl text-ink/30 whitespace-nowrap">James Beard Semifinalist</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-accent/40 self-center" aria-hidden="true"></span>
+        <span class="display-font text-2xl text-ink/30 whitespace-nowrap">World's 50 Best Discovery</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-accent/40 self-center" aria-hidden="true"></span>
+        <span class="display-font text-2xl text-ink/30 whitespace-nowrap">Bon Appétit Hot 10</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-accent/40 self-center" aria-hidden="true"></span>
+      </div>
+    </section>
+
+    <!-- ============ STORY / ABOUT ============ -->
+    <section id="story" class="py-24 lg:py-32" aria-label="Our story">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-16 lg:gap-12 items-center">
+          <!-- Image collage -->
+          <div class="lg:col-span-6 relative fade-up">
+            <div class="relative rounded-[2rem] overflow-hidden shadow-lift aspect-[3/4] max-w-md img-fallback">
+              <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&h=900&fit=crop" alt="Chef preparing a dish in the Lumore kitchen" class="w-full h-full object-cover" loading="lazy" width="700" height="900">
+            </div>
+            <div class="absolute -bottom-8 -right-4 lg:right-8 w-48 h-56 rounded-2xl overflow-hidden shadow-lift border-4 border-surface img-fallback" aria-hidden="true">
+              <img src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&h=500&fit=crop" alt="" class="w-full h-full object-cover" loading="lazy" width="400" height="500">
+            </div>
+            <!-- Accent dot -->
+            <div class="absolute top-6 -left-3 w-16 h-16 rounded-full bg-accent/10 blur-xl" aria-hidden="true"></div>
+          </div>
+
+          <!-- Text -->
+          <div class="lg:col-span-6 lg:pl-8 fade-up delay-2">
+            <p class="text-sm font-medium tracking-widest uppercase text-accent mb-5">Our story</p>
+            <h2 class="display-font text-4xl md:text-5xl lg:text-6xl text-ink leading-[1.1]">
+              Rooted in place,<br>
+              <span class="italic text-accent">guided by season.</span>
+            </h2>
+            <p class="mt-8 text-muted leading-relaxed font-light text-lg">
+              Lumore began as a conversation between two chefs who believed that the best meals are not invented — they are discovered. We work with a small circle of growers, fishers, and makers within a 50-mile radius of the city.
+            </p>
+            <p class="mt-4 text-muted leading-relaxed font-light">
+              Our menu changes with the harvest, not the calendar. What arrives at your table is the result of patience, intuition, and a refusal to cut corners.
+            </p>
+
+            <!-- Stats -->
+            <div class="mt-10 grid grid-cols-3 gap-6 border-t border-hairline pt-8">
+              <div>
+                <p class="display-font text-4xl text-ink">12</p>
+                <p class="text-xs uppercase tracking-wider text-muted mt-1">Local growers</p>
+              </div>
+              <div>
+                <p class="display-font text-4xl text-ink">7</p>
+                <p class="text-xs uppercase tracking-wider text-muted mt-1">Course tasting</p>
+              </div>
+              <div>
+                <p class="display-font text-4xl text-ink">2018</p>
+                <p class="text-xs uppercase tracking-wider text-muted mt-1">Established</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MENU ============ -->
+    <section id="menu" class="py-24 lg:py-32 bg-white/60 border-y border-hairline" aria-label="Menu highlights">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16 fade-up">
+          <div>
+            <p class="text-sm font-medium tracking-widest uppercase text-accent mb-4">The menu</p>
+            <h2 class="display-font text-4xl md:text-5xl lg:text-6xl text-ink leading-[1.1]">
+              A season on<br><span class="italic">a plate.</span>
+            </h2>
+          </div>
+          <p class="text-muted max-w-sm font-light leading-relaxed">
+            Our à la carte menu evolves weekly. Below are a few dishes currently finding their way to the table.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-x-16 gap-y-10">
+          <!-- Menu item 1 -->
+          <div class="fade-up delay-1 flex items-start justify-between gap-6 group">
+            <div class="flex-1">
+              <h3 class="display-font text-2xl text-ink group-hover:text-accent transition-colors duration-300">Charred leek &amp; hazelnut</h3>
+              <p class="text-sm text-muted mt-1.5 font-light leading-relaxed">Smoked crème fraîche, brown butter, toasted hazelnut, chive oil.</p>
+            </div>
+            <span class="text-sm font-semibold text-ink whitespace-nowrap mt-1">$28</span>
+          </div>
+          <!-- Menu item 2 -->
+          <div class="fade-up delay-2 flex items-start justify-between gap-6 group">
+            <div class="flex-1">
+              <h3 class="display-font text-2xl text-ink group-hover:text-accent transition-colors duration-300">Hand-rolled cavatelli</h3>
+              <p class="text-sm text-muted mt-1.5 font-light leading-relaxed">Nduja, heirloom tomato, whipped ricotta, basil.</p>
+            </div>
+            <span class="text-sm font-semibold text-ink whitespace-nowrap mt-1">$32</span>
+          </div>
+          <!-- Menu item 3 -->
+          <div class="fade-up delay-3 flex items-start justify-between gap-6 group">
+            <div class="flex-1">
+              <h3 class="display-font text-2xl text-ink group-hover:text-accent transition-colors duration-300">Dry-aged duck breast</h3>
+              <p class="text-sm text-muted mt-1.5 font-light leading-relaxed">Roasted beet, blackberry gastrique, watercress.</p>
+            </div>
+            <span class="text-sm font-semibold text-ink whitespace-nowrap mt-1">$46</span>
+          </div>
+          <!-- Menu item 4 -->
+          <div class="fade-up delay-4 flex items-start justify-between gap-6 group">
+            <div class="flex-1">
+              <h3 class="display-font text-2xl text-ink group-hover:text-accent transition-colors duration-300">Line-caught sea bass</h3>
+              <p class="text-sm text-muted mt-1.5 font-light leading-relaxed">Fennel velouté, preserved lemon, sea herbs.</p>
+            </div>
+            <span class="text-sm font-semibold text-ink whitespace-nowrap mt-1">$42</span>
+          </div>
+          <!-- Menu item 5 -->
+          <div class="fade-up delay-5 flex items-start justify-between gap-6 group">
+            <div class="flex-1">
+              <h3 class="display-font text-2xl text-ink group-hover:text-accent transition-colors duration-300">Burnt honey panna cotta</h3>
+              <p class="text-sm text-muted mt-1.5 font-light leading-relaxed">Poached pear, oat crumble, thyme.</p>
+            </div>
+            <span class="text-sm font-semibold text-ink whitespace-nowrap mt-1">$18</span>
+          </div>
+          <!-- Menu item 6 -->
+          <div class="fade-up delay-5 flex items-start justify-between gap-6 group">
+            <div class="flex-1">
+              <h3 class="display-font text-2xl text-ink group-hover:text-accent transition-colors duration-300">Dark chocolate cremeux</h3>
+              <p class="text-sm text-muted mt-1.5 font-light leading-relaxed">Olive oil, flaky salt, espresso crumb.</p>
+            </div>
+            <span class="text-sm font-semibold text-ink whitespace-nowrap mt-1">$16</span>
+          </div>
+        </div>
+
+        <div class="mt-14 text-center fade-up">
+          <a href="#reserve" class="btn-outline">Reserve a table &nbsp;·&nbsp; Full menu at your seat</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GALLERY ============ -->
+    <section id="gallery" class="py-24 lg:py-32" aria-label="Restaurant gallery">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center max-w-xl mx-auto mb-16 fade-up">
+          <p class="text-sm font-medium tracking-widest uppercase text-accent mb-4">The space</p>
+          <h2 class="display-font text-4xl md:text-5xl lg:text-6xl text-ink leading-[1.1]">
+            Warm light,<br><span class="italic">quiet luxury.</span>
+          </h2>
+          <p class="text-muted mt-5 font-light leading-relaxed">Designed for conversation. Built for lingering.</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-5">
+          <div class="col-span-2 row-span-2 rounded-[1.5rem] overflow-hidden shadow-soft img-fallback aspect-square lg:aspect-auto fade-up">
+            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=800&fit=crop" alt="Lumore dining room with warm lighting" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" width="800" height="800">
+          </div>
+          <div class="rounded-[1.5rem] overflow-hidden shadow-soft img-fallback aspect-square fade-up delay-1">
+            <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=400&h=400&fit=crop" alt="Detail of table setting" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" width="400" height="400">
+          </div>
+          <div class="rounded-[1.5rem] overflow-hidden shadow-soft img-fallback aspect-square fade-up delay-2">
+            <img src="https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=400&h=400&fit=crop" alt="Chef plating a dish" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" width="400" height="400">
+          </div>
+          <div class="rounded-[1.5rem] overflow-hidden shadow-soft img-fallback aspect-square fade-up delay-3">
+            <img src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=400&h=400&fit=crop" alt="Fresh seasonal ingredients" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" width="400" height="400">
+          </div>
+          <div class="rounded-[1.5rem] overflow-hidden shadow-soft img-fallback aspect-square fade-up delay-4">
+            <img src="https://images.unsplash.com/photo-1428515613728-6b4607e44363?w=400&h=400&fit=crop" alt="Wine glasses on a table" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" width="400" height="400">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ REVIEWS ============ -->
+    <section id="reviews" class="py-24 lg:py-32 bg-white/60 border-y border-hairline" aria-label="Guest reviews">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16 fade-up">
+          <div>
+            <p class="text-sm font-medium tracking-widest uppercase text-accent mb-4">What guests say</p>
+            <h2 class="display-font text-4xl md:text-5xl lg:text-6xl text-ink leading-[1.1]">
+              Kind words<br><span class="italic">from the table.</span>
+            </h2>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span class="text-sm font-medium text-ink">4.9</span>
+            <span class="text-sm text-muted">on Google · 2,400+ reviews</span>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Review 1 -->
+          <div class="tilt-card bg-surface rounded-2xl p-8 border border-hairline fade-up delay-1">
+            <div class="flex items-center gap-1 mb-5">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <p class="text-ink leading-relaxed font-light">"The kind of meal that makes you cancel your evening plans just to sit a little longer. The cavatelli alone is worth the trip."</p>
+            <div class="mt-6 flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full overflow-hidden img-fallback">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt="" class="w-full h-full object-cover" loading="lazy" width="36" height="36">
+              </div>
+              <div>
+                <p class="text-sm font-medium text-ink">Maya Chen</p>
+                <p class="text-xs text-muted">Regular guest</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 2 -->
+          <div class="tilt-card bg-surface rounded-2xl p-8 border border-hairline fade-up delay-2">
+            <div class="flex items-center gap-1 mb-5">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <p class="text-ink leading-relaxed font-light">"Every detail feels intentional. The service is warm without being intrusive, and the duck was cooked to absolute perfection."</p>
+            <div class="mt-6 flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full overflow-hidden img-fallback">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="" class="w-full h-full object-cover" loading="lazy" width="36" height="36">
+              </div>
+              <div>
+                <p class="text-sm font-medium text-ink">James Okafor</p>
+                <p class="text-xs text-muted">Food writer</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 3 -->
+          <div class="tilt-card bg-surface rounded-2xl p-8 border border-hairline fade-up delay-3">
+            <div class="flex items-center gap-1 mb-5">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-filled" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <p class="text-ink leading-relaxed font-light">"Lumore has become our place for anniversaries. It's rare to find a restaurant that feels both special and completely at ease."</p>
+            <div class="mt-6 flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full overflow-hidden img-fallback">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" alt="" class="w-full h-full object-cover" loading="lazy" width="36" height="36">
+              </div>
+              <div>
+                <p class="text-sm font-medium text-ink">Sofia Reyes</p>
+                <p class="text-xs text-muted">Guest since 2019</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section id="faq" class="py-24 lg:py-32" aria-label="Frequently asked questions">
+      <div class="max-w-3xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-14 fade-up">
+          <p class="text-sm font-medium tracking-widest uppercase text-accent mb-4">Good to know</p>
+          <h2 class="display-font text-4xl md:text-5xl text-ink leading-[1.1]">Questions, answered.</h2>
+        </div>
+
+        <div class="space-y-3">
+          <!-- FAQ 1 -->
+          <div class="border border-hairline rounded-2xl overflow-hidden bg-surface fade-up">
+            <button class="w-full flex items-center justify-between gap-4 p-6 text-left" aria-expanded="false" aria-controls="faq1-content" data-accordion>
+              <span class="display-font text-xl text-ink">Do you offer a tasting menu?</span>
+              <span class="accordion-icon flex-shrink-0 w-7 h-7 rounded-full border border-hairline flex items-center justify-center text-muted" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </span>
+            </button>
+            <div id="faq1-content" class="accordion-content px-6 text-muted leading-relaxed font-light text-sm" role="region">
+              Yes — our seven-course tasting menu is available Tuesday through Saturday. It changes weekly based on what our growers bring in, and we're happy to accommodate most dietary preferences with advance notice.
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="border border-hairline rounded-2xl overflow-hidden bg-surface fade-up delay-1">
+            <button class="w-full flex items-center justify-between gap-4 p-6 text-left" aria-expanded="false" aria-controls="faq2-content" data-accordion>
+              <span class="display-font text-xl text-ink">Is there a dress code?</span>
+              <span class="accordion-icon flex-shrink-0 w-7 h-7 rounded-full border border-hairline flex items-center justify-center text-muted" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </span>
+            </button>
+            <div id="faq2-content" class="accordion-content px-6 text-muted leading-relaxed font-light text-sm" role="region">
+              None at all. Come as you are — we care about your experience, not your outfit. Most guests choose smart casual, but you'll feel at home in whatever makes you comfortable.
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="border border-hairline rounded-2xl overflow-hidden bg-surface fade-up delay-2">
+            <button class="w-full flex items-center justify-between gap-4 p-6 text-left" aria-expanded="false" aria-controls="faq3-content" data-accordion>
+              <span class="display-font text-xl text-ink">Can you accommodate allergies?</span>
+              <span class="accordion-icon flex-shrink-0 w-7 h-7 rounded-full border border-hairline flex items-center justify-center text-muted" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </span>
+            </button>
+            <div id="faq3-content" class="accordion-content px-6 text-muted leading-relaxed font-light text-sm" role="region">
+              Absolutely. Please note any allergies or dietary requirements when you book, and our kitchen will prepare an alternative. We take cross-contamination seriously and will walk you through every ingredient.
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="border border-hairline rounded-2xl overflow-hidden bg-surface fade-up delay-3">
+            <button class="w-full flex items-center justify-between gap-4 p-6 text-left" aria-expanded="false" aria-controls="faq4-content" data-accordion>
+              <span class="display-font text-xl text-ink">Do you have a cancellation policy?</span>
+              <span class="accordion-icon flex-shrink-0 w-7 h-7 rounded-full border border-hairline flex items-center justify-center text-muted" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </span>
+            </button>
+            <div id="faq4-content" class="accordion-content px-6 text-muted leading-relaxed font-light text-sm" role="region">
+              We ask for at least 24 hours' notice for cancellations so we can offer your table to someone else. A small deposit is required for parties of six or more, which goes toward your final bill.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA BANNER ============ -->
+    <section class="py-20 lg:py-28 bg-ink text-surface relative overflow-hidden" aria-label="Reservation call to action">
+      <div class="absolute top-0 right-0 w-[400px] h-[400px] rounded-full bg-accent/10 blur-3xl pointer-events-none" aria-hidden="true"></div>
+      <div class="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full bg-accent/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 text-center fade-up">
+        <p class="text-sm font-medium tracking-widest uppercase text-accent-light mb-5">Your table is waiting</p>
+        <h2 class="display-font text-4xl md:text-5xl lg:text-7xl leading-[1.05]">
+          An evening at Lumore<br><span class="italic text-accent-light">begins with a reservation.</span>
+        </h2>
+        <p class="mt-6 text-surface/60 max-w-md mx-auto font-light leading-relaxed">
+          We keep a small number of tables each evening. Book online or call us — we'll take care of the rest.
+        </p>
+        <div class="mt-10 flex flex-wrap justify-center gap-4">
+          <a href="#reserve" class="inline-flex items-center gap-2 bg-surface text-ink px-8 py-3.5 rounded-full font-medium text-sm hover:bg-accent hover:text-surface transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow active:scale-95">
+            Reserve online
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="tel:+15551234567" class="inline-flex items-center gap-2 border border-surface/20 text-surface px-8 py-3.5 rounded-full font-medium text-sm hover:border-accent-light hover:text-accent-light transition-all duration-300 hover:-translate-y-0.5 active:scale-95">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            (555) 123-4567
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RESERVE / CONTACT FORM ============ -->
+    <section id="reserve" class="py-24 lg:py-32" aria-label="Reservation and contact form">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20">
+          <!-- Left info -->
+          <div class="fade-up">
+            <p class="text-sm font-medium tracking-widest uppercase text-accent mb-4">Reserve</p>
+            <h2 class="display-font text-4xl md:text-5xl lg:text-6xl text-ink leading-[1.1]">
+              Let us set<br><span class="italic">a place for you.</span>
+            </h2>
+            <p class="mt-8 text-muted leading-relaxed font-light text-lg">
+              Tell us a little about your evening and we'll confirm within a few hours. For same-day bookings, please call us directly.
+            </p>
+
+            <div class="mt-10 space-y-5">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B45A3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <div>
+                  <p class="font-medium text-ink">48 Rue Saint-Antoine</p>
+                  <p class="text-sm text-muted mt-0.5">Old Town Quarter · City Center</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B45A3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div>
+                  <p class="font-medium text-ink">Tuesday – Saturday</p>
+                  <p class="text-sm text-muted mt-0.5">Dinner 5:30pm – 10:30pm · Sunday brunch 11am – 2pm</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B45A3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                <div>
+                  <p class="font-medium text-ink">hello@lumore.restaurant</p>
+                  <p class="text-sm text-muted mt-0.5">For private events &amp; press enquiries</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right form -->
+          <div class="fade-up delay-2">
+            <form id="reserve-form" class="space-y-5" novalidate>
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="name" class="sr-only">Full name</label>
+                  <input type="text" id="name" name="name" placeholder="Full name" class="form-input" required autocomplete="name">
+                </div>
+                <div>
+                  <label for="email" class="sr-only">Email address</label>
+                  <input type="email" id="email" name="email" placeholder="Email address" class="form-input" required autocomplete="email">
+                </div>
+              </div>
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label for="phone" class="sr-only">Phone number</label>
+                  <input type="tel" id="phone" name="phone" placeholder="Phone number" class="form-input" autocomplete="tel">
+                </div>
+                <div>
+                  <label for="guests" class="sr-only">Number of guests</label>
+                  <select id="guests" name="guests" class="form-input" required>
+                    <option value="" disabled selected>Number of guests</option>
+                    <option value="1">1 guest</option>
+                    <option value="2">2 guests</option>
+                    <option value="3">3 guests</option>
+                    <option value="4">4 guests</option>
+                    <option value="5">5 guests</option>
+                    <option value="6">6 guests</option>
+                    <option value="7+">7+ guests</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label for="date" class="sr-only">Preferred date</label>
+                <input type="date" id="date" name="date" class="form-input" required>
+              </div>
+              <div>
+                <label for="message" class="sr-only">Special requests</label>
+                <textarea id="message" name="message" rows="4" placeholder="Any allergies, special occasions, or requests?" class="form-input resize-none"></textarea>
+              </div>
+
+              <button type="submit" class="btn-primary w-full justify-center" id="submit-btn">
+                Request reservation
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+
+              <!-- Success / error messages -->
+              <p id="form-success" class="hidden text-sm text-green-700 bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-center" role="status"></p>
+              <p id="form-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-center" role="alert"></p>
+
+              <!-- TODO: connect form action to backend endpoint -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="border-t border-hairline bg-white/50" role="contentinfo">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-8">
+        <!-- Brand -->
+        <div class="col-span-2 md:col-span-1">
+          <a href="#" class="flex items-center gap-2.5" aria-label="Lumore home">
+            <span class="w-2.5 h-2.5 rounded-full bg-accent"></span>
+            <span class="display-font text-2xl tracking-tight text-ink">Lumore</span>
+          </a>
+          <p class="mt-4 text-sm text-muted leading-relaxed font-light max-w-xs">
+            A contemporary restaurant rooted in season, place, and the quiet pleasure of a shared meal.
+          </p>
+          <div class="flex items-center gap-3 mt-6">
+            <a href="#" class="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all duration-300" aria-label="Instagram">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all duration-300" aria-label="Facebook">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-full border border-hairline flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all duration-300" aria-label="X (Twitter)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Explore -->
+        <div>
+          <p class="text-xs font-medium tracking-widest uppercase text-ink/40 mb-4">Explore</p>
+          <ul class="space-y-2.5">
+            <li><a href="#story" class="text-sm text-muted hover:text-accent transition-colors duration-300 link-underline">Our story</a></li>
+            <li><a href="#menu" class="text-sm text-muted hover:text-accent transition-colors duration-300 link-underline">Menu</a></li>
+            <li><a href="#gallery" class="text-sm text-muted hover:text-accent transition-colors duration-300 link-underline">Gallery</a></li>
+            <li><a href="#reviews" class="text-sm text-muted hover:text-accent transition-colors duration-300 link-underline">Reviews</a></li>
+          </ul>
+        </div>
+
+        <!-- Visit -->
+        <div>
+          <p class="text-xs font-medium tracking-widest uppercase text-ink/40 mb-4">Visit</p>
+          <ul class="space-y-2.5">
+            <li class="text-sm text-muted">48 Rue Saint-Antoine</li>
+            <li class="text-sm text-muted">Old Town Quarter</li>
+            <li class="text-sm text-muted">City Center</li>
+            <li><a href="tel:+15551234567" class="text-sm text-muted hover:text-accent transition-colors duration-300 link-underline">(555) 123-4567</a></li>
+          </ul>
+        </div>
+
+        <!-- Hours -->
+        <div>
+          <p class="text-xs font-medium tracking-widest uppercase text-ink/40 mb-4">Hours</p>
+          <ul class="space-y-2.5">
+            <li class="text-sm text-muted flex justify-between"><span>Tue – Thu</span><span>5:30 – 10</span></li>
+            <li class="text-sm text-muted flex justify-between"><span>Fri – Sat</span><span>5:30 – 10:30</span></li>
+            <li class="text-sm text-muted flex justify-between"><span>Sunday</span><span>11 – 2</span></li>
+            <li class="text-sm text-muted flex justify-between"><span>Monday</span><span class="text-accent">Closed</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-hairline mt-14 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-muted">&copy; 2026 Lumore. All rights reserved.</p>
+        <p class="text-xs text-muted">Crafted with care · <a href="#" class="hover:text-accent transition-colors duration-300 link-underline">Privacy</a> · <a href="#" class="hover:text-accent transition-colors duration-300 link-underline">Terms</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    (function() {
+      'use strict';
+
+      // --- Nav shrink on scroll ---
+      const header = document.getElementById('header');
+      const navInner = document.getElementById('nav-inner');
+      let lastScroll = 0;
+
+      window.addEventListener('scroll', function() {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > 50) {
+          navInner.classList.add('nav-shrink');
+        } else {
+          navInner.classList.remove('nav-shrink');
+        }
+        lastScroll = currentScroll;
+      }, { passive: true });
+
+      // --- Mobile menu ---
+      const menuToggle = document.getElementById('menu-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', function() {
+          const isOpen = mobileMenu.classList.contains('open');
+          if (isOpen) {
+            mobileMenu.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+            menuToggle.setAttribute('aria-label', 'Open menu');
+          } else {
+            mobileMenu.classList.add('open');
+            menuToggle.setAttribute('aria-expanded', 'true');
+            menuToggle.setAttribute('aria-label', 'Close menu');
+          }
+        });
+
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll('a').forEach(function(link) {
+          link.addEventListener('click', function() {
+            mobileMenu.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+            menuToggle.setAttribute('aria-label', 'Open menu');
+          });
+        });
+      }
+
+      // --- Accordions ---
+      document.querySelectorAll('[data-accordion]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const expanded = this.getAttribute('aria-expanded') === 'true';
+          const contentId = this.getAttribute('aria-controls');
+          const content = document.getElementById(contentId);
+          const icon = this.querySelector('.accordion-icon');
+
+          // Close all others
+          document.querySelectorAll('[data-accordion]').forEach(function(otherBtn) {
+            if (otherBtn !== btn) {
+              otherBtn.setAttribute('aria-expanded', 'false');
+              const otherContentId = otherBtn.getAttribute('aria-controls');
+              const otherContent = document.getElementById(otherContentId);
+              if (otherContent) otherContent.classList.remove('open');
+              const otherIcon = otherBtn.querySelector('.accordion-icon');
+              if (otherIcon) otherIcon.classList.remove('rotated');
+            }
+          });
+
+          // Toggle current
+          if (expanded) {
+            this.setAttribute('aria-expanded', 'false');
+            content.classList.remove('open');
+            icon.classList.remove('rotated');
+          } else {
+            this.setAttribute('aria-expanded', 'true');
+            content.classList.add('open');
+            icon.classList.add('rotated');
+          }
+        });
+      });
+
+      // --- Scroll reveal (fade-up) ---
+      const fadeElements = document.querySelectorAll('.fade-up');
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px 0px -60px 0px'
+        });
+
+        fadeElements.forEach(function(el) {
+          observer.observe(el);
+        });
+      } else {
+        // Fallback: show all
+        fadeElements.forEach(function(el) {
+          el.classList.add('visible');
+        });
+      }
+
+      // --- Set min date for reservation to today ---
+      const dateInput = document.getElementById('date');
+      if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+      }
+
+      // --- Form validation & submission ---
+      const form = document.getElementById('reserve-form');
+      if (form) {
+        const submitBtn = document.getElementById('submit-btn');
+        const successMsg = document.getElementById('form-success');
+        const errorMsg = document.getElementById('form-error');
+
+        // Real-time validation clearing
+        form.querySelectorAll('.form-input').forEach(function(input) {
+          input.addEventListener('input', function() {
+            this.classList.remove('error');
+          });
+          input.addEventListener('change', function() {
+            this.classList.remove('error');
+          });
+        });
+
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+
+          // Reset messages
+          successMsg.classList.add('hidden');
+          errorMsg.classList.add('hidden');
+
+          // Validate
+          let isValid = true;
+          const requiredFields = [
+            { id: 'name', label: 'name' },
+            { id: 'email', label: 'email' },
+            { id: 'guests', label: 'number of guests' },
+            { id: 'date', label: 'date' }
+          ];
+
+          requiredFields.forEach(function(field) {
+            const el = document.getElementById(field.id);
+            if (!el || !el.value.trim()) {
+              if (el) el.classList.add('error');
+              isValid = false;
+            }
+          });
+
+          // Email format
+          const emailEl = document.getElementById('email');
+          if (emailEl && emailEl.value.trim()) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailEl.value.trim())) {
+              emailEl.classList.add('error');
+              isValid = false;
+            }
+          }
+
+          if (!isValid) {
+            errorMsg.textContent = 'Please fill in all required fields correctly.';
+            errorMsg.classList.remove('hidden');
+            return;
+          }
+
+          // Build data
+          const formData = {
+            name: document.getElementById('name').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            phone: document.getElementById('phone') ? document.getElementById('phone').value.trim() : '',
+            guests: document.getElementById('guests').value,
+            date: document.getElementById('date').value,
+            message: document.getElementById('message') ? document.getElementById('message').value.trim() : ''
+          };
+
+          // Loading state
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = 'Sending…';
+          submitBtn.style.opacity = '0.7';
+          submitBtn.style.cursor = 'not-allowed';
+
+          // POST
+          fetch('submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            cache: 'no-store',
+            body: JSON.stringify({
+              url: window.location.host,
+              table: 'reservations',
+              data: formData
+            })
+          })
+          .then(function(response) {
+            if (!response.ok) {
+              throw new Error('Server responded with status ' + response.status);
+            }
+            return response.text().then(function(text) {
+              try { return JSON.parse(text); } catch (e) { return text; }
+            });
+          })
+          .then(function(result) {
+            successMsg.textContent = 'Thank you — your reservation request has been received. We\'ll confirm shortly.';
+            successMsg.classList.remove('hidden');
+            form.reset();
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Request reservation <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+            submitBtn.style.opacity = '';
+            submitBtn.style.cursor = '';
+            // Scroll to message
+            successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          })
+          .catch(function(error) {
+            console.error('Submission error:', error);
+            errorMsg.textContent = 'Something went wrong. Please try again or call us at (555) 123-4567.';
+            errorMsg.classList.remove('hidden');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Request reservation <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+            submitBtn.style.opacity = '';
+            submitBtn.style.cursor = '';
+          });
+        });
+      }
+
+      // --- Smooth anchor scrolling (for browsers that don't support CSS scroll-smooth fully) ---
+      document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const target = document.querySelector(targetId);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>
