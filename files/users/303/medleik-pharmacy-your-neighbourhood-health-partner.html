@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medleik Pharmacy · Your Neighbourhood Health Partner</title>
+  <!-- === Design Direction: Premium light UI with emerald green (#046A38) + off-white (#FEFCF7), Inter + Bricolage Grotesque, clean, trustworthy, modern === -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: { DEFAULT: '#046A38', light: '#0A7D45', soft: '#D9F0E2', deep: '#03522B' },
+            offwhite: '#FEFCF7',
+            ink: '#1A2E24',
+            muted: '#5F6F66',
+            cream: '#F8F6F0',
+            border: '#E3E0D8',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+          borderRadius: { '2xl': '1.25rem', '3xl': '1.75rem' },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --emerald: #046A38;
+      --emerald-light: #0A7D45;
+      --emerald-soft: #D9F0E2;
+      --offwhite: #FEFCF7;
+      --cream: #F8F6F0;
+      --ink: #1A2E24;
+      --muted: #5F6F66;
+      --border: #E3E0D8;
+      --radius-card: 1.5rem;
+      --shadow-soft: 0 20px 40px -12px rgba(4, 106, 56, 0.08);
+      --shadow-hover: 0 28px 48px -12px rgba(4, 106, 56, 0.16);
+      --focus-ring: #046A38;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--offwhite);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4 { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.02em; line-height: 1.1; }
+    /* === Accessibility & focus === */
+    :focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+    }
+    /* === Custom scroll reveal (GSAP handles, fallback) === */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    /* === Custom glass & gradient === */
+    .glass-card {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: var(--shadow-soft);
+    }
+    .hero-glow {
+      background: radial-gradient(circle at 80% 30%, rgba(4,106,56,0.06) 0%, transparent 60%),
+                  radial-gradient(circle at 20% 70%, rgba(4,106,56,0.04) 0%, transparent 50%);
+    }
+    .btn-primary {
+      background: var(--emerald);
+      color: #fff;
+      transition: all 0.2s ease-out;
+      box-shadow: 0 4px 14px rgba(4,106,56,0.25);
+    }
+    .btn-primary:hover {
+      background: var(--emerald-light);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -8px rgba(4,106,56,0.4);
+    }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-outline {
+      border: 1.5px solid var(--emerald);
+      color: var(--emerald);
+      transition: all 0.2s ease-out;
+    }
+    .btn-outline:hover { background: var(--emerald-soft); transform: translateY(-2px); }
+    .btn-outline:active { transform: scale(0.97); }
+    .nav-blur {
+      background: rgba(254,252,247,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(227,224,216,0.6);
+    }
+    /* === Animations === */
+    @keyframes floatIn { 0% { opacity:0; transform: translateY(18px); } 100% { opacity:1; transform: translateY(0); } }
+    .float-in { animation: floatIn 0.8s cubic-bezier(0.22,1,0.36,1) both; }
+    @keyframes pulseSoft { 0%,100% { opacity:0.6; } 50% { opacity:1; } }
+    .pulse-soft { animation: pulseSoft 3s ease-in-out infinite; }
+    @keyframes scaleIn { 0% { transform: scale(0.92); opacity:0; } 100% { transform: scale(1); opacity:1; } }
+    .scale-in { animation: scaleIn 0.6s cubic-bezier(0.22,1,0.36,1) both; }
+    /* === Scrollbar === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: #c5cdc5; border-radius: 6px; }
+    /* === Product filter underline === */
+    .filter-btn { transition: all 0.2s ease; border-bottom: 2px solid transparent; }
+    .filter-btn.active { border-bottom-color: var(--emerald); color: var(--emerald); font-weight: 600; }
+    /* === Map placeholder === */
+    .map-placeholder {
+      background: linear-gradient(135deg, #E8F3EC 0%, #D9F0E2 100%);
+      border: 1px dashed rgba(4,106,56,0.3);
+    }
+    /* === Utility === */
+    .text-balance { text-wrap: balance; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="font-body bg-offwhite text-ink antialiased">
+
+  <!-- ========== HEADER ========== -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 nav-blur">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <!-- Logo -->
+        <a href="#home" class="flex items-center gap-2 md:gap-3 shrink-0 group" aria-label="Medleik Pharmacy home">
+          <span class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-emerald flex items-center justify-center text-white font-display font-bold text-lg shadow-md group-hover:scale-105 transition-transform">M</span>
+          <span class="flex flex-col leading-tight">
+            <span class="font-display font-bold text-base md:text-xl text-emerald tracking-tight">Medleik Pharmacy</span>
+            <span class="text-[10px] md:text-xs text-muted font-medium tracking-wide">മെഡ്‌ലൈക് ഫാർമസി</span>
+          </span>
+        </a>
+        <!-- Desktop nav -->
+        <nav class="hidden lg:flex items-center gap-7" aria-label="Main navigation">
+          <a href="#home" class="text-sm font-medium text-ink/80 hover:text-emerald transition-colors">Home</a>
+          <a href="#about" class="text-sm font-medium text-ink/80 hover:text-emerald transition-colors">About</a>
+          <a href="#products" class="text-sm font-medium text-ink/80 hover:text-emerald transition-colors">Products</a>
+          <a href="#delivery" class="text-sm font-medium text-ink/80 hover:text-emerald transition-colors">Delivery</a>
+          <a href="#contact" class="text-sm font-medium text-ink/80 hover:text-emerald transition-colors">Contact</a>
+        </nav>
+        <!-- CTA + mobile toggle -->
+        <div class="flex items-center gap-2 md:gap-3">
+          <a href="https://wa.me/917012370940" target="_blank" rel="noopener noreferrer"
+             class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-full btn-primary text-sm font-semibold shadow-sm">
+            <i data-lucide="message-circle" class="w-4 h-4" aria-hidden="true"></i>
+            WhatsApp
+          </a>
+          <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg hover:bg-cream transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+            <i data-lucide="menu" class="w-6 h-6 text-ink" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="hidden lg:hidden bg-offwhite/95 backdrop-blur-xl border-t border-border px-4 pb-5 pt-2 space-y-1 shadow-lg">
+      <a href="#home" class="block px-4 py-3 rounded-xl text-sm font-medium hover:bg-cream transition-colors">Home</a>
+      <a href="#about" class="block px-4 py-3 rounded-xl text-sm font-medium hover:bg-cream transition-colors">About</a>
+      <a href="#products" class="block px-4 py-3 rounded-xl text-sm font-medium hover:bg-cream transition-colors">Products</a>
+      <a href="#delivery" class="block px-4 py-3 rounded-xl text-sm font-medium hover:bg-cream transition-colors">Home Delivery</a>
+      <a href="#contact" class="block px-4 py-3 rounded-xl text-sm font-medium hover:bg-cream transition-colors">Contact</a>
+      <a href="https://wa.me/917012370940" target="_blank" rel="noopener noreferrer"
+         class="flex items-center justify-center gap-2 mt-3 px-4 py-3 rounded-full btn-primary text-sm font-semibold">
+        <i data-lucide="message-circle" class="w-4 h-4" aria-hidden="true"></i> Chat on WhatsApp
+      </a>
+    </div>
+  </header>
+
+  <main class="pt-16 md:pt-20">
+
+    <!-- ========== HERO ========== -->
+    <section id="home" class="relative overflow-hidden hero-glow">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-28 lg:py-32">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <!-- Text -->
+          <div class="space-y-6 md:space-y-8">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-soft text-emerald text-xs font-semibold tracking-wide uppercase float-in">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5" aria-hidden="true"></i>
+              Trusted local pharmacy · Maranchery
+            </div>
+            <h1 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-ink leading-[1.05] text-balance float-in" style="animation-delay:0.1s">
+              Medleik Pharmacy
+              <span class="block text-emerald text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mt-2 tracking-tight">Your Neighbourhood Health Partner</span>
+            </h1>
+            <p class="text-base md:text-lg text-muted max-w-lg leading-relaxed float-in" style="animation-delay:0.2s">
+              Genuine medicines, expert guidance, and a friendly face — right here in Maranchery. We’re preparing to serve you with care, transparency, and responsible pharmacy practice.
+            </p>
+            <div class="flex flex-wrap gap-3 md:gap-4 float-in" style="animation-delay:0.3s">
+              <a href="https://wa.me/917012370940" target="_blank" rel="noopener noreferrer"
+                 class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full btn-primary text-sm md:text-base font-semibold">
+                <i data-lucide="message-circle" class="w-5 h-5" aria-hidden="true"></i>
+                Enquire on WhatsApp
+              </a>
+              <a href="#products" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full btn-outline text-sm md:text-base font-semibold bg-white/50">
+                Browse Products
+                <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+            </div>
+            <!-- Trust indicators -->
+            <div class="flex flex-wrap gap-x-6 gap-y-2 pt-2 text-xs md:text-sm text-muted float-in" style="animation-delay:0.4s">
+              <span class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald" aria-hidden="true"></i> Licensed pharmacy (opening soon)</span>
+              <span class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald" aria-hidden="true"></i> Qualified pharmacist review</span>
+              <span class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald" aria-hidden="true"></i> Prescription verification</span>
+            </div>
+          </div>
+          <!-- Visual -->
+          <div class="relative flex justify-center lg:justify-end float-in" style="animation-delay:0.25s">
+            <div class="relative w-full max-w-md lg:max-w-lg">
+              <!-- Main card -->
+              <div class="glass-card rounded-3xl p-6 md:p-8 relative z-10 scale-in" style="animation-delay:0.4s">
+                <div class="flex items-center gap-3 mb-5">
+                  <span class="w-12 h-12 rounded-2xl bg-emerald-soft flex items-center justify-center">
+                    <i data-lucide="heart-pulse" class="w-6 h-6 text-emerald" aria-hidden="true"></i>
+                  </span>
+                  <div>
+                    <p class="font-display font-bold text-lg text-ink">Care you can trust</p>
+                    <p class="text-xs text-muted">Maranchery, Kerala</p>
+                  </div>
+                </div>
+                <ul class="space-y-3 text-sm">
+                  <li class="flex items-start gap-2.5">
+                    <i data-lucide="pill" class="w-4 h-4 text-emerald mt-0.5 shrink-0" aria-hidden="true"></i>
+                    <span>Prescription & OTC medicines</span>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <i data-lucide="baby" class="w-4 h-4 text-emerald mt-0.5 shrink-0" aria-hidden="true"></i>
+                    <span>Baby care, wellness & nutrition</span>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <i data-lucide="activity" class="w-4 h-4 text-emerald mt-0.5 shrink-0" aria-hidden="true"></i>
+                    <span>First aid & medical devices</span>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <i data-lucide="user-round" class="w-4 h-4 text-emerald mt-0.5 shrink-0" aria-hidden="true"></i>
+                    <span>Elderly care & personal care</span>
+                  </li>
+                </ul>
+                <div class="mt-6 pt-5 border-t border-border/60 flex items-center justify-between">
+                  <span class="text-xs text-muted font-medium">Quick enquiry</span>
+                  <a href="https://wa.me/917012370940" target="_blank" rel="noopener noreferrer"
+                     class="inline-flex items-center gap-1.5 text-emerald text-sm font-semibold hover:gap-2.5 transition-all">
+                    WhatsApp
+                    <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+              <!-- Decorative floating shapes -->
+              <div class="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-emerald-soft opacity-40 blur-2xl pulse-soft" aria-hidden="true"></div>
+              <div class="absolute -bottom-8 -left-8 w-32 h-32 rounded-full bg-emerald-soft opacity-30 blur-3xl pulse-soft" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== STATS / TRUST BAR ========== -->
+    <section class="border-y border-border bg-white/60">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center">
+          <div class="reveal">
+            <p class="font-display text-3xl md:text-4xl font-extrabold text-emerald">1</p>
+            <p class="text-xs md:text-sm text-muted mt-1 font-medium">Local neighbourhood store</p>
+          </div>
+          <div class="reveal">
+            <p class="font-display text-3xl md:text-4xl font-extrabold text-emerald">11+</p>
+            <p class="text-xs md:text-sm text-muted mt-1 font-medium">Product categories</p>
+          </div>
+          <div class="reveal">
+            <p class="font-display text-3xl md:text-4xl font-extrabold text-emerald">100%</p>
+            <p class="text-xs md:text-sm text-muted mt-1 font-medium">Genuine medicines</p>
+          </div>
+          <div class="reveal">
+            <p class="font-display text-3xl md:text-4xl font-extrabold text-emerald">24/7</p>
+            <p class="text-xs md:text-sm text-muted mt-1 font-medium">WhatsApp enquiries</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ABOUT ========== -->
+    <section id="about" class="py-16 md:py-24 lg:py-28 bg-cream/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div class="reveal">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white text-emerald text-xs font-semibold tracking-wide uppercase mb-5 border border-border">
+              <i data-lucide="store" class="w-3.5 h-3.5" aria-hidden="true"></i>
+              Our story
+            </div>
+            <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-ink leading-tight mb-6 text-balance">
+              A pharmacy that feels like a neighbour, not a counter.
+            </h2>
+            <div class="space-y-5 text-muted text-base leading-relaxed">
+              <p>
+                Medleik Pharmacy is being built with a simple belief: healthcare should be approachable. We’re preparing a space in Maranchery where you can ask questions, get clear guidance, and find the essentials your family needs — without feeling rushed.
+              </p>
+              <p>
+                From prescription medicines to baby care and wellness products, our focus is on responsible service. Every prescription will be reviewed by a qualified pharmacist, and we’ll always put your safety and privacy first.
+              </p>
+              <p class="font-medium text-ink">
+                We’re not open yet — but we’re getting ready. Reach out on WhatsApp for any questions, and we’ll keep you updated as we prepare to launch.
+              </p>
+            </div>
+            <div class="mt-8 flex flex-wrap gap-4">
+              <a href="https://wa.me/917012370940" target="_blank" rel="noopener noreferrer"
+                 class="inline-flex items-center gap-2 px-5 py-3 rounded-full btn-primary text-sm font-semibold">
+                <i data-lucide="message-circle" class="w-4 h-4" aria-hidden="true"></i>
+                Say hello on WhatsApp
+              </a>
+              <a href="#contact" class="inline-flex items-center gap-2 px-5 py-3 rounded-full btn-outline text-sm font-semibold bg-white">
+                <i data-lucide="map-pin" class="w-4 h-4" aria-hidden="true"></i>
+                Find us
+              </a>
+            </div>
+          </div>
+          <!-- Values cards -->
+          <div class="grid sm:grid-cols-2 gap-4 md:gap-5">
+            <div class="reveal bg-white rounded-2xl p-6 border border-border/70 shadow-sm hover:shadow-md transition-shadow">
+              <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center mb-4">
+                <i data-lucide="shield-check" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+              </span>
+              <h3 class="font-display font-bold text-ink mb-1.5">Safety first</h3>
+              <p class="text-sm text-muted leading-relaxed">Prescription verification and pharmacist review for every Rx order.</p>
+            </div>
+            <div class="reveal bg-white rounded-2xl p-6 border border-border/70 shadow-sm hover:shadow-md transition-shadow">
+              <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center mb-4">
+                <i data-lucide="users" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+              </span>
+              <h3 class="font-display font-bold text-ink mb-1.5">Community rooted</h3>
+              <p class="text-sm text-muted leading-relaxed">Proudly local to Maranchery — here for families, elders, and everyone in between.</p>
+            </div>
+            <div class="reveal bg-white rounded-2xl p-6 border border-border/70 shadow-sm hover:shadow-md transition-shadow">
+              <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center mb-4">
+                <i data-lucide="lock" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+              </span>
+              <h3 class="font-display font-bold text-ink mb-1.5">Privacy respected</h3>
+              <p class="text-sm text-muted leading-relaxed">We only ask for what’s needed. Your health information stays confidential.</p>
+            </div>
+            <div class="reveal bg-white rounded-2xl p-6 border border-border/70 shadow-sm hover:shadow-md transition-shadow">
+              <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center mb-4">
+                <i data-lucide="hand-heart" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+              </span>
+              <h3 class="font-display font-bold text-ink mb-1.5">Affordable care</h3>
+              <p class="text-sm text-muted leading-relaxed">Fair prices and honest advice — no unnecessary upsells, ever.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PRODUCTS ========== -->
+    <section id="products" class="py-16 md:py-24 lg:py-28">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12 md:mb-16 reveal">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-soft text-emerald text-xs font-semibold tracking-wide uppercase mb-5">
+            <i data-lucide="package" class="w-3.5 h-3.5" aria-hidden="true"></i>
+            What we’ll stock
+          </div>
+          <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-ink leading-tight mb-4 text-balance">
+            Everyday health essentials, all in one place
+          </h2>
+          <p class="text-muted text-base">From prescriptions to personal care — ask us on WhatsApp about availability. Prescription-only medicines require a valid prescription and pharmacist review.</p>
+        </div>
+
+        <!-- Filter buttons -->
+        <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-12 reveal" role="tablist" aria-label="Product categories">
+          <button class="filter-btn active px-4 py-2 rounded-full text-sm bg-white border border-border hover:border-emerald/40 transition-all" data-filter="all">All</button>
+          <button class="filter-btn px-4 py-2 rounded-full text-sm bg-white border border-border hover:border-emerald/40 transition-all" data-filter="prescription">Prescription</button>
+          <button class="filter-btn px-4 py-2 rounded-full text-sm bg-white border border-border hover:border-emerald/40 transition-all" data-filter="otc">OTC</button>
+          <button class="filter-btn px-4 py-2 rounded-full text-sm bg-white border border-border hover:border-emerald/40 transition-all" data-filter="wellness">Wellness</button>
+          <button class="filter-btn px-4 py-2 rounded-full text-sm bg-white border border-border hover:border-emerald/40 transition-all" data-filter="baby">Baby Care</button>
+          <button class="filter-btn px-4 py-2 rounded-full text-sm bg-white border border-border hover:border-emerald/40 transition-all" data-filter="personal">Personal Care</button>
+          <button class="filter-btn px-4 py-2 rounded-full text-sm bg-white border border-border hover:border-emerald/40 transition-all" data-filter="devices">Devices</button>
+        </div>
+
+        <!-- Product grid -->
+        <div id="productGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <!-- Card 1 -->
+          <div class="product-card reveal bg-white rounded-2xl p-6 border border-border/70 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300" data-category="prescription">
+            <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center mb-4">
+              <i data-lucide="file-text" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+            </span>
+            <h3 class="font-display font-bold text-lg text-ink mb-1">Prescription Medicines</h3>
+            <p class="text-sm text-muted leading-relaxed">Dispensed only against a valid prescription, with qualified pharmacist verification.</p>
+            <div class="mt-4 pt-4 border-t border-border/50 flex items-center gap-2 text-xs text-emerald font-semibold">
+              <i data-lucide="shield" class="w-3.5 h-3.5" aria-hidden="true"></i> Prescription required
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="product-card reveal bg-white rounded-2xl p-6 border border-border/70 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300" data-category="otc">
+            <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center mb-4">
+              <i data-lucide="pill" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+            </span>
+            <h3 class="font-display font-bold text-lg text-ink mb-1">OTC Products</h3>
+            <p class="text-sm text-muted leading-relaxed">Over-the-counter remedies for common everyday needs — ask us for guidance.</p>
+            <div class="mt-4 pt-4 border-t border-border/50 flex items-center gap-2 text-xs text-emerald font-semibold">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5" aria-hidden="true"></i> Enquire on WhatsApp
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="product-card reveal bg-white rounded-2xl p-6 border border-border/70 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300" data-category="wellness">
+            <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center mb-4">
+              <i data-lucide="leaf" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+            </span>
+            <h3 class="font-display font-bold text-lg text-ink mb-1">Wellness & Nutrition</h3>
+            <p class="text-sm text-muted leading-relaxed">Vitamins, supplements, and nutrition support for a balanced lifestyle.</p>
+            <div class="mt-4 pt-4 border-t border-border/50 flex items-center gap-2 text-xs text-emerald font-semibold">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5" aria-hidden="true"></i> Enquire on WhatsApp
+            </div>
+          </div>
+          <!-- Card 4 -->
+          <div class="product-card reveal bg-white rounded-2xl p-6 border border-border/70 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300" data-category="baby">
+            <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center mb-4">
+              <i data-lucide="baby" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+            </span>
+            <h3 class="font-display font-bold text-lg text-ink mb-1">Baby Care</h3>
+            <p class="text-sm text-muted leading-relaxed">Gentle, trusted products for your little ones — from lotions to feeding essentials.</p>
+            <div class="mt-4 pt-4 border-t border-border/50 flex items-center gap-2 text-xs text-emerald font-semibold">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5" aria-hidden="true"></i> Enquire on WhatsApp
+            </div>
+          </div>
+          <!-- Card 5 -->
+          <div class="product-card reveal bg-white rounded-2xl p-6 border border-border/70 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300" data-category="personal">
+            <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center mb-4">
+              <i data-lucide="sparkles" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+            </span>
+            <h3 class="font-display font-bold text-lg text-ink mb-1">Personal Care</h3>
+            <p class="text-sm text-muted leading-relaxed">Skin, hair, and daily hygiene products from brands you know and trust.</p>
+            <div class="mt-4 pt-4 border-t border-border/50 flex items-center gap-2 text-xs text-emerald font-semibold">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5" aria-hidden="true"></i> Enquire on WhatsApp
+            </div>
+          </div>
+          <!-- Card 6 -->
+          <div class="product-card reveal bg-white rounded-2xl p-6 border border-border/70 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300" data-category="devices">
+            <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center mb-4">
+              <i data-lucide="thermometer" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+            </span>
+            <h3 class="font-display font-bold text-lg text-ink mb-1">Medical Devices</h3>
+            <p class="text-sm text-muted leading-relaxed">Thermometers, BP monitors, glucometers, and other home health devices.</p>
+            <div class="mt-4 pt-4 border-t border-border/50 flex items-center gap-2 text-xs text-emerald font-semibold">
+              <i data-lucide="message-circle" class="w-3.5 h-3.5" aria-hidden="true"></i> Enquire on WhatsApp
+            </div>
+          </div>
+        </div>
+        <!-- Note -->
+        <p class="text-center text-xs text-muted mt-8 max-w-2xl mx-auto reveal">
+          <i data-lucide="info" class="w-3.5 h-3.5 inline mr-1" aria-hidden="true"></i>
+          Product availability varies. Prescription-only medicines are not sold without a valid prescription and pharmacist review. This website does not facilitate direct purchase of prescription medicines.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========== DELIVERY ========== -->
+    <section id="delivery" class="py-16 md:py-24 lg:py-28 bg-cream/60">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div class="reveal order-2 lg:order-1">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white text-emerald text-xs font-semibold tracking-wide uppercase mb-5 border border-border">
+              <i data-lucide="truck" class="w-3.5 h-3.5" aria-hidden="true"></i>
+              Coming soon
+            </div>
+            <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-ink leading-tight mb-6 text-balance">
+              Home delivery, planned with care.
+            </h2>
+            <div class="space-y-5 text-muted text-base leading-relaxed">
+              <p>
+                We’re exploring a local home delivery enquiry service for Maranchery and nearby areas. It’s not active yet — we’ll only start once we’re fully licensed, operationally ready, and able to follow all local requirements.
+              </p>
+              <p>
+                When it launches, you’ll be able to send a WhatsApp enquiry with your prescription (where required), and our pharmacist will verify it before any dispatch. Safety and compliance come first.
+              </p>
+            </div>
+            <div class="mt-8 space-y-3">
+              <div class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-full bg-emerald-soft flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-emerald" aria-hidden="true"></i>
+                </span>
+                <p class="text-sm text-muted">Prescription verification by a qualified pharmacist before dispatch.</p>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-full bg-emerald-soft flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-emerald" aria-hidden="true"></i>
+                </span>
+                <p class="text-sm text-muted">Local delivery only — subject to operational readiness and licence compliance.</p>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-full bg-emerald-soft flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-emerald" aria-hidden="true"></i>
+                </span>
+                <p class="text-sm text-muted">No unsolicited health data collection — we only ask what’s needed for your enquiry.</p>
+              </div>
+            </div>
+            <a href="https://wa.me/917012370940" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 mt-8 px-6 py-3.5 rounded-full btn-primary text-sm font-semibold">
+              <i data-lucide="message-circle" class="w-4 h-4" aria-hidden="true"></i>
+              Ask about delivery on WhatsApp
+            </a>
+          </div>
+          <!-- Visual -->
+          <div class="reveal order-1 lg:order-2 flex justify-center">
+            <div class="relative w-full max-w-sm">
+              <div class="glass-card rounded-3xl p-7 md:p-8 relative z-10">
+                <div class="flex items-center gap-3 mb-5">
+                  <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center">
+                    <i data-lucide="clipboard-check" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+                  </span>
+                  <p class="font-display font-bold text-ink">Delivery enquiry flow</p>
+                </div>
+                <ol class="space-y-4 text-sm">
+                  <li class="flex gap-3">
+                    <span class="w-6 h-6 rounded-full bg-emerald text-white text-xs font-bold flex items-center justify-center shrink-0">1</span>
+                    <span class="text-muted">You send a WhatsApp message with your prescription (if Rx).</span>
+                  </li>
+                  <li class="flex gap-3">
+                    <span class="w-6 h-6 rounded-full bg-emerald text-white text-xs font-bold flex items-center justify-center shrink-0">2</span>
+                    <span class="text-muted">Pharmacist reviews and confirms availability.</span>
+                  </li>
+                  <li class="flex gap-3">
+                    <span class="w-6 h-6 rounded-full bg-emerald text-white text-xs font-bold flex items-center justify-center shrink-0">3</span>
+                    <span class="text-muted">We coordinate delivery once fully operational.</span>
+                  </li>
+                </ol>
+                <div class="mt-6 pt-5 border-t border-border/60">
+                  <p class="text-xs text-muted italic">Not active yet — we’re preparing responsibly.</p>
+                </div>
+              </div>
+              <div class="absolute -bottom-6 -right-6 w-28 h-28 rounded-full bg-emerald-soft opacity-40 blur-2xl" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONTACT ========== -->
+    <section id="contact" class="py-16 md:py-24 lg:py-28">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12 md:mb-16 reveal">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-soft text-emerald text-xs font-semibold tracking-wide uppercase mb-5">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5" aria-hidden="true"></i>
+            Find us
+          </div>
+          <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-ink leading-tight mb-4 text-balance">
+            We’re in Maranchery — say hello.
+          </h2>
+          <p class="text-muted text-base">Opening hours and exact shop location will be confirmed soon. For now, reach us on WhatsApp or phone.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
+          <!-- Contact info -->
+          <div class="reveal space-y-5">
+            <div class="bg-white rounded-2xl p-6 border border-border/70 shadow-sm flex items-start gap-4">
+              <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center shrink-0">
+                <i data-lucide="message-circle" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+              </span>
+              <div>
+                <p class="font-display font-bold text-ink">WhatsApp</p>
+                <a href="https://wa.me/917012370940" target="_blank" rel="noopener noreferrer" class="text-sm text-emerald font-medium hover:underline">+91 70123 70940</a>
+                <p class="text-xs text-muted mt-1">Fastest way to reach us for enquiries.</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-border/70 shadow-sm flex items-start gap-4">
+              <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center shrink-0">
+                <i data-lucide="phone" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+              </span>
+              <div>
+                <p class="font-display font-bold text-ink">Phone</p>
+                <a href="tel:+917012370940" class="text-sm text-emerald font-medium hover:underline">+91 70123 70940</a>
+                <p class="text-xs text-muted mt-1">Call during working hours (to be confirmed).</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-border/70 shadow-sm flex items-start gap-4">
+              <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center shrink-0">
+                <i data-lucide="clock" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+              </span>
+              <div>
+                <p class="font-display font-bold text-ink">Opening hours</p>
+                <p class="text-sm text-muted">To be confirmed after launch.</p>
+                <p class="text-xs text-muted mt-1">Check back soon or ask on WhatsApp.</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 border border-border/70 shadow-sm flex items-start gap-4">
+              <span class="w-11 h-11 rounded-xl bg-emerald-soft flex items-center justify-center shrink-0">
+                <i data-lucide="map-pin" class="w-5 h-5 text-emerald" aria-hidden="true"></i>
+              </span>
+              <div>
+                <p class="font-display font-bold text-ink">Location</p>
+                <p class="text-sm text-muted">Maranchery, Kerala, India.</p>
+                <p class="text-xs text-muted mt-1">Google Maps integration coming soon.</p>
+              </div>
+            </div>
+          </div>
+          <!-- Map placeholder + quick form -->
+          <div class="reveal space-y-5">
+            <div class="map-placeholder rounded-2xl p-8 h-56 flex flex-col items-center justify-center text-center">
+              <i data-lucide="map" class="w-10 h-10 text-emerald/60 mb-3" aria-hidden="true"></i>
+              <p class="font-display font-bold text-ink">Map coming soon</p>
+              <p class="text-xs text-muted mt-1 max-w-xs">We’ll add an interactive Google Map once our exact shop location is confirmed.</p>
+            </div>
+            <!-- Quick enquiry form (non-health data only) -->
+            <div class="bg-white rounded-2xl p-6 border border-border/70 shadow-sm">
+              <p class="font-display font-bold text-ink mb-1">Quick message</p>
+              <p class="text-xs text-muted mb-4">Please don’t share prescription or health details here. Use WhatsApp for that.</p>
+              <form id="quickForm" class="space-y-3" novalidate>
+                <div>
+                  <label for="qName" class="sr-only">Name</label>
+                  <input id="qName" name="name" type="text" placeholder="Your name" required
+                         class="w-full px-4 py-2.5 rounded-xl border border-border bg-offwhite text-sm focus:outline-none focus:ring-2 focus:ring-emerald/30 focus:border-emerald transition" />
+                </div>
+                <div>
+                  <label for="qPhone" class="sr-only">Phone</label>
+                  <input id="qPhone" name="phone" type="tel" placeholder="Phone number" required
+                         class="w-full px-4 py-2.5 rounded-xl border border-border bg-offwhite text-sm focus:outline-none focus:ring-2 focus:ring-emerald/30 focus:border-emerald transition" />
+                </div>
+                <div>
+                  <label for="qMsg" class="sr-only">Message</label>
+                  <textarea id="qMsg" name="message" rows="2" placeholder="General message (no health info)" required
+                            class="w-full px-4 py-2.5 rounded-xl border border-border bg-offwhite text-sm focus:outline-none focus:ring-2 focus:ring-emerald/30 focus:border-emerald transition resize-none"></textarea>
+                </div>
+                <!-- TODO: connect form action to backend endpoint -->
+                <button type="submit" class="w-full px-5 py-3 rounded-full btn-primary text-sm font-semibold">
+                  Send message
+                </button>
+                <p id="formStatus" class="text-xs text-center hidden"></p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CTA BANNER ========== -->
+    <section class="py-16 md:py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative overflow-hidden rounded-3xl bg-emerald p-8 md:p-14 text-center md:text-left reveal">
+          <div class="absolute inset-0 opacity-10" aria-hidden="true">
+            <div class="absolute -top-16 -right-16 w-64 h-64 rounded-full border-[32px] border-white/20"></div>
+            <div class="absolute -bottom-20 -left-10 w-72 h-72 rounded-full border-[24px] border-white/10"></div>
+          </div>
+          <div class="relative z-10 md:flex md:items-center md:justify-between gap-8">
+            <div class="max-w-xl">
+              <h2 class="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight mb-3 text-balance">
+                Have a question? We’re a message away.
+              </h2>
+              <p class="text-white/80 text-sm md:text-base">Ask about product availability, prescriptions, or delivery — we’ll reply as soon as we can.</p>
+            </div>
+            <div class="mt-6 md:mt-0 flex flex-wrap gap-3 justify-center md:justify-start shrink-0">
+              <a href="https://wa.me/917012370940" target="_blank" rel="noopener noreferrer"
+                 class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white text-emerald font-semibold text-sm hover:bg-offwhite transition-all hover:-translate-y-0.5 shadow-lg">
+                <i data-lucide="message-circle" class="w-5 h-5" aria-hidden="true"></i>
+                WhatsApp us
+              </a>
+              <a href="tel:+917012370940" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-white/30 text-white font-semibold text-sm hover:bg-white/10 transition-all">
+                <i data-lucide="phone" class="w-4 h-4" aria-hidden="true"></i>
+                Call
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="bg-white border-t border-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+        <!-- Brand -->
+        <div class="sm:col-span-2 lg:col-span-1">
+          <div class="flex items-center gap-2.5 mb-4">
+            <span class="w-9 h-9 rounded-xl bg-emerald flex items-center justify-center text-white font-display font-bold text-lg">M</span>
+            <div class="flex flex-col leading-tight">
+              <span class="font-display font-bold text-emerald text-base">Medleik Pharmacy</span>
+              <span class="text-[10px] text-muted">മെഡ്‌ലൈക് ഫാർമസി</span>
+            </div>
+          </div>
+          <p class="text-sm text-muted leading-relaxed max-w-xs">Your Neighbourhood Health Partner. Responsible pharmacy service, rooted in Maranchery.</p>
+          <p class="text-xs text-muted mt-4">Launching soon — not yet open for sales.</p>
+        </div>
+        <!-- Links -->
+        <div>
+          <p class="font-display font-bold text-ink text-sm mb-4">Explore</p>
+          <ul class="space-y-2.5">
+            <li><a href="#home" class="text-sm text-muted hover:text-emerald transition-colors">Home</a></li>
+            <li><a href="#about" class="text-sm text-muted hover:text-emerald transition-colors">About Us</a></li>
+            <li><a href="#products" class="text-sm text-muted hover:text-emerald transition-colors">Products</a></li>
+            <li><a href="#delivery" class="text-sm text-muted hover:text-emerald transition-colors">Home Delivery</a></li>
+            <li><a href="#contact" class="text-sm text-muted hover:text-emerald transition-colors">Contact & Location</a></li>
+          </ul>
+        </div>
+        <!-- Legal -->
+        <div>
+          <p class="font-display font-bold text-ink text-sm mb-4">Legal</p>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-sm text-muted hover:text-emerald transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="text-sm text-muted hover:text-emerald transition-colors">Terms of Use</a></li>
+            <li><a href="#" class="text-sm text-muted hover:text-emerald transition-colors">Prescription Policy</a></li>
+            <li><a href="#" class="text-sm text-muted hover:text-emerald transition-colors">Delivery Terms</a></li>
+          </ul>
+        </div>
+        <!-- Contact -->
+        <div>
+          <p class="font-display font-bold text-ink text-sm mb-4">Get in touch</p>
+          <ul class="space-y-3">
+            <li>
+              <a href="https://wa.me/917012370940" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm text-muted hover:text-emerald transition-colors">
+                <i data-lucide="message-circle" class="w-4 h-4 text-emerald" aria-hidden="true"></i>
+                +91 70123 70940
+              </a>
+            </li>
+            <li>
+              <a href="tel:+917012370940" class="flex items-center gap-2 text-sm text-muted hover:text-emerald transition-colors">
+                <i data-lucide="phone" class="w-4 h-4 text-emerald" aria-hidden="true"></i>
+                +91 70123 70940
+              </a>
+            </li>
+            <li class="flex items-start gap-2 text-sm text-muted">
+              <i data-lucide="map-pin" class="w-4 h-4 text-emerald shrink-0 mt-0.5" aria-hidden="true"></i>
+              Maranchery, Kerala, India
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p class="text-xs text-muted">&copy; 2025 Medleik Pharmacy. All rights reserved.</p>
+        <p class="text-xs text-muted">Made with care for Maranchery.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // --- Mobile menu toggle ---
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenuBtn.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden');
+      mobileMenuBtn.setAttribute('aria-expanded', String(!isOpen));
+      mobileMenuBtn.innerHTML = isOpen
+        ? '<i data-lucide="menu" class="w-6 h-6 text-ink" aria-hidden="true"></i>'
+        : '<i data-lucide="x" class="w-6 h-6 text-ink" aria-hidden="true"></i>';
+      lucide.createIcons();
+    });
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        mobileMenuBtn.innerHTML = '<i data-lucide="menu" class="w-6 h-6 text-ink" aria-hidden="true"></i>';
+        lucide.createIcons();
+      });
+    });
+
+    // --- Product filter ---
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const productCards = document.querySelectorAll('.product-card');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        productCards.forEach(card => {
+          if (filter === 'all' || card.dataset.category === filter) {
+            card.style.display = '';
+            gsap.fromTo(card, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // --- Simple form validation (no health data) ---
+    const quickForm = document.getElementById('quickForm');
+    const formStatus = document.getElementById('formStatus');
+    if (quickForm) {
+      quickForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('qName').value.trim();
+        const phone = document.getElementById('qPhone').value.trim();
+        const msg = document.getElementById('qMsg').value.trim();
+        if (!name || !phone || !msg) {
+          formStatus.textContent = 'Please fill in all fields.';
+          formStatus.className = 'text-xs text-center text-red-500';
+          formStatus.classList.remove('hidden');
+          return;
+        }
+        // TODO: connect form action to backend endpoint
+        formStatus.textContent = 'Thank you — we’ll get back to you soon (demo only).';
+        formStatus.className = 'text-xs text-center text-emerald font-medium';
+        formStatus.classList.remove('hidden');
+        quickForm.reset();
+        setTimeout(() => { formStatus.classList.add('hidden'); }, 5000);
+      });
+    }
+
+    // --- GSAP scroll reveal ---
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      document.querySelectorAll('.reveal').forEach((el) => {
+        gsap.fromTo(el,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+          }
+        );
+      });
+      // Header shrink effect
+      ScrollTrigger.create({
+        start: 'top -60',
+        onUpdate: (self) => {
+          const header = document.getElementById('header');
+          if (self.direction === 1 && self.scroll() > 60) {
+            header.classList.add('shadow-md');
+          } else if (self.scroll() < 10) {
+            header.classList.remove('shadow-md');
+          }
+        }
+      });
+    } else {
+      // Fallback: intersection observer
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }
+
+    // --- Smooth anchor scrolling (fallback for browsers) ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const targetPos = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top: targetPos, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
