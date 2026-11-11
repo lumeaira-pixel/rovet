@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bakery Industry · Artisan Bakehouse</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Instrument Serif + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --cream: #fcf8f2;
+      --paper: #ffffff;
+      --ink: #1e1b18;
+      --coffee: #3f2e1e;
+      --caramel: #b87c4b;
+      --brass: #c9a87c;
+      --warm-border: rgba(63, 46, 30, 0.08);
+      --shadow-soft: 0 12px 30px -8px rgba(30, 27, 24, 0.08);
+      --shadow-card: 0 20px 35px -12px rgba(30, 27, 24, 0.12);
+      --radius-xl: 2rem;
+      --radius-2xl: 2.5rem;
+      --focus-ring: 0 0 0 3px rgba(184, 124, 75, 0.4);
+    }
+
+    /* === Base & Typography === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .font-serif {
+      font-family: 'Instrument Serif', serif;
+      letter-spacing: -0.02em;
+      font-weight: 400;
+    }
+
+    /* === Custom Scroll & Selection === */
+    ::selection {
+      background: var(--caramel);
+      color: var(--paper);
+    }
+
+    /* === Container & Section === */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1.5rem;
+      }
+    }
+
+    /* === Header & Nav === */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      padding: 1.25rem 0;
+      background: transparent;
+      backdrop-filter: blur(0);
+    }
+
+    header.scrolled {
+      background: rgba(252, 248, 242, 0.85);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--warm-border);
+    }
+
+    .logo {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--coffee);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo span {
+      color: var(--caramel);
+    }
+
+    .nav-link {
+      position: relative;
+      color: var(--ink);
+      font-weight: 500;
+      font-size: 0.95rem;
+      text-decoration: none;
+      padding: 0.5rem 0;
+      transition: color 0.2s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--caramel);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--caramel);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--coffee);
+      color: var(--paper);
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.9rem 2rem;
+      border-radius: 60px;
+      transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1);
+      box-shadow: 0 8px 20px -6px rgba(63, 46, 30, 0.3);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--caramel);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px -8px rgba(184, 124, 75, 0.5);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.9rem 2rem;
+      border-radius: 60px;
+      border: 1.5px solid var(--warm-border);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--caramel);
+      background: rgba(184, 124, 75, 0.06);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.97);
+    }
+
+    /* === Section Titles === */
+    .section-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-weight: 600;
+      color: var(--caramel);
+      margin-bottom: 0.75rem;
+      background: rgba(184, 124, 75, 0.1);
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+    }
+
+    .section-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      line-height: 1.1;
+      color: var(--coffee);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section-desc {
+      font-size: 1.1rem;
+      color: #5b4c3e;
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    /* === Cards & Surfaces === */
+    .card-soft {
+      background: var(--paper);
+      border-radius: var(--radius-2xl);
+      padding: 2rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--warm-border);
+      transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
+    }
+
+    .card-soft:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: var(--shadow-card);
+    }
+
+    /* === Animations === */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stagger-1 { transition-delay: 0.05s; }
+    .stagger-2 { transition-delay: 0.15s; }
+    .stagger-3 { transition-delay: 0.25s; }
+    .stagger-4 { transition-delay: 0.35s; }
+
+    /* === Hero Image Treatment === */
+    .hero-image-wrapper {
+      position: relative;
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      box-shadow: 0 30px 60px -20px rgba(63, 46, 30, 0.25);
+      transition: all 0.5s ease;
+      background: #e8ddd0;
+    }
+
+    .hero-image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1);
+    }
+
+    .hero-image-wrapper:hover img {
+      transform: scale(1.03);
+    }
+
+    /* === Testimonial cards === */
+    .testimonial-card {
+      background: var(--paper);
+      border-radius: var(--radius-xl);
+      padding: 2rem 1.8rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--warm-border);
+      transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+      box-shadow: var(--shadow-card);
+      transform: translateY(-4px);
+    }
+
+    /* === Form styles === */
+    .form-input {
+      width: 100%;
+      background: var(--paper);
+      border: 1px solid var(--warm-border);
+      border-radius: 16px;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: all 0.2s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--caramel);
+      box-shadow: var(--focus-ring);
+    }
+
+    .form-input::placeholder {
+      color: #a48e7a;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--coffee);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.01em;
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 80%;
+      max-width: 320px;
+      height: 100vh;
+      background: var(--cream);
+      z-index: 2000;
+      padding: 2rem 1.5rem;
+      transition: right 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .mobile-menu.open {
+      right: 0;
+    }
+
+    .mobile-menu .close-btn {
+      align-self: flex-end;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--ink);
+      padding: 0.5rem;
+    }
+
+    .mobile-link {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--warm-border);
+      transition: color 0.2s;
+    }
+
+    .mobile-link:hover {
+      color: var(--caramel);
+    }
+
+    /* === Utility === */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+
+    .text-balance {
+      text-wrap: balance;
+    }
+
+    /* === Toast success === */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--coffee);
+      color: var(--paper);
+      padding: 1rem 2rem;
+      border-radius: 60px;
+      box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.3);
+      font-weight: 500;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header id="header">
+    <div class="container flex items-center justify-between">
+      <a href="#" class="logo">
+        <i data-lucide="wheat" style="width:24px;height:24px;color:var(--caramel);"></i>
+        Bakery<span>Industry</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#story" class="nav-link">Our Story</a>
+        <a href="#bakes" class="nav-link">Signature Bakes</a>
+        <a href="#testimonials" class="nav-link">Testimonials</a>
+        <a href="#visit" class="nav-link">Visit Us</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="#visit" class="btn-primary hidden md:inline-flex" style="padding:0.7rem 1.8rem;font-size:0.9rem;">
+          Order Now
+        </a>
+        <button id="menuToggle" class="md:hidden p-2 rounded-full border border-warm-border" aria-label="Open menu" aria-expanded="false">
+          <i data-lucide="menu" style="width:24px;height:24px;color:var(--coffee);"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile menu">
+    <button class="close-btn" id="closeMenu" aria-label="Close menu">
+      <i data-lucide="x" style="width:28px;height:28px;"></i>
+    </button>
+    <a href="#story" class="mobile-link">Our Story</a>
+    <a href="#bakes" class="mobile-link">Signature Bakes</a>
+    <a href="#testimonials" class="mobile-link">Testimonials</a>
+    <a href="#visit" class="mobile-link">Visit Us</a>
+    <a href="#visit" class="btn-primary w-full text-center mt-4">Order Now</a>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="pt-32 pb-16 md:pt-40 md:pb-24">
+    <div class="container grid md:grid-cols-2 gap-12 items-center">
+      <div class="reveal visible">
+        <div class="section-tag">Artisan Bakehouse · Est. 2012</div>
+        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-serif leading-[1.05] text-coffee tracking-tight mb-6">
+          Where every loaf<br> tells a <span style="color:var(--caramel);">story</span>.
+        </h1>
+        <p class="text-lg text-[#5b4c3e] max-w-md mb-8 leading-relaxed">
+          Slow-fermented sourdough, buttery croissants, and pastries that taste like a warm morning hug. Baked fresh daily in small batches.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#bakes" class="btn-primary">
+            Explore the menu
+            <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+          </a>
+          <a href="#story" class="btn-secondary">
+            Our story
+          </a>
+        </div>
+        <div class="flex items-center gap-6 mt-10">
+          <div class="flex -space-x-2">
+            <span class="w-8 h-8 rounded-full bg-[#e8ddd0] border-2 border-white flex items-center justify-center text-xs font-medium">A</span>
+            <span class="w-8 h-8 rounded-full bg-[#d9c7b0] border-2 border-white flex items-center justify-center text-xs font-medium">M</span>
+            <span class="w-8 h-8 rounded-full bg-[#c9a87c] border-2 border-white flex items-center justify-center text-xs font-medium text-white">S</span>
+          </div>
+          <p class="text-sm text-[#5b4c3e]"><span class="font-semibold text-coffee">4.9/5</span> from 600+ happy customers</p>
+        </div>
+      </div>
+      <div class="reveal visible stagger-2">
+        <div class="hero-image-wrapper aspect-[4/3] md:aspect-square">
+          <!-- High-quality bakery image -->
+          <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1200&auto=format&fit=crop" alt="Freshly baked artisan bread and pastries on display" width="800" height="800" loading="eager">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats / Social proof -->
+  <section class="py-8 border-y border-warm-border bg-white/50 backdrop-blur-sm">
+    <div class="container grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div class="reveal visible">
+        <p class="text-3xl font-serif text-coffee">12+</p>
+        <p class="text-xs uppercase tracking-wider text-[#7a6a5a] font-medium mt-1">Years of baking</p>
+      </div>
+      <div class="reveal visible stagger-1">
+        <p class="text-3xl font-serif text-coffee">48</p>
+        <p class="text-xs uppercase tracking-wider text-[#7a6a5a] font-medium mt-1">Unique recipes</p>
+      </div>
+      <div class="reveal visible stagger-2">
+        <p class="text-3xl font-serif text-coffee">100%</p>
+        <p class="text-xs uppercase tracking-wider text-[#7a6a5a] font-medium mt-1">Organic flour</p>
+      </div>
+      <div class="reveal visible stagger-3">
+        <p class="text-3xl font-serif text-coffee">7</p>
+        <p class="text-xs uppercase tracking-wider text-[#7a6a5a] font-medium mt-1">Master bakers</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story -->
+  <section id="story" class="py-20 md:py-28">
+    <div class="container grid md:grid-cols-2 gap-16 items-center">
+      <div class="reveal">
+        <div class="section-tag">Our Story</div>
+        <h2 class="section-title">From a home oven to your table.</h2>
+        <p class="section-desc mb-6">
+          Bakery Industry began in 2012 with a single sourdough starter and a stubborn belief: great bread takes time. We still ferment every loaf for 24 hours, shape every croissant by hand, and bake in small batches.
+        </p>
+        <p class="section-desc mb-8">
+          Today, we're a team of seven bakers who care deeply about flavor, community, and the simple joy of a perfect pastry. Every ingredient is sourced thoughtfully, from local stone-milled flour to cultured butter.
+        </p>
+        <div class="flex items-center gap-4">
+          <i data-lucide="wheat" style="width:32px;height:32px;color:var(--caramel);"></i>
+          <span class="text-sm font-medium text-coffee">Real ingredients. Real hands. Real bread.</span>
+        </div>
+      </div>
+      <div class="reveal stagger-2">
+        <div class="grid grid-cols-2 gap-4">
+          <img src="https://images.unsplash.com/photo-1585478259715-876acc5be8eb?q=80&w=800&auto=format&fit=crop" alt="Baker shaping dough" class="rounded-3xl shadow-lg w-full h-56 object-cover" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=800&auto=format&fit=crop" alt="Golden croissants on a tray" class="rounded-3xl shadow-lg w-full h-56 object-cover mt-8" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Signature Bakes -->
+  <section id="bakes" class="py-20 md:py-28 bg-white/40">
+    <div class="container">
+      <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+        <div class="section-tag">Signature Bakes</div>
+        <h2 class="section-title">Made with patience & butter.</h2>
+        <p class="section-desc mx-auto">Each item is a small act of craft — fermented, folded, and baked to golden perfection.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Card 1 -->
+        <div class="card-soft reveal visible stagger-1">
+          <div class="w-full h-48 rounded-2xl overflow-hidden mb-5 bg-[#e8ddd0]">
+            <img src="https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?q=80&w=800&auto=format&fit=crop" alt="Artisan sourdough loaf" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy">
+          </div>
+          <h3 class="text-xl font-serif text-coffee mb-2">Country Sourdough</h3>
+          <p class="text-sm text-[#5b4c3e] leading-relaxed">24-hour ferment, crackly crust, open crumb. Our best seller for a reason.</p>
+          <div class="flex items-center justify-between mt-4">
+            <span class="font-semibold text-coffee">$8.50</span>
+            <i data-lucide="wheat" style="width:18px;height:18px;color:var(--caramel);"></i>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="card-soft reveal visible stagger-2">
+          <div class="w-full h-48 rounded-2xl overflow-hidden mb-5 bg-[#e8ddd0]">
+            <img src="https://images.unsplash.com/photo-1530610476181-d83430b64dcd?q=80&w=800&auto=format&fit=crop" alt="Butter croissants" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy">
+          </div>
+          <h3 class="text-xl font-serif text-coffee mb-2">Butter Croissant</h3>
+          <p class="text-sm text-[#5b4c3e] leading-relaxed">72 layers of laminated dough, baked until shatteringly crisp. Pure joy.</p>
+          <div class="flex items-center justify-between mt-4">
+            <span class="font-semibold text-coffee">$4.25</span>
+            <i data-lucide="croissant" style="width:18px;height:18px;color:var(--caramel);"></i>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="card-soft reveal visible stagger-3">
+          <div class="w-full h-48 rounded-2xl overflow-hidden mb-5 bg-[#e8ddd0]">
+            <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=800&auto=format&fit=crop" alt="Cinnamon morning bun" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy">
+          </div>
+          <h3 class="text-xl font-serif text-coffee mb-2">Cinnamon Morning Bun</h3>
+          <p class="text-sm text-[#5b4c3e] leading-relaxed">Swirled with cinnamon sugar, orange zest, and a hint of cardamom.</p>
+          <div class="flex items-center justify-between mt-4">
+            <span class="font-semibold text-coffee">$4.75</span>
+            <i data-lucide="cake-slice" style="width:18px;height:18px;color:var(--caramel);"></i>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-12 reveal">
+        <a href="#visit" class="btn-secondary">See full menu <i data-lucide="arrow-right" style="width:16px;height:16px;"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section id="testimonials" class="py-20 md:py-28">
+    <div class="container">
+      <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+        <div class="section-tag">Kind Words</div>
+        <h2 class="section-title">Baked with love,<br>reviewed with joy.</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="testimonial-card reveal visible stagger-1">
+          <div class="flex gap-1 text-[#c9a87c] mb-4">
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+          </div>
+          <p class="text-sm text-[#3f2e1e] leading-relaxed mb-6">"The sourdough is unreal — crispy crust, soft inside. I drive 20 minutes every Saturday just for this loaf."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-[#e8ddd0] flex items-center justify-center text-sm font-medium">M</div>
+            <div>
+              <p class="text-sm font-medium text-coffee">Maya R.</p>
+              <p class="text-xs text-[#7a6a5a]">Regular since 2019</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal visible stagger-2">
+          <div class="flex gap-1 text-[#c9a87c] mb-4">
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+          </div>
+          <p class="text-sm text-[#3f2e1e] leading-relaxed mb-6">"Their croissants are better than the ones I had in Paris. Flaky, buttery, and absolutely perfect."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-[#e8ddd0] flex items-center justify-center text-sm font-medium">J</div>
+            <div>
+              <p class="text-sm font-medium text-coffee">James L.</p>
+              <p class="text-xs text-[#7a6a5a]">Local food writer</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal visible stagger-3">
+          <div class="flex gap-1 text-[#c9a87c] mb-4">
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+            <i data-lucide="star" style="width:16px;height:16px;fill:currentColor;"></i>
+          </div>
+          <p class="text-sm text-[#3f2e1e] leading-relaxed mb-6">"We order their pastry boxes for every office meeting. The team is obsessed — never any leftovers."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-[#e8ddd0] flex items-center justify-center text-sm font-medium">S</div>
+            <div>
+              <p class="text-sm font-medium text-coffee">Sofia K.</p>
+              <p class="text-xs text-[#7a6a5a]">Office manager</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="py-20 md:py-28">
+    <div class="container">
+      <div class="bg-coffee rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden reveal" style="background: #3f2e1e;">
+        <div class="absolute inset-0 opacity-10">
+          <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <pattern id="wheat" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+              <circle cx="10" cy="10" r="1.5" fill="#c9a87c" />
+            </pattern>
+            <rect width="100%" height="100%" fill="url(#wheat)" />
+          </svg>
+        </div>
+        <div class="relative z-10">
+          <h2 class="text-4xl md:text-5xl font-serif text-cream mb-4" style="color:#fcf8f2;">Craving something warm?</h2>
+          <p class="text-cream/70 text-lg max-w-xl mx-auto mb-8" style="color:rgba(252,248,242,0.75);">Pre-order your favorites or drop by the bakery. We open at 7 AM, and the croissants go fast.</p>
+          <a href="#visit" class="btn-primary" style="background:var(--caramel); color:var(--paper); box-shadow:0 8px 25px -6px rgba(184,124,75,0.6);">
+            Order for pickup
+            <i data-lucide="shopping-bag" style="width:18px;height:18px;"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visit / Contact Form + Footer -->
+  <footer id="visit" class="bg-white/60 pt-20 pb-8 border-t border-warm-border">
+    <div class="container">
+      <div class="grid lg:grid-cols-2 gap-16 mb-16">
+        <!-- Contact info -->
+        <div class="reveal">
+          <div class="section-tag">Visit Us</div>
+          <h2 class="section-title text-4xl">Come say hello.</h2>
+          <p class="section-desc mb-8">We're a neighborhood bakery — stop by for a coffee and a warm pastry. Or send us a note and we'll get back within a day.</p>
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start gap-3">
+              <i data-lucide="map-pin" style="width:20px;height:20px;color:var(--caramel);margin-top:2px;"></i>
+              <p class="text-[#3f2e1e]">123 Baker Street, Portland, OR 97205</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="clock" style="width:20px;height:20px;color:var(--caramel);margin-top:2px;"></i>
+              <p class="text-[#3f2e1e]">Tue – Sun: 7:00 AM – 3:00 PM · Closed Mondays</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="phone" style="width:20px;height:20px;color:var(--caramel);margin-top:2px;"></i>
+              <p class="text-[#3f2e1e]">(503) 555-0123</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <i data-lucide="mail" style="width:20px;height:20px;color:var(--caramel);margin-top:2px;"></i>
+              <p class="text-[#3f2e1e]">hello@bakeryindustry.com</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <a href="#" aria-label="Instagram" class="w-10 h-10 rounded-full border border-warm-border flex items-center justify-center transition-all hover:border-caramel hover:bg-caramel/5">
+              <i data-lucide="instagram" style="width:18px;height:18px;color:var(--coffee);"></i>
+            </a>
+            <a href="#" aria-label="Facebook" class="w-10 h-10 rounded-full border border-warm-border flex items-center justify-center transition-all hover:border-caramel hover:bg-caramel/5">
+              <i data-lucide="facebook" style="width:18px;height:18px;color:var(--coffee);"></i>
+            </a>
+            <a href="#" aria-label="Twitter" class="w-10 h-10 rounded-full border border-warm-border flex items-center justify-center transition-all hover:border-caramel hover:bg-caramel/5">
+              <i data-lucide="twitter" style="width:18px;height:18px;color:var(--coffee);"></i>
+            </a>
+          </div>
+        </div>
+        <!-- Enquiry Form -->
+        <div class="reveal stagger-2">
+          <form id="enquiryForm" class="card-soft" novalidate>
+            <h3 class="text-2xl font-serif text-coffee mb-1">Send an enquiry</h3>
+            <p class="text-sm text-[#5b4c3e] mb-6">We'll reply within one business day.</p>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="name" class="form-label">Name *</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required aria-required="true">
+              </div>
+              <div>
+                <label for="email" class="form-label">Email *</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required aria-required="true">
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="phone" class="form-label">Phone</label>
+                <input type="tel" id="phone" name="phone" class="form-input" placeholder="(optional)">
+              </div>
+              <div>
+                <label for="subject" class="form-label">Topic</label>
+                <select id="subject" name="subject" class="form-input">
+                  <option value="order">Custom order</option>
+                  <option value="catering">Catering</option>
+                  <option value="wholesale">Wholesale</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label for="message" class="form-label">Message *</label>
+              <textarea id="message" name="message" rows="3" class="form-input" placeholder="Tell us what you need..." required aria-required="true"></textarea>
+            </div>
+            <button type="submit" class="btn-primary w-full">
+              Send message
+              <i data-lucide="send" style="width:18px;height:18px;"></i>
+            </button>
+            <!-- TODO: connect form action to backend endpoint (currently simulated) -->
+            <p class="text-xs text-[#a48e7a] mt-3 text-center">This is a demo form. Connect your backend to enable real submissions.</p>
+          </form>
+        </div>
+      </div>
+
+      <!-- Footer links & copyright -->
+      <div class="border-t border-warm-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-sm text-[#7a6a5a]">&copy; 2025 Bakery Industry. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="text-sm text-[#7a6a5a] hover:text-caramel transition-colors">Privacy</a>
+          <a href="#" class="text-sm text-[#7a6a5a] hover:text-caramel transition-colors">Terms</a>
+          <a href="#" class="text-sm text-[#7a6a5a] hover:text-caramel transition-colors">Wholesale</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <i data-lucide="check-circle" style="width:20px;height:20px;"></i>
+    <span>Message sent! We'll be in touch.</span>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // === Header scroll effect ===
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // === Mobile menu ===
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenu');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenuFn() {
+      mobileMenu.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    menuToggle.addEventListener('click', openMenu);
+    closeMenu.addEventListener('click', closeMenuFn);
+
+    // Close menu when clicking a link
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenuFn);
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        closeMenuFn();
+      }
+    });
+
+    // === Scroll reveal (Intersection Observer) ===
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    revealElements.forEach(el => {
+      // already visible elements (hero) stay visible
+      if (!el.classList.contains('visible')) {
+        revealObserver.observe(el);
+      }
+    });
+
+    // === Form submission simulation ===
+    const form = document.getElementById('enquiryForm');
+    const toast = document.getElementById('toast');
+    let toastTimeout;
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Validation
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const message = document.getElementById('message');
+      let isValid = true;
+
+      // Simple validation
+      [name, email, message].forEach(field => {
+        if (!field.value.trim()) {
+          field.style.borderColor = '#e74c3c';
+          field.style.boxShadow = '0 0 0 3px rgba(231, 76, 60, 0.2)';
+          isValid = false;
+        } else {
+          field.style.borderColor = '';
+          field.style.boxShadow = '';
+        }
+      });
+
+      // Email format check
+      if (email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        email.style.borderColor = '#e74c3c';
+        email.style.boxShadow = '0 0 0 3px rgba(231, 76, 60, 0.2)';
+        isValid = false;
+      }
+
+      if (!isValid) {
+        return;
+      }
+
+      // Simulate submission (replace with real fetch to backend)
+      const formData = {
+        name: name.value.trim(),
+        email: email.value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        subject: document.getElementById('subject').value,
+        message: message.value.trim()
+      };
+
+      console.log('Form submitted (simulated):', formData);
+
+      // TODO: Replace with actual fetch to your backend endpoint
+      // fetch('submit', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   cache: 'no-store',
+      //   body: JSON.stringify({
+      //     url: window.location.host,
+      //     table: 'enquiries',
+      //     data: formData
+      //   })
+      // }).then(...)
+
+      // Show success toast
+      clearTimeout(toastTimeout);
+      toast.classList.add('show');
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4000);
+
+      // Reset form
+      form.reset();
+    });
+
+    // Clear error styling on input
+    form.querySelectorAll('input, textarea, select').forEach(field => {
+      field.addEventListener('input', function() {
+        this.style.borderColor = '';
+        this.style.boxShadow = '';
+      });
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
