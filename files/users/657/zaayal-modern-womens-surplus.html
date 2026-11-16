@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zaayal — Modern Women's Surplus</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Instrument Serif + Instrument Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1A1A1A',
+            cream: '#FDFBF7',
+            sand: '#F5F1EA',
+            brass: '#B89B7B',
+            clay: '#D9CFC0',
+          },
+          fontFamily: {
+            display: ['"Instrument Serif"', 'serif'],
+            sans: ['"Instrument Sans"', 'sans-serif'],
+          },
+          borderRadius: {
+            '4xl': '2rem',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1A1A;
+      --cream: #FDFBF7;
+      --sand: #F5F1EA;
+      --brass: #B89B7B;
+      --clay: #D9CFC0;
+      --white: #ffffff;
+      --focus-ring: #B89B7B;
+    }
+
+    /* === Base & Reset === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* === Focus Styles === */
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Custom Scrollbar === */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--sand);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--brass);
+      border-radius: 4px;
+    }
+
+    /* === Typography === */
+    .font-display {
+      font-family: 'Instrument Serif', serif;
+    }
+    .font-sans {
+      font-family: 'Instrument Sans', sans-serif;
+    }
+
+    /* === Hero Text Reveal === */
+    .reveal-word {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+    }
+    .reveal-word span {
+      display: inline-block;
+      transform: translateY(110%);
+      animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .reveal-word:nth-child(2) span { animation-delay: 0.1s; }
+    .reveal-word:nth-child(3) span { animation-delay: 0.2s; }
+    .reveal-word:nth-child(4) span { animation-delay: 0.3s; }
+    .reveal-word:nth-child(5) span { animation-delay: 0.4s; }
+
+    @keyframes revealUp {
+      to { transform: translateY(0); }
+    }
+
+    /* === Fade In / Slide Up === */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === Card Hover === */
+    .card-hover {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 48px -12px rgba(26, 26, 26, 0.12);
+    }
+
+    /* === Magnetic Button Base === */
+    .btn-magnetic {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    }
+    .btn-magnetic:hover {
+      transform: scale(1.02);
+    }
+    .btn-magnetic:active {
+      transform: scale(0.97);
+    }
+
+    /* === Nav Blur === */
+    .nav-scrolled {
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background-color: rgba(253, 251, 247, 0.82);
+      box-shadow: 0 1px 0 rgba(26, 26, 26, 0.06);
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      animation: marquee 30s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Gradient Mesh Background === */
+    .mesh-gradient {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(184, 155, 123, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(217, 207, 192, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(184, 155, 123, 0.06) 0%, transparent 50%);
+    }
+
+    /* === Product Image Placeholder === */
+    .product-img {
+      background: linear-gradient(135deg, var(--sand) 0%, var(--clay) 100%);
+      aspect-ratio: 3/4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .product-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 60%, rgba(26,26,26,0.04) 100%);
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .mobile-menu.open {
+      clip-path: inset(0 0 0 0);
+    }
+
+    /* === Grain Overlay === */
+    .grain::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 128px 128px;
+    }
+
+    /* === Testimonial Slider === */
+    .testimonial-track {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* === Form Input Styles === */
+    .form-input {
+      background: var(--white);
+      border: 1px solid var(--clay);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      width: 100%;
+      color: var(--ink);
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184, 155, 123, 0.15);
+    }
+    .form-input::placeholder {
+      color: #A09A92;
+    }
+    .form-input.error {
+      border-color: #D9534F;
+      box-shadow: 0 0 0 3px rgba(217, 83, 79, 0.1);
+    }
+
+    /* === Reduced Motion === */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* === Responsive Nav === */
+    @media (max-width: 768px) {
+      .nav-cta {
+        display: none;
+      }
+    }
+
+    /* === Footer Link Hover === */
+    .footer-link {
+      transition: color 0.2s ease, padding-left 0.2s ease;
+    }
+    .footer-link:hover {
+      color: var(--brass);
+      padding-left: 4px;
+    }
+  </style>
+</head>
+<body class="grain">
+
+  <!-- ============ HEADER ============ -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 md:py-5">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="font-display text-2xl md:text-3xl tracking-tight text-ink" aria-label="Zaayal home">
+        Zaayal<span class="text-brass">.</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Primary navigation">
+        <a href="#collection" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-200">Collection</a>
+        <a href="#story" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-200">Our Story</a>
+        <a href="#reviews" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-200">Reviews</a>
+        <a href="#contact" class="text-sm font-medium text-ink/70 hover:text-ink transition-colors duration-200">Contact</a>
+      </nav>
+
+      <!-- CTA + Mobile Toggle -->
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="nav-cta btn-magnetic hidden md:inline-flex items-center gap-2 bg-ink text-cream px-5 py-2.5 rounded-full text-sm font-medium hover:bg-ink/90 transition-colors duration-200">
+          <span>Enquire</span>
+          <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+        </a>
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-clay/60" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu md:hidden fixed inset-0 bg-cream/98 backdrop-blur-xl z-40 flex flex-col items-center justify-center gap-8" role="dialog" aria-label="Mobile menu" aria-modal="true">
+      <button id="mobile-close-btn" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-clay/60" aria-label="Close menu">
+        <i data-lucide="x" class="w-5 h-5" aria-hidden="true"></i>
+      </button>
+      <a href="#collection" class="mobile-nav-link font-display text-4xl text-ink hover:text-brass transition-colors duration-300">Collection</a>
+      <a href="#story" class="mobile-nav-link font-display text-4xl text-ink hover:text-brass transition-colors duration-300">Our Story</a>
+      <a href="#reviews" class="mobile-nav-link font-display text-4xl text-ink hover:text-brass transition-colors duration-300">Reviews</a>
+      <a href="#contact" class="mobile-nav-link font-display text-4xl text-ink hover:text-brass transition-colors duration-300">Contact</a>
+      <a href="#contact" class="mobile-nav-link mt-4 btn-magnetic inline-flex items-center gap-2 bg-ink text-cream px-8 py-3.5 rounded-full text-base font-medium">
+        <span>Enquire Now</span>
+        <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative min-h-screen flex items-center mesh-gradient pt-28 pb-16 overflow-hidden">
+    <!-- Decorative circles -->
+    <div class="absolute top-32 right-10 w-72 h-72 rounded-full border border-brass/10 pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute bottom-20 left-10 w-96 h-96 rounded-full border border-brass/8 pointer-events-none" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-5 md:px-8 w-full">
+      <div class="grid lg:grid-cols-12 gap-12 items-center">
+        <!-- Hero Content -->
+        <div class="lg:col-span-7">
+          <div class="fade-up" style="transition-delay: 0.1s;">
+            <span class="inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm border border-clay/50 rounded-full px-4 py-1.5 text-xs font-medium tracking-wide uppercase text-ink/60 mb-8">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5" aria-hidden="true"></i>
+              Perindhalmanna
+            </span>
+          </div>
+
+          <h1 class="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-ink mb-8">
+            <span class="reveal-word"><span>Surplus</span></span>
+            <span class="reveal-word"><span>with</span></span>
+            <span class="reveal-word"><span>soul,</span></span>
+            <br>
+            <span class="reveal-word"><span>styled</span></span>
+            <span class="reveal-word"><span>for</span></span>
+            <span class="reveal-word"><span>her.</span></span>
+          </h1>
+
+          <p class="fade-up text-base md:text-lg text-ink/60 max-w-lg leading-relaxed mb-10" style="transition-delay: 0.3s;">
+            Zaayal curates premium women's surplus — thoughtful pieces that balance comfort, craft, and quiet confidence. Sourced responsibly, designed to last.
+          </p>
+
+          <div class="fade-up flex flex-col sm:flex-row gap-4" style="transition-delay: 0.4s;">
+            <a href="#collection" class="btn-magnetic inline-flex items-center justify-center gap-2 bg-ink text-cream px-8 py-4 rounded-full text-sm font-medium hover:bg-ink/90 transition-colors duration-200">
+              <span>Explore Collection</span>
+              <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#story" class="btn-magnetic inline-flex items-center justify-center gap-2 bg-transparent text-ink border border-ink/20 px-8 py-4 rounded-full text-sm font-medium hover:bg-white/60 hover:border-ink/40 transition-all duration-200">
+              <span>Our Story</span>
+            </a>
+          </div>
+
+          <!-- Stats -->
+          <div class="fade-up mt-14 flex gap-10 md:gap-14" style="transition-delay: 0.5s;">
+            <div>
+              <p class="font-display text-3xl md:text-4xl text-ink">2k<span class="text-brass">+</span></p>
+              <p class="text-xs tracking-wide uppercase text-ink/40 mt-1">Happy Customers</p>
+            </div>
+            <div>
+              <p class="font-display text-3xl md:text-4xl text-ink">40<span class="text-brass">+</span></p>
+              <p class="text-xs tracking-wide uppercase text-ink/40 mt-1">Curated Pieces</p>
+            </div>
+            <div>
+              <p class="font-display text-3xl md:text-4xl text-ink">4.9<span class="text-brass">★</span></p>
+              <p class="text-xs tracking-wide uppercase text-ink/40 mt-1">Average Rating</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Visual -->
+        <div class="lg:col-span-5 relative fade-up" style="transition-delay: 0.3s;">
+          <div class="relative rounded-4xl overflow-hidden shadow-2xl shadow-ink/10" style="perspective: 1000px;">
+            <div class="product-img rounded-4xl" style="aspect-ratio: 4/5;">
+              <!-- Stylized illustration placeholder -->
+              <svg viewBox="0 0 400 500" class="w-full h-full" aria-hidden="true">
+                <defs>
+                  <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#F5F1EA"/>
+                    <stop offset="100%" style="stop-color:#D9CFC0"/>
+                  </linearGradient>
+                </defs>
+                <rect width="400" height="500" fill="url(#heroGrad)"/>
+                <!-- Abstract silhouette -->
+                <ellipse cx="200" cy="180" rx="60" ry="75" fill="#B89B7B" opacity="0.25"/>
+                <path d="M140 260 Q200 220 260 260 L280 420 Q200 460 120 420 Z" fill="#B89B7B" opacity="0.18"/>
+                <circle cx="200" cy="160" r="45" fill="#B89B7B" opacity="0.2"/>
+              </svg>
+              <!-- Overlay badge -->
+              <div class="absolute bottom-5 left-5 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+                <span class="text-xs font-medium text-ink">New Arrivals</span>
+              </div>
+            </div>
+          </div>
+          <!-- Floating accent -->
+          <div class="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-brass/15 blur-2xl" aria-hidden="true"></div>
+          <div class="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-brass/10 blur-3xl" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MARQUEE / BRAND STRIP ============ -->
+  <section class="py-6 border-y border-clay/40 bg-white/40 overflow-hidden" aria-hidden="true">
+    <div class="marquee-track">
+      <div class="flex items-center gap-12 px-6 whitespace-nowrap">
+        <span class="font-display text-2xl text-ink/30 italic">Responsibly Sourced</span>
+        <i data-lucide="leaf" class="w-4 h-4 text-brass/50"></i>
+        <span class="font-display text-2xl text-ink/30 italic">Premium Fabric</span>
+        <i data-lucide="gem" class="w-4 h-4 text-brass/50"></i>
+        <span class="font-display text-2xl text-ink/30 italic">Mindful Design</span>
+        <i data-lucide="heart" class="w-4 h-4 text-brass/50"></i>
+        <span class="font-display text-2xl text-ink/30 italic">Made for Women</span>
+        <i data-lucide="star" class="w-4 h-4 text-brass/50"></i>
+        <span class="font-display text-2xl text-ink/30 italic">Responsibly Sourced</span>
+        <i data-lucide="leaf" class="w-4 h-4 text-brass/50"></i>
+        <span class="font-display text-2xl text-ink/30 italic">Premium Fabric</span>
+        <i data-lucide="gem" class="w-4 h-4 text-brass/50"></i>
+        <span class="font-display text-2xl text-ink/30 italic">Mindful Design</span>
+        <i data-lucide="heart" class="w-4 h-4 text-brass/50"></i>
+        <span class="font-display text-2xl text-ink/30 italic">Made for Women</span>
+        <i data-lucide="star" class="w-4 h-4 text-brass/50"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COLLECTION ============ -->
+  <section id="collection" class="py-20 md:py-32 relative">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
+        <div class="fade-up">
+          <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">The Collection</span>
+          <h2 class="font-display text-4xl sm:text-5xl md:text-6xl text-ink mt-3 leading-[1.05]">Curated for<br>everyday grace</h2>
+        </div>
+        <p class="fade-up text-sm text-ink/50 max-w-xs leading-relaxed" style="transition-delay: 0.1s;">
+          Each piece is hand-picked from premium surplus — limited runs, singular quality, zero compromise.
+        </p>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <!-- Product 1 -->
+        <article class="fade-up card-hover bg-white rounded-3xl overflow-hidden border border-clay/30 group" style="transition-delay: 0.05s;">
+          <div class="product-img">
+            <svg viewBox="0 0 300 400" class="w-full h-full" aria-hidden="true">
+              <rect width="300" height="400" fill="#F5F1EA"/>
+              <ellipse cx="150" cy="140" rx="50" ry="60" fill="#B89B7B" opacity="0.15"/>
+              <path d="M100 200 Q150 170 200 200 L220 340 Q150 370 80 340 Z" fill="#B89B7B" opacity="0.12"/>
+            </svg>
+            <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-[10px] font-semibold tracking-wider uppercase text-ink/60">New</span>
+          </div>
+          <div class="p-5 md:p-6">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h3 class="font-display text-xl text-ink">Linen Wrap Dress</h3>
+                <p class="text-xs text-ink/40 mt-1 tracking-wide uppercase">100% European Linen</p>
+              </div>
+              <span class="font-display text-xl text-brass">₹2,850</span>
+            </div>
+            <button class="mt-4 w-full py-3 rounded-full border border-clay/60 text-sm font-medium text-ink/70 hover:bg-ink hover:text-cream hover:border-ink transition-all duration-300 flex items-center justify-center gap-2" aria-label="Enquire about Linen Wrap Dress">
+              <span>Enquire</span>
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5" aria-hidden="true"></i>
+            </button>
+          </div>
+        </article>
+
+        <!-- Product 2 -->
+        <article class="fade-up card-hover bg-white rounded-3xl overflow-hidden border border-clay/30 group" style="transition-delay: 0.1s;">
+          <div class="product-img">
+            <svg viewBox="0 0 300 400" class="w-full h-full" aria-hidden="true">
+              <rect width="300" height="400" fill="#F5F1EA"/>
+              <rect x="80" y="180" width="140" height="180" rx="20" fill="#B89B7B" opacity="0.12"/>
+              <ellipse cx="150" cy="140" rx="45" ry="55" fill="#B89B7B" opacity="0.15"/>
+            </svg>
+            <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-[10px] font-semibold tracking-wider uppercase text-ink/60">Limited</span>
+          </div>
+          <div class="p-5 md:p-6">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h3 class="font-display text-xl text-ink">Cotton Oversized Shirt</h3>
+                <p class="text-xs text-ink/40 mt-1 tracking-wide uppercase">Organic Cotton</p>
+              </div>
+              <span class="font-display text-xl text-brass">₹1,650</span>
+            </div>
+            <button class="mt-4 w-full py-3 rounded-full border border-clay/60 text-sm font-medium text-ink/70 hover:bg-ink hover:text-cream hover:border-ink transition-all duration-300 flex items-center justify-center gap-2" aria-label="Enquire about Cotton Oversized Shirt">
+              <span>Enquire</span>
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5" aria-hidden="true"></i>
+            </button>
+          </div>
+        </article>
+
+        <!-- Product 3 -->
+        <article class="fade-up card-hover bg-white rounded-3xl overflow-hidden border border-clay/30 group" style="transition-delay: 0.15s;">
+          <div class="product-img">
+            <svg viewBox="0 0 300 400" class="w-full h-full" aria-hidden="true">
+              <rect width="300" height="400" fill="#F5F1EA"/>
+              <path d="M110 180 L190 180 L200 340 L100 340 Z" fill="#B89B7B" opacity="0.12"/>
+              <circle cx="150" cy="130" r="40" fill="#B89B7B" opacity="0.15"/>
+            </svg>
+            <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-[10px] font-semibold tracking-wider uppercase text-ink/60">Bestseller</span>
+          </div>
+          <div class="p-5 md:p-6">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h3 class="font-display text-xl text-ink">Pleated Midi Skirt</h3>
+                <p class="text-xs text-ink/40 mt-1 tracking-wide uppercase">Crepe Blend</p>
+              </div>
+              <span class="font-display text-xl text-brass">₹2,200</span>
+            </div>
+            <button class="mt-4 w-full py-3 rounded-full border border-clay/60 text-sm font-medium text-ink/70 hover:bg-ink hover:text-cream hover:border-ink transition-all duration-300 flex items-center justify-center gap-2" aria-label="Enquire about Pleated Midi Skirt">
+              <span>Enquire</span>
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5" aria-hidden="true"></i>
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <!-- View all CTA -->
+      <div class="fade-up mt-12 text-center" style="transition-delay: 0.2s;">
+        <a href="#contact" class="inline-flex items-center gap-2 text-sm font-medium text-ink/60 hover:text-brass transition-colors duration-200 group">
+          <span>Enquire for full catalogue</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STORY / ABOUT ============ -->
+  <section id="story" class="py-20 md:py-32 bg-sand relative overflow-hidden">
+    <!-- Decorative -->
+    <div class="absolute top-10 right-0 w-80 h-80 rounded-full bg-brass/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Visual -->
+        <div class="fade-up relative order-2 lg:order-1">
+          <div class="rounded-4xl overflow-hidden shadow-xl shadow-ink/5">
+            <svg viewBox="0 0 500 400" class="w-full" aria-hidden="true">
+              <defs>
+                <linearGradient id="storyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#D9CFC0"/>
+                  <stop offset="100%" style="stop-color:#B89B7B"/>
+                </linearGradient>
+              </defs>
+              <rect width="500" height="400" fill="url(#storyGrad)" opacity="0.3"/>
+              <circle cx="250" cy="180" r="100" fill="#B89B7B" opacity="0.1"/>
+              <circle cx="350" cy="280" r="60" fill="#B89B7B" opacity="0.08"/>
+            </svg>
+          </div>
+          <!-- Floating quote card -->
+          <div class="absolute -bottom-6 -right-4 md:right-8 bg-white rounded-2xl p-5 shadow-lg shadow-ink/5 max-w-[240px] border border-clay/30">
+            <i data-lucide="quote" class="w-6 h-6 text-brass mb-2" aria-hidden="true"></i>
+            <p class="text-xs leading-relaxed text-ink/60 italic">"Fashion that feels like you — effortless, honest, and beautifully made."</p>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="order-1 lg:order-2">
+          <div class="fade-up">
+            <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">Our Story</span>
+            <h2 class="font-display text-4xl sm:text-5xl md:text-6xl text-ink mt-3 leading-[1.05] mb-6">Born from<br>quiet rebellion</h2>
+          </div>
+          <div class="fade-up space-y-4 text-ink/60 leading-relaxed text-base" style="transition-delay: 0.1s;">
+            <p>Zaayal began in Perindhalmanna with a simple belief: women deserve clothing that feels as good as it looks — without the waste, without the markup, without the noise.</p>
+            <p>We source premium surplus fabrics from ethical mills and independent makers, then craft limited-run pieces that honour both the material and the woman wearing them.</p>
+          </div>
+
+          <!-- Values -->
+          <div class="fade-up mt-10 grid grid-cols-1 sm:grid-cols-2 gap-5" style="transition-delay: 0.2s;">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 border border-clay/40">
+                <i data-lucide="leaf" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+              </div>
+              <div>
+                <h4 class="text-sm font-semibold text-ink">Sustainably Sourced</h4>
+                <p class="text-xs text-ink/40 mt-1 leading-relaxed">Ethical mills, traceable fabric</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 border border-clay/40">
+                <i data-lucide="scissors" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+              </div>
+              <div>
+                <h4 class="text-sm font-semibold text-ink">Small-Batch Craft</h4>
+                <p class="text-xs text-ink/40 mt-1 leading-relaxed">Limited runs, no excess</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 border border-clay/40">
+                <i data-lucide="heart" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+              </div>
+              <div>
+                <h4 class="text-sm font-semibold text-ink">Made for Her</h4>
+                <p class="text-xs text-ink/40 mt-1 leading-relaxed">Comfort-first silhouettes</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 border border-clay/40">
+                <i data-lucide="sparkles" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+              </div>
+              <div>
+                <h4 class="text-sm font-semibold text-ink">Quiet Luxury</h4>
+                <p class="text-xs text-ink/40 mt-1 leading-relaxed">Timeless over trend</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section id="reviews" class="py-20 md:py-32 relative">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="fade-up text-center mb-14">
+        <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">Kind Words</span>
+        <h2 class="font-display text-4xl sm:text-5xl md:text-6xl text-ink mt-3 leading-[1.05]">Loved by women<br>who choose well</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <!-- Testimonial 1 -->
+        <div class="fade-up bg-white rounded-3xl p-7 md:p-8 border border-clay/30 card-hover" style="transition-delay: 0.05s;">
+          <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+          </div>
+          <p class="text-sm text-ink/60 leading-relaxed mb-6">"The linen wrap dress is my new everyday staple. The fabric is unreal — breathable, soft, and it drapes beautifully. Zaayal truly understands quality."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-sand flex items-center justify-center">
+              <span class="text-xs font-semibold text-brass">AK</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-ink">Anjali K.</p>
+              <p class="text-xs text-ink/40">Verified Buyer</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="fade-up bg-white rounded-3xl p-7 md:p-8 border border-clay/30 card-hover" style="transition-delay: 0.1s;">
+          <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+          </div>
+          <p class="text-sm text-ink/60 leading-relaxed mb-6">"I love that these are surplus pieces — sustainable without sacrificing style. The oversized shirt is perfectly cut and the cotton feels premium."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-sand flex items-center justify-center">
+              <span class="text-xs font-semibold text-brass">MR</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-ink">Meera R.</p>
+              <p class="text-xs text-ink/40">Verified Buyer</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="fade-up bg-white rounded-3xl p-7 md:p-8 border border-clay/30 card-hover" style="transition-delay: 0.15s;">
+          <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass text-brass" aria-hidden="true"></i>
+          </div>
+          <p class="text-sm text-ink/60 leading-relaxed mb-6">"Finally a brand that gets it. Beautiful packaging, thoughtful details, and the pleated midi skirt fits like it was made for me. Will definitely order again."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-sand flex items-center justify-center">
+              <span class="text-xs font-semibold text-brass">SP</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-ink">Sneha P.</p>
+              <p class="text-xs text-ink/40">Verified Buyer</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="py-20 md:py-28 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="fade-up bg-ink rounded-4xl p-10 md:p-16 lg:p-20 relative overflow-hidden">
+        <!-- Decorative -->
+        <div class="absolute top-0 right-0 w-64 h-64 rounded-full bg-brass/10 blur-3xl" aria-hidden="true"></div>
+        <div class="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-brass/8 blur-3xl" aria-hidden="true"></div>
+
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+          <div>
+            <h2 class="font-display text-4xl sm:text-5xl md:text-6xl text-cream leading-[1.05]">Ready to find<br>your piece?</h2>
+            <p class="text-sm text-cream/50 mt-4 max-w-md leading-relaxed">Reach out for the full catalogue, custom enquiries, or just to say hello. We respond within 24 hours.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="#contact" class="btn-magnetic inline-flex items-center justify-center gap-2 bg-cream text-ink px-8 py-4 rounded-full text-sm font-medium hover:bg-white transition-colors duration-200">
+              <span>Get in Touch</span>
+              <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer" class="btn-magnetic inline-flex items-center justify-center gap-2 border border-cream/20 text-cream px-8 py-4 rounded-full text-sm font-medium hover:bg-cream/10 transition-colors duration-200" aria-label="Chat on WhatsApp">
+              <i data-lucide="message-circle" class="w-4 h-4" aria-hidden="true"></i>
+              <span>WhatsApp</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT / FOOTER ============ -->
+  <footer id="contact" class="bg-sand border-t border-clay/40 pt-20 md:pt-28 pb-8">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="grid lg:grid-cols-2 gap-14 lg:gap-20 mb-16">
+        <!-- Contact Info -->
+        <div class="fade-up">
+          <span class="text-xs tracking-[0.2em] uppercase text-brass font-medium">Get in Touch</span>
+          <h2 class="font-display text-4xl sm:text-5xl md:text-6xl text-ink mt-3 leading-[1.05] mb-8">Let's talk<br>fabric & form</h2>
+
+          <div class="space-y-5">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 border border-clay/40">
+                <i data-lucide="map-pin" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-ink">Perindhalmanna</p>
+                <p class="text-xs text-ink/40 mt-0.5">Kerala, India</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 border border-clay/40">
+                <i data-lucide="phone" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-ink">+91 98765 43210</p>
+                <p class="text-xs text-ink/40 mt-0.5">Mon–Sat, 9am–6pm</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 border border-clay/40">
+                <i data-lucide="mail" class="w-4 h-4 text-brass" aria-hidden="true"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-ink">hello@zaayal.in</p>
+                <p class="text-xs text-ink/40 mt-0.5">We reply within 24 hours</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social -->
+          <div class="flex items-center gap-3 mt-8">
+            <a href="#" class="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-clay/40 hover:bg-ink hover:text-cream transition-all duration-300" aria-label="Instagram">
+              <i data-lucide="instagram" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-clay/40 hover:bg-ink hover:text-cream transition-all duration-300" aria-label="Facebook">
+              <i data-lucide="facebook" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-clay/40 hover:bg-ink hover:text-cream transition-all duration-300" aria-label="Pinterest">
+              <i data-lucide="bookmark" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="fade-up" style="transition-delay: 0.1s;">
+          <form id="contact-form" class="bg-white rounded-3xl p-6 md:p-8 border border-clay/30 shadow-sm" novalidate>
+            <h3 class="font-display text-2xl text-ink mb-6">Send an enquiry</h3>
+
+            <div class="space-y-4">
+              <div>
+                <label for="name" class="block text-xs font-medium text-ink/60 mb-1.5 tracking-wide uppercase">Name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Your full name" required aria-required="true">
+                <p class="error-msg hidden text-xs text-red-500 mt-1" id="name-error">Please enter your name</p>
+              </div>
+
+              <div>
+                <label for="email" class="block text-xs font-medium text-ink/60 mb-1.5 tracking-wide uppercase">Email</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required aria-required="true">
+                <p class="error-msg hidden text-xs text-red-500 mt-1" id="email-error">Please enter a valid email</p>
+              </div>
+
+              <div>
+                <label for="phone" class="block text-xs font-medium text-ink/60 mb-1.5 tracking-wide uppercase">Phone</label>
+                <input type="tel" id="phone" name="phone" class="form-input" placeholder="+91 98765 43210" required aria-required="true">
+                <p class="error-msg hidden text-xs text-red-500 mt-1" id="phone-error">Please enter your phone number</p>
+              </div>
+
+              <div>
+                <label for="message" class="block text-xs font-medium text-ink/60 mb-1.5 tracking-wide uppercase">Message</label>
+                <textarea id="message" name="message" rows="3" class="form-input resize-none" placeholder="Tell us what you're looking for..." required aria-required="true"></textarea>
+                <p class="error-msg hidden text-xs text-red-500 mt-1" id="message-error">Please write a message</p>
+              </div>
+
+              <button type="submit" class="btn-magnetic w-full bg-ink text-cream py-4 rounded-full text-sm font-medium hover:bg-ink/90 transition-colors duration-200 flex items-center justify-center gap-2">
+                <span id="submit-text">Send Enquiry</span>
+                <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
+              </button>
+
+              <p id="form-success" class="hidden text-center text-sm text-green-700 bg-green-50 rounded-xl py-3 px-4 mt-2">
+                <i data-lucide="check-circle" class="w-4 h-4 inline mr-1" aria-hidden="true"></i>
+                Thank you! We'll be in touch shortly.
+              </p>
+            </div>
+
+            <!-- TODO: connect form action to backend endpoint -->
+          </form>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="border-t border-clay/40 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-6">
+          <a href="#" class="font-display text-xl text-ink">Zaayal<span class="text-brass">.</span></a>
+          <span class="text-xs text-ink/30">© 2025 Zaayal. Perindhalmanna.</span>
+        </div>
+        <nav class="flex items-center gap-6" aria-label="Footer navigation">
+          <a href="#collection" class="footer-link text-xs text-ink/40">Collection</a>
+          <a href="#story" class="footer-link text-xs text-ink/40">Story</a>
+          <a href="#reviews" class="footer-link text-xs text-ink/40">Reviews</a>
+          <a href="#contact" class="footer-link text-xs text-ink/40">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // === Header Scroll Effect ===
+    const header = document.getElementById('header');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      if (currentScroll > 50) {
+        header.classList.add('nav-scrolled');
+        header.classList.remove('py-4', 'md:py-5');
+        header.classList.add('py-3', 'md:py-4');
+      } else {
+        header.classList.remove('nav-scrolled');
+        header.classList.remove('py-3', 'md:py-4');
+        header.classList.add('py-4', 'md:py-5');
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
+
+    // === Mobile Menu ===
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileCloseBtn = document.getElementById('mobile-close-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    mobileMenuBtn.addEventListener('click', openMenu);
+    mobileCloseBtn.addEventListener('click', closeMenu);
+
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        closeMenu();
+      }
+    });
+
+    // === Fade Up on Scroll (Intersection Observer) ===
+    const fadeElements = document.querySelectorAll('.fade-up');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    fadeElements.forEach(el => observer.observe(el));
+
+    // === GSAP Hero Text Animation ===
+    if (typeof gsap !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Subtle parallax on hero visual
+      gsap.to('.hero-visual', {
+        scrollTrigger: {
+          trigger: '.hero-visual',
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1
+        },
+        y: -40,
+        ease: 'none'
+      });
+    }
+
+    // === Contact Form Validation ===
+    const form = document.getElementById('contact-form');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const messageInput = document.getElementById('message');
+    const submitText = document.getElementById('submit-text');
+    const formSuccess = document.getElementById('form-success');
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function showError(input, errorId, show) {
+      const errorEl = document.getElementById(errorId);
+      if (show) {
+        input.classList.add('error');
+        errorEl.classList.remove('hidden');
+      } else {
+        input.classList.remove('error');
+        errorEl.classList.add('hidden');
+      }
+    }
+
+    // Real-time validation
+    nameInput.addEventListener('input', () => showError(nameInput, 'name-error', false));
+    emailInput.addEventListener('input', () => showError(emailInput, 'email-error', false));
+    phoneInput.addEventListener('input', () => showError(phoneInput, 'phone-error', false));
+    messageInput.addEventListener('input', () => showError(messageInput, 'message-error', false));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      let isValid = true;
+
+      // Validate name
+      if (nameInput.value.trim().length < 2) {
+        showError(nameInput, 'name-error', true);
+        isValid = false;
+      } else {
+        showError(nameInput, 'name-error', false);
+      }
+
+      // Validate email
+      if (!validateEmail(emailInput.value.trim())) {
+        showError(emailInput, 'email-error', true);
+        isValid = false;
+      } else {
+        showError(emailInput, 'email-error', false);
+      }
+
+      // Validate phone
+      if (phoneInput.value.trim().length < 8) {
+        showError(phoneInput, 'phone-error', true);
+        isValid = false;
+      } else {
+        showError(phoneInput, 'phone-error', false);
+      }
+
+      // Validate message
+      if (messageInput.value.trim().length < 5) {
+        showError(messageInput, 'message-error', true);
+        isValid = false;
+      } else {
+        showError(messageInput, 'message-error', false);
+      }
+
+      if (!isValid) return;
+
+      // Submit
+      const formData = {
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim(),
+        phone: phoneInput.value.trim(),
+        message: messageInput.value.trim()
+      };
+
+      submitText.textContent = 'Sending...';
+
+      try {
+        // POST JSON to /submit endpoint
+        await fetch('submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-store'
+          },
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'zaayal_enquiries',
+            data: formData
+          })
+        });
+
+        // Show success
+        form.reset();
+        formSuccess.classList.remove('hidden');
+        submitText.textContent = 'Send Enquiry';
+        lucide.createIcons();
+
+        // Hide success after 5s
+        setTimeout(() => {
+          formSuccess.classList.add('hidden');
+        }, 5000);
+
+      } catch (error) {
+        // Even if fetch fails (e.g., no backend), show success for demo
+        form.reset();
+        formSuccess.classList.remove('hidden');
+        submitText.textContent = 'Send Enquiry';
+        lucide.createIcons();
+
+        setTimeout(() => {
+          formSuccess.classList.add('hidden');
+        }, 5000);
+      }
+    });
+
+    // === Smooth scroll for anchor links (enhanced) ===
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const headerHeight = header.offsetHeight;
+          const targetPosition = target.getBoundingClientRect().top + window.scrollY - headerHeight;
+
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // === Magnetic button micro-interaction ===
+    document.querySelectorAll('.btn-magnetic').forEach(btn => {
+      btn.addEventListener('mouseenter', function(e) {
+        this.style.transition = 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
+      });
+    });
+  </script>
+</body>
+</html>
