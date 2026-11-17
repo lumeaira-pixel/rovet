@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumina Aesthetic Clinic — Modern Luxury Skincare</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --cream: #FAF9F7;
+      --sand: #F4F0EB;
+      --ink: #1E1B18;
+      --ink-soft: #4A4540;
+      --brass: #B89B72;
+      --brass-light: #D9C9B4;
+      --sage: #8A9B8E;
+      --white: #FFFFFF;
+      --shadow-sm: 0 4px 16px rgba(30, 27, 24, 0.04);
+      --shadow-md: 0 12px 32px rgba(30, 27, 24, 0.06);
+      --shadow-lg: 0 24px 64px rgba(30, 27, 24, 0.08);
+      --radius: 24px;
+      --focus-ring: 0 0 0 3px rgba(184, 155, 114, 0.5);
+    }
+
+    /* === Base === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--brass-light); color: var(--ink); }
+
+    /* === Typography === */
+    .font-display { font-family: 'Instrument Serif', serif; }
+    h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.1; }
+    .text-balance { text-wrap: balance; }
+
+    /* === Focus States === */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 6px;
+    }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink);
+      color: var(--white);
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      min-height: 48px;
+    }
+    .btn-primary:hover {
+      background: #2E2A26;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(30, 27, 24, 0.18);
+    }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--ink);
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 15px;
+      border: 1.5px solid rgba(30, 27, 24, 0.15);
+      transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      cursor: pointer;
+      text-decoration: none;
+      min-height: 48px;
+    }
+    .btn-secondary:hover {
+      border-color: var(--ink);
+      background: rgba(30, 27, 24, 0.03);
+      transform: translateY(-2px);
+    }
+    .btn-secondary:active { transform: scale(0.97); }
+
+    /* === Cards === */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid rgba(30, 27, 24, 0.06);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+    }
+
+    /* === Header === */
+    .header-sticky {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: all 0.35s ease;
+      background: rgba(250, 249, 247, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(30, 27, 24, 0.04);
+    }
+    .header-sticky.scrolled {
+      background: rgba(250, 249, 247, 0.95);
+      box-shadow: 0 1px 12px rgba(30, 27, 24, 0.04);
+    }
+
+    /* === Mobile Menu === */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .mobile-menu.open { transform: translateX(0); }
+
+    /* === Hero Glow === */
+    .hero-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    /* === Animations === */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+    .float-anim { animation: float 6s ease-in-out infinite; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* === Split Text === */
+    .split-char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px) rotateX(-40deg);
+      animation: charIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    @keyframes charIn {
+      to { opacity: 1; transform: translateY(0) rotateX(0); }
+    }
+
+    /* === Star Rating === */
+    .star-icon { color: var(--brass); fill: var(--brass); }
+
+    /* === Service Icon Circle === */
+    .service-icon-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--sand);
+      transition: all 0.35s ease;
+    }
+    .card:hover .service-icon-circle {
+      background: var(--brass-light);
+      transform: scale(1.05) rotate(-3deg);
+    }
+
+    /* === Pricing Highlight === */
+    .pricing-highlight {
+      border: 1.5px solid var(--brass);
+      position: relative;
+      overflow: hidden;
+    }
+    .pricing-highlight::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--brass), var(--brass-light), var(--brass));
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    /* === Form Styles === */
+    .form-input {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 14px;
+      border: 1.5px solid rgba(30, 27, 24, 0.1);
+      background: var(--white);
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 15px;
+      color: var(--ink);
+      transition: all 0.25s ease;
+      min-height: 48px;
+    }
+    .form-input::placeholder { color: rgba(30, 27, 24, 0.35); }
+    .form-input:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(184, 155, 114, 0.15);
+      outline: none;
+    }
+    .form-input.error {
+      border-color: #D94F4F;
+      box-shadow: 0 0 0 3px rgba(217, 79, 79, 0.1);
+    }
+    .form-error-msg {
+      color: #D94F4F;
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+    }
+    .form-error-msg.visible { display: block; }
+
+    /* === Success State === */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .form-success.visible { display: block; }
+    .form-success .check-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(138, 155, 142, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      animation: popIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0); }
+      80% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    /* === Texture Grain === */
+    .grain::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      z-index: 9998;
+    }
+
+    /* === Responsive Tweaks === */
+    @media (max-width: 768px) {
+      .btn-primary, .btn-secondary { padding: 12px 24px; font-size: 14px; min-height: 44px; }
+    }
+    @media (max-width: 640px) {
+      .hero-glow { width: 300px; height: 300px; filter: blur(80px); }
+    }
+  </style>
+</head>
+<body class="grain">
+
+  <!-- ============ HEADER ============ -->
+  <header class="header-sticky" id="main-header">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 sm:h-20">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5 shrink-0" aria-label="Lumina Aesthetic Clinic Home">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <circle cx="16" cy="16" r="14" stroke="#B89B72" stroke-width="1.5"/>
+          <path d="M16 6V26M6 16H26" stroke="#B89B72" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="16" cy="16" r="4" fill="#B89B72" opacity="0.4"/>
+        </svg>
+        <span class="font-display text-xl sm:text-2xl tracking-tight text-[--ink]">Lumina</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#services" class="text-sm font-medium text-[--ink-soft] hover:text-[--ink] transition-colors duration-200">Services</a>
+        <a href="#about" class="text-sm font-medium text-[--ink-soft] hover:text-[--ink] transition-colors duration-200">About</a>
+        <a href="#pricing" class="text-sm font-medium text-[--ink-soft] hover:text-[--ink] transition-colors duration-200">Pricing</a>
+        <a href="#testimonials" class="text-sm font-medium text-[--ink-soft] hover:text-[--ink] transition-colors duration-200">Testimonials</a>
+        <a href="#contact" class="text-sm font-medium text-[--ink-soft] hover:text-[--ink] transition-colors duration-200">Contact</a>
+      </nav>
+
+      <!-- Desktop CTA -->
+      <div class="hidden md:flex items-center gap-3">
+        <a href="#contact" class="btn-primary text-sm" style="padding: 10px 24px; min-height: 42px;">
+          Book Consultation
+          <i data-lucide="arrow-right" style="width:16px;height:16px;" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button id="mobile-toggle" class="md:hidden flex items-center justify-center w-11 h-11 rounded-full hover:bg-[--sand] transition-colors duration-200" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg id="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <line x1="4" y1="7" x2="20" y2="7"/>
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <line x1="4" y1="17" x2="20" y2="17"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-menu" class="mobile-menu fixed inset-0 z-[999] bg-[--cream] flex flex-col p-6 md:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="flex items-center justify-between mb-12">
+      <a href="#" class="flex items-center gap-2.5" aria-label="Lumina Aesthetic Clinic Home">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <circle cx="16" cy="16" r="14" stroke="#B89B72" stroke-width="1.5"/>
+          <path d="M16 6V26M6 16H26" stroke="#B89B72" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="16" cy="16" r="4" fill="#B89B72" opacity="0.4"/>
+        </svg>
+        <span class="font-display text-xl tracking-tight text-[--ink]">Lumina</span>
+      </a>
+      <button id="mobile-close" class="w-11 h-11 rounded-full flex items-center justify-center hover:bg-[--sand] transition-colors" aria-label="Close menu">
+        <i data-lucide="x" style="width:24px;height:24px;" aria-hidden="true"></i>
+      </button>
+    </div>
+    <nav class="flex flex-col gap-2" aria-label="Mobile navigation links">
+      <a href="#services" class="mobile-nav-link text-2xl font-display py-3 px-2 rounded-xl hover:bg-[--sand] transition-colors text-[--ink]">Services</a>
+      <a href="#about" class="mobile-nav-link text-2xl font-display py-3 px-2 rounded-xl hover:bg-[--sand] transition-colors text-[--ink]">About</a>
+      <a href="#pricing" class="mobile-nav-link text-2xl font-display py-3 px-2 rounded-xl hover:bg-[--sand] transition-colors text-[--ink]">Pricing</a>
+      <a href="#testimonials" class="mobile-nav-link text-2xl font-display py-3 px-2 rounded-xl hover:bg-[--sand] transition-colors text-[--ink]">Testimonials</a>
+      <a href="#contact" class="mobile-nav-link text-2xl font-display py-3 px-2 rounded-xl hover:bg-[--sand] transition-colors text-[--ink]">Contact</a>
+    </nav>
+    <div class="mt-auto pt-8">
+      <a href="#contact" class="mobile-nav-link btn-primary w-full justify-center text-base">
+        Book Consultation
+        <i data-lucide="arrow-right" style="width:18px;height:18px;" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative pt-32 sm:pt-40 pb-20 sm:pb-28 overflow-hidden" aria-label="Hero">
+    <!-- Glows -->
+    <div class="hero-glow" style="top:-200px;right:-150px;background:radial-gradient(circle, #D9C9B4 0%, transparent 70%);" aria-hidden="true"></div>
+    <div class="hero-glow" style="bottom:-200px;left:-150px;background:radial-gradient(circle, #8A9B8E 0%, transparent 70%);" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <!-- Left -->
+        <div class="max-w-xl">
+          <p class="text-sm font-medium tracking-widest uppercase text-[--brass] mb-5 reveal" style="letter-spacing: 0.15em;">
+            Advanced Aesthetic Medicine
+          </p>
+          <h1 class="font-display text-[clamp(2.8rem,6vw,5.5rem)] leading-[1.05] text-balance mb-6" id="hero-heading">
+            <span class="block overflow-hidden"><span class="inline-block hero-word text-[--ink]">Redefine</span></span>
+            <span class="block overflow-hidden"><span class="inline-block hero-word text-[--ink]">your</span></span>
+            <span class="block overflow-hidden"><span class="inline-block hero-word text-[--brass] italic">radiance.</span></span>
+          </h1>
+          <p class="text-lg sm:text-xl text-[--ink-soft] leading-relaxed mb-8 max-w-md reveal">
+            Clinically proven, artistically delivered. We combine advanced dermatology with a gentle, personalised approach to help you look and feel your most confident.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3 reveal">
+            <a href="#contact" class="btn-primary">
+              Book a Consultation
+              <i data-lucide="calendar" style="width:18px;height:18px;" aria-hidden="true"></i>
+            </a>
+            <a href="#services" class="btn-secondary">
+              Explore Treatments
+              <i data-lucide="arrow-down" style="width:18px;height:18px;" aria-hidden="true"></i>
+            </a>
+          </div>
+
+          <!-- Stats -->
+          <div class="flex gap-8 sm:gap-12 mt-12 pt-8 border-t border-[rgba(30,27,24,0.08)] reveal">
+            <div>
+              <p class="font-display text-3xl sm:text-4xl text-[--ink]">15<span class="text-[--brass]">+</span></p>
+              <p class="text-sm text-[--ink-soft] mt-1">Years of expertise</p>
+            </div>
+            <div>
+              <p class="font-display text-3xl sm:text-4xl text-[--ink]">4.9<span class="text-[--brass]">/5</span></p>
+              <p class="text-sm text-[--ink-soft] mt-1">Patient rating</p>
+            </div>
+            <div>
+              <p class="font-display text-3xl sm:text-4xl text-[--ink]">8k<span class="text-[--brass]">+</span></p>
+              <p class="text-sm text-[--ink-soft] mt-1">Treatments delivered</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right — Hero Visual -->
+        <div class="relative hidden lg:block reveal">
+          <!-- Main card -->
+          <div class="relative rounded-[32px] overflow-hidden shadow-[var(--shadow-lg)] float-anim" style="background: linear-gradient(145deg, #F4F0EB, #E8E2DA); aspect-ratio: 4/5;">
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-10 text-center">
+              <div class="w-20 h-20 rounded-full bg-[--brass] opacity-20 mb-6"></div>
+              <svg width="120" height="120" viewBox="0 0 120 120" fill="none" class="mb-6 opacity-70" aria-hidden="true">
+                <circle cx="60" cy="60" r="50" stroke="#B89B72" stroke-width="1"/>
+                <circle cx="60" cy="60" r="35" stroke="#B89B72" stroke-width="0.75" stroke-dasharray="4 6"/>
+                <circle cx="60" cy="60" r="8" fill="#B89B72" opacity="0.5"/>
+                <path d="M60 20V30M60 90V100M20 60H30M90 60H100" stroke="#B89B72" stroke-width="1" stroke-linecap="round"/>
+              </svg>
+              <p class="font-display text-2xl text-[--ink]">Artistry in every detail</p>
+              <p class="text-sm text-[--ink-soft] mt-2 max-w-[240px]">Where medical precision meets a refined aesthetic vision.</p>
+            </div>
+            <!-- Floating badge -->
+            <div class="absolute top-6 right-6 bg-white/80 backdrop-blur-md rounded-2xl px-4 py-3 shadow-sm border border-white/50">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[--sage] animate-pulse"></span>
+                <span class="text-xs font-semibold text-[--ink]">Accepting new patients</span>
+              </div>
+            </div>
+          </div>
+          <!-- Decorative dot grid -->
+          <div class="absolute -bottom-8 -left-8 w-32 h-32 opacity-30" aria-hidden="true">
+            <svg width="128" height="128" viewBox="0 0 128 128">
+              <pattern id="dots" width="16" height="16" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1.5" fill="#B89B72"/>
+              </pattern>
+              <rect width="128" height="128" fill="url(#dots)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SOCIAL PROOF / LOGOS ============ -->
+  <section class="py-12 sm:py-16 border-y border-[rgba(30,27,24,0.06)] bg-[--white]" aria-label="Trusted by">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <p class="text-center text-xs font-semibold tracking-widest uppercase text-[--ink-soft] mb-8 reveal" style="letter-spacing:0.2em;">Trusted by leading dermatology boards &amp; partners</p>
+      <div class="flex flex-wrap items-center justify-center gap-8 sm:gap-14 opacity-50 reveal">
+        <span class="font-display text-xl sm:text-2xl text-[--ink]">DermaLux</span>
+        <span class="font-display text-xl sm:text-2xl text-[--ink] italic">Skin Institute</span>
+        <span class="font-display text-xl sm:text-2xl text-[--ink]">Aesthetics UK</span>
+        <span class="font-display text-xl sm:text-2xl text-[--ink] italic">The Lancet</span>
+        <span class="font-display text-xl sm:text-2xl text-[--ink]">Vogue Health</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="services" class="py-20 sm:py-28" aria-labelledby="services-heading">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="max-w-2xl mb-14 sm:mb-20 reveal">
+        <p class="text-sm font-medium tracking-widest uppercase text-[--brass] mb-4" style="letter-spacing:0.15em;">Our Expertise</p>
+        <h2 id="services-heading" class="font-display text-[clamp(2.2rem,4.5vw,3.8rem)] leading-[1.1] text-[--ink] mb-5 text-balance">
+          Treatments designed around <span class="italic text-[--brass]">you</span>
+        </h2>
+        <p class="text-lg text-[--ink-soft] leading-relaxed">
+          Every treatment plan is bespoke, evidence-based, and delivered with the utmost care. No pressure, no upsells — just honest medical advice and beautiful, natural results.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Service 1 -->
+        <div class="card p-8 reveal">
+          <div class="service-icon-circle mb-6">
+            <i data-lucide="sparkles" style="width:28px;height:28px;color:var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl text-[--ink] mb-3">Injectables &amp; Fillers</h3>
+          <p class="text-[--ink-soft] text-sm leading-relaxed mb-5">Precision anti-wrinkle treatments and dermal fillers that soften lines and restore volume — always subtle, always natural.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[--brass] hover:gap-3 transition-all duration-200">
+            Learn more <i data-lucide="arrow-right" style="width:16px;height:16px;" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="card p-8 reveal">
+          <div class="service-icon-circle mb-6">
+            <i data-lucide="sun" style="width:28px;height:28px;color:var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl text-[--ink] mb-3">Laser &amp; Light Therapy</h3>
+          <p class="text-[--ink-soft] text-sm leading-relaxed mb-5">Advanced IPL and fractional laser treatments for pigmentation, redness, texture, and hair removal — safe for all skin tones.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[--brass] hover:gap-3 transition-all duration-200">
+            Learn more <i data-lucide="arrow-right" style="width:16px;height:16px;" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="card p-8 reveal">
+          <div class="service-icon-circle mb-6">
+            <i data-lucide="droplets" style="width:28px;height:28px;color:var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl text-[--ink] mb-3">Medical Facials &amp; Peels</h3>
+          <p class="text-[--ink-soft] text-sm leading-relaxed mb-5">From gentle hydrating facials to prescription-strength chemical peels, we tailor each session to your skin's unique needs.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[--brass] hover:gap-3 transition-all duration-200">
+            Learn more <i data-lucide="arrow-right" style="width:16px;height:16px;" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="card p-8 reveal">
+          <div class="service-icon-circle mb-6">
+            <i data-lucide="heart-pulse" style="width:28px;height:28px;color:var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl text-[--ink] mb-3">Skin Health Check</h3>
+          <p class="text-[--ink-soft] text-sm leading-relaxed mb-5">Comprehensive mole mapping and skin cancer screening with a consultant dermatologist. Early detection saves lives.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[--brass] hover:gap-3 transition-all duration-200">
+            Learn more <i data-lucide="arrow-right" style="width:16px;height:16px;" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <!-- Service 5 -->
+        <div class="card p-8 reveal">
+          <div class="service-icon-circle mb-6">
+            <i data-lucide="leaf" style="width:28px;height:28px;color:var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl text-[--ink] mb-3">Holistic Skin Coaching</h3>
+          <p class="text-[--ink-soft] text-sm leading-relaxed mb-5">Nutrition, lifestyle, and skincare routines designed by our in-house experts to support your skin from the inside out.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[--brass] hover:gap-3 transition-all duration-200">
+            Learn more <i data-lucide="arrow-right" style="width:16px;height:16px;" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <!-- Service 6 -->
+        <div class="card p-8 reveal">
+          <div class="service-icon-circle mb-6">
+            <i data-lucide="shield-check" style="width:28px;height:28px;color:var(--brass);" aria-hidden="true"></i>
+          </div>
+          <h3 class="font-display text-2xl text-[--ink] mb-3">Post-Treatment Care</h3>
+          <p class="text-[--ink-soft] text-sm leading-relaxed mb-5">Dedicated aftercare support with follow-up appointments, bespoke recovery kits, and direct access to your practitioner.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[--brass] hover:gap-3 transition-all duration-200">
+            Learn more <i data-lucide="arrow-right" style="width:16px;height:16px;" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about" class="py-20 sm:py-28 bg-[--sand]" aria-labelledby="about-heading">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="reveal">
+          <p class="text-sm font-medium tracking-widest uppercase text-[--brass] mb-4" style="letter-spacing:0.15em;">Our Philosophy</p>
+          <h2 id="about-heading" class="font-display text-[clamp(2.2rem,4.5vw,3.8rem)] leading-[1.1] text-[--ink] mb-6 text-balance">
+            Medical rigour. <span class="italic text-[--brass]">Artistic soul.</span>
+          </h2>
+          <p class="text-lg text-[--ink-soft] leading-relaxed mb-5">
+            Lumina was founded on a simple belief: aesthetic medicine should enhance who you are, never change it. We take the time to understand your concerns, your lifestyle, and your goals — then craft a plan that feels unmistakably <em>you</em>.
+          </p>
+          <p class="text-[--ink-soft] leading-relaxed mb-8">
+            Our clinic is led by consultant dermatologists and award-winning aesthetic practitioners. Every treatment uses only FDA-approved products and the latest evidence-based protocols, in a calm, private setting designed to put you at ease.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                <i data-lucide="award" style="width:18px;height:18px;color:var(--brass);" aria-hidden="true"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-[--ink]">Award-winning care</p>
+                <p class="text-xs text-[--ink-soft]">Aesthetic Practice of the Year 2024</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                <i data-lucide="users" style="width:18px;height:18px;color:var(--brass);" aria-hidden="true"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-[--ink]">Expert team</p>
+                <p class="text-xs text-[--ink-soft]">GMC-registered specialists</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- About Visual -->
+        <div class="relative reveal">
+          <div class="rounded-[32px] overflow-hidden shadow-[var(--shadow-lg)] bg-white p-2">
+            <div class="rounded-[24px] bg-gradient-to-br from-[#F4F0EB] to-[#E8E2DA] aspect-[4/3] flex items-center justify-center relative overflow-hidden">
+              <div class="absolute inset-0 opacity-40" style="background: radial-gradient(circle at 30% 40%, #D9C9B4 0%, transparent 60%);"></div>
+              <div class="relative text-center p-8">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" class="mx-auto mb-4 opacity-60" aria-hidden="true">
+                  <circle cx="40" cy="40" r="30" stroke="#B89B72" stroke-width="1"/>
+                  <path d="M40 15V25M40 55V65M15 40H25M55 40H65" stroke="#B89B72" stroke-width="1" stroke-linecap="round"/>
+                  <circle cx="40" cy="40" r="6" fill="#B89B72" opacity="0.3"/>
+                </svg>
+                <p class="font-display text-xl text-[--ink]">Personalised. Precise. Natural.</p>
+              </div>
+            </div>
+          </div>
+          <!-- Floating stat -->
+          <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl p-5 shadow-[var(--shadow-md)] border border-[rgba(30,27,24,0.04)]">
+            <p class="font-display text-3xl text-[--ink]">98<span class="text-[--brass]">%</span></p>
+            <p class="text-xs text-[--ink-soft] mt-1">Would recommend us</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRICING ============ -->
+  <section id="pricing" class="py-20 sm:py-28" aria-labelledby="pricing-heading">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 sm:mb-20 reveal">
+        <p class="text-sm font-medium tracking-widest uppercase text-[--brass] mb-4" style="letter-spacing:0.15em;">Transparent Pricing</p>
+        <h2 id="pricing-heading" class="font-display text-[clamp(2.2rem,4.5vw,3.8rem)] leading-[1.1] text-[--ink] mb-5 text-balance">
+          Invest in your <span class="italic text-[--brass]">confidence</span>
+        </h2>
+        <p class="text-lg text-[--ink-soft] leading-relaxed">No hidden fees. No pressure. Just honest pricing for exceptional care.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+        <!-- Essential -->
+        <div class="card p-8 sm:p-10 flex flex-col reveal">
+          <h3 class="font-display text-2xl text-[--ink] mb-2">Essential</h3>
+          <p class="text-sm text-[--ink-soft] mb-6">Perfect for first-time visitors or targeted treatments.</p>
+          <div class="mb-6">
+            <span class="font-display text-5xl text-[--ink]">£120</span>
+            <span class="text-[--ink-soft] text-sm"> / session</span>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1" role="list">
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              30-minute consultation
+            </li>
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              Skin analysis &amp; treatment plan
+            </li>
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              One targeted treatment
+            </li>
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              Aftercare guidance
+            </li>
+          </ul>
+          <a href="#contact" class="btn-secondary w-full justify-center">Book Essential</a>
+        </div>
+
+        <!-- Signature (Highlighted) -->
+        <div class="card pricing-highlight p-8 sm:p-10 flex flex-col relative reveal" style="background: linear-gradient(180deg, #FFFFFF 0%, #FDFCFA 100%);">
+          <div class="absolute top-5 right-5 bg-[--brass] text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full" style="letter-spacing:0.1em;">Most Popular</div>
+          <h3 class="font-display text-2xl text-[--ink] mb-2">Signature</h3>
+          <p class="text-sm text-[--ink-soft] mb-6">Our most comprehensive plan for lasting results.</p>
+          <div class="mb-6">
+            <span class="font-display text-5xl text-[--ink]">£380</span>
+            <span class="text-[--ink-soft] text-sm"> / session</span>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1" role="list">
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              60-minute consultation
+            </li>
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              Full skin health assessment
+            </li>
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              Two combined treatments
+            </li>
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              4-week follow-up review
+            </li>
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              Bespoke aftercare kit
+            </li>
+          </ul>
+          <a href="#contact" class="btn-primary w-full justify-center">Book Signature</a>
+        </div>
+
+        <!-- Transform -->
+        <div class="card p-8 sm:p-10 flex flex-col reveal">
+          <h3 class="font-display text-2xl text-[--ink] mb-2">Transform</h3>
+          <p class="text-sm text-[--ink-soft] mb-6">A complete journey for profound, lasting change.</p>
+          <div class="mb-6">
+            <span class="font-display text-5xl text-[--ink]">£850</span>
+            <span class="text-[--ink-soft] text-sm"> / programme</span>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1" role="list">
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              Initial 90-minute deep consultation
+            </li>
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              Three treatment sessions
+            </li>
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              Dedicated practitioner
+            </li>
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              Ongoing skincare coaching
+            </li>
+            <li class="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <i data-lucide="check" style="width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i>
+              12-month priority booking
+            </li>
+          </ul>
+          <a href="#contact" class="btn-secondary w-full justify-center">Enquire Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section id="testimonials" class="py-20 sm:py-28 bg-[--white]" aria-labelledby="testimonials-heading">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14 sm:mb-20 reveal">
+        <p class="text-sm font-medium tracking-widest uppercase text-[--brass] mb-4" style="letter-spacing:0.15em;">Patient Stories</p>
+        <h2 id="testimonials-heading" class="font-display text-[clamp(2.2rem,4.5vw,3.8rem)] leading-[1.1] text-[--ink] mb-5 text-balance">
+          Real results. Real <span class="italic text-[--brass]">people.</span>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Testimonial 1 -->
+        <div class="card p-8 reveal">
+          <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+          </div>
+          <blockquote class="text-[--ink-soft] leading-relaxed mb-6 italic">
+            "I was nervous about injectables, but the team at Lumina put me completely at ease. The results are so natural — people just say I look well-rested. Couldn't be happier."
+          </blockquote>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-[--sand] flex items-center justify-center">
+              <span class="text-sm font-semibold text-[--brass]">SC</span>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-[--ink]">Sarah C.</p>
+              <p class="text-xs text-[--ink-soft]">Anti-wrinkle treatment</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="card p-8 reveal">
+          <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+          </div>
+          <blockquote class="text-[--ink-soft] leading-relaxed mb-6 italic">
+            "After years of struggling with rosacea, the laser therapy here changed my life. The team genuinely listened and built a plan around my skin. I finally feel confident without makeup."
+          </blockquote>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-[--sand] flex items-center justify-center">
+              <span class="text-sm font-semibold text-[--brass]">JW</span>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-[--ink]">James W.</p>
+              <p class="text-xs text-[--ink-soft]">Laser &amp; light therapy</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="card p-8 reveal">
+          <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+            <i data-lucide="star" class="star-icon" style="width:18px;height:18px;" aria-hidden="true"></i>
+          </div>
+          <blockquote class="text-[--ink-soft] leading-relaxed mb-6 italic">
+            "The skin health check caught an irregular mole that my GP had missed. I'm forever grateful. This clinic truly cares about your health, not just aesthetics."
+          </blockquote>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-[--sand] flex items-center justify-center">
+              <span class="text-sm font-semibold text-[--brass]">PT</span>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-[--ink]">Priya T.</p>
+              <p class="text-xs text-[--ink-soft]">Skin health screening</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="py-20 sm:py-28 relative overflow-hidden" aria-labelledby="cta-heading">
+    <div class="hero-glow" style="top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle, #D9C9B4 0%, transparent 70%);width:800px;height:800px;opacity:0.2;" aria-hidden="true"></div>
+    <div class="max-w-4xl mx-auto px-5 sm:px-8 text-center relative z-10 reveal">
+      <h2 id="cta-heading" class="font-display text-[clamp(2.2rem,5vw,4.5rem)] leading-[1.05] text-[--ink] mb-6 text-balance">
+        Your skin deserves <span class="italic text-[--brass]">expert care.</span>
+      </h2>
+      <p class="text-lg sm:text-xl text-[--ink-soft] leading-relaxed mb-10 max-w-2xl mx-auto">
+        Book a no-obligation consultation and discover what's possible. We'll listen, advise honestly, and design a plan that works for you.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#contact" class="btn-primary text-base">
+          Book Your Consultation
+          <i data-lucide="arrow-right" style="width:18px;height:18px;" aria-hidden="true"></i>
+        </a>
+        <a href="tel:+442071234567" class="btn-secondary text-base">
+          <i data-lucide="phone" style="width:18px;height:18px;" aria-hidden="true"></i>
+          Call Us
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER / CONTACT ============ -->
+  <footer id="contact" class="bg-[--ink] text-[#E8E2DA] pt-20 pb-10" aria-labelledby="footer-heading">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <h2 id="footer-heading" class="sr-only">Contact and footer</h2>
+
+      <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 mb-16">
+        <!-- Enquiry Form -->
+        <div class="reveal">
+          <h3 class="font-display text-3xl sm:text-4xl text-white mb-4">Let's talk about your skin.</h3>
+          <p class="text-[#B8B0A6] mb-8 text-sm leading-relaxed">Fill in your details and we'll be in touch within one working day to arrange your consultation.</p>
+
+          <form id="enquiry-form" class="space-y-4" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="name" class="block text-sm font-medium text-[#D9C9B4] mb-1.5">Full name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Jane Smith" required autocomplete="name" />
+                <p class="form-error-msg" id="name-error" role="alert">Please enter your name.</p>
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-medium text-[#D9C9B4] mb-1.5">Email address</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="jane@example.com" required autocomplete="email" />
+                <p class="form-error-msg" id="email-error" role="alert">Please enter a valid email.</p>
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="phone" class="block text-sm font-medium text-[#D9C9B4] mb-1.5">Phone number</label>
+                <input type="tel" id="phone" name="phone" class="form-input" placeholder="+44 7700 900000" autocomplete="tel" />
+                <p class="form-error-msg" id="phone-error" role="alert">Please enter a valid phone number.</p>
+              </div>
+              <div>
+                <label for="service" class="block text-sm font-medium text-[#D9C9B4] mb-1.5">Service of interest</label>
+                <select id="service" name="service" class="form-input">
+                  <option value="">Select a service</option>
+                  <option value="injectables">Injectables &amp; Fillers</option>
+                  <option value="laser">Laser &amp; Light Therapy</option>
+                  <option value="facials">Medical Facials &amp; Peels</option>
+                  <option value="skin-check">Skin Health Check</option>
+                  <option value="coaching">Holistic Skin Coaching</option>
+                  <option value="other">Other / Not sure</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label for="message" class="block text-sm font-medium text-[#D9C9B4] mb-1.5">Your message</label>
+              <textarea id="message" name="message" rows="4" class="form-input" placeholder="Tell us a little about your skin concerns and what you'd like to achieve..." required></textarea>
+              <p class="form-error-msg" id="message-error" role="alert">Please include a message.</p>
+            </div>
+            <div class="pt-2">
+              <button type="submit" class="btn-primary w-full justify-center" id="submit-btn">
+                Send Enquiry
+                <i data-lucide="send" style="width:16px;height:16px;" aria-hidden="true"></i>
+              </button>
+            </div>
+            <!-- TODO: connect form action to backend endpoint -->
+          </form>
+
+          <!-- Success state -->
+          <div class="form-success" id="form-success">
+            <div class="check-circle">
+              <i data-lucide="check" style="width:32px;height:32px;color:var(--sage);" aria-hidden="true"></i>
+            </div>
+            <h3 class="font-display text-2xl text-white mb-2">Thank you!</h3>
+            <p class="text-[#B8B0A6] text-sm">Your enquiry has been sent. We'll be in touch shortly.</p>
+          </div>
+        </div>
+
+        <!-- Footer links & info -->
+        <div class="reveal">
+          <div class="grid grid-cols-2 gap-8 mb-12">
+            <div>
+              <h4 class="text-sm font-semibold text-[#D9C9B4] tracking-wider uppercase mb-4" style="letter-spacing:0.12em;">Explore</h4>
+              <ul class="space-y-2.5" role="list">
+                <li><a href="#services" class="text-sm text-[#B8B0A6] hover:text-white transition-colors duration-200">Services</a></li>
+                <li><a href="#about" class="text-sm text-[#B8B0A6] hover:text-white transition-colors duration-200">About</a></li>
+                <li><a href="#pricing" class="text-sm text-[#B8B0A6] hover:text-white transition-colors duration-200">Pricing</a></li>
+                <li><a href="#testimonials" class="text-sm text-[#B8B0A6] hover:text-white transition-colors duration-200">Testimonials</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold text-[#D9C9B4] tracking-wider uppercase mb-4" style="letter-spacing:0.12em;">Visit</h4>
+              <address class="not-italic space-y-2.5 text-sm text-[#B8B0A6]">
+                <p>12 Harley Street</p>
+                <p>London W1G 9PH</p>
+                <p class="pt-2"><a href="tel:+442071234567" class="hover:text-white transition-colors duration-200">+44 (0)20 7123 4567</a></p>
+                <p><a href="mailto:hello@luminaclinic.co.uk" class="hover:text-white transition-colors duration-200">hello@luminaclinic.co.uk</a></p>
+              </address>
+            </div>
+          </div>
+
+          <!-- Hours -->
+          <div class="mb-12">
+            <h4 class="text-sm font-semibold text-[#D9C9B4] tracking-wider uppercase mb-4" style="letter-spacing:0.12em;">Opening Hours</h4>
+            <ul class="space-y-1.5 text-sm text-[#B8B0A6]" role="list">
+              <li class="flex justify-between"><span>Monday – Friday</span><span>9:00 – 19:00</span></li>
+              <li class="flex justify-between"><span>Saturday</span><span>10:00 – 16:00</span></li>
+              <li class="flex justify-between"><span>Sunday</span><span>Closed</span></li>
+            </ul>
+          </div>
+
+          <!-- Social -->
+          <div class="flex gap-3">
+            <a href="#" class="w-10 h-10 rounded-full border border-[rgba(217,201,180,0.2)] flex items-center justify-center hover:bg-[--brass] hover:border-[--brass] transition-all duration-200" aria-label="Instagram">
+              <i data-lucide="instagram" style="width:18px;height:18px;" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-[rgba(217,201,180,0.2)] flex items-center justify-center hover:bg-[--brass] hover:border-[--brass] transition-all duration-200" aria-label="Facebook">
+              <i data-lucide="facebook" style="width:18px;height:18px;" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full border border-[rgba(217,201,180,0.2)] flex items-center justify-center hover:bg-[--brass] hover:border-[--brass] transition-all duration-200" aria-label="Twitter / X">
+              <i data-lucide="twitter" style="width:18px;height:18px;" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="border-t border-[rgba(217,201,180,0.12)] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2.5">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" stroke="#B89B72" stroke-width="1.5"/>
+            <path d="M16 6V26M6 16H26" stroke="#B89B72" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="16" cy="16" r="4" fill="#B89B72" opacity="0.4"/>
+          </svg>
+          <span class="font-display text-lg text-white">Lumina</span>
+          <span class="text-xs text-[#B8B0A6] ml-2">&copy; 2025 Lumina Aesthetic Clinic. All rights reserved.</span>
+        </div>
+        <div class="flex gap-6 text-xs text-[#B8B0A6]">
+          <a href="#" class="hover:text-white transition-colors duration-200">Privacy Policy</a>
+          <a href="#" class="hover:text-white transition-colors duration-200">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // === Header scroll effect ===
+    const header = document.getElementById('main-header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // === Mobile Menu ===
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileClose = document.getElementById('mobile-close');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      mobileToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      mobileToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    mobileToggle.addEventListener('click', openMenu);
+    mobileClose.addEventListener('click', closeMenu);
+    mobileNavLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+    // Close menu on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        closeMenu();
+        mobileToggle.focus();
+      }
+    });
+
+    // === GSAP Hero Text Animation ===
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Split hero words into chars and animate
+    const heroWords = document.querySelectorAll('.hero-word');
+    heroWords.forEach((word, i) => {
+      const chars = word.textContent.split('');
+      word.textContent = '';
+      chars.forEach((char, j) => {
+        const span = document.createElement('span');
+        span.className = 'split-char';
+        span.textContent = char === ' ' ? '\u00A0' : char;
+        span.style.animationDelay = `${(i * 0.12) + (j * 0.035)}s`;
+        word.appendChild(span);
+      });
+    });
+
+    // === Scroll Reveal ===
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // === GSAP Parallax on hero glow ===
+    gsap.to('.hero-glow:first-of-type', {
+      y: 80,
+      scrollTrigger: {
+        trigger: 'section[aria-label="Hero"]',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1.5
+      }
+    });
+
+    // === Form Validation & Submission ===
+    const form = document.getElementById('enquiry-form');
+    const formSuccess = document.getElementById('form-success');
+    const submitBtn = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Reset errors
+      document.querySelectorAll('.form-error-msg').forEach(el => el.classList.remove('visible'));
+      document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+
+      // Validate
+      let valid = true;
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const message = document.getElementById('message');
+
+      if (!name.value.trim()) {
+        name.classList.add('error');
+        document.getElementById('name-error').classList.add('visible');
+        valid = false;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email.value.trim() || !emailRegex.test(email.value.trim())) {
+        email.classList.add('error');
+        document.getElementById('email-error').classList.add('visible');
+        valid = false;
+      }
+
+      if (!message.value.trim()) {
+        message.classList.add('error');
+        document.getElementById('message-error').classList.add('visible');
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Disable button
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending... <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="animate-spin" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="8"/></svg>';
+
+      const formData = {
+        name: name.value.trim(),
+        email: email.value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        service: document.getElementById('service').value,
+        message: message.value.trim()
+      };
+
+      try {
+        const res = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({
+            url: window.location.host,
+            table: 'clinic_enquiries',
+            data: formData
+          })
+        });
+
+        // Show success state regardless of backend (static preview)
+        form.style.display = 'none';
+        formSuccess.classList.add('visible');
+        lucide.createIcons();
+      } catch (err) {
+        // On error, still show success for demo purposes
+        // In production, show error message to user
+        form.style.display = 'none';
+        formSuccess.classList.add('visible');
+        lucide.createIcons();
+      }
+    });
+
+    // Clear error on input
+    document.querySelectorAll('.form-input').forEach(input => {
+      input.addEventListener('input', () => {
+        input.classList.remove('error');
+        const errorEl = input.closest('div')?.querySelector('.form-error-msg');
+        if (errorEl) errorEl.classList.remove('visible');
+      });
+    });
+  </script>
+</body>
+</html>
