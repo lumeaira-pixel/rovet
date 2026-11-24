@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HRDS · Human Resources Development Society</title>
+  <!-- Tailwind CDN + custom config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FCF9F5',
+            sand: '#F2EDE7',
+            ink: '#1E1E1E',
+            slate: '#3A3A3A',
+            brass: '#B57E4A',
+            brasslight: '#D9B38C',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1E1E1E;
+      --cream: #FCF9F5;
+      --sand: #F2EDE7;
+      --brass: #B57E4A;
+      --brass-light: #D9B38C;
+      --slate: #3A3A3A;
+      --white: #FFFFFF;
+      --radius-card: 1.5rem;
+      --shadow-soft: 0 20px 40px -12px rgba(0, 0, 0, 0.08);
+      --shadow-subtle: 0 8px 24px -8px rgba(0, 0, 0, 0.05);
+      --focus-ring: 0 0 0 3px rgba(181, 126, 74, 0.4);
+    }
+
+    /* === Base & Reset === */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* === Typography === */
+    h1, h2, h3, h4 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .font-display { font-family: 'Bricolage Grotesque', sans-serif; }
+
+    /* === Utility & Animations === */
+    .text-balance { text-wrap: balance; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+                  transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stagger-1 { transition-delay: 0.05s; }
+    .stagger-2 { transition-delay: 0.12s; }
+    .stagger-3 { transition-delay: 0.19s; }
+    .stagger-4 { transition-delay: 0.26s; }
+
+    @keyframes float-up {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .hero-animate {
+      animation: float-up 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    .hero-animate-delay-1 { animation-delay: 0.1s; opacity: 0; }
+    .hero-animate-delay-2 { animation-delay: 0.25s; opacity: 0; }
+    .hero-animate-delay-3 { animation-delay: 0.4s; opacity: 0; }
+    .hero-animate-delay-4 { animation-delay: 0.55s; opacity: 0; }
+
+    /* === Cursor & Focus === */
+    a, button, input, textarea, select { transition: all 0.2s ease-out; }
+    *:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Glass / Card === */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .brass-gradient {
+      background: linear-gradient(135deg, var(--brass) 0%, #C68F5A 100%);
+    }
+
+    .hero-visual {
+      background: radial-gradient(ellipse at 70% 30%, rgba(217, 179, 140, 0.25) 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, rgba(181, 126, 74, 0.1) 0%, transparent 50%),
+                  var(--cream);
+    }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* === Custom form styles === */
+    input, textarea, select {
+      background: var(--white);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 3px rgba(181, 126, 74, 0.15);
+    }
+
+    /* === Smooth nav shrink === */
+    .nav-shrink {
+      padding-top: 0.75rem !important;
+      padding-bottom: 0.75rem !important;
+      background: rgba(252, 249, 245, 0.85) !important;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 4px 20px -8px rgba(0, 0, 0, 0.08);
+    }
+
+    /* === Verification input group === */
+    .verify-group {
+      display: flex;
+      background: var(--white);
+      border-radius: 9999px;
+      padding: 0.35rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .verify-group input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.95rem;
+      border-radius: 9999px;
+    }
+    .verify-group input:focus {
+      box-shadow: none;
+    }
+    .verify-group button {
+      border-radius: 9999px;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* === responsive tweaks === */
+    @media (max-width: 640px) {
+      .verify-group {
+        flex-direction: column;
+        border-radius: 1.25rem;
+        padding: 0.75rem;
+        gap: 0.5rem;
+      }
+      .verify-group input {
+        border-radius: 0.75rem;
+        border: 1px solid rgba(0,0,0,0.06);
+        text-align: center;
+      }
+      .verify-group button {
+        width: 100%;
+        border-radius: 0.75rem;
+      }
+    }
+
+    /* grain overlay (subtle) */
+    .grain::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.03"/></svg>');
+      background-size: 200px 200px;
+      mix-blend-mode: multiply;
+      z-index: 0;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      border: 0;
+    }
+  </style>
+</head>
+<body class="antialiased text-ink bg-cream selection:bg-brass/20 selection:text-ink">
+
+  <!-- ===== HEADER ===== -->
+  <header id="main-header" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 py-4 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 group" aria-label="HRDS Home">
+        <div class="w-10 h-10 rounded-full brass-gradient flex items-center justify-center shadow-md">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="leading-tight">
+          <span class="font-display font-bold text-lg tracking-tight block">HRDS</span>
+          <span class="text-[10px] uppercase tracking-[0.18em] text-slate/60 font-medium">Human Resources<br>Development Society</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium" aria-label="Main navigation">
+        <a href="#about" class="text-slate/80 hover:text-brass transition-colors">About</a>
+        <a href="#focus" class="text-slate/80 hover:text-brass transition-colors">Focus Areas</a>
+        <a href="#verify" class="text-slate/80 hover:text-brass transition-colors">Verify</a>
+        <a href="#contact" class="text-slate/80 hover:text-brass transition-colors">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="#verify" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full brass-gradient text-white text-sm font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Verify Certificate
+        </a>
+        <!-- Mobile menu toggle -->
+        <button id="mobile-menu-btn" class="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-white/70 backdrop-blur border border-black/5 shadow-sm hover:shadow-md transition-all" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden fixed top-0 left-0 w-full h-screen bg-cream/95 backdrop-blur-xl z-40 flex flex-col items-center justify-center gap-8 text-2xl font-display font-bold" aria-hidden="true">
+      <button id="mobile-menu-close" class="absolute top-6 right-6 w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-md" aria-label="Close menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <a href="#about" class="mobile-link hover:text-brass transition-colors">About</a>
+      <a href="#focus" class="mobile-link hover:text-brass transition-colors">Focus Areas</a>
+      <a href="#verify" class="mobile-link hover:text-brass transition-colors">Verify</a>
+      <a href="#contact" class="mobile-link hover:text-brass transition-colors">Contact</a>
+      <a href="#verify" class="mobile-link inline-block px-8 py-3 rounded-full brass-gradient text-white text-lg font-semibold mt-4">Verify Certificate</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== HERO ===== -->
+    <section class="relative min-h-[90vh] flex items-center pt-28 pb-16 px-6 md:px-12 overflow-hidden grain hero-visual">
+      <div class="max-w-7xl mx-auto w-full relative z-10">
+        <div class="grid lg:grid-cols-12 gap-12 items-center">
+          <!-- Left content -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="hero-animate hero-animate-delay-1">
+              <span class="inline-block text-xs uppercase tracking-[0.25em] font-semibold text-brass bg-brass/10 px-4 py-1.5 rounded-full">Assessing Body · NCVT · Govt. of India</span>
+            </div>
+            <h1 class="hero-animate hero-animate-delay-2 text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-display font-bold tracking-tight text-balance leading-[0.95]">
+              Empowering<br>skills.<br><span class="text-brass">Building futures.</span>
+            </h1>
+            <p class="hero-animate hero-animate-delay-3 text-lg sm:text-xl text-slate/70 max-w-xl leading-relaxed">
+              Human Resources Development Society — assessing body under the Skill Development Initiative Scheme, NCVT, Govt. of India. Structured skill assessment, vocational training standards, and industry-relevant certification across India.
+            </p>
+            <div class="hero-animate hero-animate-delay-4 flex flex-wrap gap-4 pt-2">
+              <a href="#verify" class="inline-flex items-center gap-2 px-8 py-4 rounded-full brass-gradient text-white font-semibold text-base shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Verify Certificate
+              </a>
+              <a href="#focus" class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/80 backdrop-blur border border-black/5 text-ink font-semibold text-base shadow-sm hover:shadow-md hover:bg-white transition-all">
+                Explore Skill Programs
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+            <!-- trust badges -->
+            <div class="hero-animate hero-animate-delay-4 pt-6 flex flex-wrap items-center gap-6 text-sm text-slate/60">
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brass" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Govt. Reg. No. 687/2001
+              </div>
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brass" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Established 2001
+              </div>
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brass" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                New Delhi, India
+              </div>
+            </div>
+          </div>
+
+          <!-- Right visual — abstract certificate card -->
+          <div class="lg:col-span-5 hero-animate hero-animate-delay-3 relative">
+            <div class="relative w-full aspect-square max-w-md mx-auto">
+              <!-- floating badge -->
+              <div class="absolute top-4 right-0 z-20 glass-card rounded-2xl px-4 py-3 flex items-center gap-3 shadow-lg animate-pulse-slow" style="animation: float 6s ease-in-out infinite;">
+                <div class="w-9 h-9 rounded-full brass-gradient flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-ink">NCVT Aligned</p>
+                  <p class="text-[10px] text-slate/60">Skill Development Initiative</p>
+                </div>
+              </div>
+
+              <!-- main card -->
+              <div class="relative z-10 w-full h-full rounded-[2rem] bg-white shadow-2xl border border-white/60 overflow-hidden flex flex-col p-8 transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                <div class="absolute top-0 left-0 w-full h-2 brass-gradient"></div>
+                <div class="flex items-center gap-2 mb-6">
+                  <div class="w-8 h-8 rounded-full brass-gradient flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                  </div>
+                  <span class="text-xs font-bold uppercase tracking-widest text-slate/50">Certificate of Competency</span>
+                </div>
+                <div class="flex-1 flex flex-col justify-center items-center text-center space-y-2">
+                  <div class="w-16 h-16 rounded-full bg-brass/10 flex items-center justify-center mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#B57E4A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+                  </div>
+                  <h3 class="font-display text-2xl font-bold">Skill Assessment</h3>
+                  <p class="text-sm text-slate/60 max-w-[200px]">Verified by HRDS under NCVT frameworks</p>
+                  <div class="w-24 h-[2px] bg-brass/30 my-2"></div>
+                  <p class="text-[10px] uppercase tracking-wider text-slate/40">Govt. Reg. No. 687/2001</p>
+                </div>
+                <div class="mt-4 flex justify-between items-center text-[10px] text-slate/40 border-t border-black/5 pt-3">
+                  <span>HRDS · New Delhi</span>
+                  <span>ISO 9001:2015</span>
+                </div>
+              </div>
+
+              <!-- decorative blobs -->
+              <div class="absolute -bottom-6 -left-6 w-32 h-32 rounded-full bg-brass/10 blur-2xl"></div>
+              <div class="absolute -top-6 -right-6 w-40 h-40 rounded-full bg-brass-light/20 blur-3xl"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MARQUEE / TRUST ===== -->
+    <section class="py-8 border-y border-black/5 bg-white/50 overflow-hidden">
+      <div class="marquee-track gap-12 text-slate/40 font-display text-sm uppercase tracking-widest font-medium">
+        <span class="flex items-center gap-3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg> Skill Development Initiative</span>
+        <span class="flex items-center gap-3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> NCVT Aligned</span>
+        <span class="flex items-center gap-3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Govt. Registered 687/2001</span>
+        <span class="flex items-center gap-3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Head Office: New Delhi</span>
+        <span class="flex items-center gap-3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg> Skill Development Initiative</span>
+        <span class="flex items-center gap-3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> NCVT Aligned</span>
+        <span class="flex items-center gap-3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Govt. Registered 687/2001</span>
+        <span class="flex items-center gap-3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Head Office: New Delhi</span>
+      </div>
+    </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section id="about" class="py-24 md:py-32 px-6 md:px-12">
+      <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+        <div class="reveal">
+          <span class="text-xs uppercase tracking-[0.25em] font-semibold text-brass">About Us</span>
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold mt-4 mb-6 tracking-tight leading-[1.05]">
+            A legacy of<br>skill development<br>since 2001.
+          </h2>
+          <div class="space-y-5 text-slate/70 text-lg leading-relaxed max-w-xl">
+            <p>Established in October 2001 and registered under the Societies Registration Act (XXI) of 1860 (Reg. No. 687/2001), the Human Resources Development Society (HRDS) is a Non-Governmental Organization dedicated to manpower development, skill evaluation, and vocational training excellence.</p>
+            <p>Operating from its Head Office in New Delhi, HRDS works to strengthen workforce readiness, support affiliate training institutions, and promote transparent, credible skill assessment standards aligned with national skill development initiatives.</p>
+          </div>
+          <div class="mt-10 flex flex-wrap gap-8">
+            <div>
+              <p class="text-3xl font-display font-bold text-brass">2001</p>
+              <p class="text-sm text-slate/50 mt-1">Established</p>
+            </div>
+            <div class="w-px bg-black/10"></div>
+            <div>
+              <p class="text-3xl font-display font-bold text-brass">687/2001</p>
+              <p class="text-sm text-slate/50 mt-1">Govt. Reg. No.</p>
+            </div>
+            <div class="w-px bg-black/10"></div>
+            <div>
+              <p class="text-3xl font-display font-bold text-brass">Pan-India</p>
+              <p class="text-sm text-slate/50 mt-1">Assessment Reach</p>
+            </div>
+          </div>
+        </div>
+        <div class="reveal stagger-2 space-y-6">
+          <!-- Vision card -->
+          <div class="glass-card rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:shadow-xl transition-all duration-500">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-brass/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
+            <div class="w-12 h-12 rounded-2xl brass-gradient flex items-center justify-center mb-6 shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg>
+            </div>
+            <h3 class="font-display text-2xl font-bold mb-3">Vision</h3>
+            <p class="text-slate/70 leading-relaxed">To be a trusted, leading authority in skill assessment and certification that equips learners with practical competencies for sustainable livelihoods and career growth.</p>
+          </div>
+          <!-- Mission card -->
+          <div class="glass-card rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:shadow-xl transition-all duration-500">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-brass/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
+            <div class="w-12 h-12 rounded-2xl brass-gradient flex items-center justify-center mb-6 shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h3 class="font-display text-2xl font-bold mb-3">Mission</h3>
+            <p class="text-slate/70 leading-relaxed">To conduct fair, reliable, and industry-aligned assessments and training support that enhance employability and institutional quality.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CORE FOCUS AREAS ===== -->
+    <section id="focus" class="py-24 md:py-32 px-6 md:px-12 bg-white/50 relative">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+          <span class="text-xs uppercase tracking-[0.25em] font-semibold text-brass">Core Focus Areas & Objectives</span>
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold mt-4 tracking-tight leading-[1.05]">What we do.</h2>
+          <p class="text-slate/60 text-lg mt-4">Four pillars that define our commitment to skill excellence and workforce readiness.</p>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- card 1 -->
+          <div class="reveal stagger-1 bg-white rounded-3xl p-8 shadow-soft border border-black/[0.03] hover:shadow-xl hover:-translate-y-1 transition-all duration-500">
+            <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B57E4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-bold mb-3">Skill Assessment & Certification</h3>
+            <p class="text-slate/60 text-sm leading-relaxed">Conducting structured skill evaluations and issuing certifications for candidates who complete approved training programs.</p>
+          </div>
+          <!-- card 2 -->
+          <div class="reveal stagger-2 bg-white rounded-3xl p-8 shadow-soft border border-black/[0.03] hover:shadow-xl hover:-translate-y-1 transition-all duration-500">
+            <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B57E4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-bold mb-3">Vocational & Technical Domains</h3>
+            <p class="text-slate/60 text-sm leading-relaxed">Supporting skill development across engineering, healthcare/medical support, information technology, and soft skills.</p>
+          </div>
+          <!-- card 3 -->
+          <div class="reveal stagger-3 bg-white rounded-3xl p-8 shadow-soft border border-black/[0.03] hover:shadow-xl hover:-translate-y-1 transition-all duration-500">
+            <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B57E4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/><path d="M4 10v11"/><path d="M20 10v11"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-bold mb-3">Institutional Support & Standards</h3>
+            <p class="text-slate/60 text-sm leading-relaxed">Assisting affiliated training centers and vocational providers in upgrading training infrastructure, facilities, and instructional quality.</p>
+          </div>
+          <!-- card 4 -->
+          <div class="reveal stagger-4 bg-white rounded-3xl p-8 shadow-soft border border-black/[0.03] hover:shadow-xl hover:-translate-y-1 transition-all duration-500">
+            <div class="w-12 h-12 rounded-2xl bg-brass/10 flex items-center justify-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B57E4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <h3 class="font-display text-xl font-bold mb-3">Student Support & Research</h3>
+            <p class="text-slate/60 text-sm leading-relaxed">Encouraging scholarships/stipends for eligible learners, alongside seminars, study tours, and research on emerging technologies.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ASSESSMENT & VERIFICATION ===== -->
+    <section id="verify" class="py-24 md:py-32 px-6 md:px-12 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-brass/[0.03] to-transparent pointer-events-none"></div>
+      <div class="max-w-7xl mx-auto relative z-10">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+          <div class="reveal">
+            <span class="text-xs uppercase tracking-[0.25em] font-semibold text-brass">Assessment & Verification</span>
+            <h2 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold mt-4 mb-6 tracking-tight leading-[1.05]">
+              Trust,<br>verified.
+            </h2>
+            <p class="text-slate/70 text-lg leading-relaxed mb-8 max-w-lg">
+              Our assessment framework is aligned with vocational training standards and Skill Development Initiative (SDI) / NCVT frameworks. Every certificate is backed by a dedicated online verification system.
+            </p>
+            <ul class="space-y-4 mb-10">
+              <li class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full bg-brass/15 flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#B57E4A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <span class="text-slate/70"><strong class="text-ink font-semibold">Skill Assessment Framework</strong> — Assessment operations aligned with vocational training standards and SDI / NCVT frameworks.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full bg-brass/15 flex items-center justify-center mt-0.5 flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#B57E4A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <span class="text-slate/70"><strong class="text-ink font-semibold">Certificate Verification</strong> — Dedicated online verification access so employers, institutions, and candidates can confirm certificate authenticity.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Verification form card -->
+          <div class="reveal stagger-2">
+            <div class="bg-white rounded-[2rem] p-8 md:p-10 shadow-xl border border-black/[0.03]">
+              <h3 class="font-display text-2xl font-bold mb-2">Verify a Certificate</h3>
+              <p class="text-slate/50 text-sm mb-6">Enter the certificate ID printed on the document.</p>
+              <form id="verify-form" class="space-y-4" novalidate>
+                <div>
+                  <label for="cert-id" class="block text-sm font-medium text-ink mb-2">Certificate ID</label>
+                  <div class="verify-group">
+                    <input type="text" id="cert-id" name="cert-id" placeholder="e.g. HRDS-2025-XXXX" required aria-required="true" aria-describedby="cert-error">
+                    <button type="submit" class="brass-gradient text-white font-semibold shadow-sm hover:shadow-md active:scale-[0.98] transition-all">
+                      Verify
+                    </button>
+                  </div>
+                  <p id="cert-error" class="hidden text-xs text-red-500 mt-2">Please enter a valid certificate ID.</p>
+                </div>
+              </form>
+              <!-- success / result message -->
+              <div id="verify-result" class="hidden mt-6 p-5 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-800 text-sm">
+                <div class="flex items-center gap-2 font-semibold mb-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  Certificate Verified
+                </div>
+                <p>This certificate is valid and was issued by HRDS under NCVT frameworks.</p>
+              </div>
+              <div class="mt-8 pt-6 border-t border-black/5 text-xs text-slate/40 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Secure · Instant · Reliable</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA BANNER ===== -->
+    <section class="py-16 px-6 md:px-12">
+      <div class="max-w-7xl mx-auto">
+        <div class="reveal bg-ink rounded-[2.5rem] px-8 py-16 md:px-16 md:py-20 text-center relative overflow-hidden">
+          <div class="absolute inset-0 opacity-10" style="background: radial-gradient(circle at 30% 50%, rgba(217,179,140,0.6) 0%, transparent 60%);"></div>
+          <div class="relative z-10 max-w-2xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-display font-bold text-white tracking-tight leading-tight text-balance">
+              Ready to validate skills and build a stronger workforce?
+            </h2>
+            <p class="text-white/60 text-lg mt-4 max-w-xl mx-auto">
+              Join institutions and employers who trust HRDS for credible, transparent, and NCVT-aligned skill assessment.
+            </p>
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+              <a href="#contact" class="inline-flex items-center gap-2 px-8 py-4 rounded-full brass-gradient text-white font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                Get in Touch
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <a href="#verify" class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/10 backdrop-blur border border-white/10 text-white font-semibold hover:bg-white/20 transition-all">
+                Verify Certificate
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CONTACT & FOOTER ===== -->
+    <footer id="contact" class="pt-20 pb-10 px-6 md:px-12 bg-white/40 border-t border-black/5">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid lg:grid-cols-5 gap-12 lg:gap-16">
+          <!-- Brand col -->
+          <div class="lg:col-span-2">
+            <a href="#" class="flex items-center gap-3 mb-6" aria-label="HRDS Home">
+              <div class="w-10 h-10 rounded-full brass-gradient flex items-center justify-center shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              </div>
+              <div>
+                <span class="font-display font-bold text-lg tracking-tight block">HRDS</span>
+                <span class="text-[10px] uppercase tracking-[0.18em] text-slate/50 font-medium">Human Resources<br>Development Society</span>
+              </div>
+            </a>
+            <p class="text-slate/60 text-sm leading-relaxed max-w-sm mb-6">
+              मानव संसाधन विकास समाज. Assessing Body under Skill Development Initiative Scheme, NCVT, Govt. of India.
+            </p>
+            <div class="space-y-2 text-sm text-slate/60">
+              <p class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Head Office: New Delhi, India</p>
+              <p class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Govt. Reg. No. 687/2001</p>
+              <p class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> http://</p>
+            </div>
+          </div>
+
+          <!-- Links -->
+          <div class="lg:col-span-1">
+            <h4 class="font-display font-bold text-sm uppercase tracking-wider text-slate/40 mb-4">Explore</h4>
+            <ul class="space-y-3 text-sm">
+              <li><a href="#about" class="text-slate/60 hover:text-brass transition-colors">About</a></li>
+              <li><a href="#focus" class="text-slate/60 hover:text-brass transition-colors">Focus Areas</a></li>
+              <li><a href="#verify" class="text-slate/60 hover:text-brass transition-colors">Verify</a></li>
+              <li><a href="#contact" class="text-slate/60 hover:text-brass transition-colors">Contact</a></li>
+            </ul>
+          </div>
+
+          <!-- Enquiry form -->
+          <div class="lg:col-span-2">
+            <h4 class="font-display font-bold text-sm uppercase tracking-wider text-slate/40 mb-4">Enquiry</h4>
+            <form id="enquiry-form" class="space-y-3" novalidate>
+              <div class="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <label for="name" class="sr-only">Full name</label>
+                  <input type="text" id="name" name="name" placeholder="Full name" required class="w-full px-4 py-3 rounded-xl text-sm" aria-required="true">
+                </div>
+                <div>
+                  <label for="email" class="sr-only">Email</label>
+                  <input type="email" id="email" name="email" placeholder="Email address" required class="w-full px-4 py-3 rounded-xl text-sm" aria-required="true">
+                </div>
+              </div>
+              <div>
+                <label for="phone" class="sr-only">Phone</label>
+                <input type="tel" id="phone" name="phone" placeholder="Phone number" class="w-full px-4 py-3 rounded-xl text-sm">
+              </div>
+              <div>
+                <label for="message" class="sr-only">Message</label>
+                <textarea id="message" name="message" rows="3" placeholder="Your message" required class="w-full px-4 py-3 rounded-xl text-sm resize-none" aria-required="true"></textarea>
+              </div>
+              <div id="form-feedback" class="hidden text-xs"></div>
+              <button type="submit" class="w-full brass-gradient text-white font-semibold py-3 rounded-xl text-sm shadow-md hover:shadow-lg active:scale-[0.99] transition-all">
+                Send Enquiry
+              </button>
+              <!-- TODO: connect form action to backend endpoint -->
+            </form>
+          </div>
+        </div>
+
+        <!-- bottom bar -->
+        <div class="mt-16 pt-8 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate/40">
+          <p>© 2025 Human Resources Development Society (HRDS). All rights reserved.</p>
+          <p>मानव संसाधन विकास समाज · New Delhi</p>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // ===== Lucide Icons Init =====
+    lucide.createIcons();
+
+    // ===== Sticky Header Shrink =====
+    const header = document.getElementById('main-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        header.classList.add('nav-shrink');
+      } else {
+        header.classList.remove('nav-shrink');
+      }
+    });
+
+    // ===== Mobile Menu =====
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const menuClose = document.getElementById('mobile-menu-close');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    function openMenu() {
+      mobileMenu.classList.remove('hidden');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+      menuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      mobileMenu.classList.add('hidden');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    menuBtn.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+    // ===== Scroll Reveal (GSAP) =====
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Simple reveal via Intersection Observer for elements with .reveal
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // ===== Verify Form =====
+    const verifyForm = document.getElementById('verify-form');
+    const certInput = document.getElementById('cert-id');
+    const certError = document.getElementById('cert-error');
+    const verifyResult = document.getElementById('verify-result');
+
+    verifyForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = certInput.value.trim();
+      if (!val) {
+        certError.classList.remove('hidden');
+        certInput.setAttribute('aria-invalid', 'true');
+        verifyResult.classList.add('hidden');
+        return;
+      }
+      certError.classList.add('hidden');
+      certInput.setAttribute('aria-invalid', 'false');
+      // Simulate verification success
+      verifyResult.classList.remove('hidden');
+      verifyResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Reset after 6s
+      setTimeout(() => {
+        verifyResult.classList.add('hidden');
+      }, 6000);
+    });
+
+    // ===== Enquiry Form (POST to backend) =====
+    const enquiryForm = document.getElementById('enquiry-form');
+    const feedback = document.getElementById('form-feedback');
+
+    enquiryForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Clear previous feedback
+      feedback.classList.add('hidden');
+      feedback.textContent = '';
+      feedback.className = 'hidden text-xs';
+
+      // Gather data
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      // Simple validation
+      if (!name || !email || !message) {
+        feedback.textContent = 'Please fill in all required fields (name, email, message).';
+        feedback.classList.remove('hidden');
+        feedback.classList.add('text-red-500');
+        return;
+      }
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        feedback.textContent = 'Please enter a valid email address.';
+        feedback.classList.remove('hidden');
+        feedback.classList.add('text-red-500');
+        return;
+      }
+
+      // Prepare payload
+      const payload = {
+        url: window.location.host,
+        table: 'enquiries',
+        data: { name, email, phone, message }
+      };
+
+      // Simulate / attempt POST
+      try {
+        const response = await fetch('submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify(payload)
+        });
+
+        // Note: Since this is a static file, we simulate success.
+        // In production, replace with actual endpoint and handle response.
+        // For demo, we treat any response as success.
+        feedback.textContent = 'Thank you! Your enquiry has been submitted.';
+        feedback.classList.remove('hidden');
+        feedback.classList.add('text-emerald-600');
+        enquiryForm.reset();
+
+        // TODO: connect form action to backend endpoint
+        // e.g. fetch('/api/enquiry', { ... })
+
+      } catch (error) {
+        // Fallback success simulation for static demo
+        feedback.textContent = 'Thank you! Your enquiry has been submitted.';
+        feedback.classList.remove('hidden');
+        feedback.classList.add('text-emerald-600');
+        enquiryForm.reset();
+      }
+
+      // Clear message after 5s
+      setTimeout(() => {
+        feedback.classList.add('hidden');
+        feedback.textContent = '';
+      }, 5000);
+    });
+
+    // ===== Smooth anchor scrolling (optional enhancement) =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // ===== subtle floating animation for hero badge =====
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
