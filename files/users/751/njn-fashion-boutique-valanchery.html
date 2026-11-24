@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Njn Fashion Boutique — Valanchery</title>
+  <meta name="description" content="Njn Fashion Boutique in Valanchery — curated fashion for women. Browse our collection and place an order enquiry via WhatsApp.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Instrument+Serif:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- TOKENS ---------- */
+    :root {
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+      --accent: #b85c4a;          /* warm terracotta */
+      --accent-2: #d4a373;
+      --radius-sm: 8px;
+      --radius: 14px;
+      --radius-lg: 22px;
+      --radius-pill: 999px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+      --maxw: 1200px;
+      --step--1: clamp(.8rem, .78rem + .1vw, .875rem);
+      --step-0: clamp(1rem, .96rem + .2vw, 1.0625rem);
+      --step-1: clamp(1.25rem, 1.1rem + .6vw, 1.5rem);
+      --step-2: clamp(1.6rem, 1.3rem + 1.4vw, 2.25rem);
+      --step-3: clamp(2.2rem, 1.6rem + 3vw, 3.75rem);
+      --step-4: clamp(2.8rem, 1.8rem + 5.5vw, 5.5rem);
+      --bg: #fcfaf7;
+      --bg-2: #f6f2ed;
+      --surface: #ffffff;
+      --surface-2: #f2ede7;
+      --border: #e6dfd7;
+      --text: #2d2a26;
+      --muted: #6b6560;
+      --faint: #9a938c;
+      --btn-bg: #2d2a26;
+      --btn-fg: #ffffff;
+      --shadow: 0 12px 40px -16px rgba(45, 42, 38, .16);
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font: 400 var(--step-0)/1.6 var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    h1, h2, h3 { font-family: var(--font-display); letter-spacing: -.02em; line-height: 1.1; font-weight: 500; }
+    h1 { font-size: var(--step-4); }
+    h2 { font-size: var(--step-3); }
+    h3 { font-size: var(--step-1); }
+    p { color: var(--muted); }
+    a { color: inherit; text-decoration: none; }
+    img, svg { max-width: 100%; display: block; }
+    .container { width: min(100% - 2.5rem, var(--maxw)); margin-inline: auto; }
+    section { padding: clamp(4rem, 8vw, 6rem) 0; }
+    .eyebrow {
+      font: 500 .72rem/1 var(--font-mono);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+
+    /* ---------- ICON SPRITE ---------- */
+    .i {
+      width: 1.15em; height: 1.15em; fill: none; stroke: currentColor;
+      stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+      flex: none; vertical-align: -.2em;
+    }
+
+    /* ---------- BUTTONS ---------- */
+    .btn {
+      display: inline-flex; align-items: center; gap: .6rem;
+      padding: .75rem 1.25rem; border-radius: var(--radius-pill);
+      font-weight: 600; font-size: .95rem; border: 1px solid transparent;
+      cursor: pointer; transition: transform .35s var(--ease), box-shadow .35s var(--ease), background .2s;
+    }
+    .btn-primary { background: var(--btn-bg); color: var(--btn-fg); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -10px rgba(45, 42, 38, .35); }
+    .btn-primary .i { transition: transform .35s var(--ease); }
+    .btn-primary:hover .i { transform: translateX(4px); }
+    .btn-ghost { border-color: var(--border); color: var(--text); background: transparent; }
+    .btn-ghost:hover { background: var(--surface-2); }
+
+    /* ---------- NAV ---------- */
+    .nav { position: fixed; inset: 12px 0 auto; z-index: 50; display: flex; justify-content: center; pointer-events: none; }
+    .nav-inner {
+      pointer-events: auto; display: flex; align-items: center; gap: 2rem;
+      padding: .55rem .6rem .55rem 1.1rem; border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: blur(16px) saturate(150%);
+      transition: box-shadow .3s;
+    }
+    .nav.scrolled .nav-inner { box-shadow: var(--shadow); }
+    .nav-logo { font: 500 1.25rem var(--font-display); letter-spacing: -.02em; }
+    .nav-links { display: flex; gap: 1.5rem; font-size: .92rem; color: var(--muted); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-actions { display: flex; align-items: center; gap: .6rem; }
+    .cart-btn {
+      position: relative; display: flex; align-items: center; gap: .4rem;
+      background: none; border: none; font: inherit; color: var(--text); cursor: pointer;
+      padding: .4rem .6rem; border-radius: var(--radius-pill);
+      transition: background .2s;
+    }
+    .cart-btn:hover { background: var(--surface-2); }
+    .cart-count {
+      position: absolute; top: -4px; right: -2px;
+      background: var(--accent); color: #fff; font-size: .65rem;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: grid; place-items: center; font-weight: 700;
+      opacity: 0; transform: scale(.6); transition: opacity .25s var(--ease), transform .25s var(--ease);
+    }
+    .cart-count.show { opacity: 1; transform: scale(1); }
+    .burger { display: none; background: none; border: none; color: var(--text); cursor: pointer; padding: .4rem; }
+    @media (max-width: 820px) {
+      .nav-links { display: none; }
+      .burger { display: grid; }
+      .nav-inner { width: calc(100% - 24px); justify-content: space-between; }
+    }
+    .sheet {
+      position: fixed; inset: 0; z-index: 60; background: var(--bg);
+      padding: 5rem 1.5rem; transform: translateY(-100%);
+      transition: transform .6s var(--ease);
+    }
+    .sheet.open { transform: none; }
+    .sheet a { display: block; font: 500 2rem var(--font-display); padding: .6rem 0; border-bottom: 1px solid var(--border); }
+    .sheet .close-sheet { position: absolute; top: 1.2rem; right: 1.2rem; background: none; border: none; color: var(--text); cursor: pointer; }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      position: relative; isolation: isolate; overflow: hidden;
+      text-align: center;
+      padding: clamp(7rem, 14vw, 10rem) 0 4rem;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: -1;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(184, 92, 74, .08), transparent 45%),
+        radial-gradient(circle at 80% 20%, rgba(212, 163, 115, .1), transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(184, 92, 74, .05), transparent 50%);
+    }
+    .hero h1 { max-width: 18ch; margin: 0 auto .75rem; }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero p { max-width: 46ch; margin: 0 auto 2.5rem; }
+    .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ---------- COLLECTION TILES ---------- */
+    .collection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .collection-tile {
+      position: relative; border-radius: var(--radius-lg); overflow: hidden;
+      aspect-ratio: 3/4; display: flex; align-items: flex-end;
+      border: 1px solid var(--border);
+      transition: transform .5s var(--ease);
+    }
+    .collection-tile:hover { transform: translateY(-4px); }
+    .collection-tile .tile-bg { position: absolute; inset: 0; z-index: 0; }
+    .collection-tile .tile-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, .55) 0%, transparent 60%);
+    }
+    .collection-tile .tile-label {
+      position: relative; z-index: 1; padding: 1.5rem; width: 100%;
+      color: #fff; font: 500 1.4rem var(--font-display);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .collection-tile .tile-label .i { color: #fff; }
+    @media (max-width: 768px) {
+      .collection-grid { grid-template-columns: 1fr 1fr; }
+      .collection-tile:last-child { grid-column: span 2; aspect-ratio: 2/1; }
+    }
+    @media (max-width: 500px) {
+      .collection-grid { grid-template-columns: 1fr; }
+      .collection-tile, .collection-tile:last-child { grid-column: span 1; aspect-ratio: 4/3; }
+    }
+
+    /* ---------- PRODUCT GRID ---------- */
+    .shop-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+    .shop-controls { display: flex; gap: .75rem; flex-wrap: wrap; }
+    .shop-controls select {
+      padding: .5rem 1rem; border-radius: var(--radius-pill);
+      border: 1px solid var(--border); background: var(--surface);
+      font: inherit; color: var(--text); cursor: pointer;
+    }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
+    .product-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: transform .4s var(--ease), box-shadow .4s var(--ease);
+      display: flex; flex-direction: column;
+    }
+    .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .card-img {
+      position: relative; aspect-ratio: 4/5; overflow: hidden;
+      background: var(--surface-2);
+    }
+    .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
+    .product-card:hover .card-img img { transform: scale(1.05); }
+    .card-badge {
+      position: absolute; top: 10px; left: 10px;
+      background: var(--accent); color: #fff; font: 600 .7rem var(--font-sans);
+      padding: .25rem .7rem; border-radius: var(--radius-pill);
+      letter-spacing: .02em;
+    }
+    .wish-btn {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(255, 255, 255, .85); border: none; border-radius: 50%;
+      width: 34px; height: 34px; display: grid; place-items: center;
+      cursor: pointer; color: var(--text); backdrop-filter: blur(4px);
+      transition: background .2s, color .2s;
+    }
+    .wish-btn:hover, .wish-btn.active { background: var(--accent); color: #fff; }
+    .card-body { padding: 1rem; display: flex; flex-direction: column; gap: .4rem; flex: 1; }
+    .card-cat { font-size: .75rem; color: var(--faint); text-transform: uppercase; letter-spacing: .06em; }
+    .card-title { font: 600 1rem var(--font-sans); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-price { display: flex; align-items: center; gap: .5rem; font-weight: 700; margin-top: auto; }
+    .card-price .compare { font-weight: 400; color: var(--faint); text-decoration: line-through; font-size: .9rem; }
+    .quick-add {
+      margin-top: .6rem; width: 100%; padding: .6rem;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--radius-pill); font: 600 .85rem var(--font-sans);
+      cursor: pointer; color: var(--text);
+      transition: background .25s, color .25s, border-color .25s;
+    }
+    .quick-add:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+
+    /* ---------- CART DRAWER ---------- */
+    .drawer-overlay {
+      position: fixed; inset: 0; z-index: 70; background: rgba(0, 0, 0, .4);
+      opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+    .drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 100%);
+      background: var(--surface); z-index: 80; display: flex; flex-direction: column;
+      transform: translateX(100%); transition: transform .45s var(--ease);
+      box-shadow: -10px 0 40px -10px rgba(0, 0, 0, .15);
+    }
+    .drawer.open { transform: none; }
+    .drawer-head {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border);
+    }
+    .drawer-head h3 { font-size: 1.3rem; }
+    .drawer-close { background: none; border: none; color: var(--text); cursor: pointer; padding: .3rem; }
+    .drawer-body { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+    .drawer-foot { padding: 1rem 1.5rem; border-top: 1px solid var(--border); }
+    .cart-empty { text-align: center; padding: 3rem 0; color: var(--muted); }
+    .cart-empty .i { font-size: 3rem; color: var(--faint); margin: 0 auto 1rem; }
+    .cart-item { display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    .cart-item img { width: 70px; height: 85px; object-fit: cover; border-radius: var(--radius-sm); background: var(--surface-2); }
+    .cart-item-info { flex: 1; display: flex; flex-direction: column; gap: .25rem; }
+    .cart-item-info .name { font-weight: 600; font-size: .9rem; }
+    .cart-item-info .variant { font-size: .8rem; color: var(--faint); }
+    .cart-item-info .price { font-weight: 600; font-size: .9rem; margin-top: auto; }
+    .qty-row { display: flex; align-items: center; gap: .5rem; }
+    .qty-btn {
+      width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--surface); cursor: pointer; display: grid; place-items: center;
+      color: var(--text); transition: background .2s;
+    }
+    .qty-btn:hover { background: var(--surface-2); }
+    .cart-remove { background: none; border: none; color: var(--faint); cursor: pointer; padding: .3rem; align-self: flex-start; }
+    .cart-remove:hover { color: #dc2626; }
+    .cart-subtotal { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; }
+    .checkout-form { display: none; }
+    .checkout-form.show { display: block; }
+
+    /* ---------- FORM FIELDS ---------- */
+    .field { display: grid; gap: .35rem; margin-bottom: .9rem; }
+    .field label { font-size: .82rem; color: var(--muted); font-weight: 500; }
+    .field input, .field textarea, .field select {
+      padding: .7rem .9rem; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--surface-2);
+      color: var(--text); font: inherit; font-size: .9rem;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: var(--accent); outline: 0;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+    .form-msg { min-height: 1.4em; font-size: .85rem; }
+    .form-msg.ok { color: #16a34a; }
+    .form-msg.err { color: #dc2626; }
+
+    /* ---------- TRUST ROW ---------- */
+    .trust-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+      padding: 2rem; border: 1px solid var(--border); border-radius: var(--radius-lg);
+      background: var(--surface);
+    }
+    .trust-item { text-align: center; display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+    .trust-item .i { font-size: 1.6rem; color: var(--accent); }
+    .trust-item span { font-size: .82rem; color: var(--muted); font-weight: 500; }
+    @media (max-width: 600px) { .trust-row { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ---------- TESTIMONIALS ---------- */
+    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    @media (max-width: 820px) { .testi-grid { grid-template-columns: 1fr; } }
+    .testi-card {
+      padding: 1.5rem; border: 1px solid var(--border); border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .testi-stars { display: flex; gap: 2px; color: var(--accent-2); margin-bottom: .75rem; }
+    .testi-card p { font-size: .92rem; margin-bottom: 1rem; }
+    .testi-author { display: flex; align-items: center; gap: .6rem; }
+    .testi-avatar {
+      width: 36px; height: 36px; border-radius: 50%; background: var(--surface-2);
+      display: grid; place-items: center; font-weight: 600; font-size: .85rem; color: var(--muted);
+    }
+    .testi-author strong { font-size: .85rem; display: block; }
+    .testi-author span { font-size: .75rem; color: var(--faint); }
+
+    /* ---------- NEWSLETTER ---------- */
+    .newsletter-box {
+      display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap;
+      padding: 2.5rem; border-radius: var(--radius-lg);
+      background: var(--bg-2); border: 1px solid var(--border);
+    }
+    .newsletter-form { display: flex; gap: .5rem; flex: 1; min-width: 260px; max-width: 440px; }
+    .newsletter-form input {
+      flex: 1; padding: .75rem 1rem; border-radius: var(--radius-pill);
+      border: 1px solid var(--border); background: var(--surface);
+      font: inherit; color: var(--text);
+    }
+    .newsletter-form input:focus { border-color: var(--accent); outline: 0; }
+    @media (max-width: 600px) { .newsletter-box { flex-direction: column; align-items: stretch; } }
+
+    /* ---------- FOOTER ---------- */
+    footer { border-top: 1px solid var(--border); padding: 3rem 0 2rem; }
+    .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+    @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-brand p { font-size: .88rem; margin-top: .5rem; max-width: 28ch; }
+    .footer-col h4 { font: 600 .82rem var(--font-sans); text-transform: uppercase; letter-spacing: .06em; color: var(--faint); margin-bottom: .8rem; }
+    .footer-col a { display: block; font-size: .88rem; color: var(--muted); padding: .25rem 0; }
+    .footer-col a:hover { color: var(--text); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem;
+      padding-top: 1.5rem; border-top: 1px solid var(--border);
+      font-size: .8rem; color: var(--faint);
+    }
+
+    /* ---------- FLOATING WHATSAPP ---------- */
+    .wa-float {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 40;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #25d366; color: #fff; display: grid; place-items: center;
+      box-shadow: 0 6px 20px -4px rgba(37, 211, 102, .5);
+      transition: transform .3s var(--ease);
+    }
+    .wa-float:hover { transform: scale(1.08); }
+    .wa-float .i { width: 26px; height: 26px; stroke-width: 2; }
+
+    /* ---------- MODAL (quick view) ---------- */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 90; background: rgba(0, 0, 0, .45);
+      display: grid; place-items: center; padding: 1.5rem;
+      opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .modal {
+      background: var(--surface); border-radius: var(--radius-lg);
+      max-width: 780px; width: 100%; max-height: 90vh; overflow-y: auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      transform: scale(.95); transition: transform .35s var(--ease);
+    }
+    .modal-overlay.open .modal { transform: scale(1); }
+    @media (max-width: 640px) { .modal { grid-template-columns: 1fr; } }
+    .modal-img { aspect-ratio: 4/5; overflow: hidden; background: var(--surface-2); }
+    .modal-img img { width: 100%; height: 100%; object-fit: cover; }
+    .modal-info { padding: 2rem; display: flex; flex-direction: column; gap: .75rem; }
+    .modal-info h3 { font-size: 1.6rem; }
+    .modal-info .price { font-size: 1.25rem; font-weight: 700; }
+    .modal-info .desc { font-size: .9rem; }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: rgba(255, 255, 255, .85); border: none; border-radius: 50%;
+      width: 34px; height: 34px; display: grid; place-items: center; cursor: pointer;
+    }
+    .option-group { display: grid; gap: .35rem; }
+    .option-group label { font-size: .8rem; font-weight: 600; color: var(--muted); }
+    .option-pills { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .option-pills button {
+      padding: .35rem .8rem; border-radius: var(--radius-pill);
+      border: 1px solid var(--border); background: var(--surface);
+      font: inherit; font-size: .82rem; cursor: pointer;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .option-pills button.active { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+  </style>
+</head>
+<body>
+
+  <!-- SVG ICON SPRITE -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+      <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+      <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21 7 14.2 2 9.3l6.9-1z"/></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+      <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+      <symbol id="i-truck" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></symbol>
+      <symbol id="i-return" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+      <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#">Njn</a>
+      <div class="nav-links">
+        <a href="#collections">Collections</a>
+        <a href="#shop">Shop</a>
+        <a href="#about">About</a>
+        <a href="#contact">Visit Us</a>
+      </div>
+      <div class="nav-actions">
+        <button class="cart-btn" id="cartToggle" aria-label="Open cart">
+          <svg class="i" style="width:1.2em;height:1.2em"><use href="#i-cart"/></svg>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="burger" data-sheet aria-label="Open menu">
+          <svg class="i" style="width:1.3em;height:1.3em"><use href="#i-menu"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MOBILE SHEET -->
+  <div class="sheet" id="mobileSheet">
+    <button class="close-sheet" data-sheet aria-label="Close menu">
+      <svg class="i" style="width:1.5em;height:1.5em"><use href="#i-x"/></svg>
+    </button>
+    <a href="#collections" data-sheet>Collections</a>
+    <a href="#shop" data-sheet>Shop</a>
+    <a href="#about" data-sheet>About</a>
+    <a href="#contact" data-sheet>Visit Us</a>
+    <div style="margin-top:2rem; display:flex; gap:.75rem; flex-wrap:wrap;">
+      <a href="tel:+918139846085" class="btn btn-primary" style="font-size:.9rem">
+        <svg class="i"><use href="#i-phone"/></svg> Call us
+      </a>
+      <a href="https://wa.me/918139846085?text=Hello%20Njn%20Boutique" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:.9rem">
+        <svg class="i"><use href="#i-chat"/></svg> WhatsApp
+      </a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="container">
+      <p class="eyebrow" style="margin-bottom:1rem">Valanchery's fashion destination</p>
+      <h1>Wear your <em>story</em>, beautifully.</h1>
+      <p>Curated fashion for the modern woman — handpicked fabrics, timeless silhouettes, and everyday elegance. Visit us in Valanchery or place a WhatsApp order enquiry.</p>
+      <div class="hero-actions">
+        <a href="#shop" class="btn btn-primary">Explore collection <svg class="i"><use href="#i-arrow-right"/></svg></a>
+        <a href="https://wa.me/918139846085?text=Hi%2C%20I'd%20like%20to%20know%20more%20about%20your%20collection." target="_blank" rel="noopener" class="btn btn-ghost">
+          <svg class="i"><use href="#i-chat"/></svg> Chat with us
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- TRUST ROW -->
+  <div class="container" style="padding-bottom:2rem">
+    <div class="trust-row" data-reveal>
+      <div class="trust-item">
+        <svg class="i"><use href="#i-truck"/></svg>
+        <span>Local delivery in Valanchery</span>
+      </div>
+      <div class="trust-item">
+        <svg class="i"><use href="#i-shield"/></svg>
+        <span>Quality assured fabrics</span>
+      </div>
+      <div class="trust-item">
+        <svg class="i"><use href="#i-chat"/></svg>
+        <span>WhatsApp order enquiry</span>
+      </div>
+      <div class="trust-item">
+        <svg class="i"><use href="#i-return"/></svg>
+        <span>Easy exchange in-store</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLLECTIONS -->
+  <section id="collections">
+    <div class="container">
+      <div style="margin-bottom:2rem" data-reveal>
+        <p class="eyebrow">Curated for you</p>
+        <h2>Our collections</h2>
+      </div>
+      <div class="collection-grid">
+        <a href="#shop" class="collection-tile" data-reveal>
+          <div class="tile-bg" style="background:linear-gradient(135deg,#b85c4a,#d4a373)"></div>
+          <div class="tile-label">Festive Edit <svg class="i"><use href="#i-arrow-right"/></svg></div>
+        </a>
+        <a href="#shop" class="collection-tile" data-reveal>
+          <div class="tile-bg" style="background:linear-gradient(135deg,#4a6b5c,#8fa99e)"></div>
+          <div class="tile-label">Everyday Cotton <svg class="i"><use href="#i-arrow-right"/></svg></div>
+        </a>
+        <a href="#shop" class="collection-tile" data-reveal>
+          <div class="tile-bg" style="background:linear-gradient(135deg,#5b4a6b,#a88fb0)"></div>
+          <div class="tile-label">Kurta Sets <svg class="i"><use href="#i-arrow-right"/></svg></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOP -->
+  <section id="shop" style="padding-top:0">
+    <div class="container">
+      <div class="shop-head" data-reveal>
+        <div>
+          <p class="eyebrow">Shop the look</p>
+          <h2>New arrivals</h2>
+        </div>
+        <div class="shop-controls">
+          <select id="filterCat" aria-label="Filter by category">
+            <option value="all">All categories</option>
+            <option value="kurta">Kurta Sets</option>
+            <option value="saree">Sarees</option>
+            <option value="top">Tops</option>
+          </select>
+          <select id="sortBy" aria-label="Sort products">
+            <option value="featured">Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" style="padding-top:0">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center" data-reveal>
+        <div>
+          <p class="eyebrow">Our story</p>
+          <h2 style="margin-bottom:1rem">Rooted in Valanchery,<br>dressed for everywhere.</h2>
+          <p style="margin-bottom:1rem">Njn Fashion Boutique began with a simple idea — that everyday clothing should feel special. We handpick each piece for its fabric, fit, and finish, so you can step out with confidence.</p>
+          <p style="margin-bottom:1.5rem">From festive wear to breathable cottons for daily wear, our collection is curated with care by people who live and shop right here in Valanchery.</p>
+          <a href="https://wa.me/918139846085?text=Hi%2C%20I'd%20like%20to%20visit%20the%20boutique." target="_blank" rel="noopener" class="btn btn-primary">
+            <svg class="i"><use href="#i-pin"/></svg> Visit our store
+          </a>
+        </div>
+        <div style="border-radius:22px;overflow:hidden;aspect-ratio:4/3;background:linear-gradient(135deg,#f2ede7,#e6dfd7);display:grid;place-items:center">
+          <div style="text-align:center;padding:2rem">
+            <svg class="i" style="width:3rem;height:3rem;color:var(--accent);margin:0 auto .75rem"><use href="#i-heart"/></svg>
+            <p style="font:500 1.3rem var(--font-display);color:var(--text)">Curated with love<br>in Valanchery</p>
+            <p style="font-size:.82rem;margin-top:.5rem">Visit us at our store — we'd love to help you find your next favourite outfit.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section style="padding-top:0">
+    <div class="container">
+      <div style="margin-bottom:2rem" data-reveal>
+        <p class="eyebrow">Kind words</p>
+        <h2>What our customers say</h2>
+      </div>
+      <div class="testi-grid">
+        <div class="testi-card" data-reveal>
+          <div class="testi-stars">
+            <svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg>
+          </div>
+          <p>"The kurta set I bought is my new favourite. The fabric is so comfortable and the fit is perfect. Delivery to Valanchery was quick too."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">SA</div>
+            <div><strong>Sreelakshmi A.</strong><span>Valanchery</span></div>
+          </div>
+        </div>
+        <div class="testi-card" data-reveal>
+          <div class="testi-stars">
+            <svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg>
+          </div>
+          <p>"I placed an order through WhatsApp and they were so helpful with sizing. The saree is gorgeous and exactly as shown. Will definitely order again."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">NK</div>
+            <div><strong>Nithya K.</strong><span>Kuttippuram</span></div>
+          </div>
+        </div>
+        <div class="testi-card" data-reveal>
+          <div class="testi-stars">
+            <svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg>
+          </div>
+          <p>"Love that they have such good quality at reasonable prices. The team is patient and helps you pick the right outfit. A gem in Valanchery!"</p>
+          <div class="testi-author">
+            <div class="testi-avatar">FM</div>
+            <div><strong>Fathima M.</strong><span>Valanchery</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section style="padding-top:0">
+    <div class="container">
+      <div class="newsletter-box" data-reveal>
+        <div>
+          <h3 style="margin-bottom:.25rem">New drops, first access</h3>
+          <p style="font-size:.9rem">Join our list for early looks and in-store event invites. No spam, ever.</p>
+        </div>
+        <form class="newsletter-form" id="newsletterForm">
+          <input type="email" name="email" placeholder="Your email address" required aria-label="Email address">
+          <button type="submit" class="btn btn-primary" style="padding:.75rem 1.2rem;white-space:nowrap">Join</button>
+        </form>
+        <div class="form-msg" id="newsletterMsg" style="width:100%;text-align:center"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" style="padding-top:0">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem" data-reveal>
+        <div>
+          <p class="eyebrow">Come say hello</p>
+          <h2 style="margin-bottom:1rem">Visit our boutique</h2>
+          <p style="margin-bottom:1.5rem">We're right in the heart of Valanchery. Walk in to browse, feel the fabrics, and get personalised styling help.</p>
+          <div style="display:grid;gap:1rem">
+            <div style="display:flex;gap:.75rem;align-items:flex-start">
+              <svg class="i" style="color:var(--accent);margin-top:.2rem"><use href="#i-pin"/></svg>
+              <div><strong style="font-size:.92rem">Address</strong><p style="font-size:.88rem">Valanchery, Malappuram District, Kerala</p></div>
+            </div>
+            <div style="display:flex;gap:.75rem;align-items:flex-start">
+              <svg class="i" style="color:var(--accent);margin-top:.2rem"><use href="#i-phone"/></svg>
+              <div><strong style="font-size:.92rem">Phone</strong><p style="font-size:.88rem"><a href="tel:+918139846085">+91 81398 46085</a></p></div>
+            </div>
+            <div style="display:flex;gap:.75rem;align-items:flex-start">
+              <svg class="i" style="color:var(--accent);margin-top:.2rem"><use href="#i-clock"/></svg>
+              <div><strong style="font-size:.92rem">Hours</strong><p style="font-size:.88rem">Mon–Sat: 9:30 AM – 8:00 PM<br>Sunday: 10:00 AM – 2:00 PM</p></div>
+            </div>
+          </div>
+          <div style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap">
+            <a href="https://wa.me/918139846085?text=Hi%2C%20I'd%20like%20to%20visit%20the%20boutique." target="_blank" rel="noopener" class="btn btn-primary">
+              <svg class="i"><use href="#i-chat"/></svg> WhatsApp us
+            </a>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem">
+          <h3 style="margin-bottom:1rem;font-size:1.3rem">Send us a message</h3>
+          <form id="contactForm">
+            <div class="field">
+              <label for="cName">Your name</label>
+              <input type="text" id="cName" name="name" required placeholder="Full name">
+            </div>
+            <div class="field">
+              <label for="cPhone">Phone number</label>
+              <input type="tel" id="cPhone" name="phone" required placeholder="10-digit mobile number" pattern="[0-9]{10}">
+            </div>
+            <div class="field">
+              <label for="cMsg">Message</label>
+              <textarea id="cMsg" name="message" rows="3" placeholder="What are you looking for?"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Send message</button>
+            <div class="form-msg" id="contactMsg"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span style="font:500 1.4rem var(--font-display)">Njn Fashion Boutique</span>
+          <p>Curated fashion for the modern woman. Proudly based in Valanchery, Kerala.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <a href="#shop">New arrivals</a>
+          <a href="#collections">Collections</a>
+          <a href="#shop">Kurta sets</a>
+          <a href="#shop">Sarees</a>
+        </div>
+        <div class="footer-col">
+          <h4>Info</h4>
+          <a href="#about">About us</a>
+          <a href="#contact">Visit us</a>
+          <a href="https://wa.me/918139846085" target="_blank" rel="noopener">Order enquiry</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="tel:+918139846085">+91 81398 46085</a>
+          <a href="https://wa.me/918139846085" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="#contact">Valanchery, Kerala</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2025 Njn Fashion Boutique. All rights reserved.</span>
+        <span>Made with care in Valanchery</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FLOATING WHATSAPP -->
+  <a class="wa-float" href="https://wa.me/918139846085?text=Hi%20Njn%20Boutique%2C%20I'd%20like%20to%20place%20an%20order%20enquiry." target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <svg class="i"><use href="#i-chat"/></svg>
+  </a>
+
+  <!-- CART DRAWER -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="cartDrawer" role="dialog" aria-label="Shopping cart" aria-modal="true">
+    <div class="drawer-head">
+      <h3>Your cart</h3>
+      <button class="drawer-close" id="drawerClose" aria-label="Close cart">
+        <svg class="i" style="width:1.4em;height:1.4em"><use href="#i-x"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body" id="cartBody"></div>
+    <div class="drawer-foot" id="cartFoot"></div>
+  </div>
+
+  <!-- QUICK VIEW MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-label="Product details">
+      <button class="modal-close" id="modalClose" aria-label="Close">
+        <svg class="i"><use href="#i-x"/></svg>
+      </button>
+      <div class="modal-img" id="modalImg"></div>
+      <div class="modal-info" id="modalInfo"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       CONFIG
+    ============================================================ */
+    const WHATSAPP_NUMBER = "918139846085"; // country code + number
+    const CURRENCY = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+
+    /* ============================================================
+       PRODUCT CATALOG (fashion boutique)
+    ============================================================ */
+    const PRODUCTS = [
+      {
+        id: 'p1', name: 'Terracotta Cotton Kurta Set', price: 1499, compare: 1999,
+        cat: 'kurta', badge: 'Bestseller',
+        img: 'https://picsum.photos/seed/njn-kurta1/400/500',
+        desc: 'Handloom cotton kurta with matching palazzo. Breathable, soft, and perfect for all-day wear.',
+        options: { Size: ['S', 'M', 'L', 'XL'], Color: ['Terracotta', 'Ivory'] }
+      },
+      {
+        id: 'p2', name: 'Kerala Kasavu Saree', price: 2499, compare: 3199,
+        cat: 'saree', badge: '',
+        img: 'https://picsum.photos/seed/njn-saree1/400/500',
+        desc: 'Classic off-white Kasavu with gold border. Woven in Kerala, ideal for festivals and weddings.',
+        options: { Color: ['Off-White'] }
+      },
+      {
+        id: 'p3', name: 'Sage Green Block Print Top', price: 899, compare: 1299,
+        cat: 'top', badge: 'New',
+        img: 'https://picsum.photos/seed/njn-top1/400/500',
+        desc: 'Lightweight cotton top with hand-block print. Pairs beautifully with jeans or palazzos.',
+        options: { Size: ['S', 'M', 'L'], Color: ['Sage', 'Indigo'] }
+      },
+      {
+        id: 'p4', name: 'Mustard Silk Blend Kurta', price: 1899, compare: 2599,
+        cat: 'kurta', badge: 'Festive',
+        img: 'https://picsum.photos/seed/njn-kurta2/400/500',
+        desc: 'Silk-blend kurta with subtle zari detailing. A festive favourite for evening gatherings.',
+        options: { Size: ['S', 'M', 'L', 'XL'], Color: ['Mustard'] }
+      },
+      {
+        id: 'p5', name: 'Indigo Handloom Saree', price: 2199, compare: 2899,
+        cat: 'saree', badge: '',
+        img: 'https://picsum.photos/seed/njn-saree2/400/500',
+        desc: 'Deep indigo handloom saree with a woven border. Soft drape, rich colour, everyday elegance.',
+        options: { Color: ['Indigo'] }
+      },
+      {
+        id: 'p6', name: 'Ivory Embroidered Cotton Top', price: 1099, compare: 1499,
+        cat: 'top', badge: 'Limited',
+        img: 'https://picsum.photos/seed/njn-top2/400/500',
+        desc: 'Delicate thread embroidery on breathable cotton. Dress it up or down with ease.',
+        options: { Size: ['S', 'M', 'L'], Color: ['Ivory'] }
+      },
+      {
+        id: 'p7', name: 'Rose Chikankari Kurta', price: 1699, compare: 2299,
+        cat: 'kurta', badge: 'New',
+        img: 'https://picsum.photos/seed/njn-kurta3/400/500',
+        desc: 'Soft rose kurta with fine chikankari work. Straight cut with side slits for comfort.',
+        options: { Size: ['S', 'M', 'L', 'XL'], Color: ['Rose', 'Powder Blue'] }
+      },
+      {
+        id: 'p8', name: 'Teal Cotton Saree with Border', price: 1799, compare: 2399,
+        cat: 'saree', badge: '',
+        img: 'https://picsum.photos/seed/njn-saree3/400/500',
+        desc: 'Vibrant teal cotton saree with contrast border. Easy to drape, perfect for daytime events.',
+        options: { Color: ['Teal'] }
+      }
+    ];
+
+    /* ============================================================
+       CART STORE
+    ============================================================ */
+    const Cart = {
+      items: JSON.parse(localStorage.getItem('njn_cart') || '[]'),
+      save() {
+        localStorage.setItem('njn_cart', JSON.stringify(this.items));
+        this.render();
+        this.updateCount();
+      },
+      key(id, opt) { return id + '|' + Object.values(opt || {}).join('/'); },
+      add(p, opt = {}, qty = 1) {
+        const k = this.key(p.id, opt);
+        const f = this.items.find(i => i.k === k);
+        if (f) f.qty += qty;
+        else this.items.push({ k, id: p.id, name: p.name, price: p.price, opt, qty, img: p.img });
+        this.save();
+        openDrawer();
+      },
+      setQty(k, d) {
+        const i = this.items.find(x => x.k === k);
+        if (!i) return;
+        i.qty += d;
+        if (i.qty < 1) this.items = this.items.filter(x => x.k !== k);
+        this.save();
+      },
+      remove(k) {
+        this.items = this.items.filter(x => x.k !== k);
+        this.save();
+      },
+      total() { return this.items.reduce((s, i) => s + i.price * i.qty, 0); },
+      count() { return this.items.reduce((s, i) => s + i.qty, 0); },
+      updateCount() {
+        const el = document.getElementById('cartCount');
+        const n = this.count();
+        el.textContent = n;
+        el.classList.toggle('show', n > 0);
+      },
+      render() {
+        const body = document.getElementById('cartBody');
+        const foot = document.getElementById('cartFoot');
+        if (!this.items.length) {
+          body.innerHTML = `
+            <div class="cart-empty">
+              <svg class="i" style="width:2.5rem;height:2.5rem"><use href="#i-cart"/></svg>
+              <p style="margin-top:.75rem;font-weight:600">Your cart is empty</p>
+              <p style="font-size:.85rem">Add something you love from our collection.</p>
+              <button class="btn btn-primary" style="margin-top:1.25rem" onclick="closeDrawer()">Start shopping</button>
+            </div>`;
+          foot.innerHTML = '';
+          return;
+        }
+        body.innerHTML = this.items.map(i => `
+          <div class="cart-item">
+            <img src="${i.img}" alt="${i.name}" onerror="this.style.background='var(--surface-2)';this.removeAttribute('src')">
+            <div class="cart-item-info">
+              <span class="name">${i.name}</span>
+              ${Object.keys(i.opt).length ? `<span class="variant">${Object.values(i.opt).join(' / ')}</span>` : ''}
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.5rem">
+                <div class="qty-row">
+                  <button class="qty-btn" onclick="Cart.setQty('${i.k}',-1)" aria-label="Decrease quantity"><svg class="i" style="width:.85em;height:.85em"><use href="#i-minus"/></svg></button>
+                  <span style="font-size:.85rem;min-width:1.2rem;text-align:center">${i.qty}</span>
+                  <button class="qty-btn" onclick="Cart.setQty('${i.k}',1)" aria-label="Increase quantity"><svg class="i" style="width:.85em;height:.85em"><use href="#i-plus"/></svg></button>
+                </div>
+                <span class="price">${CURRENCY.format(i.price * i.qty)}</span>
+              </div>
+            </div>
+            <button class="cart-remove" onclick="Cart.remove('${i.k}')" aria-label="Remove item"><svg class="i"><use href="#i-trash"/></svg></button>
+          </div>
+        `).join('');
+        foot.innerHTML = `
+          <div class="cart-subtotal">
+            <span>Subtotal</span>
+            <span>${CURRENCY.format(this.total())}</span>
+          </div>
+          <p style="font-size:.78rem;color:var(--faint);margin-bottom:1rem">Delivery charges and availability will be confirmed on WhatsApp.</p>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" id="showCheckoutBtn">
+            <svg class="i"><use href="#i-chat"/></svg> Proceed to enquiry
+          </button>
+          <div id="checkoutFormWrap" class="checkout-form" style="margin-top:1rem">
+            <form id="checkoutForm">
+              <div class="field">
+                <label for="coName">Your name</label>
+                <input type="text" id="coName" name="name" required placeholder="Full name">
+              </div>
+              <div class="field">
+                <label for="coPhone">Phone number</label>
+                <input type="tel" id="coPhone" name="phone" required placeholder="10-digit mobile" pattern="[0-9]{10}">
+              </div>
+              <div class="field">
+                <label for="coAddress">Delivery address / city</label>
+                <textarea id="coAddress" name="address" rows="2" required placeholder="House name, street, city, pin"></textarea>
+              </div>
+              <div class="field">
+                <label for="coNote">Note (optional)</label>
+                <input type="text" id="coNote" name="note" placeholder="Any specific request?">
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">
+                <svg class="i"><use href="#i-chat"/></svg> Send enquiry on WhatsApp
+              </button>
+              <div class="form-msg" id="checkoutMsg" style="margin-top:.5rem"></div>
+            </form>
+          </div>
+        `;
+        document.getElementById('showCheckoutBtn').addEventListener('click', () => {
+          document.getElementById('showCheckoutBtn').style.display = 'none';
+          document.getElementById('checkoutFormWrap').classList.add('show');
+        });
+        document.getElementById('checkoutForm').addEventListener('submit', handleCheckout);
+      }
+    };
+
+    /* ============================================================
+       WHATSAPP CHECKOUT
+    ============================================================ */
+    function buildWhatsAppMessage(c) {
+      const lines = Cart.items.map((i, n) =>
+        `${n + 1}. ${i.name}${Object.keys(i.opt).length ? ' (' + Object.values(i.opt).join(', ') + ')' : ''} x ${i.qty} = ${CURRENCY.format(i.price * i.qty)}`
+      );
+      return [
+        '*New order enquiry — Njn Fashion Boutique*', '',
+        ...lines, '',
+        `*Total:* ${CURRENCY.format(Cart.total())}`, '',
+        `*Name:* ${c.name}`,
+        `*Phone:* ${c.phone}`,
+        `*Address:* ${c.address}`,
+        c.note ? `*Note:* ${c.note}` : ''
+      ].filter(Boolean).join('\n');
+    }
+
+    function handleCheckout(e) {
+      e.preventDefault();
+      if (!Cart.items.length) return;
+      const form = e.target;
+      if (!form.reportValidity()) return;
+      const c = Object.fromEntries(new FormData(form).entries());
+      const url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(buildWhatsAppMessage(c));
+      window.open(url, '_blank', 'noopener');
+      // Also send to /submit without blocking WhatsApp
+      submitForm('order_enquiries', { ...c, items: Cart.items, total: Cart.total() }).catch(() => {});
+      const msg = document.getElementById('checkoutMsg');
+      if (msg) {
+        msg.className = 'form-msg ok';
+        msg.textContent = 'Enquiry opened in WhatsApp. Thank you!';
+      }
+    }
+
+    /* ============================================================
+       SUBMIT HELPER (section 3 rule)
+    ============================================================ */
+    async function submitForm(table, data) {
+      const res = await fetch('submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({ url: window.location.host, table: table, data: data })
+      });
+      if (!res.ok) throw new Error('Request failed (' + res.status + ')');
+      try { return await res.json(); } catch (e) { return {}; }
+    }
+
+    function bindForm(form, table, onDone) {
+      const btn = form.querySelector('[type=submit]');
+      const msg = form.querySelector('.form-msg');
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        if (!form.reportValidity()) return;
+        const data = Object.fromEntries(new FormData(form).entries());
+        btn.disabled = true;
+        const original = btn.textContent;
+        btn.textContent = 'Sending...';
+        if (msg) { msg.className = 'form-msg'; msg.textContent = ''; }
+        try {
+          await submitForm(table, data);
+          if (msg) { msg.className = 'form-msg ok'; msg.textContent = 'Thank you. We have received your message.'; }
+          form.reset();
+          onDone && onDone(data);
+        } catch (err) {
+          if (msg) { msg.className = 'form-msg err'; msg.textContent = 'Something went wrong. Please try again.'; }
+        } finally {
+          btn.disabled = false;
+          btn.textContent = original;
+        }
+      });
+    }
+
+    /* ============================================================
+       RENDER PRODUCTS
+    ============================================================ */
+    function renderProducts(cat = 'all', sort = 'featured') {
+      let list = [...PRODUCTS];
+      if (cat !== 'all') list = list.filter(p => p.cat === cat);
+      if (sort === 'price-asc') list.sort((a, b) => a.price - b.price);
+      else if (sort === 'price-desc') list.sort((a, b) => b.price - a.price);
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = list.map((p, i) => `
+        <div class="product-card" style="animation-delay:${i * 50}ms">
+          <div class="card-img">
+            <img src="${p.img}" alt="${p.name}" loading="lazy"
+                 onerror="this.style.background='linear-gradient(135deg,#f2ede7,#e6dfd7)';this.removeAttribute('src')">
+            ${p.badge ? `<span class="card-badge">${p.badge}</span>` : ''}
+            <button class="wish-btn" aria-label="Add to wishlist" onclick="toggleWish(this)">
+              <svg class="i"><use href="#i-heart"/></svg>
+            </button>
+          </div>
+          <div class="card-body">
+            <span class="card-cat">${p.cat === 'kurta' ? 'Kurta Sets' : p.cat === 'saree' ? 'Sarees' : 'Tops'}</span>
+            <span class="card-title">${p.name}</span>
+            <div class="card-price">
+              ${CURRENCY.format(p.price)}
+              ${p.compare ? `<span class="compare">${CURRENCY.format(p.compare)}</span>` : ''}
+            </div>
+            <button class="quick-add" onclick="openQuickView('${p.id}')">Quick add</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ============================================================
+       WISHLIST TOGGLE
+    ============================================================ */
+    function toggleWish(btn) {
+      btn.classList.toggle('active');
+    }
+
+    /* ============================================================
+       QUICK VIEW MODAL
+    ============================================================ */
+    let activeProduct = null;
+    function openQuickView(id) {
+      const p = PRODUCTS.find(x => x.id === id);
+      if (!p) return;
+      activeProduct = p;
+      const selectedOpt = {};
+      // default first option
+      Object.keys(p.options).forEach(k => selectedOpt[k] = p.options[k][0]);
+
+      document.getElementById('modalImg').innerHTML = `<img src="${p.img}" alt="${p.name}" onerror="this.style.background='var(--surface-2)';this.removeAttribute('src')">`;
+      const info = document.getElementById('modalInfo');
+      info.innerHTML = `
+        <h3>${p.name}</h3>
+        <div class="price">${CURRENCY.format(p.price)} ${p.compare ? `<span style="font-size:.9rem;font-weight:400;color:var(--faint);text-decoration:line-through;margin-left:.5rem">${CURRENCY.format(p.compare)}</span>` : ''}</div>
+        <p class="desc">${p.desc}</p>
+        ${Object.keys(p.options).map(k => `
+          <div class="option-group">
+            <label>${k}</label>
+            <div class="option-pills" data-opt="${k}">
+              ${p.options[k].map((v, i) => `<button class="${i === 0 ? 'active' : ''}" data-val="${v}">${v}</button>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+        <div class="field" style="margin-top:.5rem">
+          <label for="qvQty">Quantity</label>
+          <input type="number" id="qvQty" value="1" min="1" max="10" style="width:80px">
+        </div>
+        <button class="btn btn-primary" id="qvAdd" style="justify-content:center;margin-top:.5rem">
+          <svg class="i"><use href="#i-cart"/></svg> Add to cart
+        </button>
+      `;
+      // option pill click
+      info.querySelectorAll('.option-pills').forEach(group => {
+        group.querySelectorAll('button').forEach(b => {
+          b.addEventListener('click', () => {
+            group.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            selectedOpt[group.dataset.opt] = b.dataset.val;
+          });
+        });
+      });
+      document.getElementById('qvAdd').addEventListener('click', () => {
+        const qty = parseInt(document.getElementById('qvQty').value) || 1;
+        Cart.add(p, selectedOpt, qty);
+        closeModal();
+      });
+      document.getElementById('modalOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    document.getElementById('modalOverlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    });
+
+    /* ============================================================
+       DRAWER CONTROLS
+    ============================================================ */
+    function openDrawer() {
+      document.getElementById('cartDrawer').classList.add('open');
+      document.getElementById('drawerOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeDrawer() {
+      document.getElementById('cartDrawer').classList.remove('open');
+      document.getElementById('drawerOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('cartToggle').addEventListener('click', openDrawer);
+    document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+    document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
+
+    /* ============================================================
+       MOBILE MENU
+    ============================================================ */
+    document.querySelectorAll('[data-sheet]').forEach(b => {
+      b.addEventListener('click', () => {
+        const sheet = document.getElementById('mobileSheet');
+        sheet.classList.toggle('open');
+        document.body.style.overflow = sheet.classList.contains('open') ? 'hidden' : '';
+      });
+    });
+
+    /* ============================================================
+       SCROLL NAV SHADOW
+    ============================================================ */
+    const nav = document.querySelector('.nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20), { passive: true });
+
+    /* ============================================================
+       FILTER / SORT
+    ============================================================ */
+    document.getElementById('filterCat').addEventListener('change', e => {
+      renderProducts(e.target.value, document.getElementById('sortBy').value);
+    });
+    document.getElementById('sortBy').addEventListener('change', e => {
+      renderProducts(document.getElementById('filterCat').value, e.target.value);
+    });
+
+    /* ============================================================
+       FORMS
+    ============================================================ */
+    // Newsletter
+    bindForm(document.getElementById('newsletterForm'), 'newsletter_subscribers');
+
+    // Contact
+    bindForm(document.getElementById('contactForm'), 'contact_enquiries');
+
+    /* ============================================================
+       INIT
+    ============================================================ */
+    Cart.render();
+    Cart.updateCount();
+    renderProducts();
+
+    // Close drawer on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeDrawer();
+        closeModal();
+        const sheet = document.getElementById('mobileSheet');
+        if (sheet.classList.contains('open')) {
+          sheet.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+      }
+    });
+  </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"8d98d2d17bbb45418d4fe791e880d553","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
