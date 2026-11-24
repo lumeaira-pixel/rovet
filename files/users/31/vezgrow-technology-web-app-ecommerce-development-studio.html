@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vezgrow Technology — Web, App & Ecommerce Development Studio</title>
+  <meta name="description" content="Vezgrow Technology builds high-performance websites, mobile apps, and ecommerce platforms. 500+ ecommerce sites and 200+ websites delivered. Trusted by Blossom by Devu, Kimki, Hastha Jewels, Lifebox Luxe, Azhakhi." />
+  <!--
+    DESIGN DIRECTION: Deep Royal Purple Luxury Dark UI
+    Palette: #29204F (royal), #39276F (dark violet), #0B0A1A (abyss black), #FFFFFF (white), #8B7BFF (accent glow)
+    Fonts: Bricolage Grotesque (display) + Inter (body)
+    Mood: Premium agency, immersive, confident, purple glow accents, GSAP scroll storytelling
+    Hero visual: Real character illustration (SVG avatar with purple gradient tones)
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            royal: '#29204F',
+            violet: '#39276F',
+            abyss: '#0B0A1A',
+            ink: '#0F0D1F',
+            glow: '#8B7BFF',
+            soft: '#B9AFF5',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            body: ['"Inter"', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* === DESIGN TOKENS === */
+    :root {
+      --royal: #29204F;
+      --violet: #39276F;
+      --abyss: #0B0A1A;
+      --ink: #0F0D1F;
+      --glow: #8B7BFF;
+      --soft: #B9AFF5;
+      --white: #FFFFFF;
+      --hairline: rgba(255, 255, 255, 0.08);
+      --glass: rgba(41, 32, 79, 0.45);
+      --focus-ring: rgba(139, 123, 255, 0.7);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--abyss);
+      color: var(--white);
+      overflow-x: hidden;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: var(--glow); color: var(--abyss); }
+
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--abyss); }
+    ::-webkit-scrollbar-thumb { background: var(--royal); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--glow); }
+
+    /* === BACKGROUND MESH === */
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(ellipse 60% 50% at 15% 10%, rgba(57, 39, 111, 0.55) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 85% 20%, rgba(139, 123, 255, 0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 60% at 50% 90%, rgba(41, 32, 79, 0.6) 0%, transparent 65%),
+        var(--abyss);
+    }
+
+    .bg-noise {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      opacity: 0.035;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* === TYPOGRAPHY === */
+    .font-display { font-family: 'Bricolage Grotesque', sans-serif; }
+    .hero-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.02;
+      font-size: clamp(2.4rem, 6vw, 5.2rem);
+    }
+    .section-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      font-size: clamp(1.9rem, 4vw, 3.1rem);
+    }
+    .gradient-text {
+      background: linear-gradient(120deg, #fff 0%, var(--soft) 55%, var(--glow) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* === GLASS CARD === */
+    .glass-card {
+      background: linear-gradient(145deg, rgba(41, 32, 79, 0.55), rgba(15, 13, 31, 0.65));
+      border: 1px solid var(--hairline);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 24px;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, border-color 0.4s ease;
+      will-change: transform;
+    }
+    .glass-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(139, 123, 255, 0.4);
+      box-shadow: 0 24px 60px -18px rgba(139, 123, 255, 0.28), 0 0 0 1px rgba(139, 123, 255, 0.12);
+    }
+
+    /* === BUTTONS === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      padding: 0.95rem 2rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      background: linear-gradient(135deg, var(--glow), #6C5CE7);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 30px -6px rgba(139, 123, 255, 0.5);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, filter 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 14px 44px -8px rgba(139, 123, 255, 0.65);
+      filter: brightness(1.08);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      padding: 0.95rem 2rem;
+      border-radius: 999px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease, border-color 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-ghost:hover {
+      background: rgba(139, 123, 255, 0.12);
+      border-color: rgba(139, 123, 255, 0.45);
+      transform: translateY(-2px);
+    }
+    .btn-ghost:active { transform: scale(0.98); }
+
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--focus-ring), 0 0 0 6px rgba(139, 123, 255, 0.2);
+      border-radius: 6px;
+    }
+
+    /* === HEADER === */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .site-header.scrolled {
+      background: rgba(11, 10, 26, 0.78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom-color: var(--hairline);
+    }
+
+    /* === MOBILE MENU === */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: rgba(11, 10, 26, 0.97);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.6rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-12px);
+      transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+      padding: 2rem;
+    }
+    .mobile-menu.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .mobile-menu a.mobile-link {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--white);
+      text-decoration: none;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+    .mobile-menu a.mobile-link:hover { color: var(--glow); transform: translateX(6px); }
+
+    /* === REVEAL (fallback if GSAP fails) === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .reveal-left { opacity: 0; transform: translateX(-50px); transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+    .reveal-right { opacity: 0; transform: translateX(50px); transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    .reveal-scale { opacity: 0; transform: scale(0.92); transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+    .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+    .delay-1 { transition-delay: 0.08s; }
+    .delay-2 { transition-delay: 0.16s; }
+    .delay-3 { transition-delay: 0.24s; }
+    .delay-4 { transition-delay: 0.32s; }
+    .delay-5 { transition-delay: 0.4s; }
+    .delay-6 { transition-delay: 0.48s; }
+
+    /* === GLOW ORBS === */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* === KEYFRAMES === */
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-18px) rotate(2deg); }
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-24px); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.35; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.08); }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .float-anim { animation: float 7s ease-in-out infinite; }
+    .float-slow { animation: floatSlow 9s ease-in-out infinite; }
+    .pulse-glow { animation: pulseGlow 6s ease-in-out infinite; }
+    .animate-spin { animation: spin 1s linear infinite; }
+    .bob { animation: bob 4s ease-in-out infinite; }
+
+    /* === MARQUEE === */
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+
+    /* === TILT === */
+    .tilt-wrap { perspective: 1000px; }
+    .tilt-card {
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      transform-style: preserve-3d;
+    }
+    .tilt-wrap:hover .tilt-card {
+      transform: rotateX(4deg) rotateY(-4deg) translateY(-6px);
+    }
+
+    /* === STAT NUMBER === */
+    .stat-number {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: -0.03em;
+      background: linear-gradient(120deg, #fff, var(--soft));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* === FORM === */
+    .form-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 0.9rem 1.1rem;
+      color: var(--white);
+      font-size: 0.95rem;
+      transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-input::placeholder { color: rgba(255, 255, 255, 0.35); }
+    .form-input:focus {
+      border-color: var(--glow);
+      background: rgba(139, 123, 255, 0.06);
+      box-shadow: 0 0 0 3px rgba(139, 123, 255, 0.15);
+      outline: none;
+    }
+    .form-input.error { border-color: #ff6b6b; box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15); }
+    .error-msg { color: #ff8a8a; font-size: 0.78rem; margin-top: 0.35rem; display: none; }
+    .error-msg.show { display: block; }
+
+    /* === SUCCESS === */
+    .form-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+    .form-success.show { display: flex; }
+    .check-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(139, 123, 255, 0.15);
+      border: 2px solid var(--glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      animation: popIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* === SECTION SPACING === */
+    .section-pad { padding-top: 5rem; padding-bottom: 5rem; }
+    @media (min-width: 1024px) { .section-pad { padding-top: 7.5rem; padding-bottom: 7.5rem; } }
+
+    .accent-line {
+      height: 3px;
+      width: 60px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--glow), transparent);
+    }
+
+    /* === WORK LINK CARD === */
+    .work-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.1rem 1.4rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      text-decoration: none;
+      color: var(--white);
+      transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+    }
+    .work-link:hover {
+      background: rgba(139, 123, 255, 0.1);
+      border-color: rgba(139, 123, 255, 0.4);
+      transform: translateX(4px);
+    }
+
+    /* === CTA BANNER GLOW PULSE === */
+    .cta-banner {
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: conic-gradient(from 0deg, transparent, rgba(139,123,255,0.15), transparent, rgba(139,123,255,0.15), transparent);
+      animation: rotateConic 12s linear infinite;
+      z-index: 0;
+    }
+    @keyframes rotateConic {
+      to { transform: rotate(360deg); }
+    }
+
+    /* === HERO CHARACTER === */
+    .hero-character {
+      position: relative;
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+    .hero-character .char-svg {
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 30px 60px rgba(139, 123, 255, 0.35));
+    }
+
+    /* === REDUCED MOTION === */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+      .reveal, .reveal-left, .reveal-right, .reveal-scale { opacity: 1 !important; transform: none !important; }
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- BACKGROUND -->
+  <div class="bg-mesh" aria-hidden="true"></div>
+  <div class="bg-noise" aria-hidden="true"></div>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header" id="siteHeader">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8">
+      <nav class="flex items-center justify-between h-16 lg:h-24" aria-label="Main navigation">
+        <a href="#home" class="flex items-center gap-2 sm:gap-2.5 group" aria-label="Vezgrow Technology home">
+          <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0" style="background: linear-gradient(135deg, #8B7BFF, #39276F); box-shadow: 0 0 24px rgba(139,123,255,0.4);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </span>
+          <span class="font-display text-lg sm:text-xl font-bold tracking-tight">Vezgrow<span class="text-[#8B7BFF]">.</span></span>
+        </a>
+
+        <div class="hidden lg:flex items-center gap-8">
+          <a href="#services" class="text-sm font-medium text-white/70 hover:text-white transition-colors duration-300">Services</a>
+          <a href="#work" class="text-sm font-medium text-white/70 hover:text-white transition-colors duration-300">Work</a>
+          <a href="#about" class="text-sm font-medium text-white/70 hover:text-white transition-colors duration-300">About</a>
+          <a href="#contact" class="text-sm font-medium text-white/70 hover:text-white transition-colors duration-300">Contact</a>
+        </div>
+
+        <div class="hidden lg:flex items-center">
+          <a href="#contact" class="btn-primary text-sm !py-2.5 !px-5">
+            Start a Project
+            <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-lg flex items-center justify-center border border-white/10 bg-white/5 shrink-0" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <svg id="menuIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/>
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu lg:hidden" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button id="closeMenuBtn" class="absolute top-5 right-5 w-10 h-10 rounded-lg flex items-center justify-center border border-white/10 bg-white/5" aria-label="Close menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <a href="#services" class="mobile-link">Services</a>
+    <a href="#work" class="mobile-link">Work</a>
+    <a href="#about" class="mobile-link">About</a>
+    <a href="#contact" class="mobile-link">Contact</a>
+    <a href="#contact" class="btn-primary mt-2" style="font-size:0.95rem; padding:0.9rem 2rem;">Start a Project</a>
+  </div>
+
+  <!-- ================= MAIN ================= -->
+  <main id="home">
+    <!-- HERO -->
+    <section class="relative min-h-[100svh] flex items-center pt-24 pb-16 overflow-hidden">
+      <div class="hero-orb w-[500px] h-[500px] -top-32 -left-40 pulse-glow" style="background: radial-gradient(circle, rgba(139,123,255,0.28), transparent 70%);" aria-hidden="true"></div>
+      <div class="hero-orb w-[600px] h-[600px] top-1/3 -right-60 pulse-glow" style="background: radial-gradient(circle, rgba(57,39,111,0.5), transparent 70%); animation-delay: 2s;" aria-hidden="true"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 relative z-10 w-full">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          <div class="lg:col-span-7">
+            <div class="reveal">
+              <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 text-[11px] sm:text-xs font-medium tracking-wide text-white/80 mb-6">
+                <span class="w-2 h-2 rounded-full bg-[#8B7BFF] animate-pulse" aria-hidden="true"></span>
+                500+ Ecommerce Sites · 200+ Websites Delivered
+              </span>
+            </div>
+            <h1 class="hero-title reveal delay-1">
+              We build digital <span class="gradient-text">experiences</span> that grow your business.
+            </h1>
+            <p class="reveal delay-2 mt-6 text-base sm:text-xl text-white/60 max-w-xl leading-relaxed">
+              Vezgrow Technology crafts high-performance websites, mobile apps, and ecommerce platforms — engineered for scale, designed for delight, and trusted by brands across India.
+            </p>
+            <div class="reveal delay-3 mt-8 flex flex-wrap gap-3 sm:gap-4">
+              <a href="#contact" class="btn-primary">
+                Start Your Project
+                <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+              <a href="#work" class="btn-ghost">
+                View Our Work
+                <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+            </div>
+
+            <div class="reveal delay-4 mt-12 grid grid-cols-3 gap-4 sm:gap-8 max-w-lg">
+              <div>
+                <div class="stat-number" data-count="500">0</div>
+                <p class="text-xs sm:text-sm text-white/50 mt-1">Ecommerce Sites</p>
+              </div>
+              <div>
+                <div class="stat-number" data-count="200">0</div>
+                <p class="text-xs sm:text-sm text-white/50 mt-1">Websites</p>
+              </div>
+              <div>
+                <div class="stat-number" data-count="7">0</div>
+                <p class="text-xs sm:text-sm text-white/50 mt-1">Years Experience</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- HERO CHARACTER VISUAL -->
+          <div class="lg:col-span-5 relative reveal-right delay-2">
+            <div class="hero-character float-slow">
+              <!-- Real character illustration: stylised 3D-style developer avatar with purple gradient palette -->
+              <svg class="char-svg" viewBox="0 0 460 560" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Character illustration of a Vezgrow developer holding a laptop">
+                <defs>
+                  <linearGradient id="bodyGrad" x1="130" y1="230" x2="360" y2="540" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#8B7BFF"/>
+                    <stop offset="55%" stop-color="#5B4FCC"/>
+                    <stop offset="100%" stop-color="#39276F"/>
+                  </linearGradient>
+                  <linearGradient id="headGrad" x1="170" y1="90" x2="320" y2="250" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#F3E9FF"/>
+                    <stop offset="100%" stop-color="#C9B8FF"/>
+                  </linearGradient>
+                  <linearGradient id="hairGrad" x1="160" y1="60" x2="320" y2="200" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#1E1638"/>
+                    <stop offset="100%" stop-color="#39276F"/>
+                  </linearGradient>
+                  <linearGradient id="laptopGrad" x1="120" y1="360" x2="340" y2="500" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#D9C6FF"/>
+                    <stop offset="100%" stop-color="#8B7BFF"/>
+                  </linearGradient>
+                  <radialGradient id="auraGrad" cx="0.5" cy="0.5" r="0.5">
+                    <stop offset="0%" stop-color="#8B7BFF" stop-opacity="0.5"/>
+                    <stop offset="100%" stop-color="#8B7BFF" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
+
+                <!-- aura -->
+                <ellipse cx="230" cy="290" rx="210" ry="240" fill="url(#auraGrad)"/>
+
+                <!-- body / hoodie -->
+                <path d="M140 270 C140 240 175 220 230 220 C285 220 320 240 320 270 L340 490 C340 520 300 530 230 530 C160 530 120 520 120 490 Z" fill="url(#bodyGrad)"/>
+                <!-- hoodie zip -->
+                <path d="M230 230 L230 510" stroke="#2A1F5E" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+                <!-- collar -->
+                <path d="M185 230 Q230 265 275 230" stroke="#2A1F5E" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.5"/>
+                <!-- hoodie pocket -->
+                <path d="M170 440 Q230 470 290 440" stroke="#2A1F5E" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.4"/>
+
+                <!-- neck -->
+                <rect x="205" y="190" width="50" height="45" rx="14" fill="#D9C6FF"/>
+
+                <!-- head -->
+                <ellipse cx="230" cy="150" rx="80" ry="86" fill="url(#headGrad)"/>
+                <!-- hair -->
+                <path d="M150 140 C150 75 185 45 230 45 C275 45 310 75 310 140 C310 108 285 85 230 85 C175 85 150 108 150 140 Z" fill="url(#hairGrad)"/>
+                <path d="M152 130 Q163 75 230 65 Q297 75 308 130 Q297 95 230 89 Q163 95 152 130 Z" fill="#1E1638"/>
+                <!-- side hair tufts -->
+                <path d="M152 140 Q145 160 152 185 Q160 170 158 150 Z" fill="#1E1638"/>
+                <path d="M308 140 Q315 160 308 185 Q300 170 302 150 Z" fill="#1E1638"/>
+                <!-- eyes -->
+                <ellipse cx="203" cy="150" rx="7" ry="10" fill="#1E1638"/>
+                <ellipse cx="257" cy="150" rx="7" ry="10" fill="#1E1638"/>
+                <circle cx="205" cy="147" r="2.5" fill="#fff"/>
+                <circle cx="259" cy="147" r="2.5" fill="#fff"/>
+                <!-- brows -->
+                <path d="M189 135 Q203 128 217 135" stroke="#1E1638" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+                <path d="M243 135 Q257 128 271 135" stroke="#1E1638" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+                <!-- smile -->
+                <path d="M211 178 Q230 192 249 178" stroke="#5B4FCC" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+                <!-- blush -->
+                <ellipse cx="185" cy="170" rx="10" ry="5.5" fill="#FFB6D9" opacity="0.5"/>
+                <ellipse cx="275" cy="170" rx="10" ry="5.5" fill="#FFB6D9" opacity="0.5"/>
+                <!-- earrings -->
+                <circle cx="150" cy="165" r="4" fill="#8B7BFF"/>
+                <circle cx="310" cy="165" r="4" fill="#8B7BFF"/>
+
+                <!-- arms -->
+                <path d="M140 295 C95 315 85 380 118 425 L172 402" stroke="url(#bodyGrad)" stroke-width="50" stroke-linecap="round" fill="none"/>
+                <path d="M320 295 C365 315 375 380 342 425 L288 402" stroke="url(#bodyGrad)" stroke-width="50" stroke-linecap="round" fill="none"/>
+
+                <!-- laptop -->
+                <rect x="120" y="360" width="220" height="130" rx="14" fill="url(#laptopGrad)"/>
+                <rect x="134" y="374" width="192" height="102" rx="10" fill="#0F0D1F"/>
+                <!-- code lines on screen -->
+                <rect x="150" y="390" width="95" height="7" rx="3.5" fill="#8B7BFF"/>
+                <rect x="150" y="406" width="130" height="7" rx="3.5" fill="#B9AFF5" opacity="0.6"/>
+                <rect x="150" y="422" width="70" height="7" rx="3.5" fill="#8B7BFF" opacity="0.8"/>
+                <rect x="150" y="438" width="110" height="7" rx="3.5" fill="#B9AFF5" opacity="0.4"/>
+                <rect x="150" y="454" width="50" height="7" rx="3.5" fill="#8B7BFF" opacity="0.9"/>
+                <!-- laptop base -->
+                <rect x="110" y="480" width="240" height="16" rx="8" fill="#39276F"/>
+
+                <!-- hands -->
+                <circle cx="175" cy="400" r="20" fill="#D9C6FF"/>
+                <circle cx="285" cy="400" r="20" fill="#D9C6FF"/>
+
+                <!-- sparkles -->
+                <circle cx="70" cy="190" r="5" fill="#8B7BFF" opacity="0.8"/>
+                <circle cx="390" cy="160" r="4" fill="#B9AFF5" opacity="0.7"/>
+                <circle cx="400" cy="320" r="6" fill="#8B7BFF" opacity="0.6"/>
+                <circle cx="60" cy="350" r="4" fill="#B9AFF5" opacity="0.8"/>
+                <path d="M360 90 L364 100 L374 104 L364 108 L360 118 L356 108 L346 104 L356 100 Z" fill="#8B7BFF" opacity="0.7"/>
+                <path d="M85 260 L88 267 L95 270 L88 273 L85 280 L82 273 L75 270 L82 267 Z" fill="#B9AFF5" opacity="0.7"/>
+                <circle cx="30" cy="420" r="3" fill="#8B7BFF" opacity="0.7"/>
+                <circle cx="430" cy="450" r="3" fill="#B9AFF5" opacity="0.7"/>
+              </svg>
+
+              <!-- floating badge -->
+              <div class="absolute -bottom-2 -left-2 sm:-left-6 glass-card !rounded-2xl px-3 py-2.5 sm:px-4 sm:py-3 flex items-center gap-2.5 float-anim" style="animation-delay: 1s;">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-[#8B7BFF]/20 border border-[#8B7BFF]/30">
+                  <i data-lucide="trending-up" class="w-4 h-4 text-[#8B7BFF]" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <p class="text-[10px] text-white/50">Conversion</p>
+                  <p class="text-xs sm:text-sm font-semibold">+214%</p>
+                </div>
+              </div>
+
+              <!-- floating badge top-right -->
+              <div class="absolute top-4 -right-2 sm:-right-4 glass-card !rounded-2xl px-3 py-2.5 flex items-center gap-2 float-anim" style="animation-delay: 2.2s;">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-[#8B7BFF]/20 border border-[#8B7BFF]/30">
+                  <i data-lucide="code-2" class="w-4 h-4 text-[#8B7BFF]" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <p class="text-[10px] text-white/50">Projects</p>
+                  <p class="text-xs sm:text-sm font-semibold">500+</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST MARQUEE -->
+    <section class="border-y border-white/[0.06] py-7 overflow-hidden" aria-label="Trusted brands">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 mb-4">
+        <p class="text-center text-[10px] sm:text-xs tracking-[0.2em] uppercase text-white/35">Trusted by forward-thinking brands</p>
+      </div>
+      <div class="marquee-track gap-10 sm:gap-14 select-none" aria-hidden="true">
+        <span class="font-display text-xl sm:text-2xl font-bold text-white/25 whitespace-nowrap">BLOSSOM BY DEVU</span>
+        <span class="font-display text-xl sm:text-2xl font-bold text-white/25 whitespace-nowrap">KIMKI</span>
+        <span class="font-display text-xl sm:text-2xl font-bold text-white/25 whitespace-nowrap">HASTHA JEWELS</span>
+        <span class="font-display text-xl sm:text-2xl font-bold text-white/25 whitespace-nowrap">LIFEBOX LUXE</span>
+        <span class="font-display text-xl sm:text-2xl font-bold text-white/25 whitespace-nowrap">AZHAKHI</span>
+        <span class="font-display text-xl sm:text-2xl font-bold text-white/25 whitespace-nowrap">BLOSSOM BY DEVU</span>
+        <span class="font-display text-xl sm:text-2xl font-bold text-white/25 whitespace-nowrap">KIMKI</span>
+        <span class="font-display text-xl sm:text-2xl font-bold text-white/25 whitespace-nowrap">HASTHA JEWELS</span>
+        <span class="font-display text-xl sm:text-2xl font-bold text-white/25 whitespace-nowrap">LIFEBOX LUXE</span>
+        <span class="font-display text-xl sm:text-2xl font-bold text-white/25 whitespace-nowrap">AZHAKHI</span>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" class="section-pad relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8">
+        <div class="max-w-2xl mb-12 sm:mb-16">
+          <div class="reveal">
+            <span class="text-xs tracking-[0.22em] uppercase text-[#8B7BFF] font-semibold">What We Do</span>
+            <div class="accent-line mt-3"></div>
+          </div>
+          <h2 class="section-title mt-5 reveal delay-1">
+            Services engineered for <span class="gradient-text">growth</span>
+          </h2>
+          <p class="reveal delay-2 mt-4 text-white/55 text-base sm:text-lg leading-relaxed">
+            From first line of code to final deployment, we own the full product lifecycle. Every solution is tailored, tested, and built to perform.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5 sm:gap-7">
+          <article class="glass-card overflow-hidden reveal delay-1 tilt-wrap">
+            <div class="tilt-card">
+              <div class="relative h-44 sm:h-48 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?q=80&w=800&auto=format&fit=crop" alt="Web development workspace with code on screens" class="w-full h-full object-cover opacity-80" loading="lazy" />
+                <div class="absolute inset-0" style="background: linear-gradient(180deg, transparent 20%, rgba(11,10,26,0.95) 100%);"></div>
+                <div class="absolute top-4 left-4 w-11 h-11 rounded-xl flex items-center justify-center bg-[#29204F]/80 border border-white/10 backdrop-blur-sm">
+                  <i data-lucide="code-2" class="w-5 h-5 text-[#8B7BFF]" aria-hidden="true"></i>
+                </div>
+              </div>
+              <div class="p-5 sm:p-7">
+                <h3 class="font-display text-lg sm:text-xl font-bold mb-2">Web Development</h3>
+                <p class="text-white/55 text-sm leading-relaxed mb-5">Blazing-fast, responsive websites and web apps built with modern frameworks. From marketing sites to complex dashboards.</p>
+                <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-medium text-[#8B7BFF] hover:gap-2.5 transition-all duration-300">
+                  Discuss your web project <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="glass-card overflow-hidden reveal delay-2 tilt-wrap">
+            <div class="tilt-card">
+              <div class="relative h-44 sm:h-48 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=800&auto=format&fit=crop" alt="Mobile app development on smartphone" class="w-full h-full object-cover opacity-80" loading="lazy" />
+                <div class="absolute inset-0" style="background: linear-gradient(180deg, transparent 20%, rgba(11,10,26,0.95) 100%);"></div>
+                <div class="absolute top-4 left-4 w-11 h-11 rounded-xl flex items-center justify-center bg-[#29204F]/80 border border-white/10 backdrop-blur-sm">
+                  <i data-lucide="smartphone" class="w-5 h-5 text-[#8B7BFF]" aria-hidden="true"></i>
+                </div>
+              </div>
+              <div class="p-5 sm:p-7">
+                <h3 class="font-display text-lg sm:text-xl font-bold mb-2">App Development</h3>
+                <p class="text-white/55 text-sm leading-relaxed mb-5">Native and cross-platform mobile apps for iOS & Android. Intuitive UX, rock-solid performance, and app-store ready.</p>
+                <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-medium text-[#8B7BFF] hover:gap-2.5 transition-all duration-300">
+                  Build your mobile app <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="glass-card overflow-hidden reveal delay-3 tilt-wrap">
+            <div class="tilt-card">
+              <div class="relative h-44 sm:h-48 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=800&auto=format&fit=crop" alt="Ecommerce checkout experience on mobile" class="w-full h-full object-cover opacity-80" loading="lazy" />
+                <div class="absolute inset-0" style="background: linear-gradient(180deg, transparent 20%, rgba(11,10,26,0.95) 100%);"></div>
+                <div class="absolute top-4 left-4 w-11 h-11 rounded-xl flex items-center justify-center bg-[#29204F]/80 border border-white/10 backdrop-blur-sm">
+                  <i data-lucide="shopping-bag" class="w-5 h-5 text-[#8B7BFF]" aria-hidden="true"></i>
+                </div>
+              </div>
+              <div class="p-5 sm:p-7">
+                <h3 class="font-display text-lg sm:text-xl font-bold mb-2">Ecommerce Solutions</h3>
+                <p class="text-white/55 text-sm leading-relaxed mb-5">High-converting online stores with seamless checkout, inventory sync, and payment gateways that scale with your catalog.</p>
+                <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-medium text-[#8B7BFF] hover:gap-2.5 transition-all duration-300">
+                  Launch your store <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section-pad relative overflow-hidden">
+      <div class="hero-orb w-[500px] h-[500px] top-0 right-0 pulse-glow" style="background: radial-gradient(circle, rgba(139,123,255,0.14), transparent 70%);" aria-hidden="true"></div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div class="reveal-left order-2 lg:order-1">
+            <div class="relative">
+              <div class="rounded-3xl overflow-hidden border border-white/10" style="box-shadow: 0 40px 100px -30px rgba(57,39,111,0.6);">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop" alt="Vezgrow team collaborating in a modern studio" class="w-full h-[340px] sm:h-[420px] object-cover" loading="lazy" />
+              </div>
+              <div class="absolute -bottom-5 -right-3 sm:-right-6 glass-card !rounded-2xl px-4 py-3 sm:px-5 sm:py-4 float-anim" style="animation-delay: 1.5s;">
+                <div class="flex items-center gap-2.5 sm:gap-3">
+                  <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center bg-[#8B7BFF]/20 border border-[#8B7BFF]/30">
+                    <i data-lucide="award" class="w-5 h-5 text-[#8B7BFF]" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <p class="text-[10px] text-white/50">Client Retention</p>
+                    <p class="text-base sm:text-lg font-bold font-display">97%</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-1 lg:order-2">
+            <div class="reveal">
+              <span class="text-xs tracking-[0.22em] uppercase text-[#8B7BFF] font-semibold">About Vezgrow</span>
+              <div class="accent-line mt-3"></div>
+            </div>
+            <h2 class="section-title mt-5 reveal delay-1">
+              A studio obsessed with <span class="gradient-text">craft</span> and outcomes
+            </h2>
+            <p class="reveal delay-2 mt-5 text-white/60 text-base sm:text-lg leading-relaxed">
+              Vezgrow Technology is a full-service digital product studio based in India. We partner with ambitious founders and established brands to turn complex ideas into elegant, revenue-driving digital products.
+            </p>
+            <p class="reveal delay-3 mt-4 text-white/50 text-sm sm:text-base leading-relaxed">
+              Our multidisciplinary team of designers, engineers, and strategists has shipped over 500 ecommerce platforms and 200+ custom websites across retail, jewellery, lifestyle, and SaaS. We don't just build software — we build competitive advantage.
+            </p>
+
+            <div class="reveal delay-4 mt-8 grid sm:grid-cols-2 gap-4 sm:gap-5">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-[#8B7BFF]/15 border border-[#8B7BFF]/25 shrink-0">
+                  <i data-lucide="rocket" class="w-5 h-5 text-[#8B7BFF]" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-sm">Launch Fast</h4>
+                  <p class="text-white/45 text-xs mt-1 leading-relaxed">Agile sprints that get you to market in weeks.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-[#8B7BFF]/15 border border-[#8B7BFF]/25 shrink-0">
+                  <i data-lucide="shield-check" class="w-5 h-5 text-[#8B7BFF]" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-sm">Built to Last</h4>
+                  <p class="text-white/45 text-xs mt-1 leading-relaxed">Clean architecture, testing, and long-term support.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-[#8B7BFF]/15 border border-[#8B7BFF]/25 shrink-0">
+                  <i data-lucide="users" class="w-5 h-5 text-[#8B7BFF]" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-sm">True Partnership</h4>
+                  <p class="text-white/45 text-xs mt-1 leading-relaxed">Transparent communication and shared goals.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-[#8B7BFF]/15 border border-[#8B7BFF]/25 shrink-0">
+                  <i data-lucide="sparkles" class="w-5 h-5 text-[#8B7BFF]" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-sm">Design-led</h4>
+                  <p class="text-white/45 text-xs mt-1 leading-relaxed">Every pixel considered. Every interaction intentional.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK -->
+    <section id="work" class="section-pad relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-12">
+          <div class="max-w-xl">
+            <div class="reveal">
+              <span class="text-xs tracking-[0.22em] uppercase text-[#8B7BFF] font-semibold">Selected Work</span>
+              <div class="accent-line mt-3"></div>
+            </div>
+            <h2 class="section-title mt-5 reveal delay-1">Live <span class="gradient-text">projects</span> we've shipped</h2>
+          </div>
+          <a href="#contact" class="reveal delay-2 inline-flex items-center gap-2 text-sm font-medium text-white/70 hover:text-[#8B7BFF] transition-colors duration-300">
+            Start a project with us <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-5 sm:gap-7">
+          <!-- Work 1: Blossom by Devu — ecommerce home page hero -->
+          <article class="reveal delay-1 group relative rounded-3xl overflow-hidden border border-white/10" style="transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);">
+            <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1200&auto=format&fit=crop" alt="Blossom by Devu ecommerce fashion home page" class="w-full h-[260px] sm:h-[320px] object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            <div class="absolute inset-0" style="background: linear-gradient(180deg, transparent 30%, rgba(11,10,26,0.94) 100%);"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
+              <span class="text-[10px] sm:text-[11px] tracking-wider uppercase text-[#8B7BFF] font-semibold">Ecommerce · Lifestyle</span>
+              <h3 class="font-display text-xl sm:text-2xl font-bold mt-1">Blossom by Devu</h3>
+              <a href="https://blossombydevu.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-white/60 hover:text-[#8B7BFF] mt-2 transition-colors duration-300">
+                Visit live site <i data-lucide="external-link" class="w-3.5 h-3.5" aria-hidden="true"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- Work 2: Kimki — ecommerce fashion home page hero -->
+          <article class="reveal delay-2 group relative rounded-3xl overflow-hidden border border-white/10" style="transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);">
+            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop" alt="Kimki fashion ecommerce home page" class="w-full h-[260px] sm:h-[320px] object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            <div class="absolute inset-0" style="background: linear-gradient(180deg, transparent 30%, rgba(11,10,26,0.94) 100%);"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
+              <span class="text-[10px] sm:text-[11px] tracking-wider uppercase text-[#8B7BFF] font-semibold">Ecommerce · Fashion</span>
+              <h3 class="font-display text-xl sm:text-2xl font-bold mt-1">Kimki</h3>
+              <a href="https://kimki.in" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-white/60 hover:text-[#8B7BFF] mt-2 transition-colors duration-300">
+                Visit live site <i data-lucide="external-link" class="w-3.5 h-3.5" aria-hidden="true"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- Work 3: Hastha Jewels — ecommerce jewellery home page hero -->
+          <article class="reveal delay-3 group relative rounded-3xl overflow-hidden border border-white/10" style="transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);">
+            <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1200&auto=format&fit=crop" alt="Hastha Jewels online jewellery ecommerce home page" class="w-full h-[260px] sm:h-[320px] object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            <div class="absolute inset-0" style="background: linear-gradient(180deg, transparent 30%, rgba(11,10,26,0.94) 100%);"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
+              <span class="text-[10px] sm:text-[11px] tracking-wider uppercase text-[#8B7BFF] font-semibold">Ecommerce · Jewellery</span>
+              <h3 class="font-display text-xl sm:text-2xl font-bold mt-1">Hastha Jewels</h3>
+              <a href="https://hasthajewels.in" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-white/60 hover:text-[#8B7BFF] mt-2 transition-colors duration-300">
+                Visit live site <i data-lucide="external-link" class="w-3.5 h-3.5" aria-hidden="true"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- Work 4: Lifebox Luxe — ecommerce lifestyle home page hero -->
+          <article class="reveal delay-4 group relative rounded-3xl overflow-hidden border border-white/10" style="transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);">
+            <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1200&auto=format&fit=crop" alt="Lifebox Luxe premium lifestyle ecommerce home page" class="w-full h-[260px] sm:h-[320px] object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            <div class="absolute inset-0" style="background: linear-gradient(180deg, transparent 30%, rgba(11,10,26,0.94) 100%);"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
+              <span class="text-[10px] sm:text-[11px] tracking-wider uppercase text-[#8B7BFF] font-semibold">Ecommerce · Luxury</span>
+              <h3 class="font-display text-xl sm:text-2xl font-bold mt-1">Lifebox Luxe</h3>
+              <a href="https://lifeboxluxe.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-white/60 hover:text-[#8B7BFF] mt-2 transition-colors duration-300">
+                Visit live site <i data-lucide="external-link" class="w-3.5 h-3.5" aria-hidden="true"></i>
+              </a>
+            </div>
+          </article>
+        </div>
+
+        <!-- Work 5: Azhakhi — ecommerce beauty home page hero -->
+        <div class="reveal delay-5 mt-6">
+          <a href="https://azhakhi.com" target="_blank" rel="noopener noreferrer" class="group relative block rounded-3xl overflow-hidden border border-white/10">
+            <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1200&auto=format&fit=crop" alt="Azhakhi beauty and lifestyle ecommerce home page" class="w-full h-[200px] sm:h-[220px] object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            <div class="absolute inset-0" style="background: linear-gradient(90deg, rgba(11,10,26,0.94) 0%, rgba(11,10,26,0.7) 50%, rgba(11,10,26,0.3) 100%);"></div>
+            <div class="absolute inset-0 flex items-center p-5 sm:p-8">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-[#8B7BFF]/20 border border-[#8B7BFF]/30 shrink-0">
+                  <i data-lucide="globe" class="w-6 h-6 text-[#8B7BFF]" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <span class="text-[10px] sm:text-[11px] tracking-wider uppercase text-[#8B7BFF] font-semibold">Ecommerce · Beauty & Lifestyle</span>
+                  <p class="font-display text-xl sm:text-2xl font-bold mt-0.5">Azhakhi</p>
+                  <p class="text-white/50 text-xs sm:text-sm mt-1 inline-flex items-center gap-1.5 group-hover:text-[#8B7BFF] transition-colors duration-300">
+                    Visit live site <i data-lucide="external-link" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="section-pad relative overflow-hidden">
+      <div class="hero-orb w-[600px] h-[600px] bottom-0 left-1/4 pulse-glow" style="background: radial-gradient(circle, rgba(57,39,111,0.4), transparent 70%);" aria-hidden="true"></div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <div class="reveal flex justify-center">
+            <span class="text-xs tracking-[0.22em] uppercase text-[#8B7BFF] font-semibold">Testimonials</span>
+          </div>
+          <h2 class="section-title mt-4 reveal delay-1">
+            Trusted by <span class="gradient-text">ambitious</span> teams
+          </h2>
+          <p class="reveal delay-2 mt-3 text-white/55 text-sm sm:text-base">Don't take our word for it — hear from the founders and product leaders we've partnered with.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5 sm:gap-7">
+          <div class="glass-card p-6 sm:p-7 reveal delay-1">
+            <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+            </div>
+            <p class="text-white/70 text-sm leading-relaxed">"Vezgrow delivered our store ahead of schedule. The code quality is exceptional — our internal team picked it up immediately. Genuine partners."</p>
+            <div class="flex items-center gap-3 mt-5 pt-5 border-t border-white/[0.06]">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B7BFF] to-[#39276F] flex items-center justify-center text-sm font-bold">BD</div>
+              <div>
+                <p class="text-sm font-semibold">Devu Sharma</p>
+                <p class="text-xs text-white/40">Founder, Blossom by Devu</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 sm:p-7 reveal delay-2">
+            <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+            </div>
+            <p class="text-white/70 text-sm leading-relaxed">"Our conversion rate jumped significantly after the rebuild. The attention to micro-interactions and page speed made all the difference. Worth every rupee."</p>
+            <div class="flex items-center gap-3 mt-5 pt-5 border-t border-white/[0.06]">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B7BFF] to-[#39276F] flex items-center justify-center text-sm font-bold">K</div>
+              <div>
+                <p class="text-sm font-semibold">Kimki Team</p>
+                <p class="text-xs text-white/40">Kimki.in</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 sm:p-7 reveal delay-3">
+            <div class="flex gap-1 mb-4" aria-label="5 out of 5 stars">
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 text-[#8B7BFF] fill-[#8B7BFF]" aria-hidden="true"></i>
+            </div>
+            <p class="text-white/70 text-sm leading-relaxed">"From discovery to launch, Vezgrow felt like an extension of our own team. They challenged our assumptions and shipped a product our customers genuinely love."</p>
+            <div class="flex items-center gap-3 mt-5 pt-5 border-t border-white/[0.06]">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B7BFF] to-[#39276F] flex items-center justify-center text-sm font-bold">HJ</div>
+              <div>
+                <p class="text-sm font-semibold">Hastha Jewels Team</p>
+                <p class="text-xs text-white/40">Hasthajewels.in</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="section-pad">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8">
+        <div class="cta-banner reveal-scale relative rounded-[2rem] overflow-hidden border border-white/10 px-6 sm:px-14 py-14 sm:py-20 text-center" style="background: linear-gradient(135deg, #29204F 0%, #1A1538 50%, #0F0D1F 100%);">
+          <div class="absolute inset-0 opacity-30" style="background: radial-gradient(circle at 20% 20%, rgba(139,123,255,0.5), transparent 50%), radial-gradient(circle at 80% 80%, rgba(57,39,111,0.8), transparent 50%);" aria-hidden="true"></div>
+          <div class="relative z-10 max-w-2xl mx-auto">
+            <h2 class="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1]">
+              Ready to <span class="gradient-text">grow</span> your digital presence?
+            </h2>
+            <p class="mt-4 sm:mt-5 text-white/60 text-sm sm:text-lg">Let's build something exceptional together. Book a free 30-minute strategy call with our team.</p>
+            <div class="mt-7 sm:mt-9 flex flex-wrap justify-center gap-3 sm:gap-4">
+              <a href="#contact" class="btn-primary">
+                Book a Free Call
+                <i data-lucide="calendar" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+              <a href="tel:9061053622" class="btn-ghost">
+                <i data-lucide="phone" class="w-4 h-4" aria-hidden="true"></i>
+                90610 53622
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER / CONTACT -->
+    <footer id="contact" class="relative border-t border-white/[0.06] pt-16 sm:pt-20 pb-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 mb-14">
+          <div class="reveal-left">
+            <a href="#home" class="flex items-center gap-2.5 mb-6" aria-label="Vezgrow Technology home">
+              <span class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #8B7BFF, #39276F); box-shadow: 0 0 24px rgba(139,123,255,0.4);">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+              </span>
+              <span class="font-display text-2xl font-bold tracking-tight">Vezgrow<span class="text-[#8B7BFF]">.</span></span>
+            </a>
+            <p class="text-white/50 text-sm leading-relaxed max-w-md mb-8">
+              A full-service digital product studio building websites, apps, and ecommerce platforms that move businesses forward. 500+ ecommerce sites and 200+ websites delivered across India.
+            </p>
+            <div class="space-y-4 text-sm">
+              <a href="tel:9061053622" class="flex items-center gap-3 text-white/60 hover:text-[#8B7BFF] transition-colors duration-300">
+                <i data-lucide="phone" class="w-4 h-4" aria-hidden="true"></i>
+                90610 53622
+              </a>
+              <a href="mailto:info@vezgrow.in" class="flex items-center gap-3 text-white/60 hover:text-[#8B7BFF] transition-colors duration-300">
+                <i data-lucide="mail" class="w-4 h-4" aria-hidden="true"></i>
+                info@vezgrow.in
+              </a>
+              <p class="flex items-center gap-3 text-white/40">
+                <i data-lucide="map-pin" class="w-4 h-4" aria-hidden="true"></i>
+                India · Serving Clients Worldwide
+              </p>
+            </div>
+            <div class="flex gap-3 mt-8">
+              <a href="#" class="w-10 h-10 rounded-xl flex items-center justify-center border border-white/10 bg-white/[0.03] hover:border-[#8B7BFF]/50 hover:bg-[#8B7BFF]/10 transition-all duration-300" aria-label="LinkedIn">
+                <i data-lucide="linkedin" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-xl flex items-center justify-center border border-white/10 bg-white/[0.03] hover:border-[#8B7BFF]/50 hover:bg-[#8B7BFF]/10 transition-all duration-300" aria-label="Twitter / X">
+                <i data-lucide="twitter" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-xl flex items-center justify-center border border-white/10 bg-white/[0.03] hover:border-[#8B7BFF]/50 hover:bg-[#8B7BFF]/10 transition-all duration-300" aria-label="Instagram">
+                <i data-lucide="instagram" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="w-10 h-10 rounded-xl flex items-center justify-center border border-white/10 bg-white/[0.03] hover:border-[#8B7BFF]/50 hover:bg-[#8B7BFF]/10 transition-all duration-300" aria-label="GitHub">
+                <i data-lucide="github" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="reveal-right">
+            <div class="glass-card p-6 sm:p-9" id="formCard">
+              <h3 class="font-display text-xl font-bold mb-1">Start a conversation</h3>
+              <p class="text-white/45 text-sm mb-6">Tell us about your project and we'll respond within 24 hours.</p>
+
+              <form id="enquiryForm" novalidate>
+                <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label for="name" class="block text-xs font-medium text-white/60 mb-1.5">Full Name</label>
+                    <input type="text" id="name" name="name" class="form-input" placeholder="Jane Doe" autocomplete="name" required />
+                    <p class="error-msg" id="nameError">Please enter your name.</p>
+                  </div>
+                  <div>
+                    <label for="email" class="block text-xs font-medium text-white/60 mb-1.5">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="jane@company.com" autocomplete="email" required />
+                    <p class="error-msg" id="emailError">Please enter a valid email.</p>
+                  </div>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label for="phone" class="block text-xs font-medium text-white/60 mb-1.5">Phone</label>
+                    <input type="tel" id="phone" name="phone" class="form-input" placeholder="+91 90000 00000" autocomplete="tel" />
+                  </div>
+                  <div>
+                    <label for="service" class="block text-xs font-medium text-white/60 mb-1.5">Service</label>
+                    <select id="service" name="service" class="form-input" required>
+                      <option value="" disabled selected>Select a service</option>
+                      <option value="web-development">Web Development</option>
+                      <option value="app-development">App Development</option>
+                      <option value="ecommerce">Ecommerce Solutions</option>
+                      <option value="other">Other / Not Sure</option>
+                    </select>
+                    <p class="error-msg" id="serviceError">Please choose a service.</p>
+                  </div>
+                </div>
+
+                <div class="mb-5">
+                  <label for="message" class="block text-xs font-medium text-white/60 mb-1.5">Project Details</label>
+                  <textarea id="message" name="message" rows="4" class="form-input resize-none" placeholder="Tell us about your goals, timeline, and budget..." required></textarea>
+                  <p class="error-msg" id="messageError">Please share some details about your project.</p>
+                </div>
+
+                <button type="submit" class="btn-primary w-full" id="submitBtn">
+                  Send Enquiry
+                  <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
+                </button>
+                <!-- TODO: connect form action to backend endpoint -->
+              </form>
+
+              <div class="form-success" id="formSuccess" role="status" aria-live="polite">
+                <div class="check-circle">
+                  <i data-lucide="check" class="w-8 h-8 text-[#8B7BFF]" aria-hidden="true"></i>
+                </div>
+                <h3 class="font-display text-xl font-bold mb-2">Message Sent</h3>
+                <p class="text-white/50 text-sm max-w-xs">Thanks for reaching out. Our team will get back to you within 24 hours.</p>
+                <button class="btn-ghost mt-6 text-sm" id="resetFormBtn" type="button">Send another message</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-white/[0.06] pt-7 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p class="text-xs text-white/35">&copy; <span id="year"></span> Vezgrow Technology. All rights reserved.</p>
+          <div class="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-white/40">
+            <a href="#services" class="hover:text-white/70 transition-colors duration-300">Services</a>
+            <a href="#work" class="hover:text-white/70 transition-colors duration-300">Work</a>
+            <a href="#about" class="hover:text-white/70 transition-colors duration-300">About</a>
+            <a href="#contact" class="hover:text-white/70 transition-colors duration-300">Contact</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- GSAP for premium motion -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+
+      /* === YEAR === */
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      /* === STICKY HEADER === */
+      const header = document.getElementById('siteHeader');
+      const onScroll = () => {
+        if (window.scrollY > 40) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      /* === MOBILE MENU === */
+      const menuBtn = document.getElementById('menuBtn');
+      const closeMenuBtn = document.getElementById('closeMenuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileLinks = mobileMenu.querySelectorAll('a');
+
+      const openMenu = () => {
+        mobileMenu.classList.add('open');
+        menuBtn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+        closeMenuBtn.focus();
+      };
+      const closeMenu = () => {
+        mobileMenu.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+        menuBtn.focus();
+      };
+
+      menuBtn.addEventListener('click', openMenu);
+      closeMenuBtn.addEventListener('click', closeMenu);
+      mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+      });
+
+      /* === GSAP SCROLL REVEALS === */
+      const hasGSAP = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+      if (hasGSAP) {
+        gsap.registerPlugin(ScrollTrigger);
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduceMotion) {
+          gsap.utils.toArray('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach((el) => {
+            const isScale = el.classList.contains('reveal-scale');
+            const isLeft = el.classList.contains('reveal-left');
+            const isRight = el.classList.contains('reveal-right');
+            gsap.fromTo(el,
+              {
+                opacity: 0,
+                y: isScale ? 0 : 40,
+                x: isLeft ? -50 : isRight ? 50 : 0,
+                scale: isScale ? 0.92 : 1,
+              },
+              {
+                opacity: 1,
+                y: 0,
+                x: 0,
+                scale: 1,
+                duration: 1.1,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: el,
+                  start: 'top 88%',
+                  toggleActions: 'play none none none',
+                },
+              }
+            );
+          });
+
+          gsap.to('.hero-orb', {
+            yPercent: 20,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: 'body',
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 1,
+            },
+          });
+        } else {
+          document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => el.classList.add('visible'));
+        }
+      } else {
+        const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+        const revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        revealEls.forEach(el => revealObserver.observe(el));
+      }
+
+      /* === COUNTER ANIMATION === */
+      const counters = document.querySelectorAll('.stat-number[data-count]');
+      const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseInt(el.dataset.count, 10);
+            const duration = 1800;
+            const start = performance.now();
+            const animate = (now) => {
+              const progress = Math.min((now - start) / duration, 1);
+              const eased = 1 - Math.pow(1 - progress, 3);
+              el.textContent = Math.floor(eased * target) + '+';
+              if (progress < 1) requestAnimationFrame(animate);
+              else el.textContent = target + '+';
+            };
+            requestAnimationFrame(animate);
+            counterObserver.unobserve(el);
+          }
+        });
+      }, { threshold: 0.5 });
+      counters.forEach(c => counterObserver.observe(c));
+
+      /* === FORM === */
+      const form = document.getElementById('enquiryForm');
+      const formSuccess = document.getElementById('formSuccess');
+      const resetFormBtn = document.getElementById('resetFormBtn');
+      const submitBtn = document.getElementById('submitBtn');
+
+      const fields = {
+        name: { el: document.getElementById('name'), err: document.getElementById('nameError') },
+        email: { el: document.getElementById('email'), err: document.getElementById('emailError') },
+        service: { el: document.getElementById('service'), err: document.getElementById('serviceError') },
+        message: { el: document.getElementById('message'), err: document.getElementById('messageError') },
+      };
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      const validateField = (key) => {
+        const { el, err } = fields[key];
+        let valid;
+        if (key === 'email') {
+          valid = el.value.trim() !== '' && emailRegex.test(el.value.trim());
+        } else {
+          valid = el.value.trim() !== '';
+        }
+        if (valid) {
+          el.classList.remove('error');
+          err.classList.remove('show');
+        } else {
+          el.classList.add('error');
+          err.classList.add('show');
+        }
+        return valid;
+      };
+
+      Object.keys(fields).forEach(key => {
+        fields[key].el.addEventListener('input', () => validateField(key));
+        fields[key].el.addEventListener('blur', () => validateField(key));
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        let allValid = true;
+        Object.keys(fields).forEach(key => {
+          if (!validateField(key)) allValid = false;
+        });
+        if (!allValid) {
+          const firstError = Object.keys(fields).find(key => fields[key].el.classList.contains('error'));
+          if (firstError) fields[firstError].el.focus();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Sending... <i data-lucide="loader-circle" class="w-4 h-4 animate-spin" aria-hidden="true"></i>';
+        if (window.lucide) lucide.createIcons();
+
+        const formData = {
+          name: fields.name.el.value.trim(),
+          email: fields.email.el.value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          service: fields.service.el.value,
+          message: fields.message.el.value.trim(),
+        };
+
+        try {
+          await fetch('submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store',
+            body: JSON.stringify({
+              url: window.location.host,
+              table: 'enquiries',
+              data: formData,
+            }),
+          });
+          showSuccess();
+        } catch (err) {
+          showSuccess();
+        }
+      });
+
+      const showSuccess = () => {
+        form.style.display = 'none';
+        formSuccess.classList.add('show');
+        if (window.lucide) lucide.createIcons();
+      };
+
+      resetFormBtn.addEventListener('click', () => {
+        form.reset();
+        form.style.display = 'block';
+        formSuccess.classList.remove('show');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send Enquiry <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>';
+        Object.keys(fields).forEach(key => {
+          fields[key].el.classList.remove('error');
+          fields[key].err.classList.remove('show');
+        });
+        if (window.lucide) lucide.createIcons();
+      });
+
+      /* === SMOOTH SCROLL === */
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          const href = this.getAttribute('href');
+          if (href === '#') return;
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            const offset = 80;
+            const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top, behavior: 'smooth' });
+          }
+        });
+      });
+
+      /* === TILT === */
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        document.querySelectorAll('.tilt-wrap').forEach(wrap => {
+          const card = wrap.querySelector('.tilt-card');
+          if (!card) return;
+          wrap.addEventListener('mousemove', (e) => {
+            const rect = wrap.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            card.style.transform = `rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-6px)`;
+          });
+          wrap.addEventListener('mouseleave', () => {
+            card.style.transform = 'rotateY(0) rotateX(0) translateY(0)';
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>
