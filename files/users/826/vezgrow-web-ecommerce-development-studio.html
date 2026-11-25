@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vezgrow — Web & eCommerce Development Studio</title>
+  <meta name="description" content="Vezgrow builds high‑performance web applications and conversion‑focused online stores for ambitious brands. Based in Kannur, Kerala.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ----- Design Tokens (Dark) ----- */
+    :root {
+      --font-sans: 'Geist', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --font-display: var(--font-sans);
+      --accent: #ec4899;
+      --accent-2: #8b5cf6;
+      --accent-3: #f59e0b;
+      --radius-sm: 8px;
+      --radius: 14px;
+      --radius-lg: 22px;
+      --radius-pill: 999px;
+      --ease: cubic-bezier(.22,1,.36,1);
+      --step--1: clamp(.8rem,.78rem + .1vw,.875rem);
+      --step-0: clamp(1rem,.96rem + .2vw,1.0625rem);
+      --step-1: clamp(1.25rem,1.1rem + .6vw,1.5rem);
+      --step-2: clamp(1.6rem,1.3rem + 1.4vw,2.25rem);
+      --step-3: clamp(2.2rem,1.6rem + 3vw,3.75rem);
+      --step-4: clamp(2.8rem,1.8rem + 5.5vw,5.5rem);
+      --maxw: 1200px;
+      /* dark palette */
+      --bg: #09090b;
+      --bg-2: #0f0f12;
+      --surface: rgba(255,255,255,.035);
+      --surface-2: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.09);
+      --text: #fafafa;
+      --muted: #a1a1aa;
+      --faint: #71717a;
+      --btn-bg: #fff;
+      --btn-fg: #09090b;
+      --shadow: 0 20px 60px -20px rgba(0,0,0,.7);
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font: 400 var(--step-0)/1.6 var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    h1, h2, h3 { font-family: var(--font-display); letter-spacing: -.03em; line-height: 1.05; font-weight: 550; }
+    h1 { font-size: var(--step-4); }
+    h2 { font-size: var(--step-3); }
+    h3 { font-size: var(--step-1); }
+    p { color: var(--muted); }
+    a { color: inherit; text-decoration: none; }
+    img, svg { max-width: 100%; display: block; }
+    .container { width: min(100% - 2.5rem, var(--maxw)); margin-inline: auto; }
+    section { padding: clamp(4rem,9vw,8rem) 0; }
+    .eyebrow {
+      font: 500 .72rem/1 var(--font-mono);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+
+    /* ----- Buttons ----- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .75rem 1.25rem;
+      border-radius: 999px;
+      font-weight: 550;
+      font-size: .95rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform .35s var(--ease), box-shadow .35s var(--ease), background .2s;
+      background: none;
+      color: inherit;
+    }
+    .btn-primary { background: var(--btn-bg); color: var(--btn-fg); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -10px rgba(236,72,153,.55); }
+    .btn-primary .i { transition: transform .35s var(--ease); }
+    .btn-primary:hover .i { transform: translateX(4px); }
+    .btn-ghost { border-color: var(--border); color: var(--text); background: transparent; }
+    .btn-ghost:hover { background: var(--surface-2); }
+
+    /* ----- Reveal & Split ----- */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(24px);
+      filter: blur(6px);
+      transition: opacity .9s var(--ease), transform .9s var(--ease), filter .9s var(--ease);
+      transition-delay: var(--d,0ms);
+    }
+    [data-reveal].in { opacity: 1; transform: none; filter: none; }
+    [data-split] .w {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(.6em);
+      filter: blur(8px);
+      animation: rise .9s var(--ease) forwards;
+      animation-delay: calc(var(--i)*70ms);
+    }
+    @keyframes rise { to { opacity: 1; transform: none; filter: none; } }
+
+    /* ----- Nav ----- */
+    .nav { position: fixed; inset: 12px 0 auto; z-index: 50; display: flex; justify-content: center; pointer-events: none; }
+    .nav-inner {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      padding: .55rem .6rem .55rem 1.1rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--bg) 70%, transparent);
+      backdrop-filter: blur(16px) saturate(150%);
+      transition: box-shadow .3s;
+      max-width: 1200px;
+      width: calc(100% - 24px);
+    }
+    .nav.scrolled .nav-inner { box-shadow: var(--shadow); }
+    .nav-logo { font-weight: 600; font-size: 1.2rem; letter-spacing: -.03em; margin-right: auto; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.5rem; font-size: .92rem; color: var(--muted); }
+    .nav-links a:hover { color: var(--text); }
+    .burger { display: none; background: none; border: none; color: var(--text); cursor: pointer; padding: .4rem; }
+    @media (max-width: 820px) {
+      .nav-links { display: none; }
+      .burger { display: grid; }
+    }
+    .sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: var(--bg);
+      padding: 5rem 1.5rem;
+      transform: translateY(-100%);
+      transition: transform .6s var(--ease);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .sheet.open { transform: none; }
+    .sheet a {
+      display: block;
+      font: 550 2rem var(--font-display);
+      padding: .6rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .sheet .close-sheet {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      padding: .5rem;
+    }
+
+    /* ----- Hero (aurora) ----- */
+    .hero {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      text-align: center;
+      padding: clamp(7rem,16vw,12rem) 0 6rem;
+    }
+    .aurora {
+      position: absolute;
+      inset: -20% -10% auto;
+      height: 90%;
+      z-index: -1;
+      filter: blur(70px) saturate(130%);
+      opacity: .9;
+      -webkit-mask-image: linear-gradient(#000 40%,transparent);
+      mask-image: linear-gradient(#000 40%,transparent);
+    }
+    .aurora i { position: absolute; border-radius: 50%; animation: drift 18s ease-in-out infinite alternate; }
+    .aurora i:nth-child(1) { width: 46%; height: 70%; left: 4%; top: 0; background: radial-gradient(circle,var(--accent-2),transparent 65%); }
+    .aurora i:nth-child(2) { width: 40%; height: 60%; left: 34%; top: 20%; background: radial-gradient(circle,var(--accent),transparent 65%); animation-delay: -6s; }
+    .aurora i:nth-child(3) { width: 38%; height: 55%; right: 2%; top: 10%; background: radial-gradient(circle,var(--accent-3),transparent 65%); animation-delay: -11s; }
+    @keyframes drift { to { transform: translate3d(6%,8%,0) scale(1.15); } }
+    .grain::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .08;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    }
+    .hero-sub {
+      margin: 1.25rem auto 2.5rem;
+      max-width: 46ch;
+      font-size: var(--step-1);
+      color: var(--muted);
+    }
+
+    /* ----- Cards / Bento ----- */
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(12,1fr);
+      gap: 1rem;
+    }
+    .card {
+      position: relative;
+      grid-column: span 6;
+      padding: 1.75rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+      transition: transform .5s var(--ease), border-color .3s;
+    }
+    .card.wide { grid-column: span 12; }
+    .card.third { grid-column: span 4; }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity .4s;
+      pointer-events: none;
+      background: radial-gradient(420px circle at var(--mx,50%) var(--my,50%), rgba(236,72,153,.14), transparent 60%);
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+    }
+    .card:hover::before { opacity: 1; }
+    @media (max-width: 820px) {
+      .card, .card.third { grid-column: span 12; }
+    }
+    .card h3 { margin-bottom: .5rem; }
+    .card p { font-size: .95rem; }
+    .card-icon { margin-bottom: 1.25rem; color: var(--accent); }
+
+    /* ----- Stats ----- */
+    .stat-row {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      flex-wrap: wrap;
+      text-align: center;
+      margin-top: 3rem;
+    }
+    .stat-num {
+      font: 550 var(--step-3)/1 var(--font-display);
+      letter-spacing: -.03em;
+      color: var(--text);
+    }
+    .stat-label {
+      font: 400 var(--step--1)/1.4 var(--font-mono);
+      color: var(--faint);
+      margin-top: .4rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    /* ----- Form ----- */
+    .field { display: grid; gap: .4rem; margin-bottom: 1rem; }
+    .field label { font-size: .85rem; color: var(--muted); }
+    .field input, .field textarea, .field select {
+      padding: .8rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: var(--accent);
+      outline: 0;
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+    .form-msg { min-height: 1.4em; font-size: .9rem; }
+    .form-msg.ok { color: #16a34a; }
+    .form-msg.err { color: #dc2626; }
+
+    /* ----- Footer ----- */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 0;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    .footer-col { display: flex; flex-direction: column; gap: .6rem; font-size: .9rem; color: var(--muted); }
+    .footer-col a:hover { color: var(--text); }
+    .footer-bottom {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: .85rem;
+      color: var(--faint);
+    }
+
+    /* ----- WhatsApp float ----- */
+    .wa-float {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 40;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #25d366;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 28px -8px rgba(37,211,102,.6);
+      transition: transform .3s var(--ease);
+    }
+    .wa-float:hover { transform: scale(1.08); }
+    .wa-float .i { width: 26px; height: 26px; }
+
+    /* ----- misc ----- */
+    .i { width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; vertical-align: -.2em; }
+    .mt-2 { margin-top: .5rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .max-w-2xl { max-width: 42rem; }
+  </style>
+</head>
+<body>
+
+  <!-- ========== SVG SPRITE ========== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+      <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+      <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+      <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></symbol>
+      <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></symbol>
+      <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- ========== NAV ========== -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Vez<span>grow</span></a>
+      <div class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <a href="#contact" class="btn btn-primary" style="padding:.5rem 1rem;font-size:.85rem;">Start a project</a>
+      <button class="burger" aria-label="Open menu" data-sheet>
+        <svg class="i" style="width:24px;height:24px"><use href="#i-menu"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile sheet -->
+  <div class="sheet" id="sheet">
+    <button class="close-sheet" aria-label="Close menu" data-sheet>
+      <svg class="i" style="width:28px;height:28px"><use href="#i-x"/></svg>
+    </button>
+    <a href="#services" data-sheet>Services</a>
+    <a href="#work" data-sheet>Work</a>
+    <a href="#contact" data-sheet>Contact</a>
+    <a href="#contact" data-sheet class="btn btn-primary" style="align-self:flex-start;margin-top:1rem;">Start a project</a>
+  </div>
+
+  <!-- ========== HERO ========== -->
+  <header class="hero grain">
+    <div class="aurora"><i></i><i></i><i></i></div>
+    <div class="container">
+      <h1 data-split>Build fast.<br>Sell smarter.</h1>
+      <p class="hero-sub">
+        Vezgrow is a Kannur‑based web & e‑commerce studio. We craft high‑performance storefronts and web apps that turn visitors into customers.
+      </p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="#contact" class="btn btn-primary">
+          Start your project
+          <svg class="i"><use href="#i-arrow-right"/></svg>
+        </a>
+        <a href="#services" class="btn btn-ghost">Explore services</a>
+      </div>
+      <div class="stat-row">
+        <div>
+          <div class="stat-num"><span data-count="48">0</span>+</div>
+          <div class="stat-label">Projects delivered</div>
+        </div>
+        <div>
+          <div class="stat-num"><span data-count="32">0</span></div>
+          <div class="stat-label">Happy clients</div>
+        </div>
+        <div>
+          <div class="stat-num"><span data-count="99">0</span>%</div>
+          <div class="stat-label">Client retention</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== SERVICES / BENTO ========== -->
+  <section id="services">
+    <div class="container">
+      <p class="eyebrow" data-reveal>What we do</p>
+      <h2 data-reveal style="margin-bottom:2.5rem;">Full‑stack web &<br>e‑commerce development</h2>
+      <div class="bento">
+        <div class="card" data-reveal>
+          <div class="card-icon"><svg class="i" style="width:28px;height:28px"><use href="#i-code"/></svg></div>
+          <h3>Custom web development</h3>
+          <p>From marketing sites to complex web apps — built with modern stacks, clean code, and lightning‑fast performance.</p>
+        </div>
+        <div class="card" data-reveal>
+          <div class="card-icon"><svg class="i" style="width:28px;height:28px"><use href="#i-cart"/></svg></div>
+          <h3>e‑Commerce development</h3>
+          <p>Shopify, WooCommerce, or headless commerce. Conversion‑optimised stores with seamless checkout and inventory sync.</p>
+        </div>
+        <div class="card third" data-reveal>
+          <div class="card-icon"><svg class="i" style="width:28px;height:28px"><use href="#i-layers"/></svg></div>
+          <h3>UI/UX design</h3>
+          <p>Interfaces that feel effortless — research‑driven, pixel‑perfect, and built to convert.</p>
+        </div>
+        <div class="card third" data-reveal>
+          <div class="card-icon"><svg class="i" style="width:28px;height:28px"><use href="#i-zap"/></svg></div>
+          <h3>Performance & SEO</h3>
+          <p>Core Web Vitals, technical SEO, and speed audits — your site ranks higher and loads faster.</p>
+        </div>
+        <div class="card third" data-reveal>
+          <div class="card-icon"><svg class="i" style="width:28px;height:28px"><use href="#i-check"/></svg></div>
+          <h3>Maintenance & support</h3>
+          <p>Ongoing updates, security patches, and priority support so you can focus on growth.</p>
+        </div>
+        <div class="card wide" data-reveal>
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div style="flex:1;min-width:240px;">
+              <h3>Why Vezgrow?</h3>
+              <p>Based in Kannur, we combine local understanding with global standards. Every project gets a dedicated team, transparent communication, and a launch‑ready product.</p>
+            </div>
+            <div style="flex:1;display:flex;gap:1rem;flex-wrap:wrap;justify-content:flex-end;">
+              <span class="eyebrow" style="border:1px solid var(--border);padding:.5rem .9rem;border-radius:999px;">Kannur, Kerala</span>
+              <span class="eyebrow" style="border:1px solid var(--border);padding:.5rem .9rem;border-radius:999px;">Remote‑friendly</span>
+              <span class="eyebrow" style="border:1px solid var(--border);padding:.5rem .9rem;border-radius:999px;">Agile delivery</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== WORK / SHOWCASE ========== -->
+  <section id="work" style="background:var(--bg-2);">
+    <div class="container">
+      <p class="eyebrow" data-reveal>Selected work</p>
+      <h2 data-reveal style="margin-bottom:.5rem;">Recent projects</h2>
+      <p data-reveal style="margin-bottom:2.5rem;max-width:50ch;">A glimpse of what we’ve shipped for brands across Kerala and beyond.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
+        <!-- project 1 -->
+        <a href="#" class="frame" data-reveal style="display:block;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface);transition:transform .5s var(--ease);">
+          <div style="display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid var(--border);">
+            <i style="width:8px;height:8px;border-radius:50%;background:var(--surface-2);display:block;"></i>
+            <i style="width:8px;height:8px;border-radius:50%;background:var(--surface-2);display:block;"></i>
+            <i style="width:8px;height:8px;border-radius:50%;background:var(--surface-2);display:block;"></i>
+          </div>
+          <div style="aspect-ratio:16/10;background:linear-gradient(135deg,var(--accent-2),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font:600 1.5rem var(--font-display);">Kochi Coffee Co.</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem 1rem;font-size:.9rem;">
+            <span>e‑Commerce · Shopify</span>
+            <svg class="i"><use href="#i-arrow-right"/></svg>
+          </div>
+        </a>
+        <!-- project 2 -->
+        <a href="#" class="frame" data-reveal style="display:block;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface);transition:transform .5s var(--ease);">
+          <div style="display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid var(--border);">
+            <i style="width:8px;height:8px;border-radius:50%;background:var(--surface-2);display:block;"></i>
+            <i style="width:8px;height:8px;border-radius:50%;background:var(--surface-2);display:block;"></i>
+            <i style="width:8px;height:8px;border-radius:50%;background:var(--surface-2);display:block;"></i>
+          </div>
+          <div style="aspect-ratio:16/10;background:linear-gradient(135deg,#f59e0b,#ec4899);display:flex;align-items:center;justify-content:center;color:#fff;font:600 1.5rem var(--font-display);">Aranya Ayurveda</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem 1rem;font-size:.9rem;">
+            <span>Web App · Booking system</span>
+            <svg class="i"><use href="#i-arrow-right"/></svg>
+          </div>
+        </a>
+        <!-- project 3 -->
+        <a href="#" class="frame" data-reveal style="display:block;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface);transition:transform .5s var(--ease);">
+          <div style="display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid var(--border);">
+            <i style="width:8px;height:8px;border-radius:50%;background:var(--surface-2);display:block;"></i>
+            <i style="width:8px;height:8px;border-radius:50%;background:var(--surface-2);display:block;"></i>
+            <i style="width:8px;height:8px;border-radius:50%;background:var(--surface-2);display:block;"></i>
+          </div>
+          <div style="aspect-ratio:16/10;background:linear-gradient(135deg,#8b5cf6,#3b82f6);display:flex;align-items:center;justify-content:center;color:#fff;font:600 1.5rem var(--font-display);">Malabar Textiles</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem 1rem;font-size:.9rem;">
+            <span>e‑Commerce · WooCommerce</span>
+            <svg class="i"><use href="#i-arrow-right"/></svg>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section id="contact">
+    <div class="container" style="max-width:680px;">
+      <p class="eyebrow" data-reveal>Get in touch</p>
+      <h2 data-reveal style="margin-bottom:.5rem;">Let’s build something great</h2>
+      <p data-reveal style="margin-bottom:2rem;">Tell us about your project — we’ll reply within one business day.</p>
+      <form id="contactForm" data-reveal>
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required placeholder="Your full name">
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required placeholder="you@company.com">
+        </div>
+        <div class="field">
+          <label for="phone">Phone (optional)</label>
+          <input type="tel" id="phone" name="phone" placeholder="+91 90377 73622">
+        </div>
+        <div class="field">
+          <label for="message">Project details</label>
+          <textarea id="message" name="message" rows="4" required placeholder="What are you looking to build?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">
+          Send message
+          <svg class="i"><use href="#i-arrow-right"/></svg>
+        </button>
+        <p class="form-msg" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-col" style="max-width:260px;">
+          <span style="font:600 1.2rem var(--font-display);color:var(--text);">Vez<span style="color:var(--accent);">grow</span></span>
+          <p style="font-size:.9rem;margin-top:.5rem;">Web & e‑commerce development studio based in Kannur, Kerala. Building digital experiences that grow brands.</p>
+        </div>
+        <div class="footer-col">
+          <span style="font-weight:600;color:var(--text);">Company</span>
+          <a href="#services">Services</a>
+          <a href="#work">Work</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-col">
+          <span style="font-weight:600;color:var(--text);">Contact</span>
+          <a href="tel:+919037773622">+91 90377 73622</a>
+          <a href="/cdn-cgi/l/email-protection#fa929f969695ba8c9f809d88958dd4999597"><span class="__cf_email__" data-cfemail="a4ccc1c8c8cbe4d2c1dec3d6cbd38ac7cbc9">[email&#160;protected]</span></a>
+          <span>Kannur, Kerala</span>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2025 Vezgrow. All rights reserved.</span>
+        <span>Made in Kannur</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp float -->
+  <a href="https://wa.me/919037773622?text=Hi%20Vezgrow%2C%20I%27d%20like%20to%20discuss%20a%20project." class="wa-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <svg class="i"><use href="#i-chat"/></svg>
+  </a>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // ---------- Nav scroll ----------
+    const nav = document.querySelector('.nav');
+    addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 20), { passive: true });
+
+    // ---------- Mobile sheet ----------
+    document.querySelectorAll('[data-sheet]').forEach(b => {
+      b.addEventListener('click', () => {
+        const sheet = document.getElementById('sheet');
+        sheet.classList.toggle('open');
+        document.body.style.overflow = sheet.classList.contains('open') ? 'hidden' : '';
+      });
+    });
+
+    // ---------- Reveal on scroll ----------
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: .15, rootMargin: '0px 0px -8% 0px' });
+
+    document.querySelectorAll('[data-reveal]').forEach((el, i) => {
+      el.style.setProperty('--d', (i % 6) * 70 + 'ms');
+      io.observe(el);
+    });
+
+    // ---------- Split headline words ----------
+    document.querySelectorAll('[data-split]').forEach(h => {
+      let n = 0;
+      h.innerHTML = h.innerHTML.split(/(<br\s*\/?>)/).map(p =>
+        /^<br/.test(p) ? p : p.split(' ').filter(Boolean).map(w => `<span class="w" style="--i:${n++}">${w}</span>`).join(' ')
+      ).join('');
+    });
+
+    // ---------- Counters ----------
+    const co = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target, end = +el.dataset.count, t0 = performance.now();
+      const tick = t => {
+        const p = Math.min((t - t0) / 1400, 1);
+        el.textContent = Math.round(end * (1 - Math.pow(1 - p, 4))).toLocaleString('en-IN');
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      co.unobserve(el);
+    }), { threshold: .6 });
+    document.querySelectorAll('[data-count]').forEach(el => co.observe(el));
+
+    // ---------- Spotlight cards ----------
+    document.querySelectorAll('.card').forEach(c => c.addEventListener('pointermove', e => {
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--mx', e.clientX - r.left + 'px');
+      c.style.setProperty('--my', e.clientY - r.top + 'px');
+    }));
+
+    // ---------- Form helper (submit format) ----------
+    async function submitForm(table, data) {
+      const res = await fetch('submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({ url: window.location.host, table: table, data: data })
+      });
+      if (!res.ok) throw new Error('Request failed (' + res.status + ')');
+      try { return await res.json(); } catch (e) { return {}; }
+    }
+
+    function bindForm(form, table, onDone) {
+      const btn = form.querySelector('[type=submit]'),
+            msg = form.querySelector('.form-msg');
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        if (!form.reportValidity()) return;
+        const data = Object.fromEntries(new FormData(form).entries());
+        btn.disabled = true;
+        btn.dataset.l = btn.textContent;
+        btn.textContent = 'Sending…';
+        msg.className = 'form-msg';
+        msg.textContent = '';
+        try {
+          await submitForm(table, data);
+          msg.classList.add('ok');
+          msg.textContent = 'Thank you. We have received your message.';
+          form.reset();
+          if (onDone) onDone(data);
+        } catch (err) {
+          msg.classList.add('err');
+          msg.textContent = 'Something went wrong. Please try again.';
+        } finally {
+          btn.disabled = false;
+          btn.textContent = btn.dataset.l;
+        }
+      });
+    }
+
+    // Bind contact form
+    bindForm(document.getElementById('contactForm'), 'contact_enquiries');
+
+    // ---------- Frame hover effect (subtle lift) ----------
+    document.querySelectorAll('.frame').forEach(f => {
+      f.addEventListener('mouseenter', () => f.style.transform = 'translateY(-6px) scale(1.01)');
+      f.addEventListener('mouseleave', () => f.style.transform = 'none');
+    });
+  </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"8d98d2d17bbb45418d4fe791e880d553","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
