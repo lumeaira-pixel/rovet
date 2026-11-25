@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alfat Hospital — Modern Care, Timeless Compassion</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Instrument Serif + Instrument Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #0f172a;
+      --ink-soft: #334155;
+      --cream: #fbf9f6;
+      --warm-white: #ffffff;
+      --brass: #b48b5a;
+      --brass-light: #d9b382;
+      --sage: #7f9178;
+      --sage-light: #e6ece4;
+      --line: rgba(15, 23, 42, 0.08);
+      --shadow-soft: 0 20px 40px -12px rgba(15, 23, 42, 0.08);
+      --shadow-card: 0 10px 30px -8px rgba(15, 23, 42, 0.06);
+      --radius-lg: 2rem;
+      --radius-md: 1.25rem;
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Instrument Sans', system-ui, sans-serif;
+      --focus-ring: 0 0 0 3px rgba(180, 139, 90, 0.35);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--cream);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* === Typography === */
+    .font-display { font-family: var(--font-display); font-weight: 400; }
+
+    /* === Utility & Layout === */
+    .container-max { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+    .section-pad { padding: 6rem 0; }
+    @media (max-width: 768px) { .section-pad { padding: 3.5rem 0; } }
+
+    /* === Animations === */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-12px) scale(1.01); }
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-fade-up { animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .animate-float { animation: floatSlow 7s ease-in-out infinite; }
+
+    /* === Header / Nav === */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      transition: background 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease;
+      background: rgba(251, 249, 246, 0.7);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+    }
+    .site-header.scrolled {
+      background: rgba(251, 249, 246, 0.92);
+      box-shadow: 0 4px 24px rgba(15, 23, 42, 0.05);
+      border-bottom-color: var(--line);
+    }
+    .nav-link {
+      position: relative;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-decoration: none;
+      transition: color 0.25s ease;
+      padding: 0.25rem 0;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1.5px;
+      background: var(--brass);
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link:hover::after { width: 100%; }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--ink);
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.75rem 1.75rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+    .btn-primary:hover {
+      background: #1e293b;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--ink);
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.75rem 1.75rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--line);
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+    .btn-secondary:hover {
+      border-color: var(--brass);
+      background: rgba(180, 139, 90, 0.04);
+      transform: translateY(-2px);
+    }
+    .btn-secondary:active { transform: translateY(0) scale(0.98); }
+
+    /* === Cards === */
+    .card-soft {
+      background: var(--warm-white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+    }
+    .card-soft:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -12px rgba(15, 23, 42, 0.1);
+    }
+
+    /* === Glass === */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 20px 40px -12px rgba(15, 23, 42, 0.1);
+    }
+
+    /* === Stats === */
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 3.8rem);
+      line-height: 1;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+
+    /* === Testimonial === */
+    .testimonial-card {
+      background: var(--warm-white);
+      border-radius: var(--radius-md);
+      padding: 2.5rem;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-card);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .testimonial-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); }
+
+    /* === Form === */
+    .form-input {
+      width: 100%;
+      padding: 0.9rem 1.1rem;
+      border-radius: 0.75rem;
+      border: 1.5px solid var(--line);
+      background: var(--warm-white);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--brass);
+      box-shadow: var(--focus-ring);
+    }
+    .form-input::placeholder { color: #94a3b8; }
+    .form-input.error { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
+
+    /* === Marquee === */
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+
+    /* === Responsive === */
+    @media (max-width: 640px) {
+      .btn-primary, .btn-secondary { padding: 0.6rem 1.2rem; font-size: 0.8rem; }
+    }
+
+    /* === Focus visible === */
+    :focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+
+    /* === Selection === */
+    ::selection { background: var(--brass-light); color: var(--ink); }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header" id="site-header">
+    <div class="container-max flex items-center justify-between py-4 md:py-5">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5 group" aria-label="Alfat Hospital Home">
+        <span class="w-9 h-9 rounded-full bg-[#0f172a] flex items-center justify-center transition-transform duration-300 group-hover:rotate-6">
+          <i data-lucide="heart-pulse" class="w-4.5 h-4.5 text-white" style="width:18px;height:18px;"></i>
+        </span>
+        <span class="text-lg font-semibold tracking-tight text-[var(--ink)]">Alfat <span class="font-display italic font-normal text-[var(--brass)]">Hospital</span></span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#services" class="nav-link">Services</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#doctors" class="nav-link">Doctors</a>
+        <a href="#testimonials" class="nav-link">Testimonials</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <!-- CTA + Mobile Toggle -->
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="btn-primary hidden sm:inline-flex text-xs md:text-sm">
+          <i data-lucide="calendar" class="w-4 h-4" aria-hidden="true"></i>
+          Book Appointment
+        </a>
+        <button id="mobile-toggle" class="md:hidden flex items-center justify-center w-10 h-10 rounded-full border border-[var(--line)] bg-white/60 transition-colors hover:bg-white" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <i data-lucide="menu" class="w-5 h-5 text-[var(--ink)]"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="md:hidden hidden bg-white/95 backdrop-blur-xl border-t border-[var(--line)] px-6 pb-6 pt-3" role="dialog" aria-label="Mobile navigation">
+      <nav class="flex flex-col gap-1">
+        <a href="#services" class="nav-link block py-2.5 text-base">Services</a>
+        <a href="#about" class="nav-link block py-2.5 text-base">About</a>
+        <a href="#doctors" class="nav-link block py-2.5 text-base">Doctors</a>
+        <a href="#testimonials" class="nav-link block py-2.5 text-base">Testimonials</a>
+        <a href="#contact" class="nav-link block py-2.5 text-base">Contact</a>
+        <a href="#contact" class="btn-primary mt-3 w-full text-sm">
+          <i data-lucide="calendar" class="w-4 h-4" aria-hidden="true"></i>
+          Book Appointment
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ========== HERO ========== -->
+    <section class="relative pt-32 pb-16 md:pt-40 md:pb-24 overflow-hidden" aria-label="Hero">
+      <!-- Background decorative elements -->
+      <div class="absolute inset-0 -z-10" aria-hidden="true">
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(180,139,90,0.08),transparent_70%)] rounded-full translate-x-1/3 -translate-y-1/4"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(127,145,120,0.06),transparent_70%)] rounded-full -translate-x-1/3 translate-y-1/4"></div>
+      </div>
+
+      <div class="container-max">
+        <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+          <!-- Left: Text -->
+          <div class="max-w-xl">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[var(--line)] text-xs font-medium text-[var(--ink-soft)] mb-6 animate-fade-up" style="animation-delay:0.1s;">
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--sage)]"></span>
+              Trusted care since 1998
+            </div>
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display leading-[1.05] tracking-tight text-[var(--ink)] animate-fade-up" style="animation-delay:0.2s;">
+              Modern care,<br />
+              <span class="text-[var(--brass)] italic">timeless</span> compassion.
+            </h1>
+            <p class="mt-6 text-base md:text-lg text-[var(--ink-soft)] leading-relaxed max-w-md animate-fade-up" style="animation-delay:0.35s;">
+              Alfat Hospital blends advanced medicine with a human touch. From routine checkups to complex procedures, we're here for every step of your health journey.
+            </p>
+            <div class="mt-8 flex flex-wrap gap-3 animate-fade-up" style="animation-delay:0.45s;">
+              <a href="#contact" class="btn-primary">
+                <i data-lucide="calendar-check" class="w-4 h-4" aria-hidden="true"></i>
+                Book an appointment
+              </a>
+              <a href="#services" class="btn-secondary">
+                Explore services
+                <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+              </a>
+            </div>
+            <!-- Mini stats -->
+            <div class="mt-10 flex gap-8 animate-fade-up" style="animation-delay:0.55s;">
+              <div>
+                <p class="stat-number">25k+</p>
+                <p class="text-xs text-[var(--ink-soft)] mt-1 tracking-wide uppercase font-medium">Patients treated</p>
+              </div>
+              <div class="w-px bg-[var(--line)]"></div>
+              <div>
+                <p class="stat-number">48</p>
+                <p class="text-xs text-[var(--ink-soft)] mt-1 tracking-wide uppercase font-medium">Specialists</p>
+              </div>
+              <div class="w-px bg-[var(--line)]"></div>
+              <div>
+                <p class="stat-number">4.9</p>
+                <p class="text-xs text-[var(--ink-soft)] mt-1 tracking-wide uppercase font-medium">Patient rating</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Visual -->
+          <div class="relative flex justify-center md:justify-end animate-fade-up" style="animation-delay:0.3s;">
+            <div class="relative w-full max-w-[420px]">
+              <!-- Main image card -->
+              <div class="relative rounded-[2rem] overflow-hidden shadow-[0_30px_60px_-20px_rgba(15,23,42,0.18)] animate-float" style="animation-delay:0.6s;">
+                <img src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&q=80&auto=format&fit=crop" alt="Doctor consulting a patient at Alfat Hospital" class="w-full h-[420px] md:h-[480px] object-cover" loading="eager" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+              </div>
+              <!-- Floating card -->
+              <div class="absolute -bottom-6 -left-6 md:-left-8 glass-panel rounded-2xl p-4 flex items-center gap-3 shadow-lg animate-fade-up" style="animation-delay:0.8s;">
+                <div class="w-10 h-10 rounded-full bg-[var(--sage-light)] flex items-center justify-center">
+                  <i data-lucide="stethoscope" class="w-5 h-5 text-[var(--sage)]" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-[var(--ink)]">24/7 Emergency</p>
+                  <p class="text-xs text-[var(--ink-soft)]">Always here for you</p>
+                </div>
+              </div>
+              <!-- Decorative dot grid -->
+              <div class="absolute -top-4 -right-4 w-24 h-24 opacity-20" aria-hidden="true">
+                <svg viewBox="0 0 100 100" fill="none">
+                  <pattern id="dots" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+                    <circle cx="2" cy="2" r="1.5" fill="var(--brass)"/>
+                  </pattern>
+                  <rect width="100" height="100" fill="url(#dots)"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TRUST MARQUEE ========== -->
+    <section class="py-8 border-y border-[var(--line)] overflow-hidden" aria-label="Trusted by leading insurers">
+      <div class="marquee-track gap-16 items-center">
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">Aetna</span>
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">Cigna</span>
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">BlueCross</span>
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">UnitedHealth</span>
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">Humana</span>
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">Kaiser</span>
+        <!-- duplicate -->
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">Aetna</span>
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">Cigna</span>
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">BlueCross</span>
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">UnitedHealth</span>
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">Humana</span>
+        <span class="text-sm font-medium tracking-widest uppercase text-[var(--ink-soft)]/60 whitespace-nowrap">Kaiser</span>
+      </div>
+    </section>
+
+    <!-- ========== SERVICES ========== -->
+    <section id="services" class="section-pad" aria-label="Our services">
+      <div class="container-max">
+        <div class="max-w-2xl mb-14 md:mb-20">
+          <p class="text-xs font-semibold tracking-[0.2em] uppercase text-[var(--brass)] mb-3">What we offer</p>
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-display leading-tight text-[var(--ink)]">
+            Comprehensive care,<br />under one roof.
+          </h2>
+          <p class="mt-4 text-[var(--ink-soft)] text-base leading-relaxed max-w-lg">
+            From preventive screenings to advanced surgical care, our multidisciplinary teams deliver personalized treatment plans tailored to you.
+          </p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card 1 -->
+          <div class="card-soft group">
+            <div class="w-12 h-12 rounded-2xl bg-[var(--sage-light)] flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+              <i data-lucide="heart-pulse" class="w-6 h-6 text-[var(--sage)]" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-[var(--ink)] mb-2">Cardiology</h3>
+            <p class="text-sm text-[var(--ink-soft)] leading-relaxed">Advanced diagnostics, interventional procedures, and heart-health programs led by board-certified cardiologists.</p>
+          </div>
+          <!-- Card 2 -->
+          <div class="card-soft group">
+            <div class="w-12 h-12 rounded-2xl bg-[#f3ede6] flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+              <i data-lucide="brain" class="w-6 h-6 text-[var(--brass)]" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-[var(--ink)] mb-2">Neurology</h3>
+            <p class="text-sm text-[var(--ink-soft)] leading-relaxed">Expert evaluation and treatment for neurological disorders, from migraine management to complex stroke care.</p>
+          </div>
+          <!-- Card 3 -->
+          <div class="card-soft group">
+            <div class="w-12 h-12 rounded-2xl bg-[#e8eef0] flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+              <i data-lucide="baby" class="w-6 h-6 text-[#5b7f8c]" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-[var(--ink)] mb-2">Pediatrics</h3>
+            <p class="text-sm text-[var(--ink-soft)] leading-relaxed">Gentle, family-centered care for children of all ages — from newborn checkups to adolescent wellness.</p>
+          </div>
+          <!-- Card 4 -->
+          <div class="card-soft group">
+            <div class="w-12 h-12 rounded-2xl bg-[#f3ede6] flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+              <i data-lucide="bone" class="w-6 h-6 text-[var(--brass)]" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-[var(--ink)] mb-2">Orthopedics</h3>
+            <p class="text-sm text-[var(--ink-soft)] leading-relaxed">Joint replacement, sports medicine, and rehabilitation programs designed to get you moving again.</p>
+          </div>
+          <!-- Card 5 -->
+          <div class="card-soft group">
+            <div class="w-12 h-12 rounded-2xl bg-[var(--sage-light)] flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+              <i data-lucide="eye" class="w-6 h-6 text-[var(--sage)]" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-[var(--ink)] mb-2">Ophthalmology</h3>
+            <p class="text-sm text-[var(--ink-soft)] leading-relaxed">Comprehensive eye exams, cataract surgery, and laser vision correction with the latest technology.</p>
+          </div>
+          <!-- Card 6 -->
+          <div class="card-soft group">
+            <div class="w-12 h-12 rounded-2xl bg-[#e8eef0] flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110">
+              <i data-lucide="activity" class="w-6 h-6 text-[#5b7f8c]" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-[var(--ink)] mb-2">Diagnostics</h3>
+            <p class="text-sm text-[var(--ink-soft)] leading-relaxed">State-of-the-art imaging and laboratory services with rapid turnaround and expert interpretation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ABOUT ========== -->
+    <section id="about" class="section-pad bg-white/60" aria-label="About Alfat Hospital">
+      <div class="container-max">
+        <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+          <div class="relative">
+            <div class="rounded-[2rem] overflow-hidden shadow-[0_20px_50px_-16px_rgba(15,23,42,0.14)]">
+              <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=800&q=80&auto=format&fit=crop" alt="Alfat Hospital modern facility interior" class="w-full h-[380px] md:h-[460px] object-cover" loading="lazy" />
+            </div>
+            <div class="absolute -bottom-5 -right-3 md:-right-6 bg-[var(--ink)] text-white rounded-2xl px-5 py-4 shadow-lg">
+              <p class="text-2xl font-display">25+</p>
+              <p class="text-[10px] uppercase tracking-wider opacity-70 mt-0.5">Years of excellence</p>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs font-semibold tracking-[0.2em] uppercase text-[var(--brass)] mb-3">Our story</p>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-display leading-tight text-[var(--ink)]">
+              A legacy of healing,<br />built on trust.
+            </h2>
+            <p class="mt-5 text-[var(--ink-soft)] text-base leading-relaxed">
+              Since 1998, Alfat Hospital has been a cornerstone of healthcare in the community. What began as a small clinic has grown into a full-service medical center — but our founding principle remains unchanged: every patient is family.
+            </p>
+            <p class="mt-4 text-[var(--ink-soft)] text-base leading-relaxed">
+              We invest in the latest medical technology and, more importantly, in the people who use it. Our physicians are leaders in their fields, our nurses are compassionate advocates, and our facilities are designed to put you at ease.
+            </p>
+            <div class="mt-8 grid grid-cols-2 gap-4">
+              <div class="flex items-start gap-2.5">
+                <i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--sage)] shrink-0 mt-0.5" aria-hidden="true"></i>
+                <span class="text-sm text-[var(--ink-soft)]">Board-certified specialists</span>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--sage)] shrink-0 mt-0.5" aria-hidden="true"></i>
+                <span class="text-sm text-[var(--ink-soft)]">Same-day appointments</span>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--sage)] shrink-0 mt-0.5" aria-hidden="true"></i>
+                <span class="text-sm text-[var(--ink-soft)]">Accredited facilities</span>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--sage)] shrink-0 mt-0.5" aria-hidden="true"></i>
+                <span class="text-sm text-[var(--ink-soft)]">Insurance accepted</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== DOCTORS ========== -->
+    <section id="doctors" class="section-pad" aria-label="Our doctors">
+      <div class="container-max">
+        <div class="max-w-2xl mb-14">
+          <p class="text-xs font-semibold tracking-[0.2em] uppercase text-[var(--brass)] mb-3">Meet the team</p>
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-display leading-tight text-[var(--ink)]">
+            Specialists who<br />truly listen.
+          </h2>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Doctor 1 -->
+          <div class="group text-center">
+            <div class="rounded-[1.5rem] overflow-hidden mb-4 bg-[var(--sage-light)]">
+              <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80&auto=format&fit=crop" alt="Dr. Sarah Mitchell" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+            </div>
+            <h3 class="font-semibold text-[var(--ink)]">Dr. Sarah Mitchell</h3>
+            <p class="text-xs text-[var(--ink-soft)] mt-0.5">Cardiology</p>
+          </div>
+          <!-- Doctor 2 -->
+          <div class="group text-center">
+            <div class="rounded-[1.5rem] overflow-hidden mb-4 bg-[#f3ede6]">
+              <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&q=80&auto=format&fit=crop" alt="Dr. James Okafor" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+            </div>
+            <h3 class="font-semibold text-[var(--ink)]">Dr. James Okafor</h3>
+            <p class="text-xs text-[var(--ink-soft)] mt-0.5">Neurology</p>
+          </div>
+          <!-- Doctor 3 -->
+          <div class="group text-center">
+            <div class="rounded-[1.5rem] overflow-hidden mb-4 bg-[#e8eef0]">
+              <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&q=80&auto=format&fit=crop" alt="Dr. Elena Rossi" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+            </div>
+            <h3 class="font-semibold text-[var(--ink)]">Dr. Elena Rossi</h3>
+            <p class="text-xs text-[var(--ink-soft)] mt-0.5">Pediatrics</p>
+          </div>
+          <!-- Doctor 4 -->
+          <div class="group text-center">
+            <div class="rounded-[1.5rem] overflow-hidden mb-4 bg-[var(--sage-light)]">
+              <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&q=80&auto=format&fit=crop" alt="Dr. Marcus Chen" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+            </div>
+            <h3 class="font-semibold text-[var(--ink)]">Dr. Marcus Chen</h3>
+            <p class="text-xs text-[var(--ink-soft)] mt-0.5">Orthopedics</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TESTIMONIALS ========== -->
+    <section id="testimonials" class="section-pad bg-white/60" aria-label="Patient testimonials">
+      <div class="container-max">
+        <div class="max-w-2xl mb-14">
+          <p class="text-xs font-semibold tracking-[0.2em] uppercase text-[var(--brass)] mb-3">What patients say</p>
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-display leading-tight text-[var(--ink)]">
+            Real stories, real relief.
+          </h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card">
+            <div class="flex gap-1 mb-4 text-[var(--brass)]" aria-label="5 out of 5 stars">
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+            </div>
+            <p class="text-sm text-[var(--ink-soft)] leading-relaxed mb-6">
+              "From the moment I walked in, I felt heard. The staff at Alfat treated me like a person, not a chart. My surgery went perfectly and recovery was smooth."
+            </p>
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80&auto=format&fit=crop" alt="Patient Amara Johnson" class="w-10 h-10 rounded-full object-cover" loading="lazy" />
+              <div>
+                <p class="text-sm font-semibold text-[var(--ink)]">Amara Johnson</p>
+                <p class="text-xs text-[var(--ink-soft)]">Cardiology patient</p>
+              </div>
+            </div>
+          </div>
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card">
+            <div class="flex gap-1 mb-4 text-[var(--brass)]" aria-label="5 out of 5 stars">
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+            </div>
+            <p class="text-sm text-[var(--ink-soft)] leading-relaxed mb-6">
+              "Dr. Okafor took the time to explain everything about my diagnosis. I left feeling informed and genuinely hopeful. That kind of care is rare."
+            </p>
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80&auto=format&fit=crop" alt="Patient David Park" class="w-10 h-10 rounded-full object-cover" loading="lazy" />
+              <div>
+                <p class="text-sm font-semibold text-[var(--ink)]">David Park</p>
+                <p class="text-xs text-[var(--ink-soft)]">Neurology patient</p>
+              </div>
+            </div>
+          </div>
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card">
+            <div class="flex gap-1 mb-4 text-[var(--brass)]" aria-label="5 out of 5 stars">
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current" aria-hidden="true"></i>
+            </div>
+            <p class="text-sm text-[var(--ink-soft)] leading-relaxed mb-6">
+              "The pediatric team is incredible with my kids. They make what could be a scary visit feel like a breeze. We won't go anywhere else."
+            </p>
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&q=80&auto=format&fit=crop" alt="Patient Priya Nair" class="w-10 h-10 rounded-full object-cover" loading="lazy" />
+              <div>
+                <p class="text-sm font-semibold text-[var(--ink)]">Priya Nair</p>
+                <p class="text-xs text-[var(--ink-soft)]">Pediatrics parent</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CTA BANNER ========== -->
+    <section class="section-pad" aria-label="Book an appointment">
+      <div class="container-max">
+        <div class="relative rounded-[2.5rem] overflow-hidden bg-[var(--ink)] px-8 py-16 md:px-16 md:py-20 text-center">
+          <div class="absolute inset-0 opacity-10" aria-hidden="true">
+            <div class="absolute top-0 left-1/4 w-96 h-96 bg-[var(--brass)] rounded-full blur-[120px]"></div>
+            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-[var(--sage)] rounded-full blur-[120px]"></div>
+          </div>
+          <div class="relative z-10 max-w-2xl mx-auto">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-display leading-tight text-white">
+              Your health can't wait.<br />Neither should you.
+            </h2>
+            <p class="mt-4 text-white/70 text-base md:text-lg">
+              Book an appointment today and take the first step toward feeling your best. Same-day and next-day slots available.
+            </p>
+            <div class="mt-8 flex flex-wrap justify-center gap-3">
+              <a href="#contact" class="btn-primary !bg-white !text-[var(--ink)] hover:!bg-white/90">
+                <i data-lucide="calendar-check" class="w-4 h-4" aria-hidden="true"></i>
+                Book an appointment
+              </a>
+              <a href="tel:+15551234567" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-white/25 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/10 hover:border-white/40">
+                <i data-lucide="phone" class="w-4 h-4" aria-hidden="true"></i>
+                Call +1 (555) 123-4567
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONTACT / FOOTER FORM ========== -->
+    <section id="contact" class="section-pad bg-white/60" aria-label="Contact and appointment form">
+      <div class="container-max">
+        <div class="grid md:grid-cols-5 gap-12 md:gap-16">
+          <!-- Left info -->
+          <div class="md:col-span-2">
+            <p class="text-xs font-semibold tracking-[0.2em] uppercase text-[var(--brass)] mb-3">Get in touch</p>
+            <h2 class="text-3xl sm:text-4xl font-display leading-tight text-[var(--ink)] mb-6">
+              We're here<br />when you need us.
+            </h2>
+            <p class="text-sm text-[var(--ink-soft)] leading-relaxed mb-8">
+              Whether you're scheduling a routine checkup or seeking a second opinion, our team is ready to help. Fill out the form and we'll get back to you within one business day.
+            </p>
+            <div class="space-y-5">
+              <div class="flex items-start gap-3">
+                <div class="w-9 h-9 rounded-full bg-[var(--sage-light)] flex items-center justify-center shrink-0">
+                  <i data-lucide="map-pin" class="w-4 h-4 text-[var(--sage)]" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-[var(--ink)]">Visit us</p>
+                  <p class="text-xs text-[var(--ink-soft)] mt-0.5">1420 Wellness Boulevard, Suite 200<br />Portland, OR 97205</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-9 h-9 rounded-full bg-[#f3ede6] flex items-center justify-center shrink-0">
+                  <i data-lucide="phone" class="w-4 h-4 text-[var(--brass)]" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-[var(--ink)]">Call us</p>
+                  <p class="text-xs text-[var(--ink-soft)] mt-0.5">+1 (555) 123-4567</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-9 h-9 rounded-full bg-[#e8eef0] flex items-center justify-center shrink-0">
+                  <i data-lucide="mail" class="w-4 h-4 text-[#5b7f8c]" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-[var(--ink)]">Email us</p>
+                  <p class="text-xs text-[var(--ink-soft)] mt-0.5">care@alfathospital.com</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right form -->
+          <div class="md:col-span-3">
+            <form id="appointment-form" class="bg-white rounded-[1.5rem] border border-[var(--line)] p-6 md:p-8 shadow-[var(--shadow-card)]" novalidate>
+              <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label for="name" class="block text-xs font-semibold text-[var(--ink-soft)] mb-1.5">Full name</label>
+                  <input type="text" id="name" name="name" class="form-input" placeholder="Jane Doe" required aria-required="true" />
+                </div>
+                <div>
+                  <label for="email" class="block text-xs font-semibold text-[var(--ink-soft)] mb-1.5">Email</label>
+                  <input type="email" id="email" name="email" class="form-input" placeholder="jane@example.com" required aria-required="true" />
+                </div>
+              </div>
+              <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label for="phone" class="block text-xs font-semibold text-[var(--ink-soft)] mb-1.5">Phone</label>
+                  <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 (555) 000-0000" required aria-required="true" />
+                </div>
+                <div>
+                  <label for="service" class="block text-xs font-semibold text-[var(--ink-soft)] mb-1.5">Service</label>
+                  <select id="service" name="service" class="form-input" required aria-required="true">
+                    <option value="" disabled selected>Select a service</option>
+                    <option value="cardiology">Cardiology</option>
+                    <option value="neurology">Neurology</option>
+                    <option value="pediatrics">Pediatrics</option>
+                    <option value="orthopedics">Orthopedics</option>
+                    <option value="ophthalmology">Ophthalmology</option>
+                    <option value="diagnostics">Diagnostics</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label for="message" class="block text-xs font-semibold text-[var(--ink-soft)] mb-1.5">Message</label>
+                <textarea id="message" name="message" rows="3" class="form-input resize-none" placeholder="Tell us briefly how we can help..." required aria-required="true"></textarea>
+              </div>
+              <button type="submit" class="btn-primary w-full sm:w-auto">
+                <i data-lucide="send" class="w-4 h-4" aria-hidden="true"></i>
+                Send request
+              </button>
+              <p id="form-status" class="mt-4 text-sm hidden" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="bg-[var(--ink)] text-white/70 pt-16 pb-8" aria-label="Site footer">
+    <div class="container-max">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <!-- Brand -->
+        <div class="lg:col-span-1">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+              <i data-lucide="heart-pulse" class="w-4 h-4 text-white" style="width:16px;height:16px;" aria-hidden="true"></i>
+            </span>
+            <span class="text-base font-semibold text-white">Alfat <span class="font-display italic font-normal text-[var(--brass-light)]">Hospital</span></span>
+          </div>
+          <p class="text-sm leading-relaxed text-white/50 max-w-xs">
+            Modern care, timeless compassion. Serving our community with excellence since 1998.
+          </p>
+        </div>
+        <!-- Links 1 -->
+        <div>
+          <h4 class="text-xs font-semibold tracking-[0.15em] uppercase text-white/40 mb-4">Services</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#services" class="hover:text-white transition-colors duration-200">Cardiology</a></li>
+            <li><a href="#services" class="hover:text-white transition-colors duration-200">Neurology</a></li>
+            <li><a href="#services" class="hover:text-white transition-colors duration-200">Pediatrics</a></li>
+            <li><a href="#services" class="hover:text-white transition-colors duration-200">Orthopedics</a></li>
+          </ul>
+        </div>
+        <!-- Links 2 -->
+        <div>
+          <h4 class="text-xs font-semibold tracking-[0.15em] uppercase text-white/40 mb-4">Hospital</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#about" class="hover:text-white transition-colors duration-200">About us</a></li>
+            <li><a href="#doctors" class="hover:text-white transition-colors duration-200">Our doctors</a></li>
+            <li><a href="#testimonials" class="hover:text-white transition-colors duration-200">Testimonials</a></li>
+            <li><a href="#contact" class="hover:text-white transition-colors duration-200">Contact</a></li>
+          </ul>
+        </div>
+        <!-- Links 3 -->
+        <div>
+          <h4 class="text-xs font-semibold tracking-[0.15em] uppercase text-white/40 mb-4">Connect</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors duration-200 flex items-center gap-2"><i data-lucide="facebook" class="w-3.5 h-3.5" aria-hidden="true"></i> Facebook</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-200 flex items-center gap-2"><i data-lucide="instagram" class="w-3.5 h-3.5" aria-hidden="true"></i> Instagram</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-200 flex items-center gap-2"><i data-lucide="linkedin" class="w-3.5 h-3.5" aria-hidden="true"></i> LinkedIn</a></li>
+            <li><a href="#" class="hover:text-white transition-colors duration-200 flex items-center gap-2"><i data-lucide="twitter" class="w-3.5 h-3.5" aria-hidden="true"></i> Twitter</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+        <p>&copy; <span id="year"></span> Alfat Hospital. All rights reserved.</p>
+        <div class="flex gap-5">
+          <a href="#" class="hover:text-white/70 transition-colors duration-200">Privacy policy</a>
+          <a href="#" class="hover:text-white/70 transition-colors duration-200">Terms of service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Sticky header
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // Mobile menu
+    const toggleBtn = document.getElementById('mobile-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    toggleBtn.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden');
+      toggleBtn.setAttribute('aria-expanded', String(!isOpen));
+      toggleBtn.innerHTML = isOpen
+        ? '<i data-lucide="menu" class="w-5 h-5 text-[var(--ink)]"></i>'
+        : '<i data-lucide="x" class="w-5 h-5 text-[var(--ink)]"></i>';
+      lucide.createIcons();
+    });
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.innerHTML = '<i data-lucide="menu" class="w-5 h-5 text-[var(--ink)]"></i>';
+        lucide.createIcons();
+      });
+    });
+
+    // GSAP Scroll animations
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Reveal sections on scroll
+    gsap.utils.toArray('.card-soft, .testimonial-card, .group').forEach((el, i) => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1, y: 0, duration: 0.7, ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' },
+          delay: (i % 4) * 0.06
+        }
+      );
+    });
+
+    // Staggered hero text reveal (already CSS animated, but add subtle scale)
+    gsap.fromTo('.stat-number',
+      { opacity: 0, scale: 0.9 },
+      { opacity: 1, scale: 1, duration: 0.8, stagger: 0.1, ease: 'back.out(1.7)', delay: 0.8 }
+    );
+
+    // Form validation + submission
+    const form = document.getElementById('appointment-form');
+    const statusEl = document.getElementById('form-status');
+
+    function showError(input, message) {
+      input.classList.add('error');
+      input.setAttribute('aria-invalid', 'true');
+    }
+    function clearError(input) {
+      input.classList.remove('error');
+      input.setAttribute('aria-invalid', 'false');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = form.querySelector('#name');
+      const email = form.querySelector('#email');
+      const phone = form.querySelector('#phone');
+      const service = form.querySelector('#service');
+      const message = form.querySelector('#message');
+
+      let valid = true;
+
+      [name, email, phone, service, message].forEach(clearError);
+
+      if (!name.value.trim()) { showError(name); valid = false; }
+      if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { showError(email); valid = false; }
+      if (!phone.value.trim() || phone.value.trim().length < 7) { showError(phone); valid = false; }
+      if (!service.value) { showError(service); valid = false; }
+      if (!message.value.trim()) { showError(message); valid = false; }
+
+      if (!valid) {
+        statusEl.textContent = 'Please fill out all fields correctly.';
+        statusEl.className = 'mt-4 text-sm text-red-600 block';
+        return;
+      }
+
+      // Simulate submission (replace with real backend)
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalHTML = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin" aria-hidden="true"></i> Sending...';
+      lucide.createIcons();
+
+      // TODO: connect form action to backend endpoint
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      statusEl.textContent = 'Thank you, ' + name.value.trim() + '! We have received your request and will contact you within one business day.';
+      statusEl.className = 'mt-4 text-sm text-green-700 block';
+      form.reset();
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalHTML;
+      lucide.createIcons();
+
+      // Clear success message after 8 seconds
+      setTimeout(() => {
+        statusEl.textContent = '';
+        statusEl.className = 'mt-4 text-sm hidden';
+      }, 8000);
+    });
+
+    // Clear error on input
+    form.querySelectorAll('input, textarea, select').forEach(input => {
+      input.addEventListener('input', () => clearError(input));
+      input.addEventListener('change', () => clearError(input));
+    });
+  </script>
+</body>
+</html>
