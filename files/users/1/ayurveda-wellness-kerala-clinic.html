@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AyurVeda Wellness · Kerala Clinic</title>
+  <!-- Tailwind CDN + Google Fonts + Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- GSAP & ScrollTrigger for subtle motion -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1d2b2a;
+      --cream: #fcfaf7;
+      --paper: #ffffff;
+      --moss: #2f5e4c;
+      --moss-light: #e1ede6;
+      --brass: #c29b6c;
+      --brass-light: #f3e9dd;
+      --hairline: rgba(0, 0, 0, 0.06);
+      --shadow-soft: 0 20px 35px -8px rgba(0, 0, 0, 0.06), 0 8px 12px -6px rgba(0, 0, 0, 0.02);
+      --shadow-card: 0 8px 24px -6px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --focus-ring: 0 0 0 3px rgba(47, 94, 76, 0.25);
+    }
+
+    /* === Base & Reset === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--cream);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .display {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    /* === Typography refinements === */
+    .hero-title {
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+
+    .section-title {
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--moss);
+      background: var(--moss-light);
+      display: inline-block;
+      padding: 0.35rem 1rem;
+      border-radius: 100px;
+    }
+
+    /* === Custom components === */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+      transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: var(--moss);
+      color: white;
+      box-shadow: 0 6px 18px -6px rgba(47, 94, 76, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: #244c3e;
+      transform: translateY(-2px);
+      box-shadow: 0 14px 24px -8px rgba(47, 94, 76, 0.45);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--hairline);
+      color: var(--ink);
+    }
+
+    .btn-outline:hover {
+      background: rgba(0, 0, 0, 0.02);
+      border-color: var(--moss);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline:focus-visible,
+    .btn-primary:focus-visible,
+    a:focus-visible,
+    button:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 100px;
+    }
+
+    .card-hover {
+      transition: all 0.35s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 30px 45px -15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* === Animations === */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+
+    /* split text illusion with spans */
+    .word-reveal span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: wordUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes wordUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .word-reveal span:nth-child(1) { animation-delay: 0.1s; }
+    .word-reveal span:nth-child(2) { animation-delay: 0.2s; }
+    .word-reveal span:nth-child(3) { animation-delay: 0.3s; }
+    .word-reveal span:nth-child(4) { animation-delay: 0.4s; }
+    .word-reveal span:nth-child(5) { animation-delay: 0.5s; }
+
+    /* subtle float for decorative elements */
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(1deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    .float-element {
+      animation: float 8s infinite ease-in-out;
+    }
+
+    /* mobile menu */
+    .mobile-menu {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+    }
+
+    .mobile-menu.open {
+      max-height: 420px;
+      opacity: 1;
+    }
+
+    /* form focus */
+    input, textarea, select {
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--moss);
+      box-shadow: 0 0 0 3px rgba(47, 94, 76, 0.1);
+    }
+
+    /* grain overlay */
+    .grain {
+      position: relative;
+    }
+
+    .grain::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      border-radius: inherit;
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            moss: '#2f5e4c',
+            mosslight: '#e1ede6',
+            cream: '#fcfaf7',
+            brass: '#c29b6c',
+            brasslight: '#f3e9dd',
+            ink: '#1d2b2a',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          borderRadius: {
+            '4xl': '2.5rem',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="antialiased">
+
+  <!-- ========== HEADER ========== -->
+  <header class="sticky top-0 z-50 bg-cream/80 backdrop-blur-md border-b border-black/5 transition-all">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 py-4 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5 group" aria-label="AyurVeda Wellness home">
+        <div class="w-10 h-10 rounded-xl bg-moss flex items-center justify-center text-white shadow-sm transition-transform group-hover:rotate-6">
+          <i data-lucide="leaf" class="w-5 h-5"></i>
+        </div>
+        <span class="font-display text-2xl font-semibold tracking-tight text-ink">Ayur<span class="text-moss">Veda</span></span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-ink/70">
+        <a href="#services" class="hover:text-moss transition-colors">Treatments</a>
+        <a href="#doctors" class="hover:text-moss transition-colors">Our Doctors</a>
+        <a href="#testimonials" class="hover:text-moss transition-colors">Stories</a>
+        <a href="#contact" class="hover:text-moss transition-colors">Contact</a>
+      </nav>
+
+      <!-- CTA + mobile toggle -->
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="hidden sm:inline-flex btn btn-primary text-sm px-6 py-2.5">
+          <i data-lucide="calendar-check" class="w-4 h-4"></i>
+          Book Consultation
+        </a>
+        <button id="menuToggle" class="md:hidden w-10 h-10 rounded-full border border-black/10 flex items-center justify-center hover:bg-black/5 transition-colors" aria-label="Toggle menu" aria-expanded="false">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu dropdown -->
+    <div id="mobileMenu" class="mobile-menu md:hidden bg-white/95 backdrop-blur-md border-b border-black/5">
+      <div class="px-6 py-5 flex flex-col gap-3 text-base font-medium">
+        <a href="#services" class="py-2 border-b border-black/5 hover:text-moss transition-colors">Treatments</a>
+        <a href="#doctors" class="py-2 border-b border-black/5 hover:text-moss transition-colors">Our Doctors</a>
+        <a href="#testimonials" class="py-2 border-b border-black/5 hover:text-moss transition-colors">Stories</a>
+        <a href="#contact" class="py-2 border-b border-black/5 hover:text-moss transition-colors">Contact</a>
+        <a href="#contact" class="mt-2 btn btn-primary w-full text-center">
+          <i data-lucide="calendar-check" class="w-4 h-4"></i> Book Consultation
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ========== HERO ========== -->
+    <section class="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 pt-16 pb-20 md:pt-24 md:pb-28 overflow-hidden">
+      <!-- subtle decorative circles -->
+      <div class="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-mosslight/40 blur-3xl -z-10"></div>
+      <div class="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-brasslight/50 blur-3xl -z-10"></div>
+
+      <div class="grid lg:grid-cols-2 gap-14 items-center">
+        <!-- Left: text -->
+        <div class="space-y-8">
+          <span class="eyebrow reveal">Kerala's holistic healing</span>
+          <h1 class="hero-title word-reveal">
+            <span class="block">Ancient</span>
+            <span class="block text-moss">wisdom.</span>
+            <span class="block">Modern care.</span>
+          </h1>
+          <p class="text-base sm:text-lg text-ink/70 max-w-lg leading-relaxed reveal delay-2">
+            At AyurVeda Wellness, we blend authentic Kerala Ayurveda with evidence-based integrative medicine — personalised to your body, mind and rhythm of life.
+          </p>
+          <div class="flex flex-wrap items-center gap-4 reveal delay-3">
+            <a href="#contact" class="btn btn-primary">
+              <i data-lucide="heart-pulse" class="w-4 h-4"></i>
+              Start Your Healing
+            </a>
+            <a href="#services" class="btn btn-outline">
+              <i data-lucide="stethoscope" class="w-4 h-4"></i>
+              Explore Treatments
+            </a>
+          </div>
+
+          <!-- mini social proof -->
+          <div class="flex items-center gap-6 pt-6 reveal delay-4">
+            <div class="flex -space-x-3">
+              <div class="w-9 h-9 rounded-full bg-moss/20 border-2 border-white flex items-center justify-center text-xs font-semibold text-moss">A</div>
+              <div class="w-9 h-9 rounded-full bg-brass/20 border-2 border-white flex items-center justify-center text-xs font-semibold text-brass">R</div>
+              <div class="w-9 h-9 rounded-full bg-mosslight border-2 border-white flex items-center justify-center text-xs font-semibold text-moss">M</div>
+            </div>
+            <p class="text-sm text-ink/60"><span class="font-semibold text-ink">2,400+</span> patients restored</p>
+          </div>
+        </div>
+
+        <!-- Right: visual card with 3d tilt effect (pure css) -->
+        <div class="relative reveal delay-2" style="perspective: 1200px;">
+          <div class="relative rounded-4xl overflow-hidden shadow-2xl transition-transform duration-500 hover:rotate-y-2 hover:rotate-x-2 bg-white p-3 border border-black/5">
+            <div class="rounded-3xl overflow-hidden bg-gradient-to-br from-mosslight to-brasslight/30 flex items-center justify-center" style="aspect-ratio: 4/3;">
+              <!-- decorative abstract shapes -->
+              <div class="text-center p-10">
+                <div class="w-24 h-24 mx-auto rounded-full bg-white/60 backdrop-blur-sm border border-white flex items-center justify-center mb-5 float-element">
+                  <i data-lucide="sprout" class="w-10 h-10 text-moss"></i>
+                </div>
+                <p class="font-display text-2xl font-semibold text-ink/80">Kerala · since 1998</p>
+                <p class="text-sm text-ink/50 mt-1">Authentic lineage, modern protocols</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== STATS BAR ========== -->
+    <section class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 pb-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+        <div class="glass-panel rounded-2xl p-6 text-center card-hover">
+          <p class="font-display text-3xl font-bold text-moss">25+</p>
+          <p class="text-sm text-ink/60 mt-1">Years of practice</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-6 text-center card-hover">
+          <p class="font-display text-3xl font-bold text-moss">18k</p>
+          <p class="text-sm text-ink/60 mt-1">Patients treated</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-6 text-center card-hover">
+          <p class="font-display text-3xl font-bold text-moss">40+</p>
+          <p class="text-sm text-ink/60 mt-1">Therapies offered</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-6 text-center card-hover">
+          <p class="font-display text-3xl font-bold text-moss">4.9★</p>
+          <p class="text-sm text-ink/60 mt-1">Patient rating</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SERVICES / TREATMENTS ========== -->
+    <section id="services" class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 py-20">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <span class="eyebrow">Our treatments</span>
+        <h2 class="section-title mt-4">Healing that honours <span class="text-moss">your nature</span></h2>
+        <p class="text-ink/60 mt-4 max-w-lg mx-auto">Every protocol begins with listening — to your story, your body, and the environment you live in.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- card 1 -->
+        <div class="bg-white rounded-3xl p-7 shadow-[var(--shadow-card)] border border-black/5 card-hover reveal delay-1">
+          <div class="w-12 h-12 rounded-2xl bg-mosslight flex items-center justify-center mb-5">
+            <i data-lucide="leaf" class="w-6 h-6 text-moss"></i>
+          </div>
+          <h3 class="font-display text-xl font-semibold mb-2">Panchakarma Detox</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">Classical five-step purification to reset digestion, immunity and mental clarity.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-medium text-moss mt-5 hover:gap-2.5 transition-all">Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        </div>
+        <!-- card 2 -->
+        <div class="bg-white rounded-3xl p-7 shadow-[var(--shadow-card)] border border-black/5 card-hover reveal delay-2">
+          <div class="w-12 h-12 rounded-2xl bg-brasslight flex items-center justify-center mb-5">
+            <i data-lucide="heart" class="w-6 h-6 text-brass"></i>
+          </div>
+          <h3 class="font-display text-xl font-semibold mb-2">Cardiac Wellness</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">Integrative heart care combining Ayurvedic herbs, diet and gentle movement.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-medium text-moss mt-5 hover:gap-2.5 transition-all">Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        </div>
+        <!-- card 3 -->
+        <div class="bg-white rounded-3xl p-7 shadow-[var(--shadow-card)] border border-black/5 card-hover reveal delay-3">
+          <div class="w-12 h-12 rounded-2xl bg-mosslight flex items-center justify-center mb-5">
+            <i data-lucide="brain" class="w-6 h-6 text-moss"></i>
+          </div>
+          <h3 class="font-display text-xl font-semibold mb-2">Mind & Sleep</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">Therapies for anxiety, burnout and insomnia using Shirodhara and meditation.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-medium text-moss mt-5 hover:gap-2.5 transition-all">Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        </div>
+        <!-- card 4 -->
+        <div class="bg-white rounded-3xl p-7 shadow-[var(--shadow-card)] border border-black/5 card-hover reveal delay-1">
+          <div class="w-12 h-12 rounded-2xl bg-brasslight flex items-center justify-center mb-5">
+            <i data-lucide="bone" class="w-6 h-6 text-brass"></i>
+          </div>
+          <h3 class="font-display text-xl font-semibold mb-2">Joint & Spine Care</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">Non-surgical relief for arthritis, back pain and sports injuries.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-medium text-moss mt-5 hover:gap-2.5 transition-all">Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        </div>
+        <!-- card 5 -->
+        <div class="bg-white rounded-3xl p-7 shadow-[var(--shadow-card)] border border-black/5 card-hover reveal delay-2">
+          <div class="w-12 h-12 rounded-2xl bg-mosslight flex items-center justify-center mb-5">
+            <i data-lucide="female" class="w-6 h-6 text-moss"></i>
+          </div>
+          <h3 class="font-display text-xl font-semibold mb-2">Women's Health</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">Hormonal balance, PCOS, fertility and postnatal support in a safe space.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-medium text-moss mt-5 hover:gap-2.5 transition-all">Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        </div>
+        <!-- card 6 -->
+        <div class="bg-white rounded-3xl p-7 shadow-[var(--shadow-card)] border border-black/5 card-hover reveal delay-3">
+          <div class="w-12 h-12 rounded-2xl bg-brasslight flex items-center justify-center mb-5">
+            <i data-lucide="sun" class="w-6 h-6 text-brass"></i>
+          </div>
+          <h3 class="font-display text-xl font-semibold mb-2">Immunity & Longevity</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">Seasonal cleanses, Rasayana therapy and lifestyle coaching for vibrant ageing.</p>
+          <a href="#contact" class="inline-flex items-center gap-1.5 text-sm font-medium text-moss mt-5 hover:gap-2.5 transition-all">Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== DOCTORS ========== -->
+    <section id="doctors" class="bg-white/60 border-y border-black/5 py-20">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 reveal">
+          <div>
+            <span class="eyebrow">Meet the team</span>
+            <h2 class="section-title mt-4 max-w-xl">Guided by <span class="text-moss">lineage</span>, grounded in science</h2>
+          </div>
+          <p class="text-ink/60 max-w-sm">Our vaidyas and integrative physicians work together — no dogma, only what works for you.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- doctor 1 -->
+          <div class="bg-white rounded-3xl p-6 shadow-[var(--shadow-card)] border border-black/5 card-hover text-center reveal delay-1">
+            <div class="w-28 h-28 mx-auto rounded-full bg-gradient-to-br from-mosslight to-brasslight flex items-center justify-center mb-5 overflow-hidden">
+              <i data-lucide="user-round" class="w-12 h-12 text-moss/60"></i>
+            </div>
+            <h3 class="font-display text-xl font-semibold">Dr. Meera Nair</h3>
+            <p class="text-sm text-moss font-medium">BAMS, MD (Ayurveda)</p>
+            <p class="text-sm text-ink/60 mt-2 leading-relaxed">20+ years in Panchakarma and women's health. Third-generation vaidya from Thrissur.</p>
+          </div>
+          <!-- doctor 2 -->
+          <div class="bg-white rounded-3xl p-6 shadow-[var(--shadow-card)] border border-black/5 card-hover text-center reveal delay-2">
+            <div class="w-28 h-28 mx-auto rounded-full bg-gradient-to-br from-brasslight to-mosslight flex items-center justify-center mb-5 overflow-hidden">
+              <i data-lucide="user-round" class="w-12 h-12 text-brass/60"></i>
+            </div>
+            <h3 class="font-display text-xl font-semibold">Dr. Arjun Menon</h3>
+            <p class="text-sm text-moss font-medium">MBBS, Dip. Integrative Med</p>
+            <p class="text-sm text-ink/60 mt-2 leading-relaxed">Cardiac wellness and metabolic health, bridging modern diagnostics with Ayurvedic protocols.</p>
+          </div>
+          <!-- doctor 3 -->
+          <div class="bg-white rounded-3xl p-6 shadow-[var(--shadow-card)] border border-black/5 card-hover text-center reveal delay-3">
+            <div class="w-28 h-28 mx-auto rounded-full bg-gradient-to-br from-mosslight to-brasslight flex items-center justify-center mb-5 overflow-hidden">
+              <i data-lucide="user-round" class="w-12 h-12 text-moss/60"></i>
+            </div>
+            <h3 class="font-display text-xl font-semibold">Dr. Lakshmi Pillai</h3>
+            <p class="text-sm text-moss font-medium">BAMS, PhD (Rasayana)</p>
+            <p class="text-sm text-ink/60 mt-2 leading-relaxed">Specialist in immunity, longevity and post-illness recovery. Author of two clinical handbooks.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TESTIMONIALS ========== -->
+    <section id="testimonials" class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 py-20">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <span class="eyebrow">Patient stories</span>
+        <h2 class="section-title mt-4">Real people, <span class="text-moss">real relief</span></h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-3xl p-7 shadow-[var(--shadow-card)] border border-black/5 card-hover reveal delay-1">
+          <div class="flex gap-1 text-brass mb-4">
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+          </div>
+          <p class="text-ink/70 text-sm leading-relaxed">"After years of IBS, the Panchakarma programme here changed everything. The team listens — truly listens. I feel human again."</p>
+          <div class="mt-5 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-mosslight flex items-center justify-center text-xs font-semibold text-moss">SP</div>
+            <div>
+              <p class="text-sm font-medium">Sneha P.</p>
+              <p class="text-xs text-ink/50">Kochi</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-7 shadow-[var(--shadow-card)] border border-black/5 card-hover reveal delay-2">
+          <div class="flex gap-1 text-brass mb-4">
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+          </div>
+          <p class="text-ink/70 text-sm leading-relaxed">"My mother's arthritis pain reduced dramatically within three weeks. The doctors explained every step — no rushing, no upselling."</p>
+          <div class="mt-5 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-brasslight flex items-center justify-center text-xs font-semibold text-brass">RK</div>
+            <div>
+              <p class="text-sm font-medium">Rajesh K.</p>
+              <p class="text-xs text-ink/50">Trivandrum</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-7 shadow-[var(--shadow-card)] border border-black/5 card-hover reveal delay-3">
+          <div class="flex gap-1 text-brass mb-4">
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+            <i data-lucide="star" class="w-4 h-4 fill-brass"></i>
+          </div>
+          <p class="text-ink/70 text-sm leading-relaxed">"Sleep was a distant memory. Shirodhara and the lifestyle plan gave me back 7 hours of rest. Calm, professional, deeply caring."</p>
+          <div class="mt-5 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-mosslight flex items-center justify-center text-xs font-semibold text-moss">AM</div>
+            <div>
+              <p class="text-sm font-medium">Anita M.</p>
+              <p class="text-xs text-ink/50">Calicut</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CTA BANNER ========== -->
+    <section class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 pb-20">
+      <div class="relative rounded-4xl overflow-hidden bg-moss p-10 md:p-16 text-center shadow-xl grain">
+        <div class="absolute inset-0 bg-gradient-to-br from-moss/95 to-[#1b3a2f]"></div>
+        <div class="relative z-10 space-y-5">
+          <h2 class="font-display text-3xl md:text-5xl font-semibold text-white leading-tight">Begin your <span class="text-brasslight">healing journey</span> today</h2>
+          <p class="text-white/70 max-w-lg mx-auto text-sm md:text-base">A 20-minute discovery call is free. No pressure, no commitment — just a conversation about what's possible.</p>
+          <a href="#contact" class="btn bg-white text-moss hover:bg-brasslight transition-colors px-8 py-3.5 text-sm font-semibold inline-flex items-center gap-2 shadow-lg">
+            <i data-lucide="message-circle" class="w-4 h-4"></i> Book a free consult
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONTACT / FOOTER ========== -->
+    <footer id="contact" class="bg-white border-t border-black/5 pt-16 pb-10">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
+        <div class="grid lg:grid-cols-5 gap-12">
+          <!-- brand + contact info -->
+          <div class="lg:col-span-2 space-y-6">
+            <a href="#" class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-xl bg-moss flex items-center justify-center text-white">
+                <i data-lucide="leaf" class="w-5 h-5"></i>
+              </div>
+              <span class="font-display text-2xl font-semibold tracking-tight text-ink">Ayur<span class="text-moss">Veda</span></span>
+            </a>
+            <p class="text-sm text-ink/60 leading-relaxed max-w-xs">Authentic Kerala Ayurveda and integrative medicine, delivered with warmth and precision.</p>
+            <div class="space-y-2 text-sm text-ink/70">
+              <p class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-moss"></i> 12/4, Heritage Lane, Fort Kochi, Kerala 682001</p>
+              <p class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4 text-moss"></i> +91 484 221 3344</p>
+              <p class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-moss"></i> care@ayurveda-wellness.in</p>
+            </div>
+          </div>
+
+          <!-- quick links -->
+          <div class="grid grid-cols-2 gap-8 lg:col-span-3">
+            <div>
+              <h4 class="font-medium text-sm text-ink mb-4">Explore</h4>
+              <ul class="space-y-2.5 text-sm text-ink/60">
+                <li><a href="#services" class="hover:text-moss transition-colors">Treatments</a></li>
+                <li><a href="#doctors" class="hover:text-moss transition-colors">Our Doctors</a></li>
+                <li><a href="#testimonials" class="hover:text-moss transition-colors">Patient Stories</a></li>
+                <li><a href="#contact" class="hover:text-moss transition-colors">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="font-medium text-sm text-ink mb-4">Legal</h4>
+              <ul class="space-y-2.5 text-sm text-ink/60">
+                <li><a href="#" class="hover:text-moss transition-colors">Privacy Policy</a></li>
+                <li><a href="#" class="hover:text-moss transition-colors">Terms of Use</a></li>
+                <li><a href="#" class="hover:text-moss transition-colors">Medical Disclaimer</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Enquiry form (inline) -->
+        <div class="mt-14 pt-10 border-t border-black/5">
+          <div class="grid lg:grid-cols-2 gap-10">
+            <div>
+              <h3 class="font-display text-2xl font-semibold">Request a callback</h3>
+              <p class="text-sm text-ink/60 mt-1.5">Fill in your details and we'll get back within one working day.</p>
+            </div>
+            <form id="enquiryForm" class="space-y-4" novalidate>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="name" class="sr-only">Full name</label>
+                  <input type="text" id="name" name="name" placeholder="Full name" class="w-full px-5 py-3 rounded-2xl border border-black/10 bg-white text-sm placeholder:text-ink/30" required>
+                  <p class="error-message text-xs text-red-500 mt-1 hidden">Please enter your name</p>
+                </div>
+                <div>
+                  <label for="email" class="sr-only">Email</label>
+                  <input type="email" id="email" name="email" placeholder="Email address" class="w-full px-5 py-3 rounded-2xl border border-black/10 bg-white text-sm placeholder:text-ink/30" required>
+                  <p class="error-message text-xs text-red-500 mt-1 hidden">Valid email required</p>
+                </div>
+              </div>
+              <div>
+                <label for="phone" class="sr-only">Phone</label>
+                <input type="tel" id="phone" name="phone" placeholder="Phone number" class="w-full px-5 py-3 rounded-2xl border border-black/10 bg-white text-sm placeholder:text-ink/30" required>
+                <p class="error-message text-xs text-red-500 mt-1 hidden">Phone number required</p>
+              </div>
+              <div>
+                <label for="message" class="sr-only">Message</label>
+                <textarea id="message" name="message" rows="3" placeholder="What would you like help with?" class="w-full px-5 py-3 rounded-2xl border border-black/10 bg-white text-sm placeholder:text-ink/30 resize-none" required></textarea>
+                <p class="error-message text-xs text-red-500 mt-1 hidden">Please tell us briefly</p>
+              </div>
+              <div class="flex items-center gap-4">
+                <button type="submit" class="btn btn-primary text-sm px-7 py-3">
+                  <i data-lucide="send" class="w-4 h-4"></i> Send enquiry
+                </button>
+                <p id="formSuccess" class="text-sm text-moss font-medium hidden flex items-center gap-1">
+                  <i data-lucide="check-circle" class="w-4 h-4"></i> Thank you — we'll be in touch.
+                </p>
+              </div>
+              <!-- TODO: connect form action to backend endpoint (currently simulated) -->
+            </form>
+          </div>
+        </div>
+
+        <div class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ink/40 border-t border-black/5 pt-8">
+          <p>© 2025 AyurVeda Wellness · Kerala. All rights reserved.</p>
+          <div class="flex gap-4">
+            <a href="#" class="hover:text-moss transition-colors" aria-label="Instagram"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+            <a href="#" class="hover:text-moss transition-colors" aria-label="Facebook"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+            <a href="#" class="hover:text-moss transition-colors" aria-label="YouTube"><i data-lucide="youtube" class="w-4 h-4"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // ========== INIT LUCIDE ICONS ==========
+    lucide.createIcons();
+
+    // ========== MOBILE MENU TOGGLE ==========
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    menuToggle.addEventListener('click', () => {
+      const expanded = menuToggle.getAttribute('aria-expanded') === 'true' ? false : true;
+      menuToggle.setAttribute('aria-expanded', expanded);
+      mobileMenu.classList.toggle('open');
+    });
+
+    // Close mobile menu when a link is clicked
+    document.querySelectorAll('#mobileMenu a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // ========== GSAP SCROLL REVEAL (subtle) ==========
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.utils.toArray('.reveal').forEach((el) => {
+      gsap.fromTo(el, 
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+    });
+
+    // Hero word reveal - already CSS animated, but ensure it plays on load
+    // The .word-reveal spans are animated via CSS keyframes
+
+    // ========== FORM VALIDATION & SUBMISSION ==========
+    const form = document.getElementById('enquiryForm');
+    const formSuccess = document.getElementById('formSuccess');
+
+    function showError(input, message) {
+      const errorEl = input.closest('div').querySelector('.error-message');
+      if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.classList.remove('hidden');
+        input.classList.add('border-red-300');
+        input.setAttribute('aria-invalid', 'true');
+      }
+    }
+
+    function clearError(input) {
+      const errorEl = input.closest('div').querySelector('.error-message');
+      if (errorEl) {
+        errorEl.classList.add('hidden');
+        input.classList.remove('border-red-300');
+        input.removeAttribute('aria-invalid');
+      }
+    }
+
+    function validateInput(input) {
+      const value = input.value.trim();
+      if (value === '') {
+        showError(input, 'This field is required');
+        return false;
+      }
+      if (input.type === 'email' && !/^\S+@\S+\.\S+$/.test(value)) {
+        showError(input, 'Please enter a valid email');
+        return false;
+      }
+      if (input.type === 'tel' && !/^[\d\s\+\-\(\)]{7,}$/.test(value)) {
+        showError(input, 'Please enter a valid phone number');
+        return false;
+      }
+      clearError(input);
+      return true;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const phone = document.getElementById('phone');
+      const message = document.getElementById('message');
+      const fields = [name, email, phone, message];
+      
+      let isValid = true;
+      fields.forEach(field => {
+        if (!validateInput(field)) {
+          isValid = false;
+        }
+      });
+
+      if (!isValid) return;
+
+      // Simulate API call with a timeout
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Sending...';
+      lucide.createIcons();
+
+      // TODO: connect form action to backend endpoint
+      // Replace the following setTimeout with a real fetch to your endpoint:
+      /*
+      fetch('/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({
+          url: window.location.host,
+          table: 'enquiries',
+          data: {
+            name: name.value,
+            email: email.value,
+            phone: phone.value,
+            message: message.value
+          }
+        })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network error');
+        return response.json();
+      })
+      .then(() => {
+        form.reset();
+        formSuccess.classList.remove('hidden');
+        setTimeout(() => formSuccess.classList.add('hidden'), 5000);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+        lucide.createIcons();
+      })
+      .catch(error => {
+        alert('Something went wrong. Please try again or call us directly.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+        lucide.createIcons();
+      });
+      */
+
+      // Simulated success for demo
+      setTimeout(() => {
+        form.reset();
+        formSuccess.classList.remove('hidden');
+        setTimeout(() => formSuccess.classList.add('hidden'), 5000);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+        lucide.createIcons();
+      }, 800);
+    });
+
+    // Clear error on input
+    form.querySelectorAll('input, textarea').forEach(field => {
+      field.addEventListener('input', () => clearError(field));
+    });
+
+    // ========== SMOOTH SCROLL FOR ANCHOR LINKS ==========
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
