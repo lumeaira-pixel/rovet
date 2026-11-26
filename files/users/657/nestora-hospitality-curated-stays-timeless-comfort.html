@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nestora Hospitality — Curated Stays, Timeless Comfort</title>
+
+  <!-- Tailwind CDN (exact as requested) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Instrument Serif (display) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Tailwind config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1A1A1A',
+            cream: '#FAF8F5',
+            stone: '#E8E2D9',
+            brass: '#B8996E',
+            brassLight: '#D4BC8E',
+            moss: '#2C3A2F',
+          },
+          fontFamily: {
+            serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          borderRadius: {
+            '4xl': '2rem',
+            '5xl': '2.5rem',
+          },
+          boxShadow: {
+            'soft': '0 4px 24px -4px rgba(26,26,26,0.06)',
+            'lift': '0 20px 40px -12px rgba(26,26,26,0.12)',
+            'brass': '0 8px 32px -8px rgba(184,153,110,0.35)',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* === Design Tokens === */
+    :root {
+      --ink: #1A1A1A;
+      --cream: #FAF8F5;
+      --stone: #E8E2D9;
+      --brass: #B8996E;
+      --brass-light: #D4BC8E;
+      --moss: #2C3A2F;
+      --white: #FFFFFF;
+      --shadow-soft: 0 4px 24px -4px rgba(26,26,26,0.06);
+      --shadow-lift: 0 20px 40px -12px rgba(26,26,26,0.12);
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* === Base === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::selection { background: var(--brass); color: white; }
+
+    /* === Typography === */
+    .font-display { font-family: 'Instrument Serif', Georgia, serif; }
+    .text-balance { text-wrap: balance; }
+    .heading-xl {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      font-weight: 400;
+    }
+    .heading-lg {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      font-weight: 400;
+    }
+    .heading-md {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+      line-height: 1.15;
+      font-weight: 400;
+    }
+    .body-lg { font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.7; color: #5A5652; }
+    .body-sm { font-size: 0.875rem; line-height: 1.6; color: #6B6560; }
+
+    /* === Buttons === */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--ink); color: white;
+      padding: 0.9rem 2rem; border-radius: 100px;
+      font-size: 0.9rem; font-weight: 500; letter-spacing: 0.01em;
+      border: none; cursor: pointer;
+      transition: all 0.35s var(--ease-out);
+      text-decoration: none;
+      box-shadow: 0 2px 12px -2px rgba(26,26,26,0.2);
+    }
+    .btn-primary:hover { background: var(--moss); transform: translateY(-2px); box-shadow: 0 8px 24px -4px rgba(44,58,47,0.35); }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn-primary:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; color: var(--ink);
+      padding: 0.9rem 2rem; border-radius: 100px;
+      font-size: 0.9rem; font-weight: 500;
+      border: 1.5px solid rgba(26,26,26,0.18);
+      cursor: pointer; text-decoration: none;
+      transition: all 0.35s var(--ease-out);
+    }
+    .btn-outline:hover { border-color: var(--brass); color: var(--brass); transform: translateY(-2px); box-shadow: var(--shadow-brass); }
+    .btn-outline:active { transform: translateY(0) scale(0.98); }
+    .btn-outline:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+
+    /* === Nav === */
+    .nav-link {
+      position: relative; color: #4A4642; text-decoration: none;
+      font-size: 0.875rem; font-weight: 450; letter-spacing: 0.01em;
+      padding: 0.4rem 0;
+      transition: color 0.25s ease;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1.5px; background: var(--brass);
+      transition: width 0.3s var(--ease-out);
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:focus-visible { outline: 2px solid var(--brass); outline-offset: 4px; border-radius: 2px; }
+
+    /* === Header scrolled === */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      transition: all 0.4s var(--ease-out);
+      padding: 1.25rem 0;
+      background: transparent;
+    }
+    .site-header.scrolled {
+      background: rgba(250, 248, 245, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 0.75rem 0;
+      box-shadow: 0 1px 0 rgba(26,26,26,0.05);
+    }
+
+    /* === Hero === */
+    .hero-grain {
+      position: absolute; inset: 0; pointer-events: none; z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      opacity: 0.6;
+    }
+    .hero-glow {
+      position: absolute; width: 60vw; height: 60vw; max-width: 800px; max-height: 800px;
+      border-radius: 50%; filter: blur(120px); opacity: 0.25; pointer-events: none;
+    }
+
+    /* === Reveal animations === */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* === Split text === */
+    .split-line { overflow: hidden; display: block; }
+    .split-word {
+      display: inline-block;
+      transform: translateY(110%);
+      transition: transform 0.9s var(--ease-out);
+    }
+    .split-word.revealed { transform: translateY(0); }
+
+    /* === Cards === */
+    .card-tilt {
+      transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .card-tilt:hover { transform: translateY(-6px) scale(1.01); box-shadow: var(--shadow-lift); }
+
+    /* === Gallery horizontal scroll === */
+    .gallery-track {
+      display: flex; gap: 1.25rem;
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.75rem;
+      scrollbar-width: none;
+    }
+    .gallery-track::-webkit-scrollbar { display: none; }
+    .gallery-item { scroll-snap-align: start; flex-shrink: 0; }
+
+    /* === Stats ticker === */
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-track {
+      display: flex; width: fit-content;
+      animation: ticker 40s linear infinite;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+
+    /* === Form === */
+    .form-input {
+      width: 100%; padding: 0.9rem 1.1rem;
+      background: white; border: 1.5px solid rgba(26,26,26,0.1);
+      border-radius: 0.85rem; font-size: 0.9rem; color: var(--ink);
+      transition: all 0.25s var(--ease-out);
+      font-family: 'Inter', sans-serif;
+    }
+    .form-input::placeholder { color: #A8A29A; }
+    .form-input:focus { outline: none; border-color: var(--brass); box-shadow: 0 0 0 3px rgba(184,153,110,0.15); }
+    .form-input.error { border-color: #C4453C; box-shadow: 0 0 0 3px rgba(196,69,60,0.12); }
+    .form-label { display: block; font-size: 0.8rem; font-weight: 550; color: #4A4642; margin-bottom: 0.4rem; letter-spacing: 0.01em; }
+    .form-error { font-size: 0.75rem; color: #C4453C; margin-top: 0.3rem; display: none; }
+    .form-error.visible { display: block; }
+
+    /* === FAQ === */
+    .faq-answer {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.45s var(--ease-out), padding 0.3s ease;
+    }
+    .faq-answer.open { max-height: 300px; }
+
+    /* === Mobile menu === */
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: 99;
+      background: rgba(250, 248, 245, 0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex; flex-direction: column;
+      padding: 6rem 2rem 2rem;
+      transform: translateX(100%);
+      transition: transform 0.5s var(--ease-out);
+    }
+    .mobile-menu.open { transform: translateX(0); }
+    .mobile-menu-link {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 2rem; color: var(--ink); text-decoration: none;
+      padding: 0.8rem 0; border-bottom: 1px solid rgba(26,26,26,0.08);
+      transition: color 0.25s ease;
+    }
+    .mobile-menu-link:hover { color: var(--brass); }
+    .mobile-menu-link:focus-visible { outline: 2px solid var(--brass); outline-offset: 4px; }
+
+    /* === Utilities === */
+    .hairline { border-color: rgba(26,26,26,0.08); }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* === Responsive refinements === */
+    @media (max-width: 640px) {
+      .btn-primary, .btn-outline { padding: 0.75rem 1.5rem; font-size: 0.82rem; }
+      .site-header { padding: 0.9rem 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header" id="siteHeader" role="banner">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#home" class="flex items-center gap-2.5 group" aria-label="Nestora Hospitality home">
+        <div class="w-8 h-8 rounded-full bg-ink flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/>
+          </svg>
+        </div>
+        <span class="font-display text-xl tracking-tight text-ink">Nestora</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-8" aria-label="Main navigation">
+        <a href="#stays" class="nav-link">Stays</a>
+        <a href="#experience" class="nav-link">Experience</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="hidden md:flex items-center gap-3">
+        <a href="#contact" class="btn-primary text-sm">
+          <span>Book a Stay</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <!-- Mobile toggle -->
+      <button id="menuToggle" class="md:hidden w-10 h-10 flex items-center justify-center rounded-full border border-ink/10 bg-white/70 backdrop-blur-sm" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile menu overlay -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <button id="menuClose" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full border border-ink/10" aria-label="Close menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <nav class="flex flex-col" aria-label="Mobile main navigation">
+      <a href="#stays" class="mobile-menu-link">Stays</a>
+      <a href="#experience" class="mobile-menu-link">Experience</a>
+      <a href="#gallery" class="mobile-menu-link">Gallery</a>
+      <a href="#about" class="mobile-menu-link">About</a>
+      <a href="#contact" class="mobile-menu-link">Contact</a>
+    </nav>
+    <div class="mt-auto pt-8">
+      <a href="#contact" class="btn-primary w-full justify-center text-base">Book a Stay</a>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section id="home" class="relative min-h-screen flex items-center pt-28 pb-16 overflow-hidden">
+    <!-- Background layers -->
+    <div class="hero-glow bg-brass/40" style="top: -20%; right: -10%;"></div>
+    <div class="hero-glow bg-moss/30" style="bottom: -30%; left: -15%;"></div>
+    <div class="hero-grain"></div>
+
+    <!-- Decorative large letter -->
+    <div class="absolute right-[-2%] top-[18%] font-display text-[28rem] leading-none text-ink/[0.025] select-none pointer-events-none hidden lg:block" aria-hidden="true">N</div>
+
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 w-full relative z-10">
+      <div class="grid lg:grid-cols-12 gap-12 items-center">
+        <!-- Left -->
+        <div class="lg:col-span-7">
+          <p class="reveal inline-flex items-center gap-2 text-xs font-medium tracking-[0.2em] uppercase text-brass mb-6">
+            <span class="w-8 h-px bg-brass"></span>
+            Boutique Stays · Est. 2014
+          </p>
+
+          <h1 class="heading-xl text-balance mb-6" aria-label="Where stillness meets style">
+            <span class="split-line"><span class="split-word">Where</span> <span class="split-word">stillness</span></span>
+            <span class="split-line"><span class="split-word">meets</span> <span class="split-word italic text-brass">style.</span></span>
+          </h1>
+
+          <p class="body-lg max-w-xl mb-10 reveal reveal-delay-2">
+            Nestora curates intimate retreats in the world's quietest corners — handpicked villas, thoughtful design, and the kind of hospitality that remembers your name.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+            <a href="#stays" class="btn-primary">
+              <span>Explore Stays</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#experience" class="btn-outline">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              <span>Our Philosophy</span>
+            </a>
+          </div>
+
+          <!-- Mini trust line -->
+          <div class="mt-14 flex items-center gap-6 reveal reveal-delay-4">
+            <div class="flex -space-x-3" aria-hidden="true">
+              <div class="w-9 h-9 rounded-full bg-stone border-2 border-cream flex items-center justify-center text-xs font-medium text-ink/60">A</div>
+              <div class="w-9 h-9 rounded-full bg-moss/20 border-2 border-cream flex items-center justify-center text-xs font-medium text-ink/60">M</div>
+              <div class="w-9 h-9 rounded-full bg-brass/25 border-2 border-cream flex items-center justify-center text-xs font-medium text-ink/60">J</div>
+              <div class="w-9 h-9 rounded-full bg-ink/10 border-2 border-cream flex items-center justify-center text-xs font-medium text-ink/60">+</div>
+            </div>
+            <div>
+              <div class="flex items-center gap-0.5 mb-0.5" aria-label="5 out of 5 stars">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <p class="text-xs text-ink/50">Rated 4.9 by 2,400+ guests worldwide</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right visual -->
+        <div class="lg:col-span-5 relative">
+          <div class="relative rounded-[2rem] overflow-hidden shadow-lift reveal reveal-delay-2" style="aspect-ratio: 4/5;">
+            <img
+              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80&auto=format&fit=crop"
+              alt="Sunlit boutique villa interior with linen textures and warm wood"
+              class="w-full h-full object-cover transition-transform duration-[1.2s] ease-out hover:scale-105"
+              loading="eager"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent" aria-hidden="true"></div>
+            <!-- Floating card -->
+            <div class="absolute bottom-5 left-5 right-5 bg-white/85 backdrop-blur-xl rounded-2xl p-4 border border-white/60">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-[0.65rem] uppercase tracking-[0.15em] text-brass font-medium mb-1">Featured Stay</p>
+                  <p class="font-display text-lg text-ink leading-tight">Villa Solenne, Tuscany</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs text-ink/50 mb-0.5">from</p>
+                  <p class="font-display text-xl text-ink">€420<span class="text-xs font-sans text-ink/50">/nt</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Small floating badge -->
+          <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-brass text-white flex flex-col items-center justify-center shadow-brass rotate-6 hidden sm:flex" aria-hidden="true">
+            <span class="font-display text-2xl leading-none">12</span>
+            <span class="text-[0.55rem] uppercase tracking-widest mt-0.5">estates</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TICKER / SOCIAL PROOF ============ -->
+  <div class="border-y hairline bg-white/50 overflow-hidden" aria-label="Trusted by">
+    <div class="ticker-track py-5" aria-hidden="true">
+      <div class="flex items-center gap-16 px-8 whitespace-nowrap">
+        <span class="text-sm font-medium tracking-[0.15em] uppercase text-ink/35">Condé Nast Traveller</span>
+        <span class="w-1 h-1 rounded-full bg-brass/50"></span>
+        <span class="text-sm font-medium tracking-[0.15em] uppercase text-ink/35">Monocle</span>
+        <span class="w-1 h-1 rounded-full bg-brass/50"></span>
+        <span class="text-sm font-medium tracking-[0.15em] uppercase text-ink/35">Wallpaper*</span>
+        <span class="w-1 h-1 rounded-full bg-brass/50"></span>
+        <span class="text-sm font-medium tracking-[0.15em] uppercase text-ink/35">Kinfolk</span>
+        <span class="w-1 h-1 rounded-full bg-brass/50"></span>
+        <span class="text-sm font-medium tracking-[0.15em] uppercase text-ink/35">Travel + Leisure</span>
+        <span class="w-1 h-1 rounded-full bg-brass/50"></span>
+        <span class="text-sm font-medium tracking-[0.15em] uppercase text-ink/35">Cereal Magazine</span>
+        <span class="w-1 h-1 rounded-full bg-brass/50"></span>
+        <span class="text-sm font-medium tracking-[0.15em] uppercase text-ink/35">Condé Nast Traveller</span>
+        <span class="w-1 h-1 rounded-full bg-brass/50"></span>
+        <span class="text-sm font-medium tracking-[0.15em] uppercase text-ink/35">Monocle</span>
+        <span class="w-1 h-1 rounded-full bg-brass/50"></span>
+        <span class="text-sm font-medium tracking-[0.15em] uppercase text-ink/35">Wallpaper*</span>
+        <span class="w-1 h-1 rounded-full bg-brass/50"></span>
+        <span class="text-sm font-medium tracking-[0.15em] uppercase text-ink/35">Kinfolk</span>
+        <span class="w-1 h-1 rounded-full bg-brass/50"></span>
+        <span class="text-sm font-medium tracking-[0.15em] uppercase text-ink/35">Travel + Leisure</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STAYS ============ -->
+  <section id="stays" class="py-24 sm:py-32">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
+        <div class="max-w-2xl">
+          <p class="reveal text-xs font-medium tracking-[0.2em] uppercase text-brass mb-4">Our Collection</p>
+          <h2 class="heading-lg reveal reveal-delay-1 text-balance">A handful of houses, each with a soul of its own.</h2>
+        </div>
+        <a href="#contact" class="reveal reveal-delay-2 btn-outline self-start md:self-auto">
+          <span>View all stays</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <article class="reveal card-tilt group rounded-3xl overflow-hidden bg-white border hairline shadow-soft">
+          <div class="relative overflow-hidden" style="aspect-ratio: 4/3;">
+            <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=700&q=80&auto=format&fit=crop" alt="Amalfi coast terrace with sea view" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-[0.65rem] uppercase tracking-[0.12em] font-medium px-3 py-1.5 rounded-full text-ink">Italy</span>
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="font-display text-2xl text-ink">Casa Marea</h3>
+              <div class="flex items-center gap-1 text-xs text-ink/60"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>4.9</div>
+            </div>
+            <p class="body-sm mb-5">A cliffside retreat above the Tyrrhenian — lemon groves, linen, and a pool that disappears into the horizon.</p>
+            <div class="flex items-center justify-between pt-4 border-t hairline">
+              <span class="text-sm font-medium text-ink">€380<span class="text-xs text-ink/50 font-normal"> / night</span></span>
+              <span class="text-xs text-brass font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Discover <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="reveal reveal-delay-1 card-tilt group rounded-3xl overflow-hidden bg-white border hairline shadow-soft">
+          <div class="relative overflow-hidden" style="aspect-ratio: 4/3;">
+            <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=700&q=80&auto=format&fit=crop" alt="Minimalist stone villa with olive trees" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-[0.65rem] uppercase tracking-[0.12em] font-medium px-3 py-1.5 rounded-full text-ink">Greece</span>
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="font-display text-2xl text-ink">Villa Petra</h3>
+              <div class="flex items-center gap-1 text-xs text-ink/60"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>4.8</div>
+            </div>
+            <p class="body-sm mb-5">Carved into the Peloponnese hillside — raw stone, deep shade, and nothing but cicadas for company.</p>
+            <div class="flex items-center justify-between pt-4 border-t hairline">
+              <span class="text-sm font-medium text-ink">€320<span class="text-xs text-ink/50 font-normal"> / night</span></span>
+              <span class="text-xs text-brass font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Discover <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="reveal reveal-delay-2 card-tilt group rounded-3xl overflow-hidden bg-white border hairline shadow-soft">
+          <div class="relative overflow-hidden" style="aspect-ratio: 4/3;">
+            <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=700&q=80&auto=format&fit=crop" alt="Japanese ryokan with forest view and wooden bath" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-[0.65rem] uppercase tracking-[0.12em] font-medium px-3 py-1.5 rounded-full text-ink">Japan</span>
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="font-display text-2xl text-ink">Mori House</h3>
+              <div class="flex items-center gap-1 text-xs text-ink/60"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>5.0</div>
+            </div>
+            <p class="body-sm mb-5">A cedar-and-paper sanctuary in Hakone. Onsen, silence, and a garden designed to be looked at, not walked through.</p>
+            <div class="flex items-center justify-between pt-4 border-t hairline">
+              <span class="text-sm font-medium text-ink">€560<span class="text-xs text-ink/50 font-normal"> / night</span></span>
+              <span class="text-xs text-brass font-medium flex items-center gap-1 group-hover:gap-2 transition-all">Discover <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE / PHILOSOPHY ============ -->
+  <section id="experience" class="py-24 sm:py-32 bg-white/60">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <p class="reveal text-xs font-medium tracking-[0.2em] uppercase text-brass mb-4">The Nestora Way</p>
+          <h2 class="heading-lg reveal reveal-delay-1 text-balance mb-8">Hospitality that feels less like service, more like being expected.</h2>
+          <p class="body-lg reveal reveal-delay-2 mb-10">
+            We don't do lobbies or front desks. Each Nestora home comes with a local host who knows the butcher, the best table at the trattoria, and exactly when to disappear. It's the difference between a hotel and a house that happens to be yours for a week.
+          </p>
+
+          <div class="space-y-6">
+            <div class="reveal reveal-delay-2 flex gap-4">
+              <div class="w-11 h-11 rounded-full bg-brass/10 flex items-center justify-center shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <h3 class="font-medium text-ink mb-1">A host, not a concierge</h3>
+                <p class="body-sm">Real people with real recommendations. They'll stock the fridge before you arrive and leave you alone after.</p>
+              </div>
+            </div>
+            <div class="reveal reveal-delay-3 flex gap-4">
+              <div class="w-11 h-11 rounded-full bg-brass/10 flex items-center justify-center shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <h3 class="font-medium text-ink mb-1">Design that earns its keep</h3>
+                <p class="body-sm">Every object chosen for a reason. Linen that softens with washing, glasses that feel right in the hand.</p>
+              </div>
+            </div>
+            <div class="reveal reveal-delay-4 flex gap-4">
+              <div class="w-11 h-11 rounded-full bg-brass/10 flex items-center justify-center shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <h3 class="font-medium text-ink mb-1">Time, unhurried</h3>
+                <p class="body-sm">Check-in when you like. Breakfast whenever you wake. The only schedule is the one you don't make.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right image cluster -->
+        <div class="relative">
+          <div class="rounded-[2rem] overflow-hidden shadow-lift reveal" style="aspect-ratio: 4/5;">
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80&auto=format&fit=crop" alt="Warm interior detail with terracotta and natural textures" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="absolute -bottom-6 -left-6 sm:-left-10 bg-white rounded-2xl p-5 shadow-lift border hairline max-w-[200px] reveal reveal-delay-2">
+            <p class="font-display text-3xl text-brass mb-1">98%</p>
+            <p class="text-xs text-ink/60 leading-relaxed">of guests rebook within a year</p>
+          </div>
+          <!-- Decorative circle -->
+          <div class="absolute -top-8 -right-8 w-32 h-32 rounded-full border border-brass/20 hidden sm:block" aria-hidden="true"></div>
+          <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full border border-brass/30 hidden sm:block" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GALLERY ============ -->
+  <section id="gallery" class="py-24 sm:py-32">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="flex items-end justify-between gap-6 mb-10">
+        <div>
+          <p class="reveal text-xs font-medium tracking-[0.2em] uppercase text-brass mb-4">A Look Inside</p>
+          <h2 class="heading-lg reveal reveal-delay-1 text-balance max-w-xl">Rooms with light worth waking up for.</h2>
+        </div>
+        <div class="hidden sm:flex gap-2 reveal reveal-delay-2">
+          <button id="galleryPrev" class="w-10 h-10 rounded-full border hairline flex items-center justify-center hover:bg-ink hover:text-white transition-all duration-300" aria-label="Previous images">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button id="galleryNext" class="w-10 h-10 rounded-full border hairline flex items-center justify-center hover:bg-ink hover:text-white transition-all duration-300" aria-label="Next images">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="gallery-track" id="galleryTrack">
+        <div class="gallery-item w-[280px] sm:w-[340px] rounded-2xl overflow-hidden shadow-soft reveal">
+          <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80&auto=format&fit=crop" alt="Minimal bedroom with linen bedding and morning light" class="w-full h-[380px] object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+        </div>
+        <div class="gallery-item w-[280px] sm:w-[340px] rounded-2xl overflow-hidden shadow-soft reveal reveal-delay-1">
+          <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=600&q=80&auto=format&fit=crop" alt="Open plan living room with rattan and stone" class="w-full h-[380px] object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+        </div>
+        <div class="gallery-item w-[280px] sm:w-[340px] rounded-2xl overflow-hidden shadow-soft reveal reveal-delay-2">
+          <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&q=80&auto=format&fit=crop" alt="Bathroom with freestanding tub and garden view" class="w-full h-[380px] object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+        </div>
+        <div class="gallery-item w-[280px] sm:w-[340px] rounded-2xl overflow-hidden shadow-soft reveal reveal-delay-3">
+          <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=600&q=80&auto=format&fit=crop" alt="Terrace dining area with olive trees and sunset" class="w-full h-[380px] object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+        </div>
+        <div class="gallery-item w-[280px] sm:w-[340px] rounded-2xl overflow-hidden shadow-soft reveal reveal-delay-4">
+          <img src="https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=600&q=80&auto=format&fit=crop" alt="Reading nook with vintage chair and warm lamp" class="w-full h-[380px] object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT / STATS ============ -->
+  <section id="about" class="py-24 sm:py-32 bg-moss text-cream relative overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 32px 32px;" aria-hidden="true"></div>
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <p class="reveal text-xs font-medium tracking-[0.2em] uppercase text-brassLight mb-4">Since 2014</p>
+          <h2 class="heading-lg reveal reveal-delay-1 text-balance mb-8 text-cream">We started with one house and a stubborn idea.</h2>
+          <p class="reveal reveal-delay-2 text-cream/70 leading-relaxed mb-6">
+            That a place to stay could feel personal. Not themed, not branded, not a product — just a house that someone had thought about. We now look after twelve homes across six countries, each one chosen because it made us stop and stare.
+          </p>
+          <p class="reveal reveal-delay-3 text-cream/70 leading-relaxed">
+            We're still small on purpose. Every property is visited, every host is known to us. If it's not somewhere we'd want to spend our own week, it doesn't make the list.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+          <div class="reveal reveal-delay-1 rounded-2xl bg-cream/5 border border-cream/10 p-6">
+            <p class="font-display text-4xl sm:text-5xl text-brassLight mb-2">12</p>
+            <p class="text-sm text-cream/60">Curated homes</p>
+          </div>
+          <div class="reveal reveal-delay-2 rounded-2xl bg-cream/5 border border-cream/10 p-6">
+            <p class="font-display text-4xl sm:text-5xl text-brassLight mb-2">6</p>
+            <p class="text-sm text-cream/60">Countries</p>
+          </div>
+          <div class="reveal reveal-delay-3 rounded-2xl bg-cream/5 border border-cream/10 p-6">
+            <p class="font-display text-4xl sm:text-5xl text-brassLight mb-2">2.4k</p>
+            <p class="text-sm text-cream/60">Guests hosted</p>
+          </div>
+          <div class="reveal reveal-delay-4 rounded-2xl bg-cream/5 border border-cream/10 p-6">
+            <p class="font-display text-4xl sm:text-5xl text-brassLight mb-2">4.9</p>
+            <p class="text-sm text-cream/60">Average rating</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section class="py-24 sm:py-32">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <p class="reveal text-xs font-medium tracking-[0.2em] uppercase text-brass mb-4">Guest Notes</p>
+        <h2 class="heading-lg reveal reveal-delay-1 text-balance">What people say when they get back.</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="reveal rounded-3xl bg-white border hairline p-8 shadow-soft">
+          <div class="flex gap-0.5 mb-4" aria-label="5 out of 5 stars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p class="text-ink/80 leading-relaxed mb-6 text-sm">"We've stayed in a lot of beautiful places. Nestora is the first one where we immediately started figuring out when we could come back. The host, the linen, the lemon tree outside the kitchen window — all of it."</p>
+          <div class="flex items-center gap-3 pt-4 border-t hairline">
+            <div class="w-9 h-9 rounded-full bg-stone flex items-center justify-center text-xs font-medium text-ink/60">EM</div>
+            <div>
+              <p class="text-sm font-medium text-ink">Elena & Marco</p>
+              <p class="text-xs text-ink/50">Milan · stayed at Casa Marea</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-1 rounded-3xl bg-white border hairline p-8 shadow-soft">
+          <div class="flex gap-0.5 mb-4" aria-label="5 out of 5 stars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p class="text-ink/80 leading-relaxed mb-6 text-sm">"Mori House rearranged something in me. I didn't realise how much I needed to hear nothing but rain on a cedar roof for three days. The onsen at dawn is something I'll think about for years."</p>
+          <div class="flex items-center gap-3 pt-4 border-t hairline">
+            <div class="w-9 h-9 rounded-full bg-stone flex items-center justify-center text-xs font-medium text-ink/60">JT</div>
+            <div>
+              <p class="text-sm font-medium text-ink">James T.</p>
+              <p class="text-xs text-ink/50">London · stayed at Mori House</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-2 rounded-3xl bg-white border hairline p-8 shadow-soft">
+          <div class="flex gap-0.5 mb-4" aria-label="5 out of 5 stars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--brass)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p class="text-ink/80 leading-relaxed mb-6 text-sm">"The kind of place that makes you want to cancel your plans and stay in. We cooked every night, read on the terrace, and forgot what day it was. Which was, honestly, the whole point."</p>
+          <div class="flex items-center gap-3 pt-4 border-t hairline">
+            <div class="w-9 h-9 rounded-full bg-stone flex items-center justify-center text-xs font-medium text-ink/60">SR</div>
+            <div>
+              <p class="text-sm font-medium text-ink">Sofia R.</p>
+              <p class="text-xs text-ink/50">Copenhagen · stayed at Villa Petra</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="pb-24 sm:pb-32">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="relative rounded-[2.5rem] overflow-hidden bg-ink text-cream px-8 sm:px-16 py-16 sm:py-24 text-center reveal">
+        <div class="absolute inset-0 opacity-[0.07]" style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 28px 28px;" aria-hidden="true"></div>
+        <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-brass/15 blur-[100px]" aria-hidden="true"></div>
+        <div class="relative z-10">
+          <p class="text-xs font-medium tracking-[0.2em] uppercase text-brassLight mb-4">A Quiet Invitation</p>
+          <h2 class="heading-lg text-balance max-w-2xl mx-auto mb-6">Your week has a house waiting for it.</h2>
+          <p class="text-cream/60 max-w-lg mx-auto mb-10 text-sm leading-relaxed">Tell us when, and we'll tell you where. Every stay begins with a conversation, not a booking engine.</p>
+          <a href="#contact" class="btn-primary bg-brass hover:bg-brassLight text-ink">
+            <span>Start a Conversation</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER + CONTACT ============ -->
+  <footer id="contact" class="bg-white border-t hairline pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid lg:grid-cols-2 gap-16 mb-16">
+        <!-- Left: contact form -->
+        <div>
+          <p class="text-xs font-medium tracking-[0.2em] uppercase text-brass mb-4">Enquire</p>
+          <h2 class="heading-md text-balance mb-3">Tell us about your stay.</h2>
+          <p class="body-sm mb-8 max-w-md">Fill this in and a real person will reply within a day. No autoresponders, no booking fees.</p>
+
+          <form id="enquiryForm" novalidate>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="name" class="form-label">Full name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required autocomplete="name" />
+                <p class="form-error" id="nameError">Please enter your name.</p>
+              </div>
+              <div>
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required autocomplete="email" />
+                <p class="form-error" id="emailError">Please enter a valid email.</p>
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="phone" class="form-label">Phone (optional)</label>
+                <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 555 000 0000" autocomplete="tel" />
+              </div>
+              <div>
+                <label for="dates" class="form-label">Preferred dates</label>
+                <input type="text" id="dates" name="dates" class="form-input" placeholder="e.g. early June, one week" />
+              </div>
+            </div>
+            <div class="mb-4">
+              <label for="message" class="form-label">Anything else?</label>
+              <textarea id="message" name="message" rows="4" class="form-input resize-none" placeholder="Which house caught your eye? How many of you? Any occasion?" required></textarea>
+              <p class="form-error" id="messageError">Please tell us a little about your stay.</p>
+            </div>
+            <button type="submit" class="btn-primary w-full sm:w-auto justify-center">
+              <span>Send Enquiry</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+            <!-- TODO: connect form action to backend endpoint -->
+            <p id="formSuccess" class="hidden mt-4 text-sm text-moss bg-moss/5 border border-moss/10 rounded-xl px-4 py-3 items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>Thank you — your enquiry is on its way. We'll be in touch shortly.</span>
+            </p>
+          </form>
+        </div>
+
+        <!-- Right: sitemap + brand -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-8">
+          <div>
+            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-ink/40 mb-4">Stay</p>
+            <ul class="space-y-2.5">
+              <li><a href="#stays" class="text-sm text-ink/60 hover:text-brass transition-colors">Collection</a></li>
+              <li><a href="#experience" class="text-sm text-ink/60 hover:text-brass transition-colors">Experience</a></li>
+              <li><a href="#gallery" class="text-sm text-ink/60 hover:text-brass transition-colors">Gallery</a></li>
+              <li><a href="#about" class="text-sm text-ink/60 hover:text-brass transition-colors">About</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-ink/40 mb-4">Connect</p>
+            <ul class="space-y-2.5">
+              <li><a href="#contact" class="text-sm text-ink/60 hover:text-brass transition-colors">Enquiries</a></li>
+              <li><a href="#" class="text-sm text-ink/60 hover:text-brass transition-colors">Instagram</a></li>
+              <li><a href="#" class="text-sm text-ink/60 hover:text-brass transition-colors">Journal</a></li>
+              <li><a href="#" class="text-sm text-ink/60 hover:text-brass transition-colors">Press</a></li>
+            </ul>
+          </div>
+          <div class="col-span-2 sm:col-span-1">
+            <p class="text-xs font-semibold tracking-[0.15em] uppercase text-ink/40 mb-4">Nestora</p>
+            <p class="body-sm max-w-xs">Curated stays for people who'd rather have one perfect house than a hundred average ones.</p>
+            <div class="flex gap-3 mt-6">
+              <a href="#" class="w-9 h-9 rounded-full border hairline flex items-center justify-center text-ink/50 hover:text-brass hover:border-brass transition-all" aria-label="Instagram">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </a>
+              <a href="#" class="w-9 h-9 rounded-full border hairline flex items-center justify-center text-ink/50 hover:text-brass hover:border-brass transition-all" aria-label="Pinterest">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-8 border-t hairline flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-ink/40">© 2025 Nestora Hospitality. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="text-xs text-ink/40 hover:text-ink transition-colors">Privacy</a>
+          <a href="#" class="text-xs text-ink/40 hover:text-ink transition-colors">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    // Initialize Lucide icons
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // === Header scroll state ===
+    const header = document.getElementById('siteHeader');
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    }, { passive: true });
+
+    // === Mobile menu ===
+    const menuToggle = document.getElementById('menuToggle');
+    const menuClose = document.getElementById('menuClose');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileLinks = mobileMenu.querySelectorAll('a');
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    menuToggle.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+    });
+
+    // === Split text reveal on load ===
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.split-word').forEach((word, i) => {
+        setTimeout(() => word.classList.add('revealed'), 150 + i * 90);
+      });
+    });
+
+    // === Reveal on scroll (IntersectionObserver) ===
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => revealObserver.observe(el));
+
+    // === Gallery arrows ===
+    const galleryTrack = document.getElementById('galleryTrack');
+    document.getElementById('galleryPrev').addEventListener('click', () => {
+      galleryTrack.scrollBy({ left: -360, behavior: 'smooth' });
+    });
+    document.getElementById('galleryNext').addEventListener('click', () => {
+      galleryTrack.scrollBy({ left: 360, behavior: 'smooth' });
+    });
+
+    // === GSAP ScrollTrigger parallax (subtle) ===
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Gentle float on hero image card
+      gsap.to('.lg\\:col-span-5 .relative.rounded-\\[2rem\\]', {
+        y: -24,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#home',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.2
+        }
+      });
+
+      // Fade decorative large N
+      gsap.to('.font-display.text-\\[28rem\\]', {
+        y: 80,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#home',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.5
+        }
+      });
+    }
+
+    // === Enquiry form validation + simulated submission ===
+    const form = document.getElementById('enquiryForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const messageInput = document.getElementById('message');
+    const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
+    const messageError = document.getElementById('messageError');
+    const formSuccess = document.getElementById('formSuccess');
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function clearErrors() {
+      [nameInput, emailInput, messageInput].forEach(el => el.classList.remove('error'));
+      [nameError, emailError, messageError].forEach(el => el.classList.remove('visible'));
+      formSuccess.classList.add('hidden');
+      formSuccess.classList.remove('flex');
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearErrors();
+      let valid = true;
+
+      if (!nameInput.value.trim()) {
+        nameInput.classList.add('error');
+        nameError.classList.add('visible');
+        valid = false;
+      }
+      if (!emailInput.value.trim() || !validateEmail(emailInput.value.trim())) {
+        emailInput.classList.add('error');
+        emailError.classList.add('visible');
+        valid = false;
+      }
+      if (!messageInput.value.trim()) {
+        messageInput.classList.add('error');
+        messageError.classList.add('visible');
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Simulate successful submission
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>Sending...</span>';
+
+      // TODO: connect form action to backend endpoint
+      // Example: fetch('submit', { method:'POST', headers:{'Content-Type':'application/json'}, cache:'no-store', body: JSON.stringify({ url: window.location.host, table: 'enquiries', data: {...} }) })
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        form.reset();
+        formSuccess.classList.remove('hidden');
+        formSuccess.classList.add('flex');
+        formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 1200);
+    });
+
+    // Remove error state on input
+    [nameInput, emailInput, messageInput].forEach(input => {
+      input.addEventListener('input', () => {
+        input.classList.remove('error');
+        const err = document.getElementById(input.id + 'Error');
+        if (err) err.classList.remove('visible');
+      });
+    });
+
+    // === Smooth anchor scroll with header offset ===
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
